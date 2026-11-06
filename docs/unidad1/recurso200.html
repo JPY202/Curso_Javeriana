@@ -506,12 +506,10 @@ La Luz 2022, en Cali.</p>
 <pre class="r"><code>library(paqueteMETODOS)
 data(&quot;CarreraLuz22&quot;)</code></pre>
 <pre class="r"><code>head(CarreraLuz22, 3)
-# A tibble: 3 × 7
-     id sex     edad origen  timerun categoria  nacionalidad
-  &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       
-1     1 Hombre    22 Sevilla    1988 2. Abierta COL         
-2     2 Hombre    31 Sevilla    2041 2. Abierta COL         
-3     3 Hombre    31 Yumbo      2083 2. Abierta COL         </code></pre>
+  id    sex edad  origen timerun  categoria nacionalidad
+1  1 Hombre   22 Sevilla    1988 2. Abierta          COL
+2  2 Hombre   31 Sevilla    2041 2. Abierta          COL
+3  3 Hombre   31   Yumbo    2083 2. Abierta          COL</code></pre>
 <p>Los bloques de código de esta página se ejecutan en orden, porque
 algunos usan objetos creados en bloques anteriores.</p>
 <p><br/></p>
@@ -753,7 +751,8 @@ tipo determina qué tablas, indicadores y gráficos se pueden usar.</p>
 <div class="figure" style="text-align: center">
 <img src="recurso200_files/figure-html/fig-variables-1.png" alt="Diagrama: una variable es cualitativa, nominal u ordinal, o cuantitativa, discreta o continua, con la escala que corresponde a cada tipo" width="100%" />
 <p class="caption">
-Tipos de variables y escalas de medición. Elaboración propia a partir de
+Tipos de variables y escalas de
+medici&lt;U+00F3&gt;n. Elaboraci&lt;U+00F3&gt;n propia a partir de
 Stevens (1946) y del material del curso.
 </p>
 </div>
@@ -872,11 +871,12 @@ class="section level3 content-box-gray">
 <h3><span style="color:#686868"><strong>Cuidado: un número no siempre es
 una cantidad</strong></span></h3>
 <p><code>id</code> es numérica en <strong>R</strong>, pero promediarla
-no tiene sentido porque solo identifica. Lo mismo ocurre con un código
-de 1 = fraude y 0 = no fraude. El estrato socioeconómico usa números,
-pero es ordinal: el estrato 4 es mayor que el 2, pero no es el doble. El
-tipo de variable se decide por lo que significa, no por cómo se
-almacena.</p>
+no tiene sentido porque solo identifica. Un código de 1 = fraude y 0 =
+no fraude también es cualitativo: es una <a
+href="#qué-es-una-variable-indicadora">variable indicadora</a>. El
+estrato socioeconómico usa números, pero es ordinal: el estrato 4 es
+mayor que el 2, pero no es el doble. El tipo de variable se decide por
+lo que significa, no por cómo se almacena.</p>
 </div>
 <p><code>edad</code> aparece en números enteros y por eso se clasifica
 como discreta.</p>
@@ -1063,6 +1063,209 @@ engañosa. El método también depende de la pregunta y del contexto.</p>
 </div>
 <p><br/></p>
 </div>
+<div id="qué-es-una-variable-indicadora" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una variable
+indicadora?</strong></span></h2>
+<p>Una <strong>variable indicadora</strong> toma el valor 1 si la unidad
+tiene una característica y 0 si no la tiene. También se llama variable
+<em>dummy</em> o ficticia. Es una variable <strong>cualitativa
+nominal</strong> con dos categorías, aunque se guarde como número.</p>
+<p>Muchas bases guardan una variable cualitativa como un grupo de
+indicadoras, una por categoría. Por ejemplo, el estado civil de tres
+clientes se puede guardar en una columna o en tres:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Cliente</th>
+<th align="left">Estado civil</th>
+<th align="center"><code>casado</code></th>
+<th align="center"><code>soltero</code></th>
+<th align="center"><code>union_libre</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">C001</td>
+<td align="left">Casado</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">C002</td>
+<td align="left">Soltero</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">C003</td>
+<td align="left">Unión libre</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>Cada cliente tiene un 1 en la columna de su categoría y 0 en las
+demás. Por eso, <strong>en cada fila, las indicadoras de una misma
+variable suman 1</strong>. Esta regla sirve para revisar los datos.</p>
+<div id="cómo-se-crean-en-r" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se crean en
+R?</strong></span></h3>
+<p>En <code>CarreraLuz22</code>, la variable <code>categoria</code>
+tiene cinco categorías. Para cada una se compara la variable con la
+categoría: el resultado es <code>TRUE</code> o <code>FALSE</code>, y
+<code>as.integer()</code> lo convierte en 1 o 0. La función
+<code>sapply()</code>, explicada en <a href="recurso107.html">Funciones
+apply, lapply y sapply</a>, repite la comparación para cada
+categoría:</p>
+<pre class="r"><code>categorias &lt;- sort(unique(CarreraLuz22$categoria))
+categorias
+[1] &quot;1. Juvenil&quot;     &quot;2. Abierta&quot;     &quot;3. Veteranos A&quot; &quot;4. Veteranos B&quot;
+[5] &quot;5. Veteranos C&quot;
+
+indicadoras &lt;- sapply(categorias, function(k) as.integer(CarreraLuz22$categoria == k))
+colnames(indicadoras) &lt;- c(&quot;juvenil&quot;, &quot;abierta&quot;, &quot;veteranos_a&quot;, &quot;veteranos_b&quot;, &quot;veteranos_c&quot;)
+head(indicadoras, 3)
+     juvenil abierta veteranos_a veteranos_b veteranos_c
+[1,]       0       1           0           0           0
+[2,]       0       1           0           0           0
+[3,]       0       1           0           0           0</code></pre>
+<p>La función <code>model.matrix()</code>, del paquete
+<code>stats</code>, que viene con <strong>R</strong>, también crea
+indicadoras. La usan los modelos de regresión.</p>
+</div>
+<div id="qué-resume-una-indicadora" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué resume una
+indicadora?</strong></span></h3>
+<p>La suma de una indicadora es el número de unidades con la
+característica, y su media es la proporción:</p>
+<pre class="r"><code>colSums(indicadoras)
+    juvenil     abierta veteranos_a veteranos_b veteranos_c 
+         19        1179         423         227          74 
+round(colMeans(indicadoras), 3)
+    juvenil     abierta veteranos_a veteranos_b veteranos_c 
+      0.010       0.613       0.220       0.118       0.039 </code></pre>
+<p>Los conteos coinciden con los de
+<code>table(CarreraLuz22$categoria)</code>. Por ejemplo, el 61.3 % de
+los atletas corrió en la categoría abierta. A diferencia de un código
+como el estrato, el promedio de una indicadora sí tiene una lectura
+directa: es la proporción <span class="math inline">\(\hat{p}\)</span>
+que aparece en <a href="#qué-son-parámetro-estimador-y-estimación">¿Qué
+son parámetro, estimador y estimación?</a>.</p>
+</div>
+<div id="cómo-volver-a-una-sola-variable" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo volver a una sola
+variable?</strong></span></h3>
+<p>Para hacer una tabla de frecuencias o un gráfico de barras se
+necesita una sola variable. Se siguen tres pasos:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Revisar</strong> que cada fila tenga solo ceros y unos, y
+que sume 1.</li>
+<li><strong>Tomar</strong>, en cada fila, el nombre de la columna que
+tiene el 1.</li>
+<li><strong>Convertir</strong> el resultado en factor, con las
+categorías en el orden deseado.</li>
+</ol>
+<p>El siguiente ejemplo tiene seis clientes. Tres tienen problemas a
+propósito:</p>
+<pre class="r"><code>clientes &lt;- data.frame(
+  id_cliente  = c(&quot;C001&quot;, &quot;C002&quot;, &quot;C003&quot;, &quot;C004&quot;, &quot;C005&quot;, &quot;C006&quot;),
+  casado      = c(1, 0, 0, 0, 0, 1),
+  soltero     = c(0, 1, 0, 0, 0, 0),
+  union_libre = c(0, 0, 1, 0, 0, 1),
+  divorciado  = c(0, 0, 0, 100, 0, 0),
+  viudo       = c(0, 0, 0, 0, 0, 0)
+)
+estado &lt;- clientes[, c(&quot;casado&quot;, &quot;soltero&quot;, &quot;union_libre&quot;, &quot;divorciado&quot;, &quot;viudo&quot;)]</code></pre>
+<p><strong>Paso 1. Revisar.</strong> <code>rowSums()</code> suma cada
+fila, y <code>%in%</code> comprueba si cada valor es 0 o 1:</p>
+<pre class="r"><code>solo_0_y_1 &lt;- apply(estado, 1, function(fila) all(fila %in% c(0, 1)))
+suma &lt;- rowSums(estado)
+
+clientes[!solo_0_y_1 | suma != 1, ]
+  id_cliente casado soltero union_libre divorciado viudo
+4       C004      0       0           0        100     0
+5       C005      0       0           0          0     0
+6       C006      1       0           1          0     0</code></pre>
+<p>Aparecen tres casos que no se deben reconstruir sin revisarlos:</p>
+<ul>
+<li><strong>C004</strong> tiene un 100 en <code>divorciado</code>.
+Parece un 1 mal digitado.</li>
+<li><strong>C005</strong> no tiene ninguna categoría. Es un dato
+faltante.</li>
+<li><strong>C006</strong> aparece como casado y en unión libre a la vez.
+Es una inconsistencia.</li>
+</ul>
+<p>Lo ideal es confirmar cada caso con la fuente. Aquí se supone que se
+confirmó que el 100 es un 1. Los otros dos se dejan como faltantes, y se
+tratan como se explica en <a href="recurso402.html">Datos
+faltantes</a>.</p>
+<pre class="r"><code>estado[estado == 100] &lt;- 1     # corrección confirmada con la fuente
+validas &lt;- rowSums(estado) == 1
+validas
+[1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE</code></pre>
+<p><strong>Paso 2. Tomar el nombre de la columna.</strong>
+<code>max.col()</code> devuelve, en cada fila, la posición de la columna
+con el valor más alto. Como en las filas válidas hay un solo 1, esa
+posición es la de su categoría:</p>
+<pre class="r"><code>clientes$estado_civil &lt;- NA
+clientes$estado_civil[validas] &lt;- colnames(estado)[max.col(estado[validas, ])]</code></pre>
+<p><strong>Paso 3. Convertir en factor.</strong> El argumento
+<code>levels</code> fija el orden de las categorías en tablas y
+gráficos, e incluye las que no aparecen, como <code>viudo</code>:</p>
+<pre class="r"><code>clientes$estado_civil &lt;- factor(clientes$estado_civil, levels = colnames(estado))
+clientes[, c(&quot;id_cliente&quot;, &quot;estado_civil&quot;)]
+  id_cliente estado_civil
+1       C001       casado
+2       C002      soltero
+3       C003  union_libre
+4       C004   divorciado
+5       C005         &lt;NA&gt;
+6       C006         &lt;NA&gt;
+table(clientes$estado_civil, useNA = &quot;ifany&quot;)
+
+     casado     soltero union_libre  divorciado       viudo        &lt;NA&gt; 
+          1           1           1           1           0           2 </code></pre>
+<p>Si la variable es ordinal, como el nivel educativo o la categoría de
+la carrera, se agrega <code>ordered = TRUE</code> y las columnas se
+ponen en orden. Con la carrera, el resultado coincide con la variable
+original:</p>
+<pre class="r"><code>categoria_nueva &lt;- factor(colnames(indicadoras)[max.col(indicadoras)],
+                          levels = colnames(indicadoras), ordered = TRUE)
+table(categoria_nueva)
+categoria_nueva
+    juvenil     abierta veteranos_a veteranos_b veteranos_c 
+         19        1179         423         227          74 
+all(as.vector(table(categoria_nueva)) == as.vector(table(CarreraLuz22$categoria)))
+[1] TRUE</code></pre>
+</div>
+<div id="cuidado-max.col-decide-al-azar-los-empates"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Cuidado: max.col() decide al
+azar los empates</strong></span></h3>
+<p>Si una fila tiene dos unos, o solo ceros, hay un empate, y
+<code>max.col()</code> elige una columna al azar. El resultado cambiaría
+en cada ejecución sin ningún aviso. Por eso, antes de usarla, se revisa
+que cada fila sume 1.</p>
+</div>
+<div id="cuántas-indicadoras-se-necesitan"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>¿Cuántas indicadoras se
+necesitan?</strong></span></h3>
+<p>Con <span class="math inline">\(k\)</span> categorías bastan <span
+class="math inline">\(k - 1\)</span> indicadoras, porque la que falta se
+deduce de las demás: si un cliente tiene 0 en cuatro columnas de estado
+civil, pertenece a la quinta. Los modelos de regresión, que se estudian
+en la Unidad 3, usan <span class="math inline">\(k - 1\)</span>
+indicadoras y dejan una <strong>categoría de referencia</strong> (<a
+href="https://openintro-ims.netlify.app/">Çetinkaya-Rundel y Hardin,
+2021</a>). <strong>R</strong> lo hace solo cuando la variable es un
+factor.</p>
+</div>
+<p><br/></p>
+</div>
 <div id="qué-papel-cumple-cada-variable" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Qué papel cumple cada
 variable?</strong></span></h2>
@@ -1123,11 +1326,11 @@ fuerza</a> ocurre el efecto</td>
 </tbody>
 </table>
 <div class="figure" style="text-align: center">
-<img src="recurso200_files/figure-html/fig-relaciones-1.png" alt="Tres esquemas: el calor causa más ventas de helados e insolación, el fertilizante aumenta la cosecha por medio del nitrógeno absorbido, y el tipo de suelo cambia el efecto del fertilizante sobre la cosecha" width="100%" />
+<img src="recurso200_files/figure-html/fig-relaciones-1.png" alt="Tres esquemas: el calor causa m&lt;U+00E1&gt;s ventas de helados e insolaci&lt;U+00F3&gt;n, el fertilizante aumenta la cosecha por medio del nitr&lt;U+00F3&gt;geno absorbido, y el tipo de suelo cambia el efecto del fertilizante sobre la cosecha" width="100%" />
 <p class="caption">
 Tres formas en que una tercera variable se relaciona con otras dos.
-Ejemplos hipotéticos. Elaboración propia; mediadora y moderadora a
-partir de Baron y Kenny (1986).
+Ejemplos hipot&lt;U+00E9&gt;ticos. Elaboraci&lt;U+00F3&gt;n propia;
+mediadora y moderadora a partir de Baron y Kenny (1986).
 </p>
 </div>
 <details>
@@ -1389,9 +1592,10 @@ hist(alturas, breaks = cortes_altura, freq = FALSE, col = &quot;#BFD7EE&quot;, b
      main = &quot;&quot;, xlab = &quot;Altura (cm)&quot;, ylab = &quot;Densidad&quot;)
 curve(dnorm(x, mean = 170, sd = 10), add = TRUE, col = &quot;#034A94&quot;, lwd = 3)</code></pre>
 <div class="figure">
-<img src="recurso200_files/figure-html/unnamed-chunk-12-1.png" alt="Histograma de 50 alturas simuladas entre 150 y 195 centímetros, con la curva normal de la población superpuesta" width="672" />
+<img src="recurso200_files/figure-html/unnamed-chunk-20-1.png" alt="Histograma de 50 alturas simuladas entre 150 y 195 cent&lt;U+00ED&gt;metros, con la curva normal de la poblaci&lt;U+00F3&gt;n superpuesta" width="672" />
 <p class="caption">
-Histograma de una muestra i.i.d. de 50 alturas y curva de la población.
+Histograma de una muestra i.i.d. de 50 alturas y curva de la
+poblaci&lt;U+00F3&gt;n.
 </p>
 </div>
 <p>Si se cambia la semilla, se obtiene otra muestra y otros
@@ -1512,10 +1716,10 @@ hist(medias, breaks = cortes, col = &quot;#BFD7EE&quot;, border = &quot;white&qu
      main = &quot;&quot;, xlab = &quot;Media de la muestra (minutos)&quot;, ylab = &quot;Número de muestras&quot;)
 abline(v = mean(tiempo), col = &quot;#034A94&quot;, lwd = 3)</code></pre>
 <div class="figure">
-<img src="recurso200_files/figure-html/unnamed-chunk-14-1.png" alt="Histograma con forma de campana de las medias muestrales, centrado cerca de 65 minutos, con una línea vertical en la media de todos los atletas" width="672" />
+<img src="recurso200_files/figure-html/unnamed-chunk-22-1.png" alt="Histograma con forma de campana de las medias muestrales, centrado cerca de 65 minutos, con una l&lt;U+00ED&gt;nea vertical en la media de todos los atletas" width="672" />
 <p class="caption">
-Medias de 1,000 muestras de 50 atletas. La línea indica la media de
-todos los atletas.
+Medias de 1,000 muestras de 50 atletas. La l&lt;U+00ED&gt;nea indica la
+media de todos los atletas.
 </p>
 </div>
 <p><br/></p>
@@ -1702,6 +1906,30 @@ class="math inline">\(N\)</span></td>
 <td align="left">Se usa una muestra como si fuera toda la población</td>
 <td align="left">Indicar de dónde sale cada valor</td>
 </tr>
+<tr class="even">
+<td align="left">Clasificar una indicadora como cuantitativa</td>
+<td align="left">Se guarda con 0 y 1</td>
+<td align="left">Clasificarla como cualitativa nominal</td>
+</tr>
+<tr class="odd">
+<td align="left">Graficar cada indicadora por separado</td>
+<td align="left">La variable está repartida en varias columnas</td>
+<td align="left">Volver a una sola variable y hacer una tabla o un
+gráfico de barras</td>
+</tr>
+<tr class="even">
+<td align="left">Una fila de indicadoras no suma 1</td>
+<td align="left">Error de digitación, dato faltante o dos categorías
+marcadas</td>
+<td align="left">Revisar con <code>rowSums()</code> antes de
+reconstruir</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>max.col()</code> da otro resultado en cada
+ejecución</td>
+<td align="left">Hay filas con dos unos o solo con ceros</td>
+<td align="left">Reconstruir solo las filas que suman 1</td>
+</tr>
 </tbody>
 </table>
 <p><br/></p>
@@ -1840,8 +2068,8 @@ Ver solución
 </summary>
 <pre class="r"><code>table(grep(&quot;Bogot&quot;, CarreraLuz22$origen, value = TRUE))
 
-    Bogota     Bogotá Bogota D.c 
-         8          6          1 </code></pre>
+Bogot&lt;U+00E1&gt;      Bogota  Bogota D.c 
+          6           8           1 </code></pre>
 <p>La misma ciudad aparece escrita de varias maneras. Si no se corrige,
 una tabla la contará como ciudades distintas. Por eso los datos se
 revisan antes de analizarlos.</p>
@@ -1870,6 +2098,52 @@ desviacion 10.63  9.79 8.92 10.24 8.49 12.08 8.21 8.36 10.08 10.28</code></pre>
 <p>Las estimaciones cambian de una muestra a otra, pero se ubican
 alrededor de los parámetros: 10 para la media y 10 para la desviación
 estándar.</p>
+</details>
+</div>
+<div id="reto-7.-el-nivel-educativo-en-una-sola-variable"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 7. El nivel educativo en
+una sola variable</strong></span></h3>
+<p>La siguiente base guarda el nivel educativo de cinco clientes en
+cuatro indicadoras. Revise las filas, construya una sola variable
+ordinal llamada <code>educacion</code> y haga su tabla de frecuencias.
+¿Qué cliente no se puede clasificar y por qué?</p>
+<pre class="r"><code>educ &lt;- data.frame(
+  id_cliente = c(&quot;C101&quot;, &quot;C102&quot;, &quot;C103&quot;, &quot;C104&quot;, &quot;C105&quot;),
+  basica     = c(0, 1, 0, 0, 0),
+  pregrado   = c(1, 0, 0, 1, 1),
+  maestria   = c(0, 0, 1, 1, 0),
+  doctorado  = c(0, 0, 0, 0, 0)
+)</code></pre>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>niveles_educ &lt;- educ[, c(&quot;basica&quot;, &quot;pregrado&quot;, &quot;maestria&quot;, &quot;doctorado&quot;)]
+solo_0_y_1 &lt;- apply(niveles_educ, 1, function(fila) all(fila %in% c(0, 1)))
+validas &lt;- solo_0_y_1 &amp; rowSums(niveles_educ) == 1
+educ[!validas, ]
+  id_cliente basica pregrado maestria doctorado
+4       C104      0        1        1         0
+
+educ$educacion &lt;- NA
+educ$educacion[validas] &lt;- colnames(niveles_educ)[max.col(niveles_educ[validas, ])]
+educ$educacion &lt;- factor(educ$educacion, levels = colnames(niveles_educ), ordered = TRUE)
+educ[, c(&quot;id_cliente&quot;, &quot;educacion&quot;)]
+  id_cliente educacion
+1       C101  pregrado
+2       C102    basica
+3       C103  maestria
+4       C104      &lt;NA&gt;
+5       C105  pregrado
+table(educ$educacion, useNA = &quot;ifany&quot;)
+
+   basica  pregrado  maestria doctorado      &lt;NA&gt; 
+        1         2         1         0         1 </code></pre>
+<p>El cliente C104 tiene un 1 en pregrado y otro en maestría. No se
+puede saber cuál es su nivel sin volver a la fuente, así que queda como
+faltante. Si la base registra el máximo nivel alcanzado, la fila es un
+error de registro.</p>
 </details>
 </div>
 <p><br/></p>
@@ -1902,6 +2176,11 @@ inglés</strong></span></h3>
 href="https://www.pearson.com/store/p/statistics-the-art-and-science-of-learning-from-data/P200000006061"><em>Statistics:
 The Art and Science of Learning from Data</em></a> (5.ª ed.).
 Pearson.</li>
+<li>Çetinkaya-Rundel, M. y Hardin, J. (2021). <a
+href="https://openintro-ims.netlify.app/"><em>Introduction to Modern
+Statistics</em></a>. OpenIntro. Libro gratuito, publicado por sus
+autoras en línea. La sección 8.1, <em>Indicator and categorical
+predictors</em>, trata las variables indicadoras.</li>
 <li>Freedman, D., Pisani, R. y Purves, R. (2007). <a
 href="https://wwnorton.com/books/Statistics"><em>Statistics</em></a>
 (4.ª ed.). W. W. Norton.</li>
@@ -1938,6 +2217,9 @@ href="https://pubmed.ncbi.nlm.nih.gov/3806354/">The moderator-mediator
 variable distinction in social psychological research: Conceptual,
 strategic, and statistical considerations</a>. <em>Journal of
 Personality and Social Psychology</em>, 51(6), 1173-1182.</li>
+<li>Çetinkaya-Rundel, M. y Hardin, J. (2021). <a
+href="https://openintro-ims.netlify.app/"><em>Introduction to Modern
+Statistics</em></a>. OpenIntro.</li>
 <li>Encyclopedia.com. <a
 href="https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application">Probability:
 History, Interpretation, and Application</a>.</li>
@@ -1965,7 +2247,7 @@ thinking in empirical enquiry</a>. <em>International Statistical
 Review</em>, 67(3), 223-248.</li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

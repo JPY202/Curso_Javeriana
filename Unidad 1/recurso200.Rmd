@@ -187,7 +187,7 @@ Las variables de la carrera se clasifican así:
 <div class="content-box-gray">
 ### <span style="color:#686868">**Cuidado: un número no siempre es una cantidad**</span>
 
-`id` es numérica en **R**, pero promediarla no tiene sentido porque solo identifica. Lo mismo ocurre con un código de 1 = fraude y 0 = no fraude. El estrato socioeconómico usa números, pero es ordinal: el estrato 4 es mayor que el 2, pero no es el doble. El tipo de variable se decide por lo que significa, no por cómo se almacena.
+`id` es numérica en **R**, pero promediarla no tiene sentido porque solo identifica. Un código de 1 = fraude y 0 = no fraude también es cualitativo: es una [variable indicadora](#qué-es-una-variable-indicadora). El estrato socioeconómico usa números, pero es ordinal: el estrato 4 es mayor que el 2, pero no es el doble. El tipo de variable se decide por lo que significa, no por cómo se almacena.
 </div>
 
 `edad` aparece en números enteros y por eso se clasifica como discreta.
@@ -269,6 +269,129 @@ Con los primeros códigos, el grupo A tiene mayor media. Con los segundos, la ti
 ### <span style="color:#686868">**Una guía, no una regla mecánica**</span>
 
 Estas escalas orientan el análisis, pero [Velleman y Wilkinson (1993)](https://doi.org/10.1080/00031305.1993.10475938) critican esta clasificación y la consideran engañosa. El método también depende de la pregunta y del contexto.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una variable indicadora?**</span>
+
+Una **variable indicadora** toma el valor 1 si la unidad tiene una característica y 0 si no la tiene. También se llama variable *dummy* o ficticia. Es una variable **cualitativa nominal** con dos categorías, aunque se guarde como número.
+
+Muchas bases guardan una variable cualitativa como un grupo de indicadoras, una por categoría. Por ejemplo, el estado civil de tres clientes se puede guardar en una columna o en tres:
+
+| Cliente | Estado civil | `casado` | `soltero` | `union_libre` |
+|:--------|:-------------|:--------:|:---------:|:-------------:|
+| C001    | Casado       | 1        | 0         | 0             |
+| C002    | Soltero      | 0        | 1         | 0             |
+| C003    | Unión libre  | 0        | 0         | 1             |
+
+Cada cliente tiene un 1 en la columna de su categoría y 0 en las demás. Por eso, **en cada fila, las indicadoras de una misma variable suman 1**. Esta regla sirve para revisar los datos.
+
+### <span style="color:#034a94">**¿Cómo se crean en R?**</span>
+
+En `CarreraLuz22`, la variable `categoria` tiene cinco categorías. Para cada una se compara la variable con la categoría: el resultado es `TRUE` o `FALSE`, y `as.integer()` lo convierte en 1 o 0. La función `sapply()`, explicada en [Funciones apply, lapply y sapply](recurso107.html), repite la comparación para cada categoría:
+
+```{r}
+categorias <- sort(unique(CarreraLuz22$categoria))
+categorias
+
+indicadoras <- sapply(categorias, function(k) as.integer(CarreraLuz22$categoria == k))
+colnames(indicadoras) <- c("juvenil", "abierta", "veteranos_a", "veteranos_b", "veteranos_c")
+head(indicadoras, 3)
+```
+
+La función `model.matrix()`, del paquete `stats`, que viene con **R**, también crea indicadoras. La usan los modelos de regresión.
+
+### <span style="color:#034a94">**¿Qué resume una indicadora?**</span>
+
+La suma de una indicadora es el número de unidades con la característica, y su media es la proporción:
+
+```{r}
+colSums(indicadoras)
+round(colMeans(indicadoras), 3)
+```
+
+Los conteos coinciden con los de `table(CarreraLuz22$categoria)`. Por ejemplo, el `r round(100 * mean(CarreraLuz22$categoria == "2. Abierta"), 1)` % de los atletas corrió en la categoría abierta. A diferencia de un código como el estrato, el promedio de una indicadora sí tiene una lectura directa: es la proporción $\hat{p}$ que aparece en [¿Qué son parámetro, estimador y estimación?](#qué-son-parámetro-estimador-y-estimación).
+
+### <span style="color:#034a94">**¿Cómo volver a una sola variable?**</span>
+
+Para hacer una tabla de frecuencias o un gráfico de barras se necesita una sola variable. Se siguen tres pasos:
+
+1. **Revisar** que cada fila tenga solo ceros y unos, y que sume 1.
+2. **Tomar**, en cada fila, el nombre de la columna que tiene el 1.
+3. **Convertir** el resultado en factor, con las categorías en el orden deseado.
+
+El siguiente ejemplo tiene seis clientes. Tres tienen problemas a propósito:
+
+```{r}
+clientes <- data.frame(
+  id_cliente  = c("C001", "C002", "C003", "C004", "C005", "C006"),
+  casado      = c(1, 0, 0, 0, 0, 1),
+  soltero     = c(0, 1, 0, 0, 0, 0),
+  union_libre = c(0, 0, 1, 0, 0, 1),
+  divorciado  = c(0, 0, 0, 100, 0, 0),
+  viudo       = c(0, 0, 0, 0, 0, 0)
+)
+estado <- clientes[, c("casado", "soltero", "union_libre", "divorciado", "viudo")]
+```
+
+**Paso 1. Revisar.** `rowSums()` suma cada fila, y `%in%` comprueba si cada valor es 0 o 1:
+
+```{r}
+solo_0_y_1 <- apply(estado, 1, function(fila) all(fila %in% c(0, 1)))
+suma <- rowSums(estado)
+
+clientes[!solo_0_y_1 | suma != 1, ]
+```
+
+Aparecen tres casos que no se deben reconstruir sin revisarlos:
+
+- **C004** tiene un 100 en `divorciado`. Parece un 1 mal digitado.
+- **C005** no tiene ninguna categoría. Es un dato faltante.
+- **C006** aparece como casado y en unión libre a la vez. Es una inconsistencia.
+
+Lo ideal es confirmar cada caso con la fuente. Aquí se supone que se confirmó que el 100 es un 1. Los otros dos se dejan como faltantes, y se tratan como se explica en [Datos faltantes](recurso402.html).
+
+```{r}
+estado[estado == 100] <- 1     # corrección confirmada con la fuente
+validas <- rowSums(estado) == 1
+validas
+```
+
+**Paso 2. Tomar el nombre de la columna.** `max.col()` devuelve, en cada fila, la posición de la columna con el valor más alto. Como en las filas válidas hay un solo 1, esa posición es la de su categoría:
+
+```{r}
+clientes$estado_civil <- NA
+clientes$estado_civil[validas] <- colnames(estado)[max.col(estado[validas, ])]
+```
+
+**Paso 3. Convertir en factor.** El argumento `levels` fija el orden de las categorías en tablas y gráficos, e incluye las que no aparecen, como `viudo`:
+
+```{r}
+clientes$estado_civil <- factor(clientes$estado_civil, levels = colnames(estado))
+clientes[, c("id_cliente", "estado_civil")]
+table(clientes$estado_civil, useNA = "ifany")
+```
+
+Si la variable es ordinal, como el nivel educativo o la categoría de la carrera, se agrega `ordered = TRUE` y las columnas se ponen en orden. Con la carrera, el resultado coincide con la variable original:
+
+```{r}
+categoria_nueva <- factor(colnames(indicadoras)[max.col(indicadoras)],
+                          levels = colnames(indicadoras), ordered = TRUE)
+table(categoria_nueva)
+all(as.vector(table(categoria_nueva)) == as.vector(table(CarreraLuz22$categoria)))
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Cuidado: max.col() decide al azar los empates**</span>
+
+Si una fila tiene dos unos, o solo ceros, hay un empate, y `max.col()` elige una columna al azar. El resultado cambiaría en cada ejecución sin ningún aviso. Por eso, antes de usarla, se revisa que cada fila sume 1.
+</div>
+
+<div class="content-box-gray">
+### <span style="color:#686868">**¿Cuántas indicadoras se necesitan?**</span>
+
+Con $k$ categorías bastan $k - 1$ indicadoras, porque la que falta se deduce de las demás: si un cliente tiene 0 en cuatro columnas de estado civil, pertenece a la quinta. Los modelos de regresión, que se estudian en la Unidad 3, usan $k - 1$ indicadoras y dejan una **categoría de referencia** ([Çetinkaya-Rundel y Hardin, 2021](https://openintro-ims.netlify.app/)). **R** lo hace solo cuando la variable es un factor.
 </div>
 
 <br/>
@@ -557,6 +680,10 @@ Hill los presentó como ayudas para pensar, no como una lista que se deba cumpli
 | Usar `sd()` para calcular $\sigma$ de una población | `sd()` divide entre $n - 1$ | Aplicar la fórmula con $N$                          |
 | Decir que X causa Y porque están asociadas        | Puede haber una variable confusora               | Revisar el diseño del estudio                       |
 | Confundir parámetro y estimación                  | Se usa una muestra como si fuera toda la población | Indicar de dónde sale cada valor                  |
+| Clasificar una indicadora como cuantitativa       | Se guarda con 0 y 1                              | Clasificarla como cualitativa nominal               |
+| Graficar cada indicadora por separado             | La variable está repartida en varias columnas    | Volver a una sola variable y hacer una tabla o un gráfico de barras |
+| Una fila de indicadoras no suma 1                 | Error de digitación, dato faltante o dos categorías marcadas | Revisar con `rowSums()` antes de reconstruir |
+| `max.col()` da otro resultado en cada ejecución   | Hay filas con dos unos o solo con ceros          | Reconstruir solo las filas que suman 1              |
 
 <br/>
 
@@ -675,6 +802,42 @@ Las estimaciones cambian de una muestra a otra, pero se ubican alrededor de los 
 </details>
 </div>
 
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 7. El nivel educativo en una sola variable**</span>
+
+La siguiente base guarda el nivel educativo de cinco clientes en cuatro indicadoras. Revise las filas, construya una sola variable ordinal llamada `educacion` y haga su tabla de frecuencias. ¿Qué cliente no se puede clasificar y por qué?
+
+```{r}
+educ <- data.frame(
+  id_cliente = c("C101", "C102", "C103", "C104", "C105"),
+  basica     = c(0, 1, 0, 0, 0),
+  pregrado   = c(1, 0, 0, 1, 1),
+  maestria   = c(0, 0, 1, 1, 0),
+  doctorado  = c(0, 0, 0, 0, 0)
+)
+```
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+niveles_educ <- educ[, c("basica", "pregrado", "maestria", "doctorado")]
+solo_0_y_1 <- apply(niveles_educ, 1, function(fila) all(fila %in% c(0, 1)))
+validas <- solo_0_y_1 & rowSums(niveles_educ) == 1
+educ[!validas, ]
+
+educ$educacion <- NA
+educ$educacion[validas] <- colnames(niveles_educ)[max.col(niveles_educ[validas, ])]
+educ$educacion <- factor(educ$educacion, levels = colnames(niveles_educ), ordered = TRUE)
+educ[, c("id_cliente", "educacion")]
+table(educ$educacion, useNA = "ifany")
+```
+
+El cliente C104 tiene un 1 en pregrado y otro en maestría. No se puede saber cuál es su nivel sin volver a la fuente, así que queda como faltante. Si la base registra el máximo nivel alcanzado, la fila es un error de registro.
+
+</details>
+</div>
+
 <br/>
 
 ## <span style="color:#034a94">**Libros y recursos**</span>
@@ -688,6 +851,7 @@ Las estimaciones cambian de una muestra a otra, pero se ubican alrededor de los 
 ### <span style="color:#034a94">**Libros en inglés**</span>
 
 - Agresti, A., Franklin, C. A. y Klingenberg, B. (2022). [*Statistics: The Art and Science of Learning from Data*](https://www.pearson.com/store/p/statistics-the-art-and-science-of-learning-from-data/P200000006061) (5.ª ed.). Pearson.
+- Çetinkaya-Rundel, M. y Hardin, J. (2021). [*Introduction to Modern Statistics*](https://openintro-ims.netlify.app/). OpenIntro. Libro gratuito, publicado por sus autoras en línea. La sección 8.1, *Indicator and categorical predictors*, trata las variables indicadoras.
 - Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
 - Lohr, S. L. (2021). [*Sampling: Design and Analysis*](https://www.routledge.com/Sampling-Design-and-Analysis/Lohr/p/book/9780367279509) (3.ª ed.). Chapman & Hall/CRC.
 - Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
@@ -701,6 +865,7 @@ Las estimaciones cambian de una muestra a otra, pero se ubican alrededor de los 
 
 - Hill, A. B. (1965). [The environment and disease: association or causation?](https://pmc.ncbi.nlm.nih.gov/articles/PMC1898525/) *Proceedings of the Royal Society of Medicine*, 58(5), 295-300.
 - Baron, R. M. y Kenny, D. A. (1986). [The moderator-mediator variable distinction in social psychological research: Conceptual, strategic, and statistical considerations](https://pubmed.ncbi.nlm.nih.gov/3806354/). *Journal of Personality and Social Psychology*, 51(6), 1173-1182.
+- Çetinkaya-Rundel, M. y Hardin, J. (2021). [*Introduction to Modern Statistics*](https://openintro-ims.netlify.app/). OpenIntro.
 - Encyclopedia.com. [Probability: History, Interpretation, and Application](https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application).
 - O'Connor, J. J. y Robertson, E. F. (2003). [Sir Ronald Aylmer Fisher](https://mathshistory.st-andrews.ac.uk/Biographies/Fisher/). MacTutor, University of St Andrews.
 - Shadish, W. R., Cook, T. D. y Campbell, D. T. (2002). *Experimental and Quasi-Experimental Designs for Generalized Causal Inference*. Houghton Mifflin.
@@ -712,6 +877,6 @@ Las estimaciones cambian de una muestra a otra, pero se ubican alrededor de los 
 
 <br/>
 
-*Última revisión: 5 de noviembre de 2026.*
+*Última revisión: 6 de noviembre de 2026.*
 
 <br/><br/>
