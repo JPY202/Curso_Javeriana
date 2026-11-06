@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = N
 
 El objetivo principal de este caso de estudio es predecir y explicar la variable 'tasa de graduación', identificando los factores que mejor la describen. Para ello, es necesario seleccionar métodos de imputación adecuados para los datos faltantes y determinar cuáles variables, como el promedio de la prueba SAT, el número de nuevos estudiantes matriculados o la categoría de la universidad, están más fuertemente asociadas con la tasa de graduación.
 
-Una vez realizada la limpieza de los datos, se debe analizar el tipo de datos faltantes. Posteriormente, se procede con la imputación de los mismos. Luego, se plantean dos modelos para explicar la variable de respuesta. El manejo adecuado de los datos faltantes es crucial para garantizar predicciones confiables sobre la tasa de graduación.  [Acceder a los datos de universidades](https://lib.stat.cmu.edu/datasets/colleges/)
+Una vez realizada la limpieza de los datos, se debe explorar el mecanismo de los datos faltantes. Posteriormente, se procede con la imputación de los mismos. Luego, se plantean dos modelos para explicar la variable de respuesta. El manejo adecuado de los datos faltantes es crucial para garantizar predicciones confiables sobre la tasa de graduación.  [Acceder a los datos de universidades](https://lib.stat.cmu.edu/datasets/colleges/)
 
 
 <br/>
@@ -35,7 +35,7 @@ En esta sección se presenta una discusión sobre el enfoque de análisis, centr
 
 - Calcular el porcentaje de valores faltantes en cada una de las variables de interés para el caso en cuestión.
 
-- Identificar el mecanismo de los datos faltantes (MCAR, MAR o MNAR).
+- Explorar el mecanismo de los datos faltantes y justificar un supuesto (MCAR, MAR o MNAR), siguiendo los pasos de [¿Cómo se explora el mecanismo?](recurso402.html#cómo-se-explora-el-mecanismo).
 
 - Proponer una estrategia para la imputación de los valores faltantes.
 
@@ -95,8 +95,7 @@ La gráfica de la derecha de la **Figura 1.55** muestra el porcentaje de datos f
 
 En la **Figura 1.55**, en el primer gráfico, se observa que el porcentaje de universidades con observaciones faltantes es significativamente mayor en las variables ACT y SAT en comparación con las demás. En el segundo gráfico, se muestran las combinaciones de observaciones faltantes y no faltantes. Se puede notar que el patrón de datos faltantes es aleatorio y multivariado, no siendo monótono ni univariado.
 
-Antes de proceder al análisis, es necesario discernir los mecanismos de generación de datos faltantes, siendo
-MCAR, MAR o MNAR. Porter S. (1999) analiza datos reportados por \U.S. News and World Report 2 menciona
+Antes de proceder al análisis, es necesario explorar por qué faltan los datos: MCAR, MAR o MNAR. Porter S. (1999) analiza datos reportados por \U.S. News and World Report 2 menciona
 que "la falta de datos probablemente se deba a que las universidades no pudieron recoger los datos", sin embargo,
 también dice que "las razones son un misterio".
 
@@ -106,7 +105,7 @@ también dice que "las razones son un misterio".
 
 ## <span style="color:#034a94">**Respecto al objetivo 2**</span>
 
-Al aplicar el test de Little para MCAR en **R**, se obtuvo un $valor-p$ menor a 0.05, lo que sugiere que los datos faltantes no cumplen con el supuesto de MCAR. Por lo tanto, la estimación utilizando solo la submuestra completa no parece ser la opción más adecuada en esta situación. Se puede trabajar bajo el supuesto de MAR, aunque esto no implica que el mecanismo de datos faltantes no sea MNAR, ya que las universidades con bajas tasas de graduación podrían estar inclinadas a omitir estas tasas para evitar publicidad adversa o un posible desprestigio institucional.
+Al aplicar la prueba de Little en **R**, con `naniar::mcar_test()`, se obtuvo un valor *p* menor a 0.05. Hay evidencia contra MCAR, pero la prueba no indica si los datos son MAR o MNAR. Por lo tanto, la estimación utilizando solo la submuestra completa no parece ser la opción más adecuada en esta situación. Se puede trabajar bajo el supuesto de MAR, aunque rechazar MCAR no lo demuestra, y no se puede descartar MNAR, ya que las universidades con bajas tasas de graduación podrían estar inclinadas a omitir estas tasas para evitar publicidad adversa o un posible desprestigio institucional.
 
 
  
@@ -117,7 +116,7 @@ Al aplicar el test de Little para MCAR en **R**, se obtuvo un $valor-p$ menor a 
 
 Consideraciones para los análisis posteriores:
 
-- Se puede asumir el supuesto de MAR, dado que no se conocen las razones detrás de los datos faltantes y el test rechaza la hipótesis de que el mecanismo de generación de los datos faltantes sea MCAR.
+- Se puede asumir MAR como supuesto de trabajo: la prueba rechaza MCAR y la base tiene variables relacionadas con la falta. Es un supuesto, no un resultado: rechazar MCAR no demuestra MAR, y conviene comparar los resultados bajo otros supuestos.
 
 - Bajo el supuesto de MAR y el patrón observado en los datos faltantes, se sugiere utilizar la imputación múltiple como método de imputación. Consulta alternativas para imputar condicionalmente.
 
@@ -125,6 +124,6 @@ Consideraciones para los análisis posteriores:
 
 <br/>
 
-*Última revisión: 5 de noviembre de 2026.*
+*Última revisión: 6 de noviembre de 2026.*
 
 <br/><br/>

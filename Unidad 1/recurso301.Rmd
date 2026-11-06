@@ -130,12 +130,33 @@ La **Tabla 1** presenta los gráficos más usados según el tipo de variable, co
 | Cuantitativa                   | Histograma         | `hist(x)`              | `geom_histogram()`                   |
 | Cuantitativa                   | Densidad           | `plot(density(x))`     | `geom_density()`                     |
 | Cuantitativa                   | Cajas              | `boxplot(x)`           | `geom_boxplot()`                     |
+| Cuantitativa según una cualitativa | Cajas por grupo | `boxplot(y ~ g)`      | `geom_boxplot()` con `aes(x = g, y = y)` |
+| Cuantitativa según una cualitativa | Densidades por grupo | Sin función directa | `geom_density()` con `aes(fill = g)` |
 | Dos cuantitativas              | Dispersión         | `plot(x, y)`           | `geom_point()`                       |
 | Cuantitativa en el tiempo      | Líneas             | `plot(x, type = "l")`  | `geom_line()`                        |
 
 <div class="content-box-gray">
 Además de estas formas, existen otras que permiten combinar variables y explorar relaciones más complejas. Los **mapas** representan datos geográficos mediante colores, tamaños o símbolos. El **diagrama de mosaico** muestra la relación entre variables categóricas con rectángulos de área proporcional a las frecuencias. El **gráfico de radar** usa ejes radiales para comparar perfiles. El **diagrama Likert** muestra la distribución de respuestas en escalas de opinión.
 </div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo analizar dos variables?**</span>
+
+Para estudiar la relación entre dos variables se combinan una tabla o un indicador con un gráfico. La elección depende del tipo de las dos variables. La **Tabla 2** resume cada caso y la página donde se explica:
+
+<center>
+**Tabla 2.** Análisis de dos variables según su tipo.
+</center>
+
+| Dos variables                     | Tabla o indicador                                          | Gráfico                       | Dónde se explica |
+|:----------------------------------|:-----------------------------------------------------------|:------------------------------|:-----------------|
+| Cualitativa y cualitativa         | Tabla cruzada con porcentajes por fila, con `prop.table()` | Barras agrupadas o apiladas   | [Variables categóricas](recurso302.html) |
+| Cualitativa de dos categorías, como sí o no, según grupos | Porcentaje de "sí" en cada grupo, con `tapply()` | Barras con el porcentaje, de 0 a 100 % | [Variables categóricas](recurso302.html#cómo-comparar-una-proporción-entre-grupos) |
+| Cuantitativa según una cualitativa | Mediana, RIC, media y desviación estándar por grupo, con `tapply()` o `aggregate()` | Cajas o densidades por grupo | [Indicadores de centro](recurso203.html), [de dispersión](recurso205.html) y [Variable numérica](recurso303.html) |
+| Cuantitativa y cuantitativa       | En esta unidad, ninguno                                    | Dispersión                    | [Relaciones y cambios en el tiempo](recurso304.html) |
+
+La relación entre dos variables cuantitativas se mide con el **coeficiente de correlación**, que se estudia en la Unidad 3. En esta unidad basta el gráfico de dispersión.
 
 <br/>
 
@@ -257,6 +278,6 @@ Los hombres tienen una mediana cercana a 60 minutos y las mujeres cercana a 69 m
 
 <br/>
 
-*Última revisión: 5 de noviembre de 2026.*
+*Última revisión: 6 de noviembre de 2026.*
 
 <br/><br/>

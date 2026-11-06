@@ -505,12 +505,21 @@ página presenta cómo detectarlos, por qué ocurren, cuándo se puede usar
 cada método y cómo se implementa en <strong>R</strong>.</p>
 <p>Esta página usa <code>vivienda_faltantes</code>, del paquete
 <code>paqueteMETODOS</code>, los datos <code>airquality</code>,
-incluidos en <strong>R</strong>, y los paquetes <code>ggplot2</code> y
-<code>mice</code>. Los bloques de código se ejecutan en orden.</p>
+incluidos en <strong>R</strong>, y los paquetes <code>ggplot2</code>,
+<code>mice</code> y <code>naniar</code>. Los bloques de código se
+ejecutan en orden.</p>
 <pre class="r"><code>library(paqueteMETODOS)
 data(&quot;vivienda_faltantes&quot;)</code></pre>
 <pre class="r"><code>library(ggplot2)
-library(mice)</code></pre>
+library(mice)
+library(naniar)</code></pre>
+<p>El paquete <code>naniar</code> sirve para <strong>explorar, resumir y
+graficar datos faltantes</strong>. Sus gráficos se construyen con
+<code>ggplot2</code>, así que se pueden modificar con las mismas
+funciones, como <code>labs()</code> o <code>theme_minimal()</code>. Lo
+crearon Nicholas Tierney y Dianne Cook (<a
+href="https://doi.org/10.18637/jss.v105.i07">Tierney y Cook, 2023</a>).
+Se instala una sola vez con <code>install.packages("naniar")</code>.</p>
 <p><br/></p>
 <div id="cómo-se-representan-en-r" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Cómo se representan en
@@ -563,25 +572,84 @@ dato”</td>
 </table>
 <p><br/></p>
 </div>
-<div id="cómo-se-detectan" class="section level2">
-<h2><span style="color:#034a94"><strong>¿Cómo se
-detectan?</strong></span></h2>
-<p>Primero se quitan las filas vacías al final de la tabla, como se
-explicó en <a href="recurso401.html">¿Cómo organizar los datos?</a>.
-Después se cuentan los faltantes por variable:</p>
-<pre class="r"><code>viviendas &lt;- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
-faltantes &lt;- colSums(is.na(viviendas))
-faltantes[faltantes &gt; 0]
-   piso parquea 
-   2638    1603 
-
+<div id="cómo-se-detectan-y-dónde-están" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se detectan y dónde
+están?</strong></span></h2>
+<p>Antes de contar, los faltantes que no se ven como <code>NA</code>,
+como un <code>-99</code> o una celda vacía, se convierten en
+<code>NA</code>, según la tabla anterior. Si no, el conteo sale
+incompleto. También se quitan las filas vacías al final de la tabla,
+como se explicó en <a href="recurso401.html">¿Cómo organizar los
+datos?</a>:</p>
+<pre class="r"><code>viviendas &lt;- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]</code></pre>
+<p>La revisión responde tres preguntas: cuántos faltan, dónde están y
+cómo se ven.</p>
+<div id="cuántos-faltan" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cuántos
+faltan?</strong></span></h3>
+<p><code>is.na()</code> marca cada celda vacía con <code>TRUE</code>, y
+<code>colSums()</code> cuenta los <code>TRUE</code> de cada columna. Con
+eso se arma una tabla por variable, ordenada de mayor a menor:</p>
+<pre class="r"><code>faltantes &lt;- colSums(is.na(viviendas))
+resumen &lt;- data.frame(
+  variable   = names(faltantes),
+  faltantes  = faltantes,
+  porcentaje = round(100 * faltantes / nrow(viviendas), 1),
+  row.names  = NULL
+)
+resumen &lt;- resumen[order(resumen$faltantes, decreasing = TRUE), ]
+resumen[resumen$faltantes &gt; 0, ]
+  variable faltantes porcentaje
+3     piso      2638       31.7
+7  parquea      1603       19.3</code></pre>
+<p>Solo dos variables tienen faltantes: <code>piso</code>, con el 31.7
+%, y <code>parquea</code>, con el 19.3 %. La función
+<code>miss_var_summary()</code>, de <code>naniar</code>, da la misma
+tabla en una línea:</p>
+<pre class="r"><code>head(miss_var_summary(viviendas), 3)
+# A tibble: 3 × 3
+  variable n_miss pct_miss
+  &lt;chr&gt;     &lt;int&gt;    &lt;num&gt;
+1 piso       2638     31.7
+2 parquea    1603     19.3
+3 id            0      0  </code></pre>
+<p>También conviene saber cuántas viviendas están completas, porque son
+las que quedarían si se eliminaran los registros con faltantes:</p>
+<pre class="r"><code>sum(complete.cases(viviendas))
+[1] 4812
 round(100 * mean(complete.cases(viviendas)), 1)
 [1] 57.8</code></pre>
-<p>Solo <code>piso</code> y <code>parquea</code> tienen faltantes, y el
-57.8 % de las viviendas está completo. La función
-<code>md.pattern()</code>, de <code>mice</code>, muestra qué
-combinaciones de variables faltan juntas:</p>
-<pre class="r"><code>md.pattern(viviendas[, c(&quot;preciom&quot;, &quot;piso&quot;, &quot;parquea&quot;)], plot = FALSE)
+<p>Solo el 57.8 % de las viviendas tiene todos los datos.</p>
+</div>
+<div id="dónde-están" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Dónde
+están?</strong></span></h3>
+<p><code>which()</code> devuelve las posiciones de las filas con
+faltantes. Sirve para revisar esos registros uno por uno:</p>
+<pre class="r"><code>filas_sin_piso &lt;- which(is.na(viviendas$piso))
+length(filas_sin_piso)
+[1] 2638
+head(viviendas[filas_sin_piso, c(&quot;id&quot;, &quot;tipo&quot;, &quot;estrato&quot;, &quot;piso&quot;, &quot;parquea&quot;)])
+# A tibble: 6 × 5
+     id tipo        estrato  piso parquea
+  &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+1  8307 Casa              5    NA       4
+2  8297 Casa              5    NA       2
+3  8298 Casa              5    NA       8
+4  8300 Apartamento       5    NA       4
+5  8286 Apartamento       5    NA       1
+6  8281 Casa              3    NA      NA</code></pre>
+<p>La función <code>md.pattern()</code>, de <code>mice</code>, muestra
+qué variables faltan juntas. Con <code>rotate.names = TRUE</code> los
+nombres de las variables se leen mejor:</p>
+<pre class="r"><code>patrones &lt;- md.pattern(viviendas[, c(&quot;preciom&quot;, &quot;piso&quot;, &quot;parquea&quot;)], rotate.names = TRUE)</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-patron-1.png" alt="Cuadrícula con cuatro patrones: viviendas completas, sin piso, sin parquea y sin las dos variables. Las celdas azules indican dato presente y las rojas, dato faltante" width="576" />
+<p class="caption">
+Patrones de datos faltantes en piso y parquea
+</p>
+</div>
+<pre class="r"><code>patrones
      preciom parquea piso     
 4812       1       1    1    0
 1912       1       1    0    1
@@ -589,9 +657,55 @@ combinaciones de variables faltan juntas:</p>
 726        1       0    0    2
            0    1603 2638 4241</code></pre>
 <p>Cada fila es un patrón: el número de la izquierda indica cuántas
-viviendas lo tienen, el 1 indica que el dato está y el 0 que falta. Por
-ejemplo, a 726 viviendas les faltan las dos variables.</p>
+viviendas lo tienen, el 1 indica que el dato está y el 0 que falta. El
+número de la derecha dice cuántas variables faltan en ese patrón, y la
+última fila suma los faltantes de cada variable. Por ejemplo, a 726
+viviendas les faltan las dos variables.</p>
+</div>
+<div id="cómo-se-ven" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se
+ven?</strong></span></h3>
+<p>Dos gráficos de <code>naniar</code> resumen lo anterior.
+<code>gg_miss_var()</code> muestra el porcentaje de faltantes de cada
+variable:</p>
+<pre class="r"><code>gg_miss_var(viviendas, show_pct = TRUE) +
+  scale_y_continuous(limits = c(0, 40), breaks = seq(0, 40, 10), expand = c(0, 0)) +
+  labs(x = &quot;Variable&quot;, y = &quot;Datos faltantes (%)&quot;) +
+  theme_minimal(base_size = 13) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-miss-var-1.png" alt="Gráfico de puntos y líneas horizontales con las trece variables. Piso tiene cerca del 32 % de faltantes, parquea cerca del 19 % y las demás 0 %" width="672" />
+<p class="caption">
+Porcentaje de datos faltantes por variable en las viviendas
+</p>
+</div>
+<p><code>vis_miss()</code> dibuja la base completa: cada columna es una
+variable, cada fila una vivienda, y las celdas oscuras son los
+faltantes. Cada variable lleva su porcentaje de faltantes en el nombre.
+La leyenda viene en inglés, así que se traduce con
+<code>scale_fill_manual()</code> y se le agrega el porcentaje de celdas
+presentes y faltantes:</p>
+<pre class="r"><code>pct_faltante &lt;- round(100 * mean(is.na(viviendas)), 1)
+
+vis_miss(viviendas) +
+  scale_fill_manual(values = c(&quot;grey80&quot;, &quot;grey20&quot;),
+                    labels = c(paste0(&quot;Presente (&quot;, 100 - pct_faltante, &quot; %)&quot;),
+                               paste0(&quot;Faltante (&quot;, pct_faltante, &quot; %)&quot;)),
+                    name = NULL) +
+  labs(y = &quot;Vivienda (fila de la base)&quot;)</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-vis-miss-1.png" alt="Mapa de la base con trece columnas. Las columnas piso y parquea tienen franjas negras repartidas a lo largo de las filas; las demás están completas" width="768" />
+<p class="caption">
+Mapa de datos faltantes en las viviendas
+</p>
+</div>
+<p>En el mapa se ve algo que la tabla no muestra: los faltantes de
+<code>piso</code> y <code>parquea</code> se concentran en algunos tramos
+de la base. Como las filas no tienen un orden aleatorio, esto puede
+indicar que los datos se recogieron por partes. Esa pista se estudia en
+<a href="#por-qué-faltan-los-datos">¿Por qué faltan los datos?</a>.</p>
 <p><br/></p>
+</div>
 </div>
 <div id="todo-faltante-se-debe-llenar" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Todo faltante se debe
@@ -731,22 +845,100 @@ supuestos</td>
 </tr>
 </tbody>
 </table>
-<p>Con datos reales, también se puede comparar quiénes tienen el dato y
-quiénes no. Si son distintos, los datos no son MCAR. En
-<code>vivienda_faltantes</code>, para <code>parquea</code>:</p>
+<div id="cómo-se-explora-el-mecanismo" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se explora el
+mecanismo?</strong></span></h3>
+<p>Con datos reales no se ven los valores que faltan, así que el
+mecanismo no se puede comprobar. Sí se puede reunir evidencia, en cuatro
+pasos. El ejemplo usa <code>parquea</code>.</p>
+<p><strong>Paso 1. Pensar en cómo se recogieron los datos.</strong>
+Antes de calcular, hay que preguntarse por qué podría faltar el dato. En
+las viviendas, una sin parqueadero pudo quedar con la celda vacía en
+lugar de un cero. Si fuera así, el faltante dependería del propio número
+de parqueaderos, y sería MNAR. Esta pregunta se responde con quien
+recogió los datos, no con <strong>R</strong>.</p>
+<p><strong>Paso 2. Comparar a quienes tienen el dato con quienes
+no.</strong> Si los datos fueran MCAR, las viviendas con y sin
+<code>parquea</code> se parecerían en todo lo demás. Se crea un
+indicador de falta y se compara con otras variables. En una variable
+categórica se calcula el porcentaje de faltantes en cada grupo:</p>
 <pre class="r"><code>falta &lt;- is.na(viviendas$parquea)
-
 round(100 * tapply(falta, viviendas$estrato, mean), 1)
    3    4    5    6 
-52.9 22.9  8.3  5.9 
-tapply(viviendas$preciom, falta, median)
+52.9 22.9  8.3  5.9 </code></pre>
+<p><code>gg_miss_fct()</code>, de <code>naniar</code>, muestra lo mismo
+para todas las variables a la vez:</p>
+<pre class="r"><code>gg_miss_fct(viviendas[, c(&quot;estrato&quot;, &quot;piso&quot;, &quot;parquea&quot;, &quot;preciom&quot;, &quot;areaconst&quot;)], fct = estrato) +
+  scale_fill_viridis_c(name = &quot;Faltantes (%)&quot;) +
+  labs(x = &quot;Estrato&quot;, y = &quot;Variable&quot;)</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-miss-fct-1.png" alt="Mapa de calor con los estratos 3 a 6 en el eje horizontal y las variables en el vertical. Los colores más intensos están en parquea y piso en el estrato 3" width="672" />
+<p class="caption">
+Porcentaje de datos faltantes de cada variable según el estrato
+</p>
+</div>
+<p>En una variable numérica se comparan sus valores en los dos grupos,
+con indicadores o con un gráfico de cajas:</p>
+<pre class="r"><code>tapply(viviendas$preciom, falta, median)
 FALSE  TRUE 
-  355   178 </code></pre>
+  355   178 
+
+comparacion &lt;- data.frame(
+  precio = viviendas$preciom,
+  grupo  = ifelse(falta, &quot;Sin el dato&quot;, &quot;Con el dato&quot;)
+)
+ggplot(comparacion, aes(x = precio, y = grupo)) +
+  geom_boxplot(fill = &quot;#BFD7EE&quot;, color = &quot;#034A94&quot;, outlier.alpha = 0.3) +
+  scale_x_continuous(limits = c(0, 2000), breaks = seq(0, 2000, 250), expand = c(0, 0)) +
+  labs(x = &quot;Precio (millones de pesos)&quot;, y = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-cajas-falta-1.png" alt="Dos gráficos de cajas horizontales del precio. Las viviendas sin el dato de parqueaderos tienen precios más bajos que las que lo tienen" width="672" />
+<p class="caption">
+Precio de las viviendas con y sin el dato de parqueaderos
+</p>
+</div>
 <p>El <code>parquea</code> falta en el 52.9 % de las viviendas de
 estrato 3 y en el 5.9 % de las de estrato 6. Además, las viviendas sin
 el dato tienen un precio mediano de 178 millones, frente a 355 de las
-demás. Eliminar esas viviendas dejaría una base con menos viviendas de
-bajo precio.</p>
+demás. Los dos grupos son distintos, así que hay evidencia contra MCAR.
+Eliminar esas viviendas dejaría una base con menos viviendas de bajo
+precio.</p>
+<p><strong>Paso 3. Usar la prueba de Little como complemento.</strong>
+La prueba de Little (1988) tiene como hipótesis nula que los datos son
+MCAR. Compara las medias de las variables entre los distintos patrones
+de faltantes. La función <code>mcar_test()</code>, de
+<code>naniar</code>, la aplica a las variables numéricas:</p>
+<pre class="r"><code>numericas &lt;- viviendas[, c(&quot;piso&quot;, &quot;estrato&quot;, &quot;preciom&quot;, &quot;areaconst&quot;, &quot;parquea&quot;, &quot;banios&quot;, &quot;habitac&quot;)]
+mcar_test(numericas)
+# A tibble: 1 × 4
+  statistic    df p.value missing.patterns
+      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;            &lt;int&gt;
+1     1466.    17       0                4</code></pre>
+<p>El valor <em>p</em> es casi cero, así que se rechaza que los datos
+sean MCAR. Para leer bien la prueba:</p>
+<ul>
+<li>Si <strong>rechaza</strong>, hay evidencia contra MCAR. No dice si
+los datos son MAR o MNAR.</li>
+<li>Si <strong>no rechaza</strong>, no demuestra MCAR. Con pocos
+faltantes o pocos datos, la prueba tiene poca potencia y casi nunca
+rechaza.</li>
+<li>Solo usa variables numéricas, y supone que se comportan
+aproximadamente como una normal multivariada. Por eso complementa la
+comparación del paso 2, pero no la reemplaza.</li>
+</ul>
+<p><strong>Paso 4. Declarar el supuesto y sus consecuencias.</strong>
+Con la evidencia anterior se elige un supuesto, se dice por qué y se
+indica qué implica para el análisis. Por ejemplo:</p>
+<blockquote>
+<p>La falta de <code>parquea</code> se relaciona con el estrato y el
+precio, y la prueba de Little rechaza MCAR. Se asume MAR, porque esas
+variables están en la base, y por eso se incluyen en el modelo de
+imputación. No se puede descartar MNAR: si las viviendas sin parqueadero
+quedaron vacías, el faltante significa cero. Se confirmará con quien
+recogió los datos.</p>
+</blockquote>
 <div class="content-box-gray">
 <p>El mecanismo no se puede demostrar con los datos. MAR frente a MNAR
 no se puede probar, porque la información necesaria es justamente la que
@@ -758,6 +950,7 @@ eso, no rechazar la prueba de Little (1988) no demuestra que los datos
 sean MCAR.</p>
 </div>
 <p><br/></p>
+</div>
 </div>
 <div id="qué-método-se-puede-usar" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Qué método se puede
@@ -1110,6 +1303,28 @@ frecuentes</strong></span></h2>
 <td align="left">No rechazar no demuestra MCAR</td>
 </tr>
 <tr class="even">
+<td align="left">Se concluye que los datos son MAR</td>
+<td align="left">La prueba de Little rechazó MCAR</td>
+<td align="left">Rechazar MCAR no distingue entre MAR y MNAR</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>mcar_test()</code> da error</td>
+<td align="left">La base tiene variables de texto</td>
+<td align="left">Usar solo las variables numéricas</td>
+</tr>
+<tr class="even">
+<td align="left">El conteo de faltantes sale en cero, pero hay celdas
+vacías</td>
+<td align="left">Los faltantes están como <code>-99</code> o
+<code>""</code></td>
+<td align="left">Convertirlos en <code>NA</code> antes de contar</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>could not find function "gg_miss_var"</code></td>
+<td align="left">No se cargó el paquete</td>
+<td align="left">Ejecutar <code>library(naniar)</code></td>
+</tr>
+<tr class="even">
 <td align="left">La varianza baja después de imputar</td>
 <td align="left">Se usó una imputación con la media</td>
 <td align="left">Usar imputación múltiple</td>
@@ -1224,6 +1439,42 @@ round(mean(aire$Solar.R, na.rm = TRUE), 2)
 dos medias son parecidas, porque faltan pocos datos.</p>
 </details>
 </div>
+<div id="reto-5.-explore-el-mecanismo-de-piso"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 5.
+Explore el mecanismo de piso</strong></span></h3>
+<p>Siga los pasos 2 y 3 de <a href="#cómo-se-explora-el-mecanismo">¿Cómo
+se explora el mecanismo?</a> para la variable <code>piso</code>: compare
+el porcentaje de faltantes por zona, la mediana del precio con y sin el
+dato, y aplique la prueba de Little. ¿Qué supuesto adoptaría y por
+qué?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>falta_piso &lt;- is.na(viviendas$piso)
+round(100 * tapply(falta_piso, viviendas$zona, mean), 1)
+ Zona Centro   Zona Norte   Zona Oeste Zona Oriente     Zona Sur 
+        44.4         40.7         32.8         40.7         26.7 
+tapply(viviendas$preciom, falta_piso, median)
+FALSE  TRUE 
+  320   350 
+mcar_test(numericas)
+# A tibble: 1 × 4
+  statistic    df p.value missing.patterns
+      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;            &lt;int&gt;
+1     1466.    17       0                4</code></pre>
+<p>El porcentaje de faltantes cambia según la zona: va del 26.7 % en la
+Zona Sur al 44.4 % en la Zona Centro. El precio mediano es parecido en
+los dos grupos, pero la prueba de Little rechaza MCAR, así que hay
+evidencia contra MCAR. Se puede asumir MAR si se incluyen en la
+imputación la zona, el tipo y el precio. Sin embargo, <code>piso</code>
+puede no aplicar en una casa de un solo nivel. Si es así, el faltante no
+se imputa: se recodifica, como se explicó en <a
+href="#todo-faltante-se-debe-llenar">¿Todo faltante se debe
+llenar?</a>.</p>
+</details>
+</div>
 <p><br/></p>
 </div>
 <div id="libros-y-recursos" class="section level2">
@@ -1271,6 +1522,15 @@ Software</em>, 45(3).</li>
 <li><a
 href="https://cran.r-project.org/web/packages/mice/index.html">Paquete
 <code>mice</code> en CRAN</a>.</li>
+<li>Tierney, N. y Cook, D. (2023). <a
+href="https://doi.org/10.18637/jss.v105.i07">Expanding tidy data
+principles to facilitate missing data exploration, visualization and
+assessment of imputations</a>. <em>Journal of Statistical Software</em>,
+105(7). Presenta el paquete <code>naniar</code>; el artículo es de
+acceso abierto.</li>
+<li><a
+href="https://cran.r-project.org/web/packages/naniar/index.html">Paquete
+<code>naniar</code> en CRAN</a>.</li>
 </ul>
 <p><br/></p>
 </div>
@@ -1298,6 +1558,11 @@ P., Kenward, M. G., Wood, A. M. y Carpenter, J. R. (2009). <a
 href="https://doi.org/10.1136/bmj.b2393">Multiple imputation for missing
 data in epidemiological and clinical research: potential and
 pitfalls</a>. <em>BMJ</em>, 338, b2393.</li>
+<li>Tierney, N. y Cook, D. (2023). <a
+href="https://doi.org/10.18637/jss.v105.i07">Expanding tidy data
+principles to facilitate missing data exploration, visualization and
+assessment of imputations</a>. <em>Journal of Statistical Software</em>,
+105(7).</li>
 <li>van Buuren, S. (2018). <a
 href="https://stefvanbuuren.name/fimd/"><em>Flexible Imputation of
 Missing Data</em></a> (2.ª ed.). CRC Press.</li>
@@ -1310,7 +1575,7 @@ href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
 ed.). O’Reilly Media.</li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

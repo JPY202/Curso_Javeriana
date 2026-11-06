@@ -139,18 +139,100 @@ La función `cbind()` pega columnas sin una llave, según la posición. Solo sir
 
 ## <span style="color:#034a94">**¿Cómo tratar los registros duplicados?**</span>
 
-`duplicated()` marca las filas repetidas y `distinct()` las quita. Conviene comparar sin el identificador, porque una misma vivienda pudo registrarse con dos `id`.
+Un registro duplicado es una unidad que aparece más de una vez en la base. Hay dos formas de buscarlos, y no encuentran lo mismo:
+
+| Criterio | Qué compara | Qué encuentra | Qué hacer |
+|:---------|:------------|:--------------|:----------|
+| **Por identificador** | Solo la llave, como `id_cliente` | La misma unidad registrada dos veces | Si las filas son iguales, quitar las copias. Si difieren, revisar cuál es la correcta |
+| **Por contenido** | Todas las variables menos la llave | Filas iguales con distinto identificador | Revisar antes de borrar: pueden ser unidades distintas con los mismos valores |
+
+`duplicated()` marca con `TRUE` cada fila que ya apareció antes, y `distinct()`, del paquete `dplyr`, deja una sola copia de cada fila.
+
+### <span style="color:#034a94">**Un ejemplo con clientes**</span>
+
+La siguiente base tiene ocho registros de clientes. Tiene tres situaciones distintas, a propósito:
 
 ```{r}
-sin_id <- select(viviendas, -id)
-sum(duplicated(sin_id))
+clientes <- data.frame(
+  id_cliente = c("C001", "C002", "C003", "C001", "C004", "C005", "C005", "C006"),
+  edad       = c(34, 51, 28, 34, 45, 39, 39, 28),
+  ingreso    = c(4.2, 6.8, 3.1, 4.2, 5.5, 7.0, 7.9, 3.1),
+  hijos      = c(1, 2, 0, 1, 3, 1, 1, 0)
+)
+clientes
+```
 
-repetidas <- viviendas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
+**Paso 1. Buscar por identificador.** Se revisa si algún `id_cliente` se repite:
+
+```{r}
+id_repetido <- duplicated(clientes$id_cliente) | duplicated(clientes$id_cliente, fromLast = TRUE)
+clientes[id_repetido, ]
+```
+
+Con `fromLast = TRUE` también se marca la primera aparición, para ver todas las filas del grupo. Hay dos casos:
+
+- **C001** aparece dos veces con los mismos valores. Es el mismo cliente registrado dos veces: se deja una sola fila.
+- **C005** aparece dos veces con distinto ingreso. No es una copia: es una **inconsistencia**. No se puede saber cuál ingreso es el correcto sin volver a la fuente.
+
+**Paso 2. Buscar por contenido.** Se compara todo menos el identificador:
+
+```{r}
+sin_id <- select(clientes, -id_cliente)
+contenido_repetido <- duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE)
+clientes[contenido_repetido, ]
+```
+
+Aparecen las dos filas de C001, que ya se conocían, y un caso nuevo: **C003 y C006** tienen la misma edad, el mismo ingreso y los mismos hijos, pero distinto identificador. Pueden ser dos clientes con el mismo perfil, algo muy posible cuando hay pocas variables. Se conservan, salvo que la fuente diga otra cosa.
+
+**Paso 3. Decidir.** Solo se quitan las filas que son iguales en todo, identificador incluido. C005 se marca para revisar:
+
+```{r}
+clientes_sin_copias <- distinct(clientes)
+nrow(clientes) - nrow(clientes_sin_copias)
+clientes_sin_copias
+```
+
+Se quitó una fila, la copia de C001. C005 sigue con dos filas hasta que se confirme su ingreso, y C003 y C006 se conservan.
+
+### <span style="color:#034a94">**¿Qué pasa si se usa un solo criterio?**</span>
+
+| Si solo se usa...           | Resultado en el ejemplo                                                   | Problema |
+|:----------------------------|:--------------------------------------------------------------------------|:---------|
+| El contenido sin la llave   | Quita la copia de C001, pero también C006                                 | Borra un cliente real |
+| La llave, quitando repetidos | Quita la copia de C001 y una de las dos filas de C005, sin saber cuál     | Puede conservar el ingreso equivocado |
+| `distinct()` con todo       | Quita la copia de C001                                                    | No avisa sobre C005 |
+
+Por eso se usan los dos criterios: la llave muestra qué unidades se repiten, y el contenido muestra si las copias son iguales.
+
+### <span style="color:#034a94">**¿Qué pasa en las viviendas?**</span>
+
+En `viviendas` ocurren los dos casos:
+
+```{r}
+sum(duplicated(viviendas$id))                          # identificadores repetidos
+sum(duplicated(viviendas))                             # filas idénticas, id incluido
+sum(duplicated(select(viviendas, -id)))                # mismo contenido, cualquier id
+```
+
+Los 8 identificadores repetidos corresponden a filas idénticas: son viviendas registradas dos veces, y se quitan. Las otras `r sum(duplicated(select(viviendas, -id))) - sum(duplicated(viviendas))` filas repiten el contenido con un `id` distinto:
+
+```{r}
+viviendas_unicas <- distinct(viviendas)
+nrow(viviendas) - nrow(viviendas_unicas)
+
+sin_id <- select(viviendas_unicas, -id)
+repetidas <- viviendas_unicas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
 head(repetidas[order(repetidas$barrio, repetidas$preciom),
                c("id", "barrio", "preciom", "areaconst", "tipo")], 4)
 ```
 
-Antes de borrarlas, hay que preguntarse si son errores. Dos apartamentos de un mismo edificio pueden tener iguales precio y área, y ser viviendas distintas. Aquí no se pueden distinguir sin volver a la fuente.
+Antes de borrarlas, hay que preguntarse si son errores. Dos apartamentos de un mismo edificio pueden tener iguales precio y área, y ser viviendas distintas. Aquí no se pueden distinguir sin volver a la fuente, así que se conservan.
+
+### <span style="color:#034a94">**¿Cómo se reporta?**</span>
+
+El informe debe decir qué se buscó, cuántos casos se encontraron y qué se decidió en cada uno. Por ejemplo:
+
+> Se encontraron 8 viviendas con el identificador repetido. En los 8 casos las dos filas eran idénticas, así que se conservó una. Además, `r sum(duplicated(select(viviendas, -id))) - sum(duplicated(viviendas))` filas tenían los mismos valores que otra con distinto identificador. Se conservaron, porque pueden ser viviendas distintas del mismo edificio. La base pasó de `r format(nrow(viviendas), big.mark = ",")` a `r format(nrow(distinct(viviendas)), big.mark = ",")` viviendas.
 
 <br/>
 
@@ -187,6 +269,9 @@ Un atípico no es un error automático. Hay que revisar si es un error de digita
 | Datos mezclados entre personas                             | Se usó `cbind()` con tablas en distinto orden       | Unir con una llave                                 |
 | `could not find function "pivot_wider"`                    | No se cargó el paquete                              | Ejecutar `library(tidyr)`                          |
 | Se borran atípicos reales                                  | Se confunde atípico con error                       | Revisar la fuente antes de borrar                  |
+| Se borran unidades distintas que tienen los mismos valores | Se buscaron duplicados solo por contenido           | Revisar también el identificador                   |
+| Un identificador repetido queda sin revisar                | Se usó solo `distinct()`, que no compara la llave   | Buscar también con `duplicated()` sobre la llave   |
+| No se sabe cuál fila conservar                             | El mismo identificador tiene valores distintos      | Volver a la fuente y reportar la inconsistencia    |
 
 <br/>
 
@@ -243,6 +328,37 @@ anti_join(b, a, by = "id")
 </details>
 </div>
 
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Duplicados en una encuesta**</span>
+
+Una encuesta registró a seis personas. Busque los duplicados por identificador y por contenido. ¿Qué filas quitaría, cuáles conservaría y cuál revisaría?
+
+```{r}
+encuesta <- data.frame(
+  id    = c(101, 102, 103, 102, 104, 105),
+  sexo  = c("Mujer", "Hombre", "Mujer", "Hombre", "Mujer", "Hombre"),
+  edad  = c(22, 35, 22, 35, 40, 35),
+  nota  = c(4, 3, 4, 3, 5, 2)
+)
+```
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+encuesta[duplicated(encuesta$id) | duplicated(encuesta$id, fromLast = TRUE), ]
+
+sin_id <- select(encuesta, -id)
+encuesta[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
+
+distinct(encuesta)
+```
+
+La persona 102 aparece dos veces con los mismos valores: se quita una copia. Las personas 101 y 103 tienen los mismos valores, pero distinto identificador: se conservan, porque pueden ser dos personas distintas. No hay identificadores repetidos con valores distintos, así que no hay nada que revisar en la fuente.
+
+</details>
+</div>
+
 <br/>
 
 ## <span style="color:#034a94">**Libros y recursos**</span>
@@ -259,6 +375,6 @@ anti_join(b, a, by = "id")
 
 <br/>
 
-*Última revisión: 5 de noviembre de 2026.*
+*Última revisión: 6 de noviembre de 2026.*
 
 <br/><br/>

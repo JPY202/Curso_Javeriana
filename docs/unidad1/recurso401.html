@@ -680,29 +680,199 @@ mismo orden. Si no es seguro, se debe usar una llave.</p>
 <div id="cómo-tratar-los-registros-duplicados" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Cómo tratar los registros
 duplicados?</strong></span></h2>
-<p><code>duplicated()</code> marca las filas repetidas y
-<code>distinct()</code> las quita. Conviene comparar sin el
-identificador, porque una misma vivienda pudo registrarse con dos
-<code>id</code>.</p>
-<pre class="r"><code>sin_id &lt;- select(viviendas, -id)
-sum(duplicated(sin_id))
-[1] 65
+<p>Un registro duplicado es una unidad que aparece más de una vez en la
+base. Hay dos formas de buscarlos, y no encuentran lo mismo:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="26%" />
+<col width="30%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Criterio</th>
+<th align="left">Qué compara</th>
+<th align="left">Qué encuentra</th>
+<th align="left">Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Por identificador</strong></td>
+<td align="left">Solo la llave, como <code>id_cliente</code></td>
+<td align="left">La misma unidad registrada dos veces</td>
+<td align="left">Si las filas son iguales, quitar las copias. Si
+difieren, revisar cuál es la correcta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Por contenido</strong></td>
+<td align="left">Todas las variables menos la llave</td>
+<td align="left">Filas iguales con distinto identificador</td>
+<td align="left">Revisar antes de borrar: pueden ser unidades distintas
+con los mismos valores</td>
+</tr>
+</tbody>
+</table>
+<p><code>duplicated()</code> marca con <code>TRUE</code> cada fila que
+ya apareció antes, y <code>distinct()</code>, del paquete
+<code>dplyr</code>, deja una sola copia de cada fila.</p>
+<div id="un-ejemplo-con-clientes" class="section level3">
+<h3><span style="color:#034a94"><strong>Un ejemplo con
+clientes</strong></span></h3>
+<p>La siguiente base tiene ocho registros de clientes. Tiene tres
+situaciones distintas, a propósito:</p>
+<pre class="r"><code>clientes &lt;- data.frame(
+  id_cliente = c(&quot;C001&quot;, &quot;C002&quot;, &quot;C003&quot;, &quot;C001&quot;, &quot;C004&quot;, &quot;C005&quot;, &quot;C005&quot;, &quot;C006&quot;),
+  edad       = c(34, 51, 28, 34, 45, 39, 39, 28),
+  ingreso    = c(4.2, 6.8, 3.1, 4.2, 5.5, 7.0, 7.9, 3.1),
+  hijos      = c(1, 2, 0, 1, 3, 1, 1, 0)
+)
+clientes
+  id_cliente edad ingreso hijos
+1       C001   34     4.2     1
+2       C002   51     6.8     2
+3       C003   28     3.1     0
+4       C001   34     4.2     1
+5       C004   45     5.5     3
+6       C005   39     7.0     1
+7       C005   39     7.9     1
+8       C006   28     3.1     0</code></pre>
+<p><strong>Paso 1. Buscar por identificador.</strong> Se revisa si algún
+<code>id_cliente</code> se repite:</p>
+<pre class="r"><code>id_repetido &lt;- duplicated(clientes$id_cliente) | duplicated(clientes$id_cliente, fromLast = TRUE)
+clientes[id_repetido, ]
+  id_cliente edad ingreso hijos
+1       C001   34     4.2     1
+4       C001   34     4.2     1
+6       C005   39     7.0     1
+7       C005   39     7.9     1</code></pre>
+<p>Con <code>fromLast = TRUE</code> también se marca la primera
+aparición, para ver todas las filas del grupo. Hay dos casos:</p>
+<ul>
+<li><strong>C001</strong> aparece dos veces con los mismos valores. Es
+el mismo cliente registrado dos veces: se deja una sola fila.</li>
+<li><strong>C005</strong> aparece dos veces con distinto ingreso. No es
+una copia: es una <strong>inconsistencia</strong>. No se puede saber
+cuál ingreso es el correcto sin volver a la fuente.</li>
+</ul>
+<p><strong>Paso 2. Buscar por contenido.</strong> Se compara todo menos
+el identificador:</p>
+<pre class="r"><code>sin_id &lt;- select(clientes, -id_cliente)
+contenido_repetido &lt;- duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE)
+clientes[contenido_repetido, ]
+  id_cliente edad ingreso hijos
+1       C001   34     4.2     1
+3       C003   28     3.1     0
+4       C001   34     4.2     1
+8       C006   28     3.1     0</code></pre>
+<p>Aparecen las dos filas de C001, que ya se conocían, y un caso nuevo:
+<strong>C003 y C006</strong> tienen la misma edad, el mismo ingreso y
+los mismos hijos, pero distinto identificador. Pueden ser dos clientes
+con el mismo perfil, algo muy posible cuando hay pocas variables. Se
+conservan, salvo que la fuente diga otra cosa.</p>
+<p><strong>Paso 3. Decidir.</strong> Solo se quitan las filas que son
+iguales en todo, identificador incluido. C005 se marca para revisar:</p>
+<pre class="r"><code>clientes_sin_copias &lt;- distinct(clientes)
+nrow(clientes) - nrow(clientes_sin_copias)
+[1] 1
+clientes_sin_copias
+  id_cliente edad ingreso hijos
+1       C001   34     4.2     1
+2       C002   51     6.8     2
+3       C003   28     3.1     0
+4       C004   45     5.5     3
+5       C005   39     7.0     1
+6       C005   39     7.9     1
+7       C006   28     3.1     0</code></pre>
+<p>Se quitó una fila, la copia de C001. C005 sigue con dos filas hasta
+que se confirme su ingreso, y C003 y C006 se conservan.</p>
+</div>
+<div id="qué-pasa-si-se-usa-un-solo-criterio" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué pasa si se usa un solo
+criterio?</strong></span></h3>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="65%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Si solo se usa…</th>
+<th align="left">Resultado en el ejemplo</th>
+<th align="left">Problema</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">El contenido sin la llave</td>
+<td align="left">Quita la copia de C001, pero también C006</td>
+<td align="left">Borra un cliente real</td>
+</tr>
+<tr class="even">
+<td align="left">La llave, quitando repetidos</td>
+<td align="left">Quita la copia de C001 y una de las dos filas de C005,
+sin saber cuál</td>
+<td align="left">Puede conservar el ingreso equivocado</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>distinct()</code> con todo</td>
+<td align="left">Quita la copia de C001</td>
+<td align="left">No avisa sobre C005</td>
+</tr>
+</tbody>
+</table>
+<p>Por eso se usan los dos criterios: la llave muestra qué unidades se
+repiten, y el contenido muestra si las copias son iguales.</p>
+</div>
+<div id="qué-pasa-en-las-viviendas" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué pasa en las
+viviendas?</strong></span></h3>
+<p>En <code>viviendas</code> ocurren los dos casos:</p>
+<pre class="r"><code>sum(duplicated(viviendas$id))                          # identificadores repetidos
+[1] 8
+sum(duplicated(viviendas))                             # filas idénticas, id incluido
+[1] 8
+sum(duplicated(select(viviendas, -id)))                # mismo contenido, cualquier id
+[1] 65</code></pre>
+<p>Los 8 identificadores repetidos corresponden a filas idénticas: son
+viviendas registradas dos veces, y se quitan. Las otras 57 filas repiten
+el contenido con un <code>id</code> distinto:</p>
+<pre class="r"><code>viviendas_unicas &lt;- distinct(viviendas)
+nrow(viviendas) - nrow(viviendas_unicas)
+[1] 8
 
-repetidas &lt;- viviendas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
+sin_id &lt;- select(viviendas_unicas, -id)
+repetidas &lt;- viviendas_unicas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
 head(repetidas[order(repetidas$barrio, repetidas$preciom),
                c(&quot;id&quot;, &quot;barrio&quot;, &quot;preciom&quot;, &quot;areaconst&quot;, &quot;tipo&quot;)], 4)
 # A tibble: 4 × 5
-     id barrio    preciom areaconst tipo       
-  &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      
-1  2013 acopi         270       330 casa       
-2  2014 acopi         270       330 casa       
-3  8309 aguacatal     150        56 apartamento
-4  8309 aguacatal     150        56 apartamento</code></pre>
+     id barrio              preciom areaconst tipo       
+  &lt;dbl&gt; &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      
+1  2013 acopi                   270       330 casa       
+2  2014 acopi                   270       330 casa       
+3  4825 bosques del limonar     230       108 apartamento
+4  4826 bosques del limonar     230       108 apartamento</code></pre>
 <p>Antes de borrarlas, hay que preguntarse si son errores. Dos
 apartamentos de un mismo edificio pueden tener iguales precio y área, y
 ser viviendas distintas. Aquí no se pueden distinguir sin volver a la
-fuente.</p>
+fuente, así que se conservan.</p>
+</div>
+<div id="cómo-se-reporta" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se
+reporta?</strong></span></h3>
+<p>El informe debe decir qué se buscó, cuántos casos se encontraron y
+qué se decidió en cada uno. Por ejemplo:</p>
+<blockquote>
+<p>Se encontraron 8 viviendas con el identificador repetido. En los 8
+casos las dos filas eran idénticas, así que se conservó una. Además, 57
+filas tenían los mismos valores que otra con distinto identificador. Se
+conservaron, porque pueden ser viviendas distintas del mismo edificio.
+La base pasó de 8,327 a 8,319 viviendas.</p>
+</blockquote>
 <p><br/></p>
+</div>
 </div>
 <div id="qué-hacer-con-los-valores-atípicos" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Qué hacer con los valores
@@ -781,6 +951,24 @@ orden</td>
 <td align="left">Se confunde atípico con error</td>
 <td align="left">Revisar la fuente antes de borrar</td>
 </tr>
+<tr class="odd">
+<td align="left">Se borran unidades distintas que tienen los mismos
+valores</td>
+<td align="left">Se buscaron duplicados solo por contenido</td>
+<td align="left">Revisar también el identificador</td>
+</tr>
+<tr class="even">
+<td align="left">Un identificador repetido queda sin revisar</td>
+<td align="left">Se usó solo <code>distinct()</code>, que no compara la
+llave</td>
+<td align="left">Buscar también con <code>duplicated()</code> sobre la
+llave</td>
+</tr>
+<tr class="odd">
+<td align="left">No se sabe cuál fila conservar</td>
+<td align="left">El mismo identificador tiene valores distintos</td>
+<td align="left">Volver a la fuente y reportar la inconsistencia</td>
+</tr>
 </tbody>
 </table>
 <p><br/></p>
@@ -847,6 +1035,50 @@ Ver solución
 2  8300     480 apartamento</code></pre>
 </details>
 </div>
+<div id="reto-4.-duplicados-en-una-encuesta"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Duplicados en una
+encuesta</strong></span></h3>
+<p>Una encuesta registró a seis personas. Busque los duplicados por
+identificador y por contenido. ¿Qué filas quitaría, cuáles conservaría y
+cuál revisaría?</p>
+<pre class="r"><code>encuesta &lt;- data.frame(
+  id    = c(101, 102, 103, 102, 104, 105),
+  sexo  = c(&quot;Mujer&quot;, &quot;Hombre&quot;, &quot;Mujer&quot;, &quot;Hombre&quot;, &quot;Mujer&quot;, &quot;Hombre&quot;),
+  edad  = c(22, 35, 22, 35, 40, 35),
+  nota  = c(4, 3, 4, 3, 5, 2)
+)</code></pre>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>encuesta[duplicated(encuesta$id) | duplicated(encuesta$id, fromLast = TRUE), ]
+   id   sexo edad nota
+2 102 Hombre   35    3
+4 102 Hombre   35    3
+
+sin_id &lt;- select(encuesta, -id)
+encuesta[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
+   id   sexo edad nota
+1 101  Mujer   22    4
+2 102 Hombre   35    3
+3 103  Mujer   22    4
+4 102 Hombre   35    3
+
+distinct(encuesta)
+   id   sexo edad nota
+1 101  Mujer   22    4
+2 102 Hombre   35    3
+3 103  Mujer   22    4
+4 104  Mujer   40    5
+5 105 Hombre   35    2</code></pre>
+<p>La persona 102 aparece dos veces con los mismos valores: se quita una
+copia. Las personas 101 y 103 tienen los mismos valores, pero distinto
+identificador: se conservan, porque pueden ser dos personas distintas.
+No hay identificadores repetidos con valores distintos, así que no hay
+nada que revisar en la fuente.</p>
+</details>
+</div>
 <p><br/></p>
 </div>
 <div id="libros-y-recursos" class="section level2">
@@ -874,7 +1106,7 @@ href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
 ed.). O’Reilly Media.</li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

@@ -505,9 +505,9 @@ enlaza a <a href="https://www.data-to-viz.com/">From Data to
 Viz</a>.</p>
 <p>Esta página usa <code>CarreraLuz22</code> y
 <code>vivienda_faltantes</code>, del paquete
-<code>paqueteMETODOS</code>, y el paquete <code>ggplot2</code>. Los
-bloques de código se ejecutan en orden, porque algunos usan objetos
-creados en bloques anteriores.</p>
+<code>paqueteMETODOS</code>, y los paquetes <code>ggplot2</code> y
+<code>tidyr</code>. Los bloques de código se ejecutan en orden, porque
+algunos usan objetos creados en bloques anteriores.</p>
 <pre class="r"><code>library(paqueteMETODOS)
 data(&quot;CarreraLuz22&quot;)
 data(&quot;vivienda_faltantes&quot;)</code></pre>
@@ -734,6 +734,100 @@ href="https://www.data-to-viz.com/graph/violin.html">gráfico de
 violín</a>.</p>
 <p><br/></p>
 </div>
+<div id="cómo-describir-muchas-variables-a-la-vez"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo describir muchas variables
+a la vez?</strong></span></h2>
+<p><strong>¿Para qué sirve?</strong> Una base suele tener muchas
+variables numéricas, y hacer una tabla y un gráfico para cada una, a
+mano, toma tiempo y produce errores. Con dos herramientas se describen
+todas a la vez: una tabla de indicadores y un panel de histogramas.
+Después se eligen las variables que merecen un análisis aparte.</p>
+<p><strong>¿Cómo se hace la tabla?</strong> Se escribe una función que
+calcule los indicadores de una variable, como se explicó en <a
+href="recurso106.html">Funciones en R</a>, y <code>sapply()</code> la
+aplica a cada columna. El resultado tiene una columna por variable, así
+que <code>t()</code> lo traspone para dejar una fila por variable:</p>
+<pre class="r"><code>viviendas &lt;- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
+numericas &lt;- viviendas[, c(&quot;preciom&quot;, &quot;areaconst&quot;, &quot;banios&quot;, &quot;habitac&quot;, &quot;parquea&quot;, &quot;piso&quot;)]
+
+indicadores &lt;- function(x) {
+  c(n = sum(!is.na(x)),
+    faltantes = sum(is.na(x)),
+    media = mean(x, na.rm = TRUE),
+    de = sd(x, na.rm = TRUE),
+    minimo = min(x, na.rm = TRUE),
+    Q1 = quantile(x, 0.25, na.rm = TRUE, names = FALSE),
+    mediana = median(x, na.rm = TRUE),
+    Q3 = quantile(x, 0.75, na.rm = TRUE, names = FALSE),
+    maximo = max(x, na.rm = TRUE))
+}
+
+round(t(sapply(numericas, indicadores)), 1)
+             n faltantes media    de minimo  Q1 mediana  Q3 maximo
+preciom   8327         0 434.3 329.0     58 220     330 540   1999
+areaconst 8327         0 175.0 142.9     30  80     123 229   1745
+banios    8327         0   3.1   1.4      0   2       3   4     10
+habitac   8327         0   3.6   1.5      0   3       3   4     10
+parquea   6724      1603   1.8   1.1      1   1       2   2     10
+piso      5689      2638   3.8   2.6      1   2       3   5     12</code></pre>
+<p>La tabla muestra de una vez el tamaño, los faltantes, el centro y la
+dispersión de cada variable. Por ejemplo, en <code>preciom</code> y
+<code>areaconst</code> la media es mayor que la mediana, lo que sugiere
+asimetría a la derecha, y <code>parquea</code> y <code>piso</code>
+tienen faltantes.</p>
+<p><strong>¿Cómo se hacen los histogramas?</strong> <code>ggplot2</code>
+necesita los datos en <strong>formato largo</strong>: una columna con el
+nombre de la variable y otra con el valor. <code>pivot_longer()</code>,
+del paquete <code>tidyr</code>, hace ese cambio, como se explicó en <a
+href="recurso401.html#qué-son-los-formatos-ancho-y-largo">¿Cómo
+organizar los datos?</a>. Después, <code>facet_wrap()</code> dibuja un
+panel por variable:</p>
+<pre class="r"><code>library(tidyr)
+
+largo &lt;- pivot_longer(numericas, cols = everything(),
+                      names_to = &quot;variable&quot;, values_to = &quot;valor&quot;)
+head(largo, 4)
+# A tibble: 4 × 2
+  variable  valor
+  &lt;chr&gt;     &lt;dbl&gt;
+1 preciom    1300
+2 areaconst   318
+3 banios        4
+4 habitac       2</code></pre>
+<pre class="r"><code>ggplot(largo, aes(x = valor)) +
+  geom_histogram(bins = 30, fill = &quot;#034A94&quot;, color = &quot;white&quot;, na.rm = TRUE) +
+  facet_wrap(~ variable, scales = &quot;free&quot;, ncol = 3) +
+  labs(x = &quot;Valor&quot;, y = &quot;Número de viviendas&quot;) +
+  theme_minimal(base_size = 13) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-paneles-1.png" alt="Seis histogramas en dos filas. Precio y área tienen una cola larga a la derecha; baños, habitaciones, parqueaderos y piso toman pocos valores enteros" width="100%" />
+<p class="caption">
+Histogramas de seis variables de las viviendas
+</p>
+</div>
+<p><strong>¿Cómo se interpreta?</strong> Cada panel tiene sus propios
+ejes, gracias a <code>scales = "free"</code>. Por eso se compara la
+<strong>forma</strong> de las distribuciones, no la altura de las barras
+entre paneles. En la figura, el precio y el área tienen una cola larga a
+la derecha, y los baños, las habitaciones, los parqueaderos y el piso
+toman pocos valores enteros. Para esas variables discretas, un <a
+href="recurso302.html">gráfico de barras</a> muestra mejor cada
+valor.</p>
+<p><strong>¿Qué cuidados tener?</strong></p>
+<ul>
+<li>El panel sirve para explorar. En un informe se presentan solo los
+gráficos de las variables que se discuten, con un ancho de intervalo
+elegido para cada una.</li>
+<li><code>na.rm = TRUE</code> evita la advertencia por los faltantes,
+pero estos se deben reportar, como en la columna <code>faltantes</code>
+de la tabla.</li>
+<li>Con más de 12 paneles el gráfico se vuelve difícil de leer: conviene
+dividir las variables en grupos.</li>
+</ul>
+<p><br/></p>
+</div>
 <div id="errores-frecuentes" class="section level2">
 <h2><span style="color:#034a94"><strong>Errores
 frecuentes</strong></span></h2>
@@ -783,6 +877,23 @@ muestra</td>
 <td align="left">Muchas curvas en un mismo gráfico</td>
 <td align="left">Hay demasiados grupos</td>
 <td align="left">Usar cajas o paneles</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>facet_wrap()</code> da error o un solo panel</td>
+<td align="left">Los datos están en formato ancho</td>
+<td align="left">Pasarlos a formato largo con
+<code>pivot_longer()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Un panel se ve plano y otro lleno</td>
+<td align="left">Todos los paneles usan la misma escala</td>
+<td align="left">Usar <code>scales = "free"</code> y comparar formas, no
+alturas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>sapply()</code> devuelve una tabla al revés</td>
+<td align="left">Cada variable queda en una columna</td>
+<td align="left">Trasponer con <code>t()</code></td>
 </tr>
 </tbody>
 </table>
@@ -957,7 +1068,7 @@ href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
 Visualization</em></a>. O’Reilly Media.</li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

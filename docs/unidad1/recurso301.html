@@ -744,6 +744,20 @@ tipo de variable, con su sintaxis en la base de <strong>R</strong> y en
 <td align="left"><code>geom_boxplot()</code></td>
 </tr>
 <tr class="even">
+<td align="left">Cuantitativa según una cualitativa</td>
+<td align="left">Cajas por grupo</td>
+<td align="left"><code>boxplot(y ~ g)</code></td>
+<td align="left"><code>geom_boxplot()</code> con
+<code>aes(x = g, y = y)</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Cuantitativa según una cualitativa</td>
+<td align="left">Densidades por grupo</td>
+<td align="left">Sin función directa</td>
+<td align="left"><code>geom_density()</code> con
+<code>aes(fill = g)</code></td>
+</tr>
+<tr class="even">
 <td align="left">Dos cuantitativas</td>
 <td align="left">Dispersión</td>
 <td align="left"><code>plot(x, y)</code></td>
@@ -767,6 +781,73 @@ categóricas con rectángulos de área proporcional a las frecuencias. El
 perfiles. El <strong>diagrama Likert</strong> muestra la distribución de
 respuestas en escalas de opinión.</p>
 </div>
+<p><br/></p>
+</div>
+<div id="cómo-analizar-dos-variables" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo analizar dos
+variables?</strong></span></h2>
+<p>Para estudiar la relación entre dos variables se combinan una tabla o
+un indicador con un gráfico. La elección depende del tipo de las dos
+variables. La <strong>Tabla 2</strong> resume cada caso y la página
+donde se explica:</p>
+<center>
+<strong>Tabla 2.</strong> Análisis de dos variables según su tipo.
+</center>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="41%" />
+<col width="21%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Dos variables</th>
+<th align="left">Tabla o indicador</th>
+<th align="left">Gráfico</th>
+<th align="left">Dónde se explica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cualitativa y cualitativa</td>
+<td align="left">Tabla cruzada con porcentajes por fila, con
+<code>prop.table()</code></td>
+<td align="left">Barras agrupadas o apiladas</td>
+<td align="left"><a href="recurso302.html">Variables
+categóricas</a></td>
+</tr>
+<tr class="even">
+<td align="left">Cualitativa de dos categorías, como sí o no, según
+grupos</td>
+<td align="left">Porcentaje de “sí” en cada grupo, con
+<code>tapply()</code></td>
+<td align="left">Barras con el porcentaje, de 0 a 100 %</td>
+<td align="left"><a
+href="recurso302.html#cómo-comparar-una-proporción-entre-grupos">Variables
+categóricas</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Cuantitativa según una cualitativa</td>
+<td align="left">Mediana, RIC, media y desviación estándar por grupo,
+con <code>tapply()</code> o <code>aggregate()</code></td>
+<td align="left">Cajas o densidades por grupo</td>
+<td align="left"><a href="recurso203.html">Indicadores de centro</a>, <a
+href="recurso205.html">de dispersión</a> y <a
+href="recurso303.html">Variable numérica</a></td>
+</tr>
+<tr class="even">
+<td align="left">Cuantitativa y cuantitativa</td>
+<td align="left">En esta unidad, ninguno</td>
+<td align="left">Dispersión</td>
+<td align="left"><a href="recurso304.html">Relaciones y cambios en el
+tiempo</a></td>
+</tr>
+</tbody>
+</table>
+<p>La relación entre dos variables cuantitativas se mide con el
+<strong>coeficiente de correlación</strong>, que se estudia en la Unidad
+3. En esta unidad basta el gráfico de dispersión.</p>
 <p><br/></p>
 </div>
 <div id="qué-gráficos-se-estudian-en-esta-sección"
@@ -970,7 +1051,7 @@ href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
 Visualization</em></a>. O’Reilly Media.</li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

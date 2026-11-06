@@ -221,6 +221,57 @@ ggplot(por_zona, aes(x = porcentaje, y = reorder(etiqueta, estrato3, max), fill 
 
 <br/>
 
+## <span style="color:#034a94">**¿Cómo comparar una proporción entre grupos?**</span>
+
+**¿Para qué sirve?** Para responder preguntas como ¿qué porcentaje de los clientes aceptó una oferta en cada nivel educativo? o ¿qué porcentaje de las viviendas es casa en cada estrato? La variable de interés tiene dos categorías, sí o no, y se compara el porcentaje de "sí" entre los grupos.
+
+**¿Cómo se hace?** Se convierte la variable en una [variable indicadora](recurso200.html#qué-es-una-variable-indicadora), con 1 para "sí" y 0 para "no". Su media en cada grupo es la proporción de "sí", y `tapply()` la calcula por grupo. Primero se unifica la escritura del tipo de vivienda, como en [¿Cómo organizar los datos?](recurso401.html):
+
+```{r}
+viviendas <- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
+tipo <- tolower(viviendas$tipo)
+tipo[tipo == "apto"] <- "apartamento"
+
+es_casa <- as.integer(tipo == "casa")
+round(100 * mean(es_casa), 1)                              # en toda la base
+round(100 * tapply(es_casa, viviendas$estrato, mean), 1)   # en cada estrato
+table(viviendas$estrato)                                   # viviendas por estrato
+```
+
+El número de unidades de cada grupo se reporta junto con el porcentaje, porque un porcentaje calculado con pocos datos cambia mucho de una muestra a otra.
+
+Para el gráfico se arma una tabla con el porcentaje y el número de viviendas de cada estrato. La línea punteada marca el porcentaje de toda la base, como referencia:
+
+```{r fig-proporcion, fig.width=8, fig.height=4.2, fig.cap="Porcentaje de casas en cada estrato", fig.alt="Barras verticales del porcentaje de casas: estrato 3, 56 por ciento; estrato 4, 34.1; estrato 5, 35.8; estrato 6, 34.9. Una línea punteada marca el 38.7 por ciento de toda la base", out.width="100%"}
+por_estrato <- data.frame(
+  estrato    = names(table(viviendas$estrato)),
+  viviendas  = as.vector(table(viviendas$estrato)),
+  porcentaje = as.vector(round(100 * tapply(es_casa, viviendas$estrato, mean), 1))
+)
+por_estrato$etiqueta <- paste0(por_estrato$porcentaje, " %\n(n = ", por_estrato$viviendas, ")")
+
+ggplot(por_estrato, aes(x = estrato, y = porcentaje)) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_hline(yintercept = 100 * mean(es_casa), linetype = "dashed", color = "#D55E00") +
+  geom_text(aes(label = etiqueta), vjust = 1.3, size = 4.2, lineheight = 0.9, color = "white") +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20), expand = c(0, 0)) +
+  labs(x = "Estrato", y = "Porcentaje de casas") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Se compara cada barra con las demás y con la línea de referencia. En el estrato 3, el 56 % de las viviendas son casas, frente a cerca del 35 % en los estratos 4, 5 y 6. El porcentaje de toda la base es 38.7 %. El estrato 3 se aparta del resto, y los otros tres son muy parecidos entre sí.
+
+**¿Qué cuidados tener?**
+
+- El eje va de 0 a 100 %, porque cada barra es un porcentaje de su propio grupo. Las barras no suman 100 %.
+- Solo se grafica el porcentaje de "sí": el de "no" es su complemento, y repetirlo no agrega información.
+- La diferencia entre grupos es una asociación. No dice que el estrato cause el tipo de vivienda.
+
+**Ver más:** [gráfico de barras](https://www.data-to-viz.com/graph/barplot) y [líneas y puntos (lollipop)](https://www.data-to-viz.com/graph/lollipop.html), útil cuando hay muchos grupos.
+
+<br/>
+
 ## <span style="color:#034a94">**Errores frecuentes**</span>
 
 | Problema                                       | Causa                                                  | Solución                                         |
@@ -231,6 +282,8 @@ ggplot(por_zona, aes(x = porcentaje, y = reorder(etiqueta, estrato3, max), fill 
 | Una etiqueta se corta arriba de la barra       | El eje termina justo en la barra mayor                 | Ampliar `limits`                                 |
 | El porcentaje se interpreta mal                | No se definió qué representa el 100 %                  | Revisar `margin` en `prop.table()`               |
 | Una torta con muchos sectores no se entiende   | Hay demasiadas categorías, o son parecidas             | Agrupar en Otras, o usar barras                  |
+| `tapply()` da `NA` al calcular una proporción  | La variable tiene datos faltantes                      | Usar `tapply(x, g, mean, na.rm = TRUE)` y reportar los faltantes |
+| Un grupo con pocos datos tiene un porcentaje extremo | El porcentaje se calculó con pocas unidades      | Reportar el número de unidades de cada grupo     |
 
 <br/>
 
@@ -359,6 +412,6 @@ La participación de las mujeres es menor en Veteranos C, con 21.6 %.
 
 <br/>
 
-*Última revisión: 5 de noviembre de 2026.*
+*Última revisión: 6 de noviembre de 2026.*
 
 <br/><br/>

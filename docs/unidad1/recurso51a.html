@@ -506,11 +506,12 @@ adecuados para los datos faltantes y determinar cuáles variables, como
 el promedio de la prueba SAT, el número de nuevos estudiantes
 matriculados o la categoría de la universidad, están más fuertemente
 asociadas con la tasa de graduación.</p>
-<p>Una vez realizada la limpieza de los datos, se debe analizar el tipo
-de datos faltantes. Posteriormente, se procede con la imputación de los
-mismos. Luego, se plantean dos modelos para explicar la variable de
-respuesta. El manejo adecuado de los datos faltantes es crucial para
-garantizar predicciones confiables sobre la tasa de graduación. <a
+<p>Una vez realizada la limpieza de los datos, se debe explorar el
+mecanismo de los datos faltantes. Posteriormente, se procede con la
+imputación de los mismos. Luego, se plantean dos modelos para explicar
+la variable de respuesta. El manejo adecuado de los datos faltantes es
+crucial para garantizar predicciones confiables sobre la tasa de
+graduación. <a
 href="https://lib.stat.cmu.edu/datasets/colleges/">Acceder a los datos
 de universidades</a></p>
 <p><br/></p>
@@ -526,8 +527,10 @@ conocimientos adquiridos en este módulo:</p>
 <ul>
 <li><p>Calcular el porcentaje de valores faltantes en cada una de las
 variables de interés para el caso en cuestión.</p></li>
-<li><p>Identificar el mecanismo de los datos faltantes (MCAR, MAR o
-MNAR).</p></li>
+<li><p>Explorar el mecanismo de los datos faltantes y justificar un
+supuesto (MCAR, MAR o MNAR), siguiendo los pasos de <a
+href="recurso402.html#cómo-se-explora-el-mecanismo">¿Cómo se explora el
+mecanismo?</a>.</p></li>
 <li><p>Proponer una estrategia para la imputación de los valores
 faltantes.</p></li>
 </ul>
@@ -675,26 +678,26 @@ las demás. En el segundo gráfico, se muestran las combinaciones de
 observaciones faltantes y no faltantes. Se puede notar que el patrón de
 datos faltantes es aleatorio y multivariado, no siendo monótono ni
 univariado.</p>
-<p>Antes de proceder al análisis, es necesario discernir los mecanismos
-de generación de datos faltantes, siendo MCAR, MAR o MNAR. Porter S.
-(1999) analiza datos reportados por S. News and World Report 2 menciona
-que “la falta de datos probablemente se deba a que las universidades no
-pudieron recoger los datos”, sin embargo, también dice que “las razones
-son un misterio”.</p>
+<p>Antes de proceder al análisis, es necesario explorar por qué faltan
+los datos: MCAR, MAR o MNAR. Porter S. (1999) analiza datos reportados
+por S. News and World Report 2 menciona que “la falta de datos
+probablemente se deba a que las universidades no pudieron recoger los
+datos”, sin embargo, también dice que “las razones son un misterio”.</p>
 <p><br/></p>
 </div>
 <div id="respecto-al-objetivo-2" class="section level2">
 <h2><span style="color:#034a94"><strong>Respecto al objetivo
 2</strong></span></h2>
-<p>Al aplicar el test de Little para MCAR en <strong>R</strong>, se
-obtuvo un <span class="math inline">\(valor-p\)</span> menor a 0.05, lo
-que sugiere que los datos faltantes no cumplen con el supuesto de MCAR.
-Por lo tanto, la estimación utilizando solo la submuestra completa no
-parece ser la opción más adecuada en esta situación. Se puede trabajar
-bajo el supuesto de MAR, aunque esto no implica que el mecanismo de
-datos faltantes no sea MNAR, ya que las universidades con bajas tasas de
-graduación podrían estar inclinadas a omitir estas tasas para evitar
-publicidad adversa o un posible desprestigio institucional.</p>
+<p>Al aplicar la prueba de Little en <strong>R</strong>, con
+<code>naniar::mcar_test()</code>, se obtuvo un valor <em>p</em> menor a
+0.05. Hay evidencia contra MCAR, pero la prueba no indica si los datos
+son MAR o MNAR. Por lo tanto, la estimación utilizando solo la
+submuestra completa no parece ser la opción más adecuada en esta
+situación. Se puede trabajar bajo el supuesto de MAR, aunque rechazar
+MCAR no lo demuestra, y no se puede descartar MNAR, ya que las
+universidades con bajas tasas de graduación podrían estar inclinadas a
+omitir estas tasas para evitar publicidad adversa o un posible
+desprestigio institucional.</p>
 <p><br/></p>
 </div>
 <div id="respecto-al-objetivo-3" class="section level2">
@@ -702,9 +705,10 @@ publicidad adversa o un posible desprestigio institucional.</p>
 3</strong></span></h2>
 <p>Consideraciones para los análisis posteriores:</p>
 <ul>
-<li><p>Se puede asumir el supuesto de MAR, dado que no se conocen las
-razones detrás de los datos faltantes y el test rechaza la hipótesis de
-que el mecanismo de generación de los datos faltantes sea MCAR.</p></li>
+<li><p>Se puede asumir MAR como supuesto de trabajo: la prueba rechaza
+MCAR y la base tiene variables relacionadas con la falta. Es un
+supuesto, no un resultado: rechazar MCAR no demuestra MAR, y conviene
+comparar los resultados bajo otros supuestos.</p></li>
 <li><p>Bajo el supuesto de MAR y el patrón observado en los datos
 faltantes, se sugiere utilizar la imputación múltiple como método de
 imputación. Consulta alternativas para imputar
@@ -716,7 +720,7 @@ modelización para construir modelos predictivos e inferenciales, tales
 como regresión beta y random forest.</p></li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

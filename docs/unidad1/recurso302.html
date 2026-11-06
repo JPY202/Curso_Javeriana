@@ -845,6 +845,82 @@ href="https://www.data-to-viz.com/caveat/stacking.html">por qué cuesta
 leer los gráficos apilados</a>.</p>
 <p><br/></p>
 </div>
+<div id="cómo-comparar-una-proporción-entre-grupos"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo comparar una proporción
+entre grupos?</strong></span></h2>
+<p><strong>¿Para qué sirve?</strong> Para responder preguntas como ¿qué
+porcentaje de los clientes aceptó una oferta en cada nivel educativo? o
+¿qué porcentaje de las viviendas es casa en cada estrato? La variable de
+interés tiene dos categorías, sí o no, y se compara el porcentaje de
+“sí” entre los grupos.</p>
+<p><strong>¿Cómo se hace?</strong> Se convierte la variable en una <a
+href="recurso200.html#qué-es-una-variable-indicadora">variable
+indicadora</a>, con 1 para “sí” y 0 para “no”. Su media en cada grupo es
+la proporción de “sí”, y <code>tapply()</code> la calcula por grupo.
+Primero se unifica la escritura del tipo de vivienda, como en <a
+href="recurso401.html">¿Cómo organizar los datos?</a>:</p>
+<pre class="r"><code>viviendas &lt;- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
+tipo &lt;- tolower(viviendas$tipo)
+tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
+
+es_casa &lt;- as.integer(tipo == &quot;casa&quot;)
+round(100 * mean(es_casa), 1)                              # en toda la base
+[1] 38.7
+round(100 * tapply(es_casa, viviendas$estrato, mean), 1)   # en cada estrato
+   3    4    5    6 
+56.0 34.1 35.8 34.9 
+table(viviendas$estrato)                                   # viviendas por estrato
+
+   3    4    5    6 
+1453 2131 2751 1992 </code></pre>
+<p>El número de unidades de cada grupo se reporta junto con el
+porcentaje, porque un porcentaje calculado con pocos datos cambia mucho
+de una muestra a otra.</p>
+<p>Para el gráfico se arma una tabla con el porcentaje y el número de
+viviendas de cada estrato. La línea punteada marca el porcentaje de toda
+la base, como referencia:</p>
+<pre class="r"><code>por_estrato &lt;- data.frame(
+  estrato    = names(table(viviendas$estrato)),
+  viviendas  = as.vector(table(viviendas$estrato)),
+  porcentaje = as.vector(round(100 * tapply(es_casa, viviendas$estrato, mean), 1))
+)
+por_estrato$etiqueta &lt;- paste0(por_estrato$porcentaje, &quot; %\n(n = &quot;, por_estrato$viviendas, &quot;)&quot;)
+
+ggplot(por_estrato, aes(x = estrato, y = porcentaje)) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.7) +
+  geom_hline(yintercept = 100 * mean(es_casa), linetype = &quot;dashed&quot;, color = &quot;#D55E00&quot;) +
+  geom_text(aes(label = etiqueta), vjust = 1.3, size = 4.2, lineheight = 0.9, color = &quot;white&quot;) +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20), expand = c(0, 0)) +
+  labs(x = &quot;Estrato&quot;, y = &quot;Porcentaje de casas&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso302_files/figure-html/fig-proporcion-1.png" alt="Barras verticales del porcentaje de casas: estrato 3, 56 por ciento; estrato 4, 34.1; estrato 5, 35.8; estrato 6, 34.9. Una línea punteada marca el 38.7 por ciento de toda la base" width="100%" />
+<p class="caption">
+Porcentaje de casas en cada estrato
+</p>
+</div>
+<p><strong>¿Cómo se interpreta?</strong> Se compara cada barra con las
+demás y con la línea de referencia. En el estrato 3, el 56 % de las
+viviendas son casas, frente a cerca del 35 % en los estratos 4, 5 y 6.
+El porcentaje de toda la base es 38.7 %. El estrato 3 se aparta del
+resto, y los otros tres son muy parecidos entre sí.</p>
+<p><strong>¿Qué cuidados tener?</strong></p>
+<ul>
+<li>El eje va de 0 a 100 %, porque cada barra es un porcentaje de su
+propio grupo. Las barras no suman 100 %.</li>
+<li>Solo se grafica el porcentaje de “sí”: el de “no” es su complemento,
+y repetirlo no agrega información.</li>
+<li>La diferencia entre grupos es una asociación. No dice que el estrato
+cause el tipo de vivienda.</li>
+</ul>
+<p><strong>Ver más:</strong> <a
+href="https://www.data-to-viz.com/graph/barplot">gráfico de barras</a> y
+<a href="https://www.data-to-viz.com/graph/lollipop.html">líneas y
+puntos (lollipop)</a>, útil cuando hay muchos grupos.</p>
+<p><br/></p>
+</div>
 <div id="errores-frecuentes" class="section level2">
 <h2><span style="color:#034a94"><strong>Errores
 frecuentes</strong></span></h2>
@@ -895,6 +971,19 @@ ordinal</td>
 <td align="left">Una torta con muchos sectores no se entiende</td>
 <td align="left">Hay demasiadas categorías, o son parecidas</td>
 <td align="left">Agrupar en Otras, o usar barras</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tapply()</code> da <code>NA</code> al calcular
+una proporción</td>
+<td align="left">La variable tiene datos faltantes</td>
+<td align="left">Usar <code>tapply(x, g, mean, na.rm = TRUE)</code> y
+reportar los faltantes</td>
+</tr>
+<tr class="even">
+<td align="left">Un grupo con pocos datos tiene un porcentaje
+extremo</td>
+<td align="left">El porcentaje se calculó con pocas unidades</td>
+<td align="left">Reportar el número de unidades de cada grupo</td>
 </tr>
 </tbody>
 </table>
@@ -1075,7 +1164,7 @@ href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
 Visualization</em></a>. O’Reilly Media.</li>
 </ul>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

@@ -22,7 +22,7 @@ load("data/vivienda_faltantes.rda")
 
 Para representar **variables cuantitativas** se usan gráficos que muestran las principales características de su distribución: el **centro**, la **dispersión** y la **forma**. Esta página presenta los tres gráficos más usados, cómo construirlos e interpretarlos: el histograma, la curva de densidad y el gráfico de cajas. Para ver más opciones, cada sección enlaza a [From Data to Viz](https://www.data-to-viz.com/).
 
-Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y el paquete `ggplot2`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y los paquetes `ggplot2` y `tidyr`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
 
 ```{r, eval=FALSE}
 library(paqueteMETODOS)
@@ -188,6 +188,62 @@ round(rbind(mujeres = c(s = sd(mujeres), CV = 100 * sd(mujeres) / mean(mujeres))
 
 <br/>
 
+## <span style="color:#034a94">**¿Cómo describir muchas variables a la vez?**</span>
+
+**¿Para qué sirve?** Una base suele tener muchas variables numéricas, y hacer una tabla y un gráfico para cada una, a mano, toma tiempo y produce errores. Con dos herramientas se describen todas a la vez: una tabla de indicadores y un panel de histogramas. Después se eligen las variables que merecen un análisis aparte.
+
+**¿Cómo se hace la tabla?** Se escribe una función que calcule los indicadores de una variable, como se explicó en [Funciones en R](recurso106.html), y `sapply()` la aplica a cada columna. El resultado tiene una columna por variable, así que `t()` lo traspone para dejar una fila por variable:
+
+```{r}
+viviendas <- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
+numericas <- viviendas[, c("preciom", "areaconst", "banios", "habitac", "parquea", "piso")]
+
+indicadores <- function(x) {
+  c(n = sum(!is.na(x)),
+    faltantes = sum(is.na(x)),
+    media = mean(x, na.rm = TRUE),
+    de = sd(x, na.rm = TRUE),
+    minimo = min(x, na.rm = TRUE),
+    Q1 = quantile(x, 0.25, na.rm = TRUE, names = FALSE),
+    mediana = median(x, na.rm = TRUE),
+    Q3 = quantile(x, 0.75, na.rm = TRUE, names = FALSE),
+    maximo = max(x, na.rm = TRUE))
+}
+
+round(t(sapply(numericas, indicadores)), 1)
+```
+
+La tabla muestra de una vez el tamaño, los faltantes, el centro y la dispersión de cada variable. Por ejemplo, en `preciom` y `areaconst` la media es mayor que la mediana, lo que sugiere asimetría a la derecha, y `parquea` y `piso` tienen faltantes.
+
+**¿Cómo se hacen los histogramas?** `ggplot2` necesita los datos en **formato largo**: una columna con el nombre de la variable y otra con el valor. `pivot_longer()`, del paquete `tidyr`, hace ese cambio, como se explicó en [¿Cómo organizar los datos?](recurso401.html#qué-son-los-formatos-ancho-y-largo). Después, `facet_wrap()` dibuja un panel por variable:
+
+```{r}
+library(tidyr)
+
+largo <- pivot_longer(numericas, cols = everything(),
+                      names_to = "variable", values_to = "valor")
+head(largo, 4)
+```
+
+```{r fig-paneles, fig.width=9, fig.height=5.5, fig.cap="Histogramas de seis variables de las viviendas", fig.alt="Seis histogramas en dos filas. Precio y área tienen una cola larga a la derecha; baños, habitaciones, parqueaderos y piso toman pocos valores enteros", out.width="100%"}
+ggplot(largo, aes(x = valor)) +
+  geom_histogram(bins = 30, fill = "#034A94", color = "white", na.rm = TRUE) +
+  facet_wrap(~ variable, scales = "free", ncol = 3) +
+  labs(x = "Valor", y = "Número de viviendas") +
+  theme_minimal(base_size = 13) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Cada panel tiene sus propios ejes, gracias a `scales = "free"`. Por eso se compara la **forma** de las distribuciones, no la altura de las barras entre paneles. En la figura, el precio y el área tienen una cola larga a la derecha, y los baños, las habitaciones, los parqueaderos y el piso toman pocos valores enteros. Para esas variables discretas, un [gráfico de barras](recurso302.html) muestra mejor cada valor.
+
+**¿Qué cuidados tener?**
+
+- El panel sirve para explorar. En un informe se presentan solo los gráficos de las variables que se discuten, con un ancho de intervalo elegido para cada una.
+- `na.rm = TRUE` evita la advertencia por los faltantes, pero estos se deben reportar, como en la columna `faltantes` de la tabla.
+- Con más de 12 paneles el gráfico se vuelve difícil de leer: conviene dividir las variables en grupos.
+
+<br/>
+
 ## <span style="color:#034a94">**Errores frecuentes**</span>
 
 | Problema                                                 | Causa                                                  | Solución                                                     |
@@ -198,6 +254,9 @@ round(rbind(mujeres = c(s = sd(mujeres), CV = 100 * sd(mujeres) / mean(mujeres))
 | Los atípicos se dibujan dos veces                        | `geom_boxplot()` y `geom_jitter()` los muestran        | Usar `outlier.shape = NA`                                    |
 | Se afirma que hay dos grupos por ver dos picos           | Los picos dependen del ancho y del tamaño de la muestra | Presentarlo como hipótesis                                  |
 | Muchas curvas en un mismo gráfico                        | Hay demasiados grupos                                  | Usar cajas o paneles                                         |
+| `facet_wrap()` da error o un solo panel                  | Los datos están en formato ancho                       | Pasarlos a formato largo con `pivot_longer()`                |
+| Un panel se ve plano y otro lleno                        | Todos los paneles usan la misma escala                 | Usar `scales = "free"` y comparar formas, no alturas         |
+| `sapply()` devuelve una tabla al revés                   | Cada variable queda en una columna                     | Trasponer con `t()`                                          |
 
 <br/>
 
@@ -319,6 +378,6 @@ Histograma para los precios, porque hay muchos datos y una sola variable. Cajas 
 
 <br/>
 
-*Última revisión: 5 de noviembre de 2026.*
+*Última revisión: 6 de noviembre de 2026.*
 
 <br/><br/>
