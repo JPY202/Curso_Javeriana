@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Qué tipos de gráficos existen?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Qué
+tipos de gráficos existen?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Los gráficos se pueden clasificar por su propósito o por el tipo de
+variable. Esta página presenta las dos clasificaciones, el árbol de
+decisión de From Data to Viz y los tipos de gráficos que se estudian en
+esta sección. La primera clasificación es la que usa <a
+href="https://www.data-to-viz.com/">From Data to Viz</a>.</p>
+<p>Esta página usa <code>CarreraLuz22</code> y
+<code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>, y el paquete <code>ggplot2</code>. Los
+bloques de código se ejecutan en orden, porque algunos usan objetos
+creados en bloques anteriores.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p><br/></p>
+<div id="qué-es-from-data-to-viz" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es From Data to
+Viz?</strong></span></h2>
+<p><a href="https://www.data-to-viz.com/">From Data to Viz</a> (Holtz y
+Healy) es un sitio con un <strong>árbol de decisión</strong> que lleva
+al gráfico apropiado según el formato de los datos. Está en inglés, y
+cada gráfico tiene su explicación, sus variantes y sus errores comunes.
+Sus ramas parten de seis tipos de datos:</p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="32%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Rama del árbol</th>
+<th align="left">Significado</th>
+<th align="left">Ejemplo con los datos del curso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Numeric</td>
+<td align="left">Numéricos</td>
+<td align="left">Precio y área de las viviendas</td>
+</tr>
+<tr class="even">
+<td align="left">Categoric</td>
+<td align="left">Categóricos</td>
+<td align="left">Zona y estrato</td>
+</tr>
+<tr class="odd">
+<td align="left">Num &amp; Cat</td>
+<td align="left">Numéricos y categóricos</td>
+<td align="left">Tiempo de carrera por sexo</td>
+</tr>
+<tr class="even">
+<td align="left">Maps</td>
+<td align="left">Mapas</td>
+<td align="left">Longitud y latitud de las viviendas</td>
+</tr>
+<tr class="odd">
+<td align="left">Time series</td>
+<td align="left">Series de tiempo</td>
+<td align="left">Inflación por año</td>
+</tr>
+<tr class="even">
+<td align="left">Network</td>
+<td align="left">Redes</td>
+<td align="left">No se usa en este curso</td>
+</tr>
+</tbody>
+</table>
+<p>Para usar el árbol se siguen estos pasos:</p>
+<ol style="list-style-type: decimal">
+<li>Identifique el tipo de datos que tiene.</li>
+<li>Abra <a href="https://www.data-to-viz.com/">el árbol de decisión</a>
+y entre por esa rama.</li>
+<li>Responda las preguntas sobre sus variables y elija entre los
+gráficos que le propone.</li>
+<li>Abra la página del gráfico y lea sus errores comunes.</li>
+</ol>
+<p><br/></p>
+</div>
+<div id="qué-tipos-hay-según-el-propósito" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tipos hay según el
+propósito?</strong></span></h2>
+<p>From Data to Viz también agrupa los gráficos en siete familias, según
+lo que muestran. La siguiente tabla las resume con algunos ejemplos:</p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="39%" />
+<col width="34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Familia</th>
+<th align="left">Qué responde</th>
+<th align="left">Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Distribución</td>
+<td align="left">¿Cómo se reparten los valores?</td>
+<td align="left">Histograma, densidad, cajas, violín</td>
+</tr>
+<tr class="even">
+<td align="left">Correlación</td>
+<td align="left">¿Cómo se relacionan dos variables?</td>
+<td align="left">Dispersión, mapa de calor</td>
+</tr>
+<tr class="odd">
+<td align="left">Ranking</td>
+<td align="left">¿Cuál categoría tiene más?</td>
+<td align="left">Barras, líneas y puntos, radar</td>
+</tr>
+<tr class="even">
+<td align="left">Parte de un todo</td>
+<td align="left">¿Cómo se reparte un total?</td>
+<td align="left">Torta, dona, mapa de árbol</td>
+</tr>
+<tr class="odd">
+<td align="left">Evolución</td>
+<td align="left">¿Cómo cambia en el tiempo?</td>
+<td align="left">Líneas, área</td>
+</tr>
+<tr class="even">
+<td align="left">Mapa</td>
+<td align="left">¿Cómo cambia según el lugar?</td>
+<td align="left">Mapa coroplético, mapa de burbujas</td>
+</tr>
+<tr class="odd">
+<td align="left">Flujo</td>
+<td align="left">¿Cómo se mueve algo entre grupos?</td>
+<td align="left">Sankey, diagrama de cuerdas</td>
+</tr>
+</tbody>
+</table>
+<p>Para escoger, conviene definir primero el mensaje. Si no se puede
+resumir en unas pocas frases, hay que replantear el gráfico (<a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a>). La siguiente figura muestra la ruta para
+los gráficos de este curso:</p>
+<div class="figure">
+<img src="recurso301_files/figure-html/fig-ruta-1.png" alt="Diagrama que parte de la pregunta qué quiere mostrar y lleva a cinco propósitos: comparar categorías, mostrar partes de un total, ver una distribución, ver una relación y ver un cambio en el tiempo, cada uno con sus gráficos" width="100%" />
+<p class="caption">
+Ruta para elegir un gráfico según lo que se quiere mostrar
+</p>
+</div>
+<details>
+<summary>
+Ver el código de la figura
+</summary>
+<pre class="r"><code>ruta &lt;- data.frame(
+  y = 5:1,
+  proposito = c(&quot;Comparar categorías&quot;, &quot;Mostrar partes de un total&quot;,
+                &quot;Ver una distribución&quot;, &quot;Ver la relación de dos\nvariables numéricas&quot;,
+                &quot;Ver un cambio en el tiempo&quot;),
+  graficos = c(&quot;Barras, líneas y puntos&quot;, &quot;Barras apiladas, torta&quot;,
+               &quot;Histograma, densidad, cajas&quot;, &quot;Dispersión&quot;, &quot;Líneas&quot;)
+)
+
+ggplot(ruta) +
+  geom_segment(aes(x = 1.8, xend = 3.05, y = 3, yend = y), color = &quot;#8A94A0&quot;, linewidth = 0.7) +
+  geom_segment(aes(x = 5.75, xend = 6.45, y = y, yend = y), color = &quot;#8A94A0&quot;, linewidth = 0.7,
+               arrow = arrow(length = unit(0.14, &quot;inches&quot;), type = &quot;closed&quot;)) +
+  annotate(&quot;rect&quot;, xmin = 0.05, xmax = 1.85, ymin = 2.55, ymax = 3.45,
+           fill = &quot;#034A94&quot;, color = NA) +
+  annotate(&quot;text&quot;, x = 0.95, y = 3, label = &quot;¿Qué quiere\nmostrar?&quot;, color = &quot;white&quot;,
+           fontface = &quot;bold&quot;, size = 5) +
+  geom_rect(aes(xmin = 3.05, xmax = 5.75, ymin = y - 0.38, ymax = y + 0.38),
+            fill = &quot;#D8ECF7&quot;, color = &quot;#034A94&quot;) +
+  geom_text(aes(x = 4.4, y = y, label = proposito), color = &quot;#034A94&quot;, size = 4.6,
+            lineheight = 0.9) +
+  geom_rect(aes(xmin = 6.5, xmax = 9.95, ymin = y - 0.38, ymax = y + 0.38),
+            fill = &quot;#F4F7FB&quot;, color = &quot;#8A94A0&quot;) +
+  geom_text(aes(x = 8.22, y = y, label = graficos), color = &quot;#333333&quot;, size = 4.6) +
+  coord_cartesian(xlim = c(0, 10), ylim = c(0.5, 5.5), expand = FALSE) +
+  theme_void()</code></pre>
+</details>
+<p><br/></p>
+</div>
+<div id="qué-tipos-hay-según-la-variable" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tipos hay según la
+variable?</strong></span></h2>
+<p>La <strong>Tabla 1</strong> presenta los gráficos más usados según el
+tipo de variable, con su sintaxis en la base de <strong>R</strong> y en
+<code>ggplot2</code>.</p>
+<center>
+<strong>Tabla 1.</strong> Tipos de gráficos según el tipo de variable.
+</center>
+<table>
+<colgroup>
+<col width="28%" />
+<col width="17%" />
+<col width="21%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo de variable</th>
+<th align="left">Gráfico</th>
+<th align="left">Base de <strong>R</strong></th>
+<th align="left"><code>ggplot2</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cualitativa</td>
+<td align="left">Torta</td>
+<td align="left"><code>pie(table(x))</code></td>
+<td align="left"><code>geom_col()</code> +
+<code>coord_polar()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Cualitativa</td>
+<td align="left">Barras</td>
+<td align="left"><code>barplot(table(x))</code></td>
+<td align="left"><code>geom_bar()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Dos cualitativas</td>
+<td align="left">Barras compuestas</td>
+<td align="left"><code>barplot(table(x, y))</code></td>
+<td align="left"><code>geom_bar(position = "dodge")</code></td>
+</tr>
+<tr class="even">
+<td align="left">Cuantitativa</td>
+<td align="left">Tallos y hojas</td>
+<td align="left"><code>stem(x)</code></td>
+<td align="left">No tiene</td>
+</tr>
+<tr class="odd">
+<td align="left">Cuantitativa</td>
+<td align="left">Histograma</td>
+<td align="left"><code>hist(x)</code></td>
+<td align="left"><code>geom_histogram()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Cuantitativa</td>
+<td align="left">Densidad</td>
+<td align="left"><code>plot(density(x))</code></td>
+<td align="left"><code>geom_density()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Cuantitativa</td>
+<td align="left">Cajas</td>
+<td align="left"><code>boxplot(x)</code></td>
+<td align="left"><code>geom_boxplot()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Dos cuantitativas</td>
+<td align="left">Dispersión</td>
+<td align="left"><code>plot(x, y)</code></td>
+<td align="left"><code>geom_point()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Cuantitativa en el tiempo</td>
+<td align="left">Líneas</td>
+<td align="left"><code>plot(x, type = "l")</code></td>
+<td align="left"><code>geom_line()</code></td>
+</tr>
+</tbody>
+</table>
+<div class="content-box-gray">
+<p>Además de estas formas, existen otras que permiten combinar variables
+y explorar relaciones más complejas. Los <strong>mapas</strong>
+representan datos geográficos mediante colores, tamaños o símbolos. El
+<strong>diagrama de mosaico</strong> muestra la relación entre variables
+categóricas con rectángulos de área proporcional a las frecuencias. El
+<strong>gráfico de radar</strong> usa ejes radiales para comparar
+perfiles. El <strong>diagrama Likert</strong> muestra la distribución de
+respuestas en escalas de opinión.</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-gráficos-se-estudian-en-esta-sección"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué gráficos se estudian en
+esta sección?</strong></span></h2>
+<p>Cada página presenta los gráficos más usados, con su uso correcto, su
+interpretación y enlaces a From Data to Viz para ver más.</p>
+<div class="temas">
+<a class="tema" href="recurso302.html">
+<span class="tema-titulo">Variables categóricas</span>
+<span class="tema-texto">Barras simples, agrupadas y apiladas, y torta.</span>
+</a>
+<a class="tema" href="recurso303.html">
+<span class="tema-titulo">Variable numérica</span>
+<span class="tema-texto">Histograma, curva de densidad y gráfico de cajas.</span>
+</a>
+<a class="tema" href="recurso304.html">
+<span class="tema-titulo">Relaciones y cambios en el tiempo</span>
+<span class="tema-texto">Dispersión y series de tiempo.</span>
+</a>
+<a class="tema" href="recurso305.html">
+<span class="tema-titulo">Otros gráficos</span>
+<span class="tema-texto">Mapa, gráfico de radar y nube de palabras.</span>
+</a>
+</div>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="31%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Se escoge el gráfico antes de tener la pregunta</td>
+<td align="left">Se parte del gráfico y no del mensaje</td>
+<td align="left">Escribir primero la pregunta que se quiere
+responder</td>
+</tr>
+<tr class="even">
+<td align="left">Se confunde el gráfico de barras con el histograma</td>
+<td align="left">Los dos usan rectángulos</td>
+<td align="left">Barras para categorías, histograma para una variable
+numérica</td>
+</tr>
+<tr class="odd">
+<td align="left">Se usa una barra para resumir muchos valores por
+grupo</td>
+<td align="left">La barra oculta la distribución del grupo</td>
+<td align="left">Usar un gráfico de cajas</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-del-propósito-al-gráfico"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Del propósito al
+gráfico</strong></span></h3>
+<p>Indique a qué familia de From Data to Viz pertenece cada pregunta y
+qué gráfico usaría:</p>
+<ul>
+<li>¿Qué porcentaje de corredores corresponde a cada sexo?</li>
+<li>¿Cómo se distribuye la edad de los corredores?</li>
+<li>¿La edad se relaciona con el tiempo de carrera?</li>
+</ul>
+<details>
+<summary>
+Ver solución
+</summary>
+<ul>
+<li>Parte de un todo: barras o torta, porque los porcentajes suman el
+total.</li>
+<li>Distribución: histograma, densidad o cajas, porque la edad es
+numérica.</li>
+<li>Correlación: dispersión, porque son dos variables numéricas.</li>
+</ul>
+</details>
+</div>
+<div id="reto-2.-usar-from-data-to-viz"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Usar From Data to
+Viz</strong></span></h3>
+<p>Se quiere comparar el tiempo de carrera de hombres y mujeres. Lea la
+<a href="https://www.data-to-viz.com/graph/barplot">página del gráfico
+de barras</a> y explique por qué no conviene usar una barra por sexo.
+Después haga un gráfico más adecuado e interprételo.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Cada sexo tiene muchos valores de tiempo. La página advierte que, con
+varios valores por grupo, conviene un gráfico como el de cajas o el de
+violín.</p>
+<pre class="r"><code>carrera &lt;- data.frame(sexo = CarreraLuz22$sex, minutos = CarreraLuz22$timerun / 60)
+
+ggplot(carrera, aes(x = minutos, y = sexo)) +
+  geom_boxplot(fill = &quot;#D8ECF7&quot;, color = &quot;#034A94&quot;) +
+  scale_x_continuous(limits = c(0, 180), breaks = seq(0, 180, 30), expand = c(0, 0)) +
+  labs(x = &quot;Tiempo de carrera (minutos)&quot;, y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso301_files/figure-html/fig-reto2-1.png" alt="Gráfico de cajas horizontal: la mediana de los hombres es cercana a 60 minutos y la de las mujeres cercana a 69" width="100%" />
+<p class="caption">
+Tiempo de carrera por sexo
+</p>
+</div>
+<p>Los hombres tienen una mediana cercana a 60 minutos y las mujeres
+cercana a 69 minutos.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="guías-oficiales-para-descargar" class="section level3">
+<h3><span style="color:#034a94"><strong>Guías oficiales para
+descargar</strong></span></h3>
+<ul>
+<li>INEGI. (2018). <a
+href="https://www.inegi.org.mx/contenidos/productos/prod_serv/contenidos/espanol/bvinegi/productos/nueva_estruc/702825094423.pdf"><em>Presentación
+de resultados estadísticos. Actualización 2017</em></a>. Instituto
+Nacional de Estadística y Geografía, México.</li>
+<li>INEI. (2009). <a
+href="https://www.inei.gob.pe/media/MenuRecursivo/metodologias/libro.pdf"><em>Guía
+para la presentación de gráficos estadísticos</em></a>. Instituto
+Nacional de Estadística e Informática, Perú.</li>
+<li>Contraloría General de la República e INEC. <a
+href="https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf"><em>Manual
+para la elaboración de cuadros y gráficos estadísticos</em></a> (6.ª
+ed.). Panamá.</li>
+</ul>
+</div>
+<div id="libros-para-leer-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer
+gratis</strong></span></h3>
+<ul>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media. El capítulo 5 es un directorio
+de visualizaciones.</li>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio"><em>Introducción
+a la estadística</em></a>. Está en español y se descarga en PDF desde
+esa página. La sección <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-1-graficos-de-tallo-y-hoja-grafico-de-tallo-graficos-de-lineas-y-graficos-de-barras">2.1</a>
+trata varios de estos gráficos.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro.</li>
+</ul>
+</div>
+<div id="otros-recursos" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+recursos</strong></span></h3>
+<ul>
+<li>Holtz, Y. y Healy, C. <a
+href="https://www.data-to-viz.com/"><em>From Data to Viz</em></a>. Árbol
+de decisión para escoger un gráfico, con una <a
+href="https://www.data-to-viz.com/caveats.html">colección de
+advertencias</a> sobre errores comunes.</li>
+<li>Government Analysis Function. <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/"><em>Data
+visualisation: charts</em></a>. Guía del gobierno británico para elegir
+y presentar gráficos.</li>
+<li>Healy, K. (2019). <a
+href="https://kieranhealy.org/publications/dataviz/"><em>Data
+Visualization: A Practical Introduction</em></a>. Princeton University
+Press. El autor mantiene un <a href="https://socviz.co">borrador del
+manuscrito</a> en línea.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Government Analysis Function. (2022). <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/"><em>Data
+visualisation: charts</em></a>.</li>
+<li>Holtz, Y. y Healy, C. <a
+href="https://www.data-to-viz.com/"><em>From Data to Viz</em></a>.</li>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

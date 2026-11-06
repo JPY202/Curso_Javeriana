@@ -1,0 +1,26 @@
+---
+title: "Longitud del sépalo por especie"
+author: "Nombre del estudiante"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+## Resumen
+
+La base `iris` tiene `r nrow(iris)` flores y la longitud media del sépalo es de `r round(mean(iris$Sepal.Length), 2)` cm.
+
+```{r}
+medias <- aggregate(Sepal.Length ~ Species, data = iris, FUN = mean)
+names(medias) <- c("Especie", "Longitud media (cm)")
+knitr::kable(medias, digits = 2, caption = "Longitud media del sépalo por especie")
+```
+
+## Gráfico
+
+```{r, fig.cap="Longitud del sépalo por especie"}
+boxplot(Sepal.Length ~ Species, data = iris, las = 1,
+        xlab = "Especie", ylab = "Longitud del sépalo (cm)")
+```

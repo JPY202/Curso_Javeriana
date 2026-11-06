@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Cómo crear funciones en R?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Cómo
+crear funciones en R?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>En <strong>R</strong>, una <strong>función</strong> es un conjunto de
+instrucciones que realiza una tarea específica. Definir funciones
+permite automatizar procesos y reutilizar código de manera
+eficiente.</p>
+<p><br/></p>
+<div id="cómo-se-crea-una-función" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se crea una
+función?</strong></span></h2>
+<p>La sintaxis general para crear una función es:</p>
+<pre class="r"><code>nombre_funcion &lt;- function(argumento1, argumento2, ...) {
+  # Cuerpo de la función
+  # Instrucciones que se ejecutarán
+  return(valor_de_salida)
+}</code></pre>
+<p>Donde:</p>
+<ul>
+<li><code>nombre_funcion</code>: es el nombre asignado a la
+función.</li>
+<li><code>argumento1, argumento2, ...</code>: son los parámetros que
+recibe la función.</li>
+<li>El cuerpo contiene las operaciones que realizará la función.</li>
+<li>La función <code>return()</code> especifica el valor que la función
+devolverá como resultado. No siempre es obligatoria, porque
+<strong>R</strong> devuelve el último valor calculado, pero su uso hace
+más claras las funciones.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="cómo-se-usa-una-función" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se usa una
+función?</strong></span></h2>
+<p>La función <code>suma_dos_numeros</code> recibe dos argumentos
+numéricos, <code>x</code> y <code>y</code>, calcula la suma de ambos y
+retorna el resultado:</p>
+<pre class="r"><code># Definición de la función
+suma_dos_numeros &lt;- function(x, y) {
+  resultado &lt;- x + y
+  return(resultado)
+}
+
+# Uso de la función
+suma_dos_numeros(3, 5)
+[1] 8</code></pre>
+<p>La función <code>suma_divide</code> recibe un vector numérico, suma
+el primer y el último elemento, y divide esa suma entre 4:</p>
+<pre class="r"><code># Definición de la función
+suma_divide &lt;- function(vec) {
+  primer_elemento &lt;- vec[1]
+  ultimo_elemento &lt;- vec[length(vec)]
+  resultado &lt;- (primer_elemento + ultimo_elemento) / 4
+  return(resultado)
+}
+
+# Definir un vector de prueba
+mi_vector &lt;- c(5, 8, 12, 20)
+
+# Aplicar la función
+suma_divide(mi_vector)
+[1] 6.25</code></pre>
+<p><br/></p>
+</div>
+<div id="por-qué-las-funciones-son-objetos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Por qué las funciones son
+objetos?</strong></span></h2>
+<p>Las funciones también son objetos. Se crean con
+<code>function</code>: entre paréntesis van los argumentos y entre
+llaves las instrucciones. Por ejemplo, para</p>
+<p><span class="math display">\[f(x)=\dfrac{1}{(x-1)^{2}}\]</span></p>
+<pre class="r"><code>fx &lt;- function(x) {
+  1 / (x - 1)^2
+}
+fx(4.5)
+[1] 0.08163265
+
+x &lt;- seq(from = 2, to = 10, by = 0.01)
+plot(x, fx(x), type = &quot;l&quot;, col = &quot;#FF7F00&quot;, lwd = 2, las = 1, ylab = &quot;f(x)&quot;)</code></pre>
+<p><img src="recurso106_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Como son objetos, se pueden pasar como argumento de otra función:</p>
+<pre class="r"><code>sapply(iris[, 1:4], mean)
+Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+    5.843333     3.057333     3.758000     1.199333 
+sapply(iris[, 1:4], sd)
+Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+   0.8280661    0.4358663    1.7652982    0.7622377 </code></pre>
+<p>El siguiente ejemplo define una función para hacer un gráfico. Sus
+valores de entrada son unos datos y un color.</p>
+<pre class="r"><code>grafica &lt;- function(datos, color) {
+  barplot(datos, col = color, las = 1)
+}
+
+set.seed(123)
+y &lt;- sample(1:6, 100, replace = TRUE)    # simula 100 lanzamientos de un dado
+z &lt;- table(y)
+
+par(mfrow = c(1, 2))
+grafica(z, &quot;#034A94&quot;)
+grafica(z, &quot;#0EB0C6&quot;)</code></pre>
+<p><img src="recurso106_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="34%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>could not find function</code></td>
+<td align="left">La función no se ha ejecutado</td>
+<td align="left">Ejecutar primero su definición</td>
+</tr>
+<tr class="even">
+<td
+align="left"><code>argument "y" is missing, with no default</code></td>
+<td align="left">Faltó un argumento</td>
+<td align="left">Pasar todos los argumentos</td>
+</tr>
+<tr class="odd">
+<td align="left">La función no muestra nada</td>
+<td align="left">El resultado se guardó y no se devolvió</td>
+<td align="left">Usar <code>return()</code> o escribir el objeto al
+final</td>
+</tr>
+<tr class="even">
+<td align="left"><code>object 'resultado' not found</code></td>
+<td align="left">Se usa fuera de la función un objeto interno</td>
+<td align="left">Guardar lo que devuelve la función</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-una-función-sencilla"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Una función
+sencilla</strong></span></h3>
+<p>Cree una función llamada <code>rango_vector</code> que reciba un
+vector y devuelva la diferencia entre su máximo y su mínimo. Pruébela
+con <code>c(4, 9, 2, 7)</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>rango_vector &lt;- function(x) {
+  resultado &lt;- max(x) - min(x)
+  return(resultado)
+}
+
+rango_vector(c(4, 9, 2, 7))
+[1] 7</code></pre>
+</details>
+</div>
+<div id="reto-2.-coeficiente-de-variación"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Coeficiente de
+variación</strong></span></h3>
+<p>Cree una función que calcule el coeficiente de variación de un vector
+en porcentaje, y aplíquela a <code>iris$Sepal.Length</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>coef_variacion &lt;- function(x) {
+  return(100 * sd(x) / mean(x))
+}
+
+round(coef_variacion(iris$Sepal.Length), 1)
+[1] 14.2</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<ul>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media. Tiene un capítulo sobre funciones.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>R Core Team. <a
+href="https://cran.r-project.org/doc/manuals/r-release/R-intro.html"><em>An
+Introduction to R</em></a>. Sección sobre cómo escribir funciones.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

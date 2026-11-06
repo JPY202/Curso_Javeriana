@@ -1,0 +1,55 @@
+---
+title: <span style="color:#034a94"> **Informe**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+```
+
+<br/>
+
+A continuación se proporcionan dos enlaces relacionados con un caso de estudio completamente desarrollado. El primer enlace permite visualizar el informe final en formato HTML, mientras que el segundo dirige al repositorio que contiene los códigos en **R** y los datos utilizados, lo que permite su descarga y reproducción completa.
+
+<ul>
+  <li><a href="https://centromagis.github.io/Informe/" target="_blank">Visualizar informe en HTML</a></li>
+  <li><a href="https://github.com/Centromagis/Informe.git" target="_blank">Acceder al repositorio con códigos y datos en GitHub</a></li>
+</ul>
+
+
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Observación 1:**</span> {.toc-ignore}
+
+<p>
+>
+En este ejemplo no se ha unificado el uso del idioma español en todas las categorías, gráficos y párrafos del informe. No obstante, para una entrega formal —como una actividad evaluativa, un trabajo de grado o cualquier documento académico— es indispensable que todo el contenido, incluidas las tablas y figuras, esté redactado en un único idioma. En este caso, se debe emplear exclusivamente el español.
+>
+</p>
+</div>
+
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Observación 2:**</span> {.toc-ignore}
+
+<p>
+>
+En este informe se presenta una introducción al manejo de datos faltantes mediante el uso de regresión logística y la prueba exacta de Fisher. No obstante, estos métodos se abordan de manera introductoria, sin profundizar en los aspectos más avanzados ni condiciones de validez de estos. Se recomienda que, en semestres posteriores, cuando los estudiantes estudien con mayor detalle estos temas, profundicen especialmente en las estrategias de imputación cuando los datos faltantes no son del tipo MCAR (Missing Completely At Random).
+>
+</p>
+</div>
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

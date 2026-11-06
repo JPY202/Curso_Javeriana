@@ -1,0 +1,717 @@
+---
+title: <span style="color:#034a94"> **Conceptos básicos**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+```
+
+<br/>
+
+Antes de calcular un promedio o hacer un gráfico hay que responder tres preguntas: ¿qué se quiere saber?, ¿sobre quién? y ¿qué se midió? De esas respuestas depende qué análisis tiene sentido y hasta dónde llegan las conclusiones.
+
+Esta página presenta el vocabulario que se usa en el resto de la sección. El ejemplo principal es la base `CarreraLuz22`, del paquete `paqueteMETODOS`, con los `r format(nrow(CarreraLuz22), big.mark = ",")` atletas de la carrera La Luz 2022, en Cali.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+```
+
+```{r}
+head(CarreraLuz22, 3)
+```
+
+Los bloques de código de esta página se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la estadística?**</span>
+
+Existen varias definiciones de estadística. Estas son algunas de ellas:
+
+<div class="definiciones">
+<div class="definicion">
+<p>Estudio matemático de la incertidumbre y la variabilidad que proporciona herramientas y métodos para describir, modelar y analizar fenómenos aleatorios, y tomar decisiones basadas en la información disponible.</p>
+<span class="definicion-autor">Kolmogorov, A. N. (1933)</span>
+</div>
+<div class="definicion">
+<p>Ciencia que trata de la toma de decisiones en presencia de incertidumbre mediante el uso de datos observados.</p>
+<span class="definicion-autor">Fisher, R. A. (1959)</span>
+</div>
+<div class="definicion">
+<p>Conjunto de métodos para recopilar, organizar, resumir, presentar y analizar datos, así como para obtener conclusiones válidas y tomar decisiones razonables basadas en tal análisis.</p>
+<span class="definicion-autor">Walpole, R. E. (2012)</span>
+</div>
+<div class="definicion">
+<p>Ciencia que utiliza métodos para recopilar, describir, analizar e interpretar datos, así como para tomar decisiones basadas en dichos análisis.</p>
+<span class="definicion-autor">Anderson, D. R. (2013)</span>
+</div>
+</div>
+
+Estas definiciones tienen algo en común: usan datos o información para tomar decisiones. La incertidumbre aparece porque casi nunca se observa todo, y porque las mediciones varían de una persona, un objeto o un momento a otro.
+
+Su trabajo se suele dividir en dos partes:
+
+| Parte                     | Qué hace                                                  | Ejemplo con la carrera                                   |
+|:--------------------------|:----------------------------------------------------------|:---------------------------------------------------------|
+| **Estadística descriptiva** | Resume los datos observados con tablas, indicadores y gráficos | Calcular el tiempo promedio de los atletas          |
+| **Inferencia estadística** | Usa una muestra para concluir sobre una población, con un margen de error | Usar una muestra de 50 atletas para estimar el tiempo promedio de todos |
+
+### <span style="color:#034a94">**¿Cómo se desarrolla un estudio?**</span>
+
+Un estudio no empieza con los datos, sino con una pregunta. [Wild y Pfannkuch (1999)](https://doi.org/10.1111/j.1751-5823.1999.tb00442.x) adaptan el modelo PPDAC, de MacKay y Oldford, con estas cinco etapas:
+
+| Etapa         | Pregunta guía                         | Ejemplo con la carrera                                       |
+|:--------------|:--------------------------------------|:-------------------------------------------------------------|
+| **Problema**  | ¿Qué se quiere saber?                 | ¿Cambia el tiempo según la edad y el sexo?                   |
+| **Plan**      | ¿Qué se va a medir y a quiénes?       | Atletas de la carrera: tiempo, sexo y edad                   |
+| **Datos**     | ¿Cómo se recogen y organizan?         | Revisar registros, unidades y datos faltantes                |
+| **Análisis**  | ¿Qué muestran los datos?              | Tablas, indicadores y gráficos por grupo                     |
+| **Conclusiones** | ¿Qué se responde y con qué límites? | Comunicar el resultado y aclarar a quiénes aplica            |
+
+<div class="definicion">
+<p>Llegará el día en el que el pensamiento estadístico será una condición tan necesaria para la convivencia eficiente como la capacidad de leer y escribir.</p>
+<span class="definicion-autor">H. G. Wells</span>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo surgió?**</span>
+
+Estos son algunos hechos clave:
+
+| Año       | Hecho                                                                                         |
+|:----------|:----------------------------------------------------------------------------------------------|
+| 1654      | Pascal y Fermat discuten por carta cómo repartir una apuesta, un punto de partida de la [teoría de la probabilidad](https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application) |
+| 1662      | Graunt analiza registros de mortalidad                                                        |
+| 1713      | Se publica *Ars Conjectandi*, de Bernoulli, con una primera forma de la ley de los grandes números |
+| 1812      | Laplace publica su teoría analítica de la probabilidad                                        |
+| 1919-1933 | Fisher trabaja en [Rothamsted](https://mathshistory.st-andrews.ac.uk/Biographies/Fisher/), donde introduce la aleatorización y el análisis de varianza en el diseño de experimentos |
+| 1977      | Tukey publica *Exploratory Data Analysis*                                                     |
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una unidad de análisis?**</span>
+
+La **unidad de análisis** es el elemento sobre el cual se observa o se mide algo. Cada fila de una base de datos ordenada corresponde, por lo general, a una unidad. En `CarreraLuz22`, la unidad de análisis es cada **atleta**.
+
+| Estudio                                  | Unidad de análisis           |
+|:-----------------------------------------|:-----------------------------|
+| Satisfacción de los clientes de un banco | Cliente                      |
+| Control de calidad de botellas           | Botella                      |
+| Fertilidad del suelo                     | Parcela                      |
+| Calidad del agua de un río               | Muestra de agua en un punto y un momento |
+| Precio de la vivienda en Cali            | Vivienda                     |
+
+Definirla mal lleva a conclusiones equivocadas. Por ejemplo, si se mide el rendimiento de varios estudiantes en cada colegio, la unidad puede ser el estudiante o el colegio, según la pregunta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una variable?**</span>
+
+Una **variable** es una característica que se registra en cada unidad de análisis y que puede cambiar de una unidad a otra. Su tipo determina qué tablas, indicadores y gráficos se pueden usar.
+
+```{r fig-variables, echo=FALSE, fig.width=10, fig.height=4.1, out.width="100%", fig.align="center", fig.cap="Tipos de variables y escalas de medición. Elaboración propia a partir de Stevens (1946) y del material del curso.", fig.alt="Diagrama: una variable es cualitativa, nominal u ordinal, o cuantitativa, discreta o continua, con la escala que corresponde a cada tipo"}
+caja <- function(x, y, ancho, alto, titulo, detalle = "",
+                 borde = "#034A94", fondo = "#EEF4FB", color = "#034A94") {
+  rect(x - ancho / 2, y - alto / 2, x + ancho / 2, y + alto / 2,
+       border = borde, col = fondo, lwd = 2)
+  text(x, y + ifelse(nzchar(detalle), alto * 0.17, 0), titulo, font = 2, col = color, cex = 1.05)
+  text(x, y - alto * 0.24, detalle, col = "#555555", cex = 0.82)
+}
+
+op <- par(mar = c(0, 0, 0, 0))
+plot.new()
+plot.window(xlim = c(0, 100), ylim = c(0, 100))
+
+segments(50, 89, 50, 81, col = "gray50", lwd = 2)
+segments(c(25, 25, 75), 81, c(75, 25, 75), c(81, 74, 74), col = "gray50", lwd = 2)
+segments(c(25, 12.5, 12.5, 37.5, 75, 62.5, 62.5, 87.5), c(60, 53, 53, 53, 60, 53, 53, 53),
+         c(25, 37.5, 12.5, 37.5, 75, 87.5, 62.5, 87.5), c(53, 53, 46, 46, 53, 53, 46, 46),
+         col = "gray50", lwd = 2)
+segments(c(12.5, 37.5, 62.5, 87.5), 28, c(12.5, 37.5, 62.5, 87.5), 20, col = "gray50", lwd = 2)
+
+caja(50, 94, 20, 10, "Variable")
+caja(25, 67, 21, 14, "Cualitativa", "describe una categoría")
+caja(75, 67, 21, 14, "Cuantitativa", "expresa una cantidad")
+caja(12.5, 37, 23, 18, "Nominal", "sin orden: sexo, barrio")
+caja(37.5, 37, 23, 18, "Ordinal", "con orden: estrato, categoría")
+caja(62.5, 37, 23, 18, "Discreta", "se cuenta: hijos, visitas")
+caja(87.5, 37, 23, 18, "Continua", "se mide: tiempo, peso")
+
+amarillo <- list(borde = "#B8860B", fondo = "#FFF7E0", color = "#6B4E00")
+caja(12.5, 11, 23, 18, "Escala nominal", "igual o distinto",
+     amarillo$borde, amarillo$fondo, amarillo$color)
+caja(37.5, 11, 23, 18, "Escala ordinal", "mayor o menor",
+     amarillo$borde, amarillo$fondo, amarillo$color)
+caja(75, 11, 48, 18, "Escala de intervalo o de razón",
+     "intervalo: el cero es arbitrario. Razón: el cero indica ausencia",
+     amarillo$borde, amarillo$fondo, amarillo$color)
+par(op)
+```
+
+<details>
+<summary>Ver el código de la figura</summary>
+
+```{r ref.label="fig-variables", eval=FALSE}
+```
+
+</details>
+
+- Una variable **cualitativa** describe una categoría. Si no hay un orden natural es **nominal**. Si lo hay, es **ordinal**.
+- Una variable **cuantitativa** expresa una cantidad. Es **discreta** si sus valores se pueden contar y **continua** si se obtiene al medir.
+
+Las variables de la carrera se clasifican así:
+
+| Variable       | Qué registra                 | Tipo                      | Escala  |
+|:---------------|:-----------------------------|:--------------------------|:--------|
+| `id`           | Identificador del atleta     | Cualitativa nominal       | Nominal |
+| `sex`          | Hombre o mujer               | Cualitativa nominal       | Nominal |
+| `origen`       | Lugar de origen              | Cualitativa nominal       | Nominal |
+| `nacionalidad` | País                         | Cualitativa nominal       | Nominal |
+| `categoria`    | Categoría de competencia     | Cualitativa ordinal       | Ordinal |
+| `edad`         | Edad                         | Cuantitativa discreta     | Razón   |
+| `timerun`      | Tiempo en segundos           | Cuantitativa continua     | Razón   |
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Cuidado: un número no siempre es una cantidad**</span>
+
+`id` es numérica en **R**, pero promediarla no tiene sentido porque solo identifica. Lo mismo ocurre con un código de 1 = fraude y 0 = no fraude. El estrato socioeconómico usa números, pero es ordinal: el estrato 4 es mayor que el 2, pero no es el doble. El tipo de variable se decide por lo que significa, no por cómo se almacena.
+</div>
+
+`edad` aparece en números enteros y por eso se clasifica como discreta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué escalas de medición existen?**</span>
+
+[Stevens (1946)](https://www.jstor.org/stable/1671815) propuso cuatro escalas, según las comparaciones que permiten:
+
+| Escala       | Permite                          | Ejemplos                               | Promedio |
+|:-------------|:---------------------------------|:---------------------------------------|:---------|
+| **Nominal**  | Decir si dos valores son iguales | Sexo, barrio, nacionalidad             | No       |
+| **Ordinal**  | Ordenar                          | Estrato, satisfacción, nivel educativo | Con cuidado |
+| **Intervalo** | Comparar diferencias. El cero es una convención | Temperatura en °C o °F, fechas | Sí       |
+| **Razón**    | Comparar diferencias y cocientes. El cero indica ausencia | Tiempo, peso, salario, temperatura en K | Sí |
+
+En escala de intervalo no tiene sentido decir que un valor es el doble de otro. Por ejemplo, 20 °C no es el doble de calor que 10 °C. Si se pasan a kelvin, la escala absoluta, el cociente es cercano a 1:
+
+```{r}
+(20 + 273.15) / (10 + 273.15)
+```
+
+En cambio, un tiempo de 80 minutos sí es el doble de uno de 40, porque el tiempo es de razón. La temperatura en kelvin se escribe K, sin el símbolo de grado.
+
+### <span style="color:#034a94">**¿Por qué importa la escala al cambiar de unidad o de código?**</span>
+
+Una misma medición se puede expresar de varias formas: un tiempo en minutos o en segundos, una temperatura en °C o en °F, o una satisfacción con los códigos 1, 2 y 3 o 1, 2 y 10. Una conclusión solo es confiable si no cambia al hacer esos cambios permitidos.
+
+Stevens (1946) define cada escala según los cambios que se pueden hacer sin perder información:
+
+| Escala       | Cambio permitido                                       | Ejemplo                       | Qué se conserva                 | Indicadores que tienen sentido |
+|:-------------|:-------------------------------------------------------|:------------------------------|:--------------------------------|:-------------------------------|
+| **Nominal**  | Cambiar los nombres: $x' = f(x)$, con $f$ uno a uno    | *Hombre* por *H*              | Quiénes son iguales             | Conteos y moda                 |
+| **Ordinal**  | Cambiar los códigos sin alterar el orden: $x' = f(x)$, con $f$ creciente | 1, 2, 3 por 1, 2, 10 | El orden             | Lo anterior, mediana y percentiles |
+| **Intervalo** | Cambiar la unidad y el cero: $x' = ax + b$, con $a \neq 0$ | °C por °F                 | La comparación de diferencias   | Lo anterior, media y desviación estándar |
+| **Razón**    | Cambiar solo la unidad: $x' = ax$, con $a > 0$         | Minutos por segundos          | La comparación de cocientes     | Lo anterior y coeficiente de variación |
+
+**Ejemplo 1. En escala de razón, el doble sigue siendo el doble.** Un tiempo de 80 minutos es el doble de 40, y lo sigue siendo en segundos:
+
+```{r}
+minutos <- c(40, 80)
+segundos <- 60 * minutos
+
+minutos[2] / minutos[1]
+segundos[2] / segundos[1]
+```
+
+**Ejemplo 2. En escala de intervalo, el doble depende de la unidad.** 20 parece el doble de 10 en °C, pero el cociente cambia en °F. Por eso, esa frase no tiene sentido en esta escala:
+
+```{r}
+celsius <- c(10, 20)
+fahrenheit <- 1.8 * celsius + 32
+
+celsius[2] / celsius[1]
+fahrenheit[2] / fahrenheit[1]
+```
+
+**Ejemplo 3. En escala ordinal, el promedio puede cambiar la conclusión.** Suponga dos grupos que califican un servicio como malo, regular o bueno. Si se cambian los códigos sin alterar el orden, el grupo con mayor media cambia, pero la mediana sigue indicando lo mismo:
+
+```{r}
+grupo_a <- c("regular", "regular", "regular")
+grupo_b <- c("malo", "malo", "bueno")
+niveles <- c("malo", "regular", "bueno")
+
+codigos_1 <- c(malo = 1, regular = 2, bueno = 3)
+codigos_2 <- c(malo = 1, regular = 2, bueno = 10)
+
+c(media_a = mean(codigos_1[grupo_a]), media_b = mean(codigos_1[grupo_b]))
+c(media_a = mean(codigos_2[grupo_a]), media_b = mean(codigos_2[grupo_b]))
+
+niveles[median(codigos_1[grupo_a])]
+niveles[median(codigos_1[grupo_b])]
+```
+
+Con los primeros códigos, el grupo A tiene mayor media. Con los segundos, la tiene el grupo B. La mediana no cambia: *regular* en el grupo A y *malo* en el grupo B. Por eso, en una variable ordinal se prefiere la mediana.
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Una guía, no una regla mecánica**</span>
+
+Estas escalas orientan el análisis, pero [Velleman y Wilkinson (1993)](https://doi.org/10.1080/00031305.1993.10475938) critican esta clasificación y la consideran engañosa. El método también depende de la pregunta y del contexto.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué papel cumple cada variable?**</span>
+
+En un estudio, las variables también se distinguen por su función:
+
+| Papel                  | Qué es                                                        | Ejemplo hipotético en un cultivo           |
+|:-----------------------|:--------------------------------------------------------------|:-------------------------------------------|
+| **Respuesta o dependiente** | Lo que se quiere explicar o predecir                     | Kilogramos cosechados                      |
+| **Explicativa o independiente** | Lo que se manipula o se usa para explicar la respuesta | Tipo de fertilizante                     |
+| **De control**         | Se mantiene constante o se tiene en cuenta en el análisis     | Cantidad de riego                          |
+| **Confusora**          | Se relaciona con las dos anteriores y puede crear o esconder una asociación | Experiencia del agricultor, si los más expertos eligen un fertilizante |
+| **Mediadora**          | Explica [cómo o por qué](https://pubmed.ncbi.nlm.nih.gov/3806354/) ocurre el efecto | Nitrógeno absorbido por la planta |
+| **Moderadora**         | Indica [cuándo o con qué fuerza](https://pubmed.ncbi.nlm.nih.gov/3806354/) ocurre el efecto | Tipo de suelo        |
+
+```{r fig-relaciones, echo=FALSE, fig.width=10, fig.height=3.1, out.width="100%", fig.align="center", fig.cap="Tres formas en que una tercera variable se relaciona con otras dos. Ejemplos hipotéticos. Elaboración propia; mediadora y moderadora a partir de Baron y Kenny (1986).", fig.alt="Tres esquemas: el calor causa más ventas de helados e insolación, el fertilizante aumenta la cosecha por medio del nitrógeno absorbido, y el tipo de suelo cambia el efecto del fertilizante sobre la cosecha"}
+nodo <- function(x, y, etiqueta, tercera = FALSE) {
+  rect(x - 6.5, y - 8, x + 6.5, y + 8, lwd = 2,
+       border = if (tercera) "#B8860B" else "#034A94",
+       col = if (tercera) "#FFF7E0" else "#EEF4FB")
+  text(x, y, etiqueta, cex = 0.95)
+}
+flecha <- function(x0, y0, x1, y1, lty = 1, code = 2, col = "#034A94") {
+  arrows(x0, y0, x1, y1, length = 0.1, lwd = 2, lty = lty, code = code, col = col)
+}
+
+op <- par(mar = c(0, 0, 0, 0))
+plot.new()
+plot.window(xlim = c(0, 100), ylim = c(0, 100))
+
+text(c(16.5, 50, 83.5), 96, c("Confusora", "Mediadora", "Moderadora"),
+     font = 2, col = "#034A94", cex = 1.1)
+
+nodo(16.5, 74, "Calor", TRUE); nodo(8, 30, "Helados"); nodo(25, 30, "Insolación")
+flecha(13, 66, 9, 38); flecha(20, 66, 24, 38)
+flecha(14.6, 30, 18.4, 30, lty = 3, code = 3, col = "gray40")
+text(16.5, 8, "Asociadas por una causa común", col = "#555555")
+
+nodo(50, 74, "Nitrógeno\nabsorbido", TRUE); nodo(41.5, 30, "Fertilizante"); nodo(58.5, 30, "Cosecha")
+flecha(43, 38, 47, 66); flecha(53, 66, 57, 38)
+text(50, 8, "Explica cómo ocurre el efecto", col = "#555555")
+
+nodo(83.5, 74, "Tipo de suelo", TRUE); nodo(75, 30, "Fertilizante"); nodo(92, 30, "Cosecha")
+flecha(81.5, 30, 85.5, 30); flecha(83.5, 66, 83.5, 31.5)
+text(83.5, 8, "Cambia cuándo o cuánto ocurre", col = "#555555")
+par(op)
+```
+
+<details>
+<summary>Ver el código de la figura</summary>
+
+```{r ref.label="fig-relaciones", eval=FALSE}
+```
+
+</details>
+
+**Una asociación no prueba una causa.** Suponga que las ventas de helados y los casos de insolación aumentan juntos. Eso no significa que uno cause el otro: el calor puede influir en ambos. En ese caso, el calor es una variable confusora.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son población y muestra?**</span>
+
+La **población** es el conjunto completo de unidades sobre el que se quiere concluir. La **muestra** es la parte de esa población que realmente se observa. La **población objetivo** debe definirse con claridad: quiénes, dónde y cuándo.
+
+| Pregunta                                                 | Población                                       | Variable          |
+|:---------------------------------------------------------|:------------------------------------------------|:------------------|
+| ¿Cuál fue el tiempo promedio de la carrera?              | Atletas de la carrera La Luz 2022               | `timerun`         |
+| ¿Cuánto cuesta en promedio un apartamento en Cali?       | Apartamentos de Cali en una fecha determinada   | Precio            |
+| ¿Qué proporción de transacciones es fraudulenta?         | Transacciones de un banco en un mes             | Fraude (sí o no)  |
+
+Una misma población permite estudiar muchas variables. Una base no es una muestra o una población por sí misma: depende de la pregunta. `CarreraLuz22` es la población si se pregunta por esa carrera, pero no es una muestra aleatoria de los corredores de Cali, porque quienes se inscriben pueden ser distintos de quienes no lo hacen.
+
+### <span style="color:#034a94">**¿Cómo se representan?**</span>
+
+Si la población tiene $N$ unidades, los valores de una variable se representan como:
+
+$$
+\text{Población} = \{x_1, x_2, \dots, x_N\}
+$$
+
+Una muestra de tamaño $n$, con $n \leq N$, es un subconjunto de esos valores:
+
+$$
+\text{Muestra} = \{x_1, x_2, \dots, x_n\}
+$$
+
+Los valores que resumen la población se calculan con todas sus unidades:
+
+$$
+\mu = \frac{1}{N} \sum_{i=1}^{N} x_i
+\qquad
+\sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2
+\qquad
+p = \frac{A}{N}
+$$
+
+donde $A$ es el número de unidades con la característica de interés. En la carrera, con $N$ = `r format(nrow(CarreraLuz22), big.mark = ",")`:
+
+```{r}
+tiempo <- CarreraLuz22$timerun / 60               # tiempo en minutos
+N <- length(tiempo)
+
+mu <- sum(tiempo) / N                             # media poblacional
+sigma <- sqrt(sum((tiempo - mu)^2) / N)           # desviación estándar poblacional
+p <- sum(CarreraLuz22$sex == "Mujer") / N         # proporción de mujeres
+
+c(mu = mu, sigma = sigma, p = p)
+```
+
+La función `sd()` divide entre $n - 1$, porque está pensada para muestras. Por eso aquí $\sigma$ se calcula con su fórmula.
+
+### <span style="color:#034a94">**¿Cómo se selecciona una muestra?**</span>
+
+En un **muestreo probabilístico**, cada unidad de la población tiene una probabilidad conocida y mayor que cero de ser elegida. Esto permite cuantificar el error, pero no garantiza que una muestra particular se parezca a la población. Para profundizar se puede consultar [Lohr (2021)](https://www.routledge.com/Sampling-Design-and-Analysis/Lohr/p/book/9780367279509).
+
+Formalmente, si $\pi_i$ es la probabilidad de que la unidad $i$ quede en la muestra, se requiere que $\pi_i > 0$ y que sea conocida. En el muestreo aleatorio simple sin reemplazo, hay $\binom{N}{n}$ muestras posibles, todas con la misma probabilidad, y:
+
+$$
+\pi_i = \frac{n}{N}
+$$
+
+Con 50 atletas de la carrera, la probabilidad de inclusión es:
+
+```{r}
+50 / nrow(CarreraLuz22)
+```
+
+| Tipo de muestreo         | Cómo funciona                                                   | ¿Probabilístico? |
+|:-------------------------|:----------------------------------------------------------------|:-----------------|
+| Aleatorio simple         | Todas las muestras del mismo tamaño tienen la misma probabilidad | Sí              |
+| Sistemático              | Se elige una unidad cada cierto número, con inicio aleatorio    | Sí               |
+| Estratificado            | Se divide en grupos y se selecciona en cada uno                 | Sí               |
+| Por conglomerados        | Se seleccionan grupos completos, como barrios o colegios        | Sí               |
+| Por conveniencia         | Se usa lo que está al alcance                                   | No               |
+| Por juicio               | Quien investiga decide a quién incluir                          | No               |
+| Por cuotas               | Se llenan cupos por grupo, sin selección al azar                | No               |
+| Bola de nieve            | Cada participante lleva a otros                                 | No               |
+
+Por ejemplo, para seleccionar 50 atletas al azar:
+
+```{r}
+set.seed(2022)                               # fija el resultado aleatorio
+muestra <- CarreraLuz22[sample(nrow(CarreraLuz22), 50), ]
+nrow(muestra)
+```
+
+### <span style="color:#034a94">**¿Qué es una muestra aleatoria i.i.d.?**</span>
+
+Una muestra es **independiente e idénticamente distribuida** (i.i.d.) cuando cumple estas condiciones:
+
+- **Independencia:** el valor de una observación no da información sobre el valor de otra.
+- **Distribución idéntica:** todas las observaciones provienen de la misma distribución de probabilidad.
+
+Se escribe así, donde $F$ es la distribución de la población:
+
+$$
+X_1, X_2, \dots, X_n \overset{\text{i.i.d.}}{\sim} F
+$$
+
+Con reemplazo, las extracciones de una población finita son i.i.d. Sin reemplazo no son independientes, pero se aproximan a ese caso cuando $n$ es pequeño frente a $N$.
+
+**Ejemplo.** Suponga que las alturas de los adultos de una ciudad siguen una distribución normal con media de 170 cm y desviación estándar de 10 cm, y que se toma una muestra i.i.d. de tamaño 50:
+
+$$
+X \sim N(\mu = 170,\ \sigma = 10)
+\qquad
+X_1, \dots, X_{50} \overset{\text{i.i.d.}}{\sim} N(170,\ 10)
+$$
+
+```{r, fig.cap="Histograma de una muestra i.i.d. de 50 alturas y curva de la población.", fig.alt="Histograma de 50 alturas simuladas entre 150 y 195 centímetros, con la curva normal de la población superpuesta", fig.width=7, fig.height=4}
+set.seed(123)
+alturas <- rnorm(50, mean = 170, sd = 10)
+mean(alturas)
+sd(alturas)
+
+cortes_altura <- seq(140, 200, by = 5)
+densidad <- hist(alturas, breaks = cortes_altura, plot = FALSE)$density
+limite_y <- max(pretty(c(densidad, dnorm(170, 170, 10))))
+
+hist(alturas, breaks = cortes_altura, freq = FALSE, col = "#BFD7EE", border = "white",
+     las = 1, xlim = range(cortes_altura), ylim = c(0, limite_y), xaxs = "i", yaxs = "i",
+     main = "", xlab = "Altura (cm)", ylab = "Densidad")
+curve(dnorm(x, mean = 170, sd = 10), add = TRUE, col = "#034A94", lwd = 3)
+```
+
+Si se cambia la semilla, se obtiene otra muestra y otros resultados.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son parámetro, estimador y estimación?**</span>
+
+Un parámetro se suele representar con $\theta$. Un **estimador** es una función de las observaciones de la muestra:
+
+$$
+\hat{\theta} = T(X_1, X_2, \dots, X_n)
+$$
+
+Al reemplazar los datos observados se obtiene un número: la **estimación**.
+
+| Parámetro            | Estimador                                                          | En R              |
+|:---------------------|:-------------------------------------------------------------------|:------------------|
+| Media $\mu$          | $\bar{X} = \dfrac{1}{n} \sum_{i=1}^{n} X_i$                        | `mean(x)`         |
+| Varianza $\sigma^2$  | $S^2 = \dfrac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X})^2$            | `var(x)`          |
+| Desviación estándar $\sigma$ | $S = \sqrt{S^2}$                                           | `sd(x)`           |
+| Proporción $p$       | $\hat{p} = \dfrac{1}{n} \sum_{i=1}^{n} X_i$, con $X_i$ igual a 0 o 1 | `mean(x == "A")` |
+
+| Término        | Qué es                                                  | Ejemplo con la carrera                                      |
+|:---------------|:--------------------------------------------------------|:------------------------------------------------------------|
+| **Parámetro**  | Valor que resume una población                          | Media de los `r format(nrow(CarreraLuz22), big.mark = ",")` atletas ($\mu$) |
+| **Estimador**  | Regla para aproximar el parámetro con una muestra       | La fórmula de la media muestral ($\bar{X}$)                 |
+| **Estimación** | Valor que resulta de aplicar esa regla a una muestra    | La media de los 50 atletas seleccionados ($\bar{x}$)        |
+
+Como aquí se conocen los datos de todos los atletas, se puede comparar el parámetro con la estimación:
+
+```{r}
+mean(CarreraLuz22$timerun / 60)    # parámetro: media de todos, en minutos
+mean(muestra$timerun / 60)         # estimación: media de los 50
+```
+
+Otra muestra daría una estimación distinta. Esta variación se llama **variabilidad muestral**. La figura repite la selección 1,000 veces y muestra las medias obtenidas: se reúnen alrededor del parámetro, pero no todas coinciden con él.
+
+```{r, fig.cap="Medias de 1,000 muestras de 50 atletas. La línea indica la media de todos los atletas.", fig.alt="Histograma con forma de campana de las medias muestrales, centrado cerca de 65 minutos, con una línea vertical en la media de todos los atletas", fig.width=7, fig.height=4}
+set.seed(2022)
+tiempo <- CarreraLuz22$timerun / 60
+medias <- replicate(1000, mean(sample(tiempo, 50)))
+
+cortes <- seq(floor(min(medias)), ceiling(max(medias)), by = 0.5)
+conteos <- hist(medias, breaks = cortes, plot = FALSE)$counts
+
+hist(medias, breaks = cortes, col = "#BFD7EE", border = "white", las = 1,
+     xlim = range(cortes), ylim = c(0, max(pretty(conteos))),
+     xaxp = c(range(cortes), length(cortes) - 1), xaxs = "i", yaxs = "i",
+     main = "", xlab = "Media de la muestra (minutos)", ylab = "Número de muestras")
+abline(v = mean(tiempo), col = "#034A94", lwd = 3)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué significa que un estudio sea válido?**</span>
+
+La **validez** indica si un estudio mide lo que pretende medir y si sus conclusiones se sostienen. Shadish, Cook y Campbell (2002) distinguen cuatro tipos:
+
+| Tipo                         | Pregunta que responde                                             | Ejemplo                                                                  |
+|:-----------------------------|:------------------------------------------------------------------|:-------------------------------------------------------------------------|
+| Validez interna              | ¿La relación observada se debe a lo que se estudia?               | Un experimento controla otras explicaciones                              |
+| Validez externa              | ¿Los resultados aplican a otras poblaciones o contextos?          | Un modelo de una región sirve en otra con características similares      |
+| Validez de constructo        | ¿El instrumento mide lo que dice medir?                           | Un cuestionario de satisfacción pregunta realmente por la satisfacción   |
+| Validez de la conclusión estadística | ¿Los métodos usados sostienen la conclusión?              | Se revisan los supuestos de un modelo antes de interpretarlo             |
+
+Por ejemplo, un estudio busca estimar el ingreso promedio de las familias de Cali, pero solo incluye familias de estrato 1. Ese promedio no representa a todas las familias, porque excluye de forma sistemática a los otros estratos. Esto se llama **sesgo de selección**.
+
+<br/>
+
+## <span style="color:#034a94">**¿Asociación significa causalidad?**</span>
+
+Hay **asociación** cuando dos variables cambian juntas. Hay **causalidad** cuando un cambio en una variable produce un cambio en la otra. Una asociación puede deberse a una [variable confusora](#qué-papel-cumple-cada-variable), al azar o a la forma en que se seleccionó la muestra.
+
+La manera más directa de estudiar una causa es un experimento con asignación al azar. Cuando no es posible, Bradford Hill (1965) propuso nueve puntos de vista para evaluar si una asociación puede ser causal:
+
+| Criterio                 | Pregunta                                                      |
+|:-------------------------|:--------------------------------------------------------------|
+| Fuerza                   | ¿La asociación es grande?                                     |
+| Consistencia             | ¿Se repite en otros estudios y lugares?                       |
+| Especificidad            | ¿La exposición se relaciona con un efecto concreto?           |
+| Temporalidad             | ¿La causa ocurre antes que el efecto?                         |
+| Gradiente                | ¿A mayor exposición, mayor efecto?                            |
+| Plausibilidad            | ¿Tiene sentido según lo que se conoce?                        |
+| Coherencia               | ¿Es compatible con el conocimiento disponible?                |
+| Experimento              | ¿Al intervenir cambia el resultado?                           |
+| Analogía                 | ¿Se conocen casos parecidos?                                  |
+
+Hill los presentó como ayudas para pensar, no como una lista que se deba cumplir. De todos, solo la temporalidad es indispensable: la causa debe ocurrir antes que el efecto.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                          | Causa                                            | Solución                                            |
+|:--------------------------------------------------|:-------------------------------------------------|:----------------------------------------------------|
+| Promediar `id`, estrato o un código               | Tratar todo número como cantidad                 | Decidir el tipo por el significado de la variable   |
+| `mean()` da `NA` con advertencia en una variable de texto | La variable no es numérica               | Revisar con `class()` o `str()`                     |
+| Decir que 20 °C es el doble de 10 °C              | La escala es de intervalo                        | Comparar diferencias, no cocientes                  |
+| Generalizar una encuesta en redes a toda una ciudad | La muestra es por conveniencia                 | Definir la población y cómo se seleccionó la muestra |
+| Usar `sd()` para calcular $\sigma$ de una población | `sd()` divide entre $n - 1$ | Aplicar la fórmula con $N$                          |
+| Decir que X causa Y porque están asociadas        | Puede haber una variable confusora               | Revisar el diseño del estudio                       |
+| Confundir parámetro y estimación                  | Se usa una muestra como si fuera toda la población | Indicar de dónde sale cada valor                  |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Identifique los elementos**</span>
+
+Suponga que una universidad selecciona al azar 200 de sus 8,000 estudiantes de pregrado y les pregunta cuántas horas estudian por semana. El promedio fue de 14 horas. Indique la población, la muestra, la unidad de análisis, la variable, el parámetro y la estimación.
+
+<details>
+<summary>Ver solución</summary>
+
+- **Población:** los 8,000 estudiantes de pregrado.
+- **Muestra:** los 200 seleccionados.
+- **Unidad de análisis:** cada estudiante.
+- **Variable:** horas de estudio por semana. Es cuantitativa continua si se mide el tiempo.
+- **Parámetro:** promedio de horas de los 8,000, que se desconoce.
+- **Estimación:** 14 horas.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Clasifique las variables**</span>
+
+Indique el tipo y la escala de cada variable: estrato de una vivienda, número de habitaciones, precio de venta y zona de la ciudad.
+
+<details>
+<summary>Ver solución</summary>
+
+| Variable              | Tipo                  | Escala    |
+|:----------------------|:----------------------|:----------|
+| Estrato               | Cualitativa ordinal   | Ordinal   |
+| Número de habitaciones | Cuantitativa discreta | Razón    |
+| Precio de venta       | Cuantitativa continua | Razón     |
+| Zona                  | Cualitativa nominal   | Nominal   |
+
+El precio se trata como continuo porque puede tomar muchísimos valores, aunque se exprese en pesos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Confusora, mediadora o moderadora?**</span>
+
+Identifique el papel de la tercera variable en cada caso hipotético:
+
+- Un programa de ejercicio mejora el estado físico, y eso reduce la presión arterial.
+- Un medicamento funciona en adultos, pero no en niños.
+- En los incendios con más bomberos hay más daños. El tamaño del incendio influye en ambos.
+
+<details>
+<summary>Ver solución</summary>
+
+- **Estado físico:** mediadora, porque explica cómo actúa el programa.
+- **Edad:** moderadora, porque cambia el efecto del medicamento.
+- **Tamaño del incendio:** confusora, porque influye en la cantidad de bomberos y en los daños.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. La muestra por comodidad**</span>
+
+Una persona toma los primeros 50 registros de `CarreraLuz22` en lugar de una muestra aleatoria. Calcule la media de esos 50 tiempos y compárela con la de todos los atletas. ¿Qué concluye?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+mean(head(CarreraLuz22$timerun / 60, 50))
+mean(CarreraLuz22$timerun / 60)
+```
+
+El archivo está ordenado por tiempo, así que los primeros registros son los atletas más rápidos. Por eso su media es mucho menor que la de todos. Tomar lo primero es un muestreo por conveniencia y produce un resultado sesgado. Conviene seleccionar al azar.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Revise los datos**</span>
+
+Use `table()` para revisar las ciudades que contienen `Bogot` en la variable `origen`. ¿Qué problema encuentra? ¿Por qué importa?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+table(grep("Bogot", CarreraLuz22$origen, value = TRUE))
+```
+
+La misma ciudad aparece escrita de varias maneras. Si no se corrige, una tabla la contará como ciudades distintas. Por eso los datos se revisan antes de analizarlos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 6. Muestras de una distribución exponencial**</span>
+
+Genere 10 muestras aleatorias de tamaño 100 de una distribución exponencial con media 10 y desviación estándar 10. Use `rexp(n = 100, rate = 0.1)` y estime la media y la desviación estándar en cada muestra. ¿Qué observa?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2022)
+muestras <- replicate(10, rexp(n = 100, rate = 0.1))
+
+round(rbind(media = colMeans(muestras),
+            desviacion = apply(muestras, 2, sd)), 2)
+```
+
+Las estimaciones cambian de una muestra a otra, pero se ubican alrededor de los parámetros: 10 para la media y 10 para la desviación estándar.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros en español**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.pearson.com/en-us/subject-catalog/p/probability-statistics-for-engineers-scientists/P200000007119/9780137273546) (9.ª ed.). Pearson.
+- Devore, J. L. (2016). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/) (9.ª ed.). Cengage Learning.
+- Peña, D. (2008). [*Fundamentos de estadística*](https://www.alianzaeditorial.es/libro/manuales/fundamentos-de-estadistica-daniel-pena-9788420683805/). Alianza Editorial.
+
+### <span style="color:#034a94">**Libros en inglés**</span>
+
+- Agresti, A., Franklin, C. A. y Klingenberg, B. (2022). [*Statistics: The Art and Science of Learning from Data*](https://www.pearson.com/store/p/statistics-the-art-and-science-of-learning-from-data/P200000006061) (5.ª ed.). Pearson.
+- Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
+- Lohr, S. L. (2021). [*Sampling: Design and Analysis*](https://www.routledge.com/Sampling-Design-and-Analysis/Lohr/p/book/9780367279509) (3.ª ed.). Chapman & Hall/CRC.
+- Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
+- Pearl, J., Glymour, M. y Jewell, N. P. (2016). [*Causal Inference in Statistics: A Primer*](https://www.wiley.com/en-us/Causal+Inference+in+Statistics:+A+Primer-p-9781119186847). Wiley.
+- Stigler, S. M. (1986). [*The History of Statistics: The Measurement of Uncertainty before 1900*](https://www.hup.harvard.edu/books/9780674403413). Belknap Press of Harvard University Press.
+- Tukey, J. W. (1977). [*Exploratory Data Analysis*](https://www.pearson.com/en-us/subject-catalog/p/exploratory-data-analysis-classic-version/P200000006400/9780134995458). Addison-Wesley.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Hill, A. B. (1965). [The environment and disease: association or causation?](https://pmc.ncbi.nlm.nih.gov/articles/PMC1898525/) *Proceedings of the Royal Society of Medicine*, 58(5), 295-300.
+- Baron, R. M. y Kenny, D. A. (1986). [The moderator-mediator variable distinction in social psychological research: Conceptual, strategic, and statistical considerations](https://pubmed.ncbi.nlm.nih.gov/3806354/). *Journal of Personality and Social Psychology*, 51(6), 1173-1182.
+- Encyclopedia.com. [Probability: History, Interpretation, and Application](https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application).
+- O'Connor, J. J. y Robertson, E. F. (2003). [Sir Ronald Aylmer Fisher](https://mathshistory.st-andrews.ac.uk/Biographies/Fisher/). MacTutor, University of St Andrews.
+- Shadish, W. R., Cook, T. D. y Campbell, D. T. (2002). *Experimental and Quasi-Experimental Designs for Generalized Causal Inference*. Houghton Mifflin.
+- Stevens, S. S. (1946). [On the theory of scales of measurement](https://www.jstor.org/stable/1671815). *Science*, 103(2684), 677-680.
+- The Times. [Obituary of R. A. Fisher](https://mathshistory.st-andrews.ac.uk/TimesObituaries/Fisher/). Reproducido en MacTutor.
+- Velleman, P. F. y Wilkinson, L. (1993). [Nominal, ordinal, interval, and ratio typologies are misleading](https://doi.org/10.1080/00031305.1993.10475938). *The American Statistician*, 47(1), 65-72.
+- Wells, H. G. (1903). *Mankind in the Making*. Chapman & Hall.
+- Wild, C. J. y Pfannkuch, M. (1999). [Statistical thinking in empirical enquiry](https://doi.org/10.1111/j.1751-5823.1999.tb00442.x). *International Statistical Review*, 67(3), 223-248.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

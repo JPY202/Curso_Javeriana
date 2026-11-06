@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Paquetes en R</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Paquetes en R</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un <strong>paquete</strong> es una colección de funciones, datos y
+documentación que agrega capacidades a <strong>R</strong>. Hay paquetes
+para hacer gráficos, leer archivos de Excel, ajustar modelos o crear
+documentos.</p>
+<p>Funcionan como las aplicaciones de un celular: una aplicación se
+<strong>instala</strong> una sola vez y se <strong>abre</strong> cada
+vez que se va a usar. En <strong>R</strong>, un paquete se instala con
+<code>install.packages()</code> y se abre en cada sesión con
+<code>library()</code>.</p>
+<p><br/></p>
+<div id="paquete-o-librería" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Paquete o
+librería?</strong></span></h2>
+<p>Muchas personas usan las dos palabras como sinónimos, pero <a
+href="https://www.r-bloggers.com/2013/01/packages-v-libraries-in-r/">no
+significan lo mismo</a>:</p>
+<ul>
+<li>Un <strong>paquete</strong> (<em>package</em>) es lo que se instala
+y se usa, como <code>ggplot2</code>.</li>
+<li>Una <strong>biblioteca</strong> (<em>library</em>) es la carpeta del
+computador donde quedan guardados los paquetes.</li>
+</ul>
+<p>La función se llama <code>library()</code>, pero lo que recibe es el
+nombre de un paquete. En este curso se usa la palabra
+<strong>paquete</strong>. Para ver dónde están las bibliotecas de su
+computador puede ejecutar <code>.libPaths()</code>.</p>
+<p><br/></p>
+</div>
+<div id="qué-paquetes-vienen-con-r" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué paquetes vienen con
+R?</strong></span></h2>
+<p>Al instalar <strong>R</strong> ya quedan disponibles varios paquetes,
+y algunos se cargan automáticamente. Por eso <code>mean()</code> o
+<code>plot()</code> funcionan sin instalar nada. La función
+<code>search()</code> muestra lo que está activo en la sesión:</p>
+<pre class="r"><code>search()</code></pre>
+<pre><code>[1] &quot;.GlobalEnv&quot;        &quot;package:stats&quot;     &quot;package:graphics&quot; 
+[4] &quot;package:grDevices&quot; &quot;package:utils&quot;     &quot;package:datasets&quot; 
+[7] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;     </code></pre>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="57%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Para qué sirve</th>
+<th align="left">Ejemplos de funciones</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>base</code></td>
+<td align="left">Funciones esenciales del lenguaje</td>
+<td align="left"><code>sum()</code>, <code>c()</code>,
+<code>factor()</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>stats</code></td>
+<td align="left">Estadística: pruebas, modelos y distribuciones</td>
+<td align="left"><code>lm()</code>, <code>t.test()</code>,
+<code>rnorm()</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>graphics</code></td>
+<td align="left">Gráficos básicos</td>
+<td align="left"><code>plot()</code>, <code>hist()</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>utils</code></td>
+<td align="left">Herramientas generales, como leer archivos e instalar
+paquetes</td>
+<td align="left"><code>read.csv()</code>,
+<code>install.packages()</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>datasets</code></td>
+<td align="left">Bases de datos de ejemplo</td>
+<td align="left"><code>iris</code>, <code>mtcars</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="dónde-se-publican-los-paquetes" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Dónde se publican los
+paquetes?</strong></span></h2>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="49%" />
+<col width="38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Repositorio</th>
+<th align="left">Qué contiene</th>
+<th align="left">Cómo se instala</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><a
+href="https://cran.r-project.org/web/packages/">CRAN</a></td>
+<td align="left">El repositorio principal, con más de 25 000
+paquetes</td>
+<td align="left"><code>install.packages("paquete")</code></td>
+</tr>
+<tr class="even">
+<td align="left"><a
+href="https://bioconductor.org/">Bioconductor</a></td>
+<td align="left">Paquetes para bioinformática</td>
+<td align="left"><code>BiocManager::install("paquete")</code></td>
+</tr>
+<tr class="odd">
+<td align="left">GitHub</td>
+<td align="left">Paquetes en desarrollo o creados por grupos y personas,
+como el del curso</td>
+<td
+align="left"><code>remotes::install_github("usuario/paquete")</code></td>
+</tr>
+</tbody>
+</table>
+<p>Las <a href="https://cran.r-project.org/web/views/">vistas de tareas
+de CRAN</a> organizan los paquetes por tema y ayudan a encontrar uno
+para una tarea concreta.</p>
+<p><br/></p>
+</div>
+<div id="cómo-instalar-un-paquete" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo instalar un
+paquete?</strong></span></h2>
+<p>Hay dos formas. La instalación se hace <strong>una sola vez</strong>
+en cada computador, salvo que se quiera actualizar el paquete.</p>
+<p><strong>1. Desde la consola.</strong> Es la forma más común. El
+nombre del paquete va entre comillas:</p>
+<pre class="r"><code>install.packages(&quot;ggplot2&quot;)</code></pre>
+<p><strong>2. Desde RStudio.</strong> En la pestaña
+<strong>Packages</strong>, se hace clic en <strong>Install</strong>, se
+escribe el nombre y se confirma.</p>
+<div class="figure" style="text-align: center">
+<img src="img/paquetes_ventana.png" alt="Pestaña Packages de RStudio con la ventana Install Packages y el nombre ggplot2 escrito" width="70%" />
+<p class="caption">
+Ventana para instalar paquetes en RStudio
+</p>
+</div>
+<p>Un paquete puede necesitar otros para funcionar, llamados
+<strong>dependencias</strong>. <strong>R</strong> los instala de forma
+automática, así que es normal ver mensajes sobre varios paquetes.</p>
+<div id="recomendación" class="section level3 content-box-gray">
+<h3><span
+style="color:#686868"><strong>Recomendación</strong></span></h3>
+<p>Instale los paquetes en la consola y no deje
+<code>install.packages()</code> en sus scripts o archivos
+<code>.Rmd</code>. De lo contrario, el paquete se instalaría de nuevo
+cada vez que se ejecute el código.</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cómo-usar-un-paquete" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo usar un
+paquete?</strong></span></h2>
+<p>Instalar un paquete no lo activa. En cada sesión nueva de
+<strong>R</strong> hay que cargarlo con <code>library()</code>, esta vez
+sin necesidad de comillas:</p>
+<pre class="r"><code>library(ggplot2)
+
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length)) +
+  geom_point()</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="14%" />
+<col width="28%" />
+<col width="34%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Acción</th>
+<th align="left">Función</th>
+<th align="left">¿Cuándo?</th>
+<th align="left">¿Lleva comillas?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Instalar</td>
+<td align="left"><code>install.packages()</code></td>
+<td align="left">Una vez en cada computador</td>
+<td align="left">Sí</td>
+</tr>
+<tr class="even">
+<td align="left">Cargar</td>
+<td align="left"><code>library()</code></td>
+<td align="left">En cada sesión de <strong>R</strong></td>
+<td align="left">No es necesario</td>
+</tr>
+</tbody>
+</table>
+<p>Si el paquete no está instalado, <code>library()</code> genera un
+error:</p>
+<pre class="r"><code>library(paquetequenoexiste)
+Error in library(paquetequenoexiste): there is no package called &#39;paquetequenoexiste&#39;</code></pre>
+<div id="usar-una-función-sin-cargar-el-paquete" class="section level3">
+<h3><span style="color:#034a94"><strong>Usar una función sin cargar el
+paquete</strong></span></h3>
+<p>Con <code>paquete::función()</code> se usa una función sin cargar
+todo el paquete. También deja claro de dónde viene. Es lo que se hizo
+con <code>knitr::kable()</code> en la página <a
+href="recurso102.html">RMarkdown</a>.</p>
+<pre class="r"><code>knitr::kable(head(iris, 2))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="left">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">5.1</td>
+<td align="right">3.5</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">4.9</td>
+<td align="right">3.0</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-pasa-si-dos-paquetes-usan-el-mismo-nombre"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasa si dos paquetes usan
+el mismo nombre?</strong></span></h2>
+<p>Dos paquetes pueden tener funciones con el mismo nombre. Si ambos
+están cargados, <a
+href="https://blog.r-project.org/2019/03/19/managing-search-path-conflicts/">se
+usa la del último paquete cargado</a>, y la otra queda
+<strong>enmascarada</strong> (<em>masked</em>). <strong>R</strong> lo
+advierte con un mensaje. Por ejemplo, <code>dplyr</code> tiene una
+función <code>filter()</code>, y <code>stats</code> también:</p>
+<pre class="r"><code>library(dplyr)
+
+Attaching package: &#39;dplyr&#39;
+The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag
+The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<p>Este mensaje no es un error. Indica que, desde ahora,
+<code>filter()</code> será la de <code>dplyr</code>. Para usar una
+versión específica se escribe el nombre del paquete:</p>
+<pre class="r"><code>dplyr::filter(iris, Sepal.Length &gt; 7.6)
+  Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+1          7.7         3.8          6.7         2.2 virginica
+2          7.7         2.6          6.9         2.3 virginica
+3          7.7         2.8          6.7         2.0 virginica
+4          7.9         3.8          6.4         2.0 virginica
+5          7.7         3.0          6.1         2.3 virginica</code></pre>
+<p>Esto importa, por ejemplo, con <code>select()</code>. Si se carga
+<code>MASS</code> después de <code>dplyr</code>, <code>select()</code>
+deja de ser la de <code>dplyr</code>, y el código puede fallar con un
+mensaje confuso. La solución es escribir
+<code>dplyr::select()</code>.</p>
+<p><br/></p>
+</div>
+<div id="cómo-conocer-un-paquete" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo conocer un
+paquete?</strong></span></h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Quiero saber</th>
+<th align="left">Instrucción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Qué funciones tiene</td>
+<td align="left"><code>help(package = "ggplot2")</code></td>
+</tr>
+<tr class="even">
+<td align="left">Cómo se usa una función</td>
+<td align="left"><code>?ggplot</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Si tiene guías con ejemplos</td>
+<td align="left"><code>vignette(package = "ggplot2")</code></td>
+</tr>
+<tr class="even">
+<td align="left">Qué versión tengo</td>
+<td align="left"><code>packageVersion("ggplot2")</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Qué paquetes tengo instalados</td>
+<td align="left"><code>rownames(installed.packages())</code></td>
+</tr>
+<tr class="even">
+<td align="left">Qué está cargado en la sesión</td>
+<td align="left"><code>sessionInfo()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Cómo citarlo en un informe</td>
+<td align="left"><code>citation("ggplot2")</code></td>
+</tr>
+</tbody>
+</table>
+<div id="citar-los-paquetes" class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Citar los
+paquetes</strong></span></h3>
+<p>Cuando un informe usa un paquete, conviene citarlo. La función
+<code>citation()</code> entrega la referencia. Sin argumentos, muestra
+cómo citar <strong>R</strong>.</p>
+</div>
+<pre class="r"><code>citation()
+citation(&quot;ggplot2&quot;)</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-actualizar-los-paquetes" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo actualizar los
+paquetes?</strong></span></h2>
+<p>Los paquetes cambian con el tiempo. Se actualizan con el botón
+<strong>Update</strong> de la pestaña <strong>Packages</strong> o con
+esta instrucción, que revisa cuáles tienen una <a
+href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/update.packages.html">versión
+más reciente</a>:</p>
+<pre class="r"><code>update.packages()</code></pre>
+<p>No conviene actualizar en medio de una entrega, porque un cambio
+podría alterar el funcionamiento del código.</p>
+<p><br/></p>
+</div>
+<div id="cómo-instalar-un-paquete-desde-github" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo instalar un paquete desde
+GitHub?</strong></span></h2>
+<p><strong>¿Qué problema resuelve?</strong>
+<code>install.packages()</code> solo busca en CRAN. Un paquete publicado
+únicamente en GitHub, como el del curso, necesita otra herramienta.</p>
+<p><strong>¿Qué hace?</strong> El paquete <a
+href="https://cran.r-project.org/web/packages/remotes/refman/remotes.html"><code>remotes</code></a>
+permite instalar paquetes desde GitHub. Su función
+<code>install_github()</code> recibe el texto
+<code>"usuario/repositorio"</code> y también revisa las
+dependencias.</p>
+<p><strong>¿Cómo se usa?</strong></p>
+<pre class="r"><code>install.packages(&quot;remotes&quot;)                # solo la primera vez
+remotes::install_github(&quot;usuario/paquete&quot;)</code></pre>
+<p>Si durante la instalación pregunta si desea actualizar otros
+paquetes, puede elegir la opción <strong>None</strong> para
+omitirlo.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-paquetemetodos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es
+paqueteMETODOS?</strong></span></h2>
+<p><strong>¿Qué es?</strong> <code>paqueteMETODOS</code> fue creado para
+este curso. Reúne bases de datos, funciones y tutoriales, de modo que
+todos trabajen con la misma información. No está en CRAN.</p>
+<p><strong>¿Cómo se instala?</strong> Se ejecuta una sola vez:</p>
+<pre class="r"><code>install.packages(&quot;remotes&quot;)
+remotes::install_github(&quot;Centromagis/paqueteMETODOS&quot;)</code></pre>
+<p><strong>¿Cómo se usa?</strong> Se carga y luego se llama la base de
+datos:</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)
+head(CarreraLuz22)</code></pre>
+<div id="bases-de-datos" class="section level3">
+<h3><span style="color:#034a94"><strong>Bases de
+datos</strong></span></h3>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="21%" />
+<col width="53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Base</th>
+<th align="left">Tamaño</th>
+<th align="left">Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>CarreraLuz22</code></td>
+<td align="left">1,922 × 7</td>
+<td align="left">Atletas de la carrera La Luz 2022 en Cali</td>
+</tr>
+<tr class="even">
+<td align="left"><code>CarreraLuz22F</code></td>
+<td align="left">744 × 7</td>
+<td align="left">Mujeres de la carrera</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>CarreraLuz22M</code></td>
+<td align="left">1,178 × 7</td>
+<td align="left">Hombres de la carrera</td>
+</tr>
+<tr class="even">
+<td align="left"><code>vivienda</code></td>
+<td align="left">8,322 × 13</td>
+<td align="left">Viviendas de Cali</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>vivienda_faltantes</code></td>
+<td align="left">8,330 × 13</td>
+<td align="left">Viviendas de Cali con datos faltantes</td>
+</tr>
+<tr class="even">
+<td align="left"><code>vivienda4</code></td>
+<td align="left">1,706 × 5</td>
+<td align="left">Viviendas de Cali, con menos variables</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>rotacion</code></td>
+<td align="left">1,470 × 24</td>
+<td align="left">Empleados de una compañía</td>
+</tr>
+<tr class="even">
+<td align="left"><code>rotacionNA</code></td>
+<td align="left">1,470 × 25</td>
+<td align="left">Empleados de una compañía con datos faltantes</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>inflacion2022</code></td>
+<td align="left">360 × 6</td>
+<td align="left">Inflación en Colombia hasta 2022</td>
+</tr>
+<tr class="even">
+<td align="left"><code>seriesCOL</code></td>
+<td align="left">74 × 3</td>
+<td align="left">Inflación y tasa de cambio de Colombia</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>ventas</code></td>
+<td align="left">15 × 3</td>
+<td align="left">Ventas de empleados</td>
+</tr>
+<tr class="even">
+<td align="left"><code>arboles</code></td>
+<td align="left">90 × 4</td>
+<td align="left">Características de árboles</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>biomasa</code></td>
+<td align="left">90 × 8</td>
+<td align="left">Biomasa de árboles</td>
+</tr>
+</tbody>
+</table>
+<p>El paquete también incluye las bases <code>CarreraLuz22_c1F</code> a
+<code>CarreraLuz22_c5F</code> para mujeres y
+<code>CarreraLuz22_c1M</code> a <code>CarreraLuz22_c5M</code> para
+hombres. Son acumuladas: por ejemplo, <code>CarreraLuz22_c3F</code>
+contiene a las mujeres de las categorías 3, 4 y 5. Para trabajar con una
+sola categoría se filtra <code>CarreraLuz22</code>.</p>
+</div>
+<div id="funciones" class="section level3">
+<h3><span style="color:#034a94"><strong>Funciones</strong></span></h3>
+<p>Estas son algunas de sus funciones. Los argumentos son estos:
+<code>z</code> es el percentil de la normal, como 1.96 para 95 % de
+confianza; <code>s2</code> es la varianza; <code>p</code> es la
+proporción y <code>e</code> es el error máximo.</p>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="67%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Función</th>
+<th align="left">Para qué sirve</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>Cnk(n, k)</code></td>
+<td align="left">Combinaciones de n elementos tomados de a k</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Pnk(n, k)</code></td>
+<td align="left">Permutaciones de n elementos tomados de a k</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>sizemu(z, s2, e)</code></td>
+<td align="left">Tamaño de muestra para estimar una media</td>
+</tr>
+<tr class="even">
+<td align="left"><code>sizep(z, p, e)</code></td>
+<td align="left">Tamaño de muestra para estimar una proporción</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>adjusted_size(n, N)</code></td>
+<td align="left">Ajusta el tamaño de muestra <code>n</code> a una
+población de tamaño <code>N</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplos con sus resultados:</p>
+<pre class="r"><code>Cnk(10, 2)                # 45
+Pnk(10, 2)                # 90
+sizemu(1.96, 245, 2)      # 235.298
+sizep(1.96, 0.5, 0.02)    # 2401
+adjusted_size(385, 500)   # 217.7602</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-paquetes-se-usan-en-ciencia-de-datos"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué paquetes se usan en ciencia
+de datos?</strong></span></h2>
+<p>Cada etapa de un análisis cuenta con paquetes especializados.</p>
+<div class="figure" style="text-align: center">
+<img src="img/paquetes_etapas.png" alt="Diagrama de las etapas importar, ordenar, transformar, visualizar, modelar y comunicar con los logos de sus paquetes" width="100%" />
+<p class="caption">
+Etapas del análisis de datos y paquetes empleados
+</p>
+</div>
+<div id="el-tidyverse" class="section level3">
+<h3><span style="color:#034a94"><strong>El
+tidyverse</strong></span></h3>
+<p>El <a href="https://tidyverse.tidyverse.org/">tidyverse</a> es una
+colección de paquetes diseñados para trabajar juntos. Con una sola
+instrucción se instala todo el grupo:</p>
+<pre class="r"><code>install.packages(&quot;tidyverse&quot;)    # solo la primera vez
+library(tidyverse)               # activa los paquetes principales</code></pre>
+<p><code>library(tidyverse)</code> activa estos paquetes:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Para qué sirve</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>ggplot2</code></td>
+<td align="left">Crear gráficos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>dplyr</code></td>
+<td align="left">Filtrar, seleccionar, ordenar y resumir datos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tidyr</code></td>
+<td align="left">Ordenar la estructura de las tablas</td>
+</tr>
+<tr class="even">
+<td align="left"><code>readr</code></td>
+<td align="left">Leer archivos de texto como <code>.csv</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tibble</code></td>
+<td align="left">Trabajar con una versión moderna del data frame</td>
+</tr>
+<tr class="even">
+<td align="left"><code>purrr</code></td>
+<td align="left">Aplicar funciones a muchos elementos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>stringr</code></td>
+<td align="left">Trabajar con textos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>forcats</code></td>
+<td align="left">Trabajar con factores</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>lubridate</code></td>
+<td align="left">Trabajar con fechas y horas</td>
+</tr>
+</tbody>
+</table>
+<p>Otros paquetes, como <code>readxl</code> para archivos de Excel y
+<code>haven</code> para SPSS, Stata y SAS, se instalan con el tidyverse,
+pero cada uno se carga con su propio <code>library()</code>.</p>
+</div>
+<div id="paquetes-que-se-usan-en-esta-unidad" class="section level3">
+<h3><span style="color:#034a94"><strong>Paquetes que se usan en esta
+unidad</strong></span></h3>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="55%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Para qué sirve</th>
+<th align="left">Tema</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>rmarkdown</code>, <code>knitr</code></td>
+<td align="left">Generar documentos y tablas</td>
+<td align="left">Informes</td>
+</tr>
+<tr class="even">
+<td align="left"><code>tidyverse</code></td>
+<td align="left">Importar, transformar y graficar datos</td>
+<td align="left">Procesamiento y gráficas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>readxl</code></td>
+<td align="left">Leer archivos de Excel</td>
+<td align="left">Importar</td>
+</tr>
+<tr class="even">
+<td align="left"><code>summarytools</code></td>
+<td align="left">Obtener tablas de frecuencia y resúmenes
+descriptivos</td>
+<td align="left">Análisis de datos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>e1071</code></td>
+<td align="left">Calcular asimetría y curtosis, entre otras
+funciones</td>
+<td align="left">Indicadores de forma</td>
+</tr>
+<tr class="even">
+<td align="left"><code>kableExtra</code></td>
+<td align="left">Dar mejor formato a las tablas</td>
+<td align="left">Tablas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>plotly</code></td>
+<td align="left">Convertir gráficos en interactivos</td>
+<td align="left">Gráficas</td>
+</tr>
+<tr class="even">
+<td align="left"><code>gganimate</code></td>
+<td align="left">Crear gráficos animados</td>
+<td align="left">Gráficas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>naniar</code>, <code>VIM</code></td>
+<td align="left">Explorar y visualizar datos faltantes</td>
+<td align="left">Ordenar</td>
+</tr>
+<tr class="even">
+<td align="left"><code>zoo</code></td>
+<td align="left">Trabajar con series de tiempo y completar datos
+faltantes</td>
+<td align="left">Ordenar</td>
+</tr>
+</tbody>
+</table>
+<p>Para instalarlos de una sola vez:</p>
+<pre class="r"><code>install.packages(c(&quot;rmarkdown&quot;, &quot;tidyverse&quot;, &quot;readxl&quot;, &quot;summarytools&quot;, &quot;e1071&quot;,
+                   &quot;kableExtra&quot;, &quot;plotly&quot;, &quot;gganimate&quot;, &quot;naniar&quot;, &quot;VIM&quot;, &quot;zoo&quot;))</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-elegir-un-paquete" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo elegir un
+paquete?</strong></span></h2>
+<p>Varios paquetes pueden hacer lo mismo. Antes de elegir uno conviene
+revisar lo siguiente:</p>
+<ul>
+<li>Si está en CRAN, que revisa los paquetes antes de publicarlos.</li>
+<li>Si tiene documentación clara y ejemplos.</li>
+<li>Si se ha actualizado en los últimos años.</li>
+<li>Si otras personas lo usan y lo recomiendan.</li>
+<li>Si sus resultados se pueden comparar con otra fuente.</li>
+</ul>
+<p>Que un paquete esté publicado no garantiza que el método sea el
+adecuado para sus datos. Esa decisión sigue siendo del analista.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="31%" />
+<col width="36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>there is no package called 'ggplot2'</code></td>
+<td align="left">El paquete no está instalado</td>
+<td align="left">Ejecutar <code>install.packages("ggplot2")</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>could not find function "ggplot"</code></td>
+<td align="left">El paquete no está cargado</td>
+<td align="left">Ejecutar <code>library(ggplot2)</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>object 'ggplot2' not found</code> al
+instalar</td>
+<td align="left">Faltan las comillas</td>
+<td align="left">Escribir <code>install.packages("ggplot2")</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>package 'x' is not available</code></td>
+<td align="left">El nombre está mal escrito o no está en CRAN</td>
+<td align="left">Revisar mayúsculas y el nombre</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>namespace ... is already loaded</code></td>
+<td align="left">Se quiere actualizar un paquete en uso</td>
+<td align="left">Reiniciar <strong>R</strong> e intentar de nuevo</td>
+</tr>
+<tr class="even">
+<td align="left">La función da un error extraño</td>
+<td align="left">Otra función la enmascaró</td>
+<td align="left">Usar <code>paquete::función()</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-qué-falta" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. ¿Qué
+falta?</strong></span></h3>
+<p>Un estudiante abre <strong>RStudio</strong> y ejecuta el siguiente
+código. Obtiene el error <code>could not find function "ggplot"</code>,
+aunque ayer el código funcionó. ¿Qué pasó y cómo se corrige?</p>
+<pre class="r"><code>ggplot(iris, aes(Sepal.Length, Petal.Length)) + geom_point()</code></pre>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>El paquete sigue instalado, pero la sesión es nueva y no se ha
+cargado. Se debe agregar <code>library(ggplot2)</code> al inicio del
+script. No hace falta instalarlo de nuevo.</p>
+</details>
+</div>
+<div id="reto-2.-corrija-las-instrucciones"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Corrija las
+instrucciones</strong></span></h3>
+<p>Encuentre el error en cada línea.</p>
+<pre class="r"><code>install.packages(ggplot2)
+install.packages(install.packages(&quot;dplyr&quot;))
+library(update.packages())
+library(GGPLOT2)</code></pre>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>install.packages(&quot;ggplot2&quot;)    # faltaban las comillas
+install.packages(&quot;dplyr&quot;)      # estaba repetida la función
+update.packages()             # no va dentro de library()
+library(ggplot2)               # R distingue mayúsculas de minúsculas</code></pre>
+</details>
+</div>
+<div id="reto-3.-el-filtro-que-no-filtra"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. El filtro que no
+filtra</strong></span></h3>
+<p>Sin cargar ningún paquete adicional, una persona ejecuta
+<code>filter(iris, Species == "setosa")</code> y obtiene un error. ¿Qué
+función se está usando realmente? ¿Cómo se soluciona?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Se está usando <code>stats::filter()</code>, que sirve para series de
+tiempo. Hay que usar la de <code>dplyr</code>, con
+<code>library(dplyr)</code> o escribiendo el nombre del paquete:</p>
+<pre class="r"><code>head(dplyr::filter(iris, Species == &quot;setosa&quot;), 2)
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2  setosa</code></pre>
+</details>
+</div>
+<div id="reto-4.-conozca-el-paquete-del-curso"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Conozca el paquete del
+curso</strong></span></h3>
+<p>Instale <code>paqueteMETODOS</code>. Calcule cuántas personas de la
+categoría <code>4. Veteranos B</code> hay en <code>CarreraLuz22</code> y
+su tiempo promedio en minutos. Después use <code>sizep()</code> para
+hallar el tamaño de muestra que estima una proporción con 95 % de
+confianza, <code>p = 0.5</code> y error de 0.05.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>library(paqueteMETODOS)
+library(dplyr)
+
+data(&quot;CarreraLuz22&quot;)
+
+CarreraLuz22 |&gt;
+  filter(categoria == &quot;4. Veteranos B&quot;) |&gt;
+  summarise(personas = n(), promedio = mean(timerun / 60))
+
+sizep(1.96, 0.5, 0.05)</code></pre>
+<p>Son 227 personas, con un promedio de 64.5 minutos, y
+<code>sizep()</code> da 384.16, por lo que se necesitan 385. El tamaño
+de muestra se redondea hacia arriba.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<ul>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://davidrsch.github.io/r4ds-es/">R para Ciencia de Datos</a>
+(2.ª ed., traducción al español). Enseña a usar los paquetes del
+tidyverse.</li>
+<li><a href="https://cran.r-project.org/web/views/">Vistas de tareas de
+CRAN</a>: paquetes organizados por tema.</li>
+<li><a href="https://rstudio.github.io/cheatsheets/">Hojas de referencia
+de Posit</a>: resúmenes de los paquetes más usados.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>R Core Team. Documentación de <code>library()</code>,
+<code>install.packages()</code> y <a
+href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/update.packages.html"><code>update.packages()</code></a>.</li>
+<li>Rainey, C. <a
+href="https://www.r-bloggers.com/2013/01/packages-v-libraries-in-r/">Packages
+v. Libraries in R</a>.</li>
+<li><a
+href="https://cran.r-project.org/web/packages/remotes/refman/remotes.html">remotes:
+R Package Installation from Remote Repositories</a>.</li>
+<li>Tierney, L. (2019). <a
+href="https://blog.r-project.org/2019/03/19/managing-search-path-conflicts/">Managing
+Search Path Conflicts</a>. The R Blog.</li>
+<li>Wickham, H. et al. <a
+href="https://tidyverse.tidyverse.org/">tidyverse</a>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 4 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

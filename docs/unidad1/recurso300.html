@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Qué es un gráfico?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Qué
+es un gráfico?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>La <strong>representación gráfica de datos</strong> es una de las
+partes más importantes del análisis de datos, porque permite resumir e
+interpretar la información. Esta página presenta qué es un gráfico, para
+qué sirve, cuáles son sus elementos, cómo se lee y cómo se construye en
+<strong>R</strong>.</p>
+<p>Esta página usa <code>CarreraLuz22</code> y
+<code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>, y el paquete <code>ggplot2</code>. Los
+bloques de código se ejecutan en orden, porque algunos usan objetos
+creados en bloques anteriores.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p><br/></p>
+<div id="qué-es-un-gráfico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un
+gráfico?</strong></span></h2>
+<p>Un gráfico es una <strong>representación visual de datos
+estadísticos</strong> que usa puntos, líneas, barras u otras figuras
+vinculadas a escalas de medición (INEI, 2009). No introduce información
+nueva: complementa los cuadros y facilita la comprensión (Contraloría
+General de la República e INEC de Panamá), y ayuda a comparar los datos
+e identificar su comportamiento (INEGI, 2022).</p>
+<p>Wilke (2019) lo explica así: toda visualización convierte los valores
+de los datos en características del gráfico que se pueden medir, como la
+posición o el tamaño. La <strong>escala</strong> es la regla que une
+cada valor con esa característica.</p>
+<table>
+<colgroup>
+<col width="21%" />
+<col width="30%" />
+<col width="48%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Característica visual</th>
+<th align="left">Qué puede representar</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Posición</td>
+<td align="left">El valor de una variable</td>
+<td align="left">La altura de un punto en un gráfico de dispersión</td>
+</tr>
+<tr class="even">
+<td align="left">Tamaño</td>
+<td align="left">Una cantidad</td>
+<td align="left">La longitud de una barra</td>
+</tr>
+<tr class="odd">
+<td align="left">Color</td>
+<td align="left">Una categoría o una magnitud</td>
+<td align="left">El color de las barras de cada sexo</td>
+</tr>
+<tr class="even">
+<td align="left">Forma</td>
+<td align="left">Una categoría</td>
+<td align="left">Círculos para un grupo y triángulos para otro</td>
+</tr>
+<tr class="odd">
+<td align="left">Tipo de línea</td>
+<td align="left">Una categoría</td>
+<td align="left">Línea continua para un grupo y punteada para otro</td>
+</tr>
+</tbody>
+</table>
+<p>Por eso, para leer un gráfico hay que saber qué variable corresponde
+a cada característica y en qué escala está.</p>
+<p><br/></p>
+</div>
+<div id="para-qué-sirve-un-gráfico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Para qué sirve un
+gráfico?</strong></span></h2>
+<p>El uso adecuado de los gráficos facilita:</p>
+<ul>
+<li>La <strong>comunicación visual</strong> de patrones, tendencias y
+anomalías en los datos.</li>
+<li>El <strong>análisis exploratorio</strong> inicial, porque da una
+comprensión rápida de la distribución de las variables y de la relación
+entre ellas.</li>
+<li>La <strong>presentación de resultados</strong> en reportes y
+publicaciones, porque hace la información más accesible para el
+público.</li>
+</ul>
+<p>Un gráfico también muestra lo que un resumen numérico no alcanza a
+mostrar. Anscombe (1973) lo ilustró con cuatro conjuntos de datos, que
+vienen incluidos en <strong>R</strong> con el nombre
+<code>anscombe</code>. Las medias y las desviaciones estándar son casi
+iguales en los cuatro:</p>
+<pre class="r"><code>round(sapply(anscombe, mean), 2)
+ x1  x2  x3  x4  y1  y2  y3  y4 
+9.0 9.0 9.0 9.0 7.5 7.5 7.5 7.5 
+round(sapply(anscombe, sd), 2)
+  x1   x2   x3   x4   y1   y2   y3   y4 
+3.32 3.32 3.32 3.32 2.03 2.03 2.03 2.03 </code></pre>
+<p>Al graficarlos, los cuatro conjuntos resultan muy distintos:</p>
+<pre class="r"><code>datos &lt;- data.frame(
+  conjunto = rep(paste(&quot;Conjunto&quot;, 1:4), each = 11),
+  x = c(anscombe$x1, anscombe$x2, anscombe$x3, anscombe$x4),
+  y = c(anscombe$y1, anscombe$y2, anscombe$y3, anscombe$y4)
+)
+
+ggplot(datos, aes(x = x, y = y)) +
+  geom_point(color = &quot;#034A94&quot;, size = 2.5) +
+  facet_wrap(~ conjunto) +
+  scale_x_continuous(limits = c(0, 20), breaks = seq(0, 20, 5)) +
+  scale_y_continuous(limits = c(0, 14), breaks = seq(0, 14, 2)) +
+  theme_minimal(base_size = 14)</code></pre>
+<div class="figure">
+<img src="recurso300_files/figure-html/fig-anscombe-1.png" alt="Cuatro gráficos de dispersión: una nube de puntos con tendencia creciente, una curva, una recta con un punto alejado y una columna de puntos con un punto muy lejano" width="100%" />
+<p class="caption">
+Cuatro conjuntos de datos con medias y desviaciones estándar casi
+iguales
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cuáles-son-los-elementos-clave-de-un-gráfico"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuáles son los elementos clave
+de un gráfico?</strong></span></h2>
+<p>Las guías de los institutos de estadística coinciden en los elementos
+que debe tener un gráfico (INEI, 2009; INEGI, 2022; Contraloría General
+de la República e INEC de Panamá). La siguiente figura los señala con
+números:</p>
+<div class="figure">
+<img src="recurso300_files/figure-html/fig-elementos-1.png" alt="Gráfico de barras agrupadas de corredores por categoría y sexo, con círculos numerados del 1 al 8 sobre el título, las barras, el eje de valores, la escala, el eje de conceptos, la leyenda, las etiquetas de datos y la fuente" width="100%" />
+<p class="caption">
+Elementos de un gráfico
+</p>
+</div>
+<details>
+<summary>
+Ver el código de la figura
+</summary>
+<pre class="r"><code>partes &lt;- as.data.frame(table(CarreraLuz22$categoria, CarreraLuz22$sex))
+names(partes) &lt;- c(&quot;categoria&quot;, &quot;sexo&quot;, &quot;corredores&quot;)
+partes$posicion &lt;- as.numeric(partes$categoria)
+
+marcas &lt;- data.frame(
+  numero = 1:8,
+  x = c(0.08, 1.8, -0.4, 0.42, 3, 2.2, 1.5, 0.08),
+  y = c(985, 340, 400, 600, -100, 890, 705, -172)
+)
+
+ggplot(partes, aes(x = posicion, y = corredores)) +
+  geom_col(aes(fill = sexo), position = position_dodge(0.8), width = 0.75) +
+  geom_text(aes(group = sexo, label = corredores), position = position_dodge(0.8),
+            vjust = -0.4, size = 3.8) +
+  geom_point(data = marcas, aes(x = x, y = y), size = 8, color = &quot;#222222&quot;) +
+  geom_text(data = marcas, aes(x = x, y = y, label = numero), color = &quot;white&quot;,
+            fontface = &quot;bold&quot;, size = 4.4) +
+  scale_fill_manual(values = c(&quot;Hombre&quot; = &quot;#0072B2&quot;, &quot;Mujer&quot; = &quot;#D55E00&quot;)) +
+  scale_x_continuous(breaks = 1:5, labels = levels(partes$categoria)) +
+  scale_y_continuous(breaks = seq(0, 800, 200), expand = c(0, 0)) +
+  coord_cartesian(xlim = c(0.5, 5.5), ylim = c(0, 800), clip = &quot;off&quot;) +
+  labs(title = &quot;Corredores por categoría y sexo (número de personas)&quot;,
+       x = NULL, y = &quot;Número de corredores&quot;, fill = NULL,
+       caption = &quot;Fuente: base CarreraLuz22 del paquete paqueteMETODOS.&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), legend.position = &quot;top&quot;,
+        plot.title = element_text(margin = margin(b = 8)),
+        plot.caption = element_text(hjust = 0, size = 12, margin = margin(t = 34)),
+        plot.margin = margin(14, 20, 10, 46))</code></pre>
+</details>
+<p><br/></p>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="17%" />
+<col width="75%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Número</th>
+<th align="left">Elemento</th>
+<th align="left">Qué informa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">Título</td>
+<td align="left">Qué muestra el gráfico y, si aplica, el lugar, el
+periodo y la unidad de medida</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">Figura</td>
+<td align="left">Las barras, puntos, líneas o sectores que representan
+los datos</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Eje de valores</td>
+<td align="left">Qué variable se mide y en qué unidad</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Escala</td>
+<td align="left">Las marcas que permiten leer los valores</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Eje de conceptos</td>
+<td align="left">Las categorías o los periodos que se comparan</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Leyenda</td>
+<td align="left">Qué significa cada color o forma</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">Etiquetas de datos</td>
+<td align="left">El valor exacto de cada figura</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">Fuente y notas</td>
+<td align="left">De dónde salen los datos y qué aclaraciones hay</td>
+</tr>
+</tbody>
+</table>
+<p>Friel, Curcio y Bright (2001) agrupan estos elementos en tres partes:
+el <strong>título y las etiquetas</strong>, que dan el contexto; el
+<strong>marco</strong>, formado por los ejes y las escalas; y las
+<strong>figuras</strong>, que muestran los datos (Arteaga et al.,
+2009).</p>
+<p>En este curso, el título va en el pie de cada figura, numerado, y no
+dentro de la imagen. Así lo recomienda la guía del gobierno británico
+(<a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a>).</p>
+<p><br/></p>
+</div>
+<div id="cómo-leer-un-gráfico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo leer un
+gráfico?</strong></span></h2>
+<p>Interpretar un gráfico es más que leer sus valores. La American
+Statistical Association recomienda que los estudiantes aprendan a
+interpretar lo que un gráfico revela y también lo que no revela (<a
+href="https://www.amstat.org/docs/default-source/amstat-documents/gaisecollege_full.pdf">American
+Statistical Association, 2016</a>). Para cualquier gráfico, se pueden
+seguir estos pasos:</p>
+<ol style="list-style-type: decimal">
+<li>Lea el título y la unidad de medida.</li>
+<li>Revise qué representa cada eje y cuál es su escala.</li>
+<li>Describa el patrón general.</li>
+<li>Busque las excepciones, como valores muy alejados.</li>
+<li>Pregúntese qué no muestra el gráfico.</li>
+</ol>
+<p>La lectura también tiene niveles. Curcio propuso los tres primeros, y
+Friel, Curcio y Bright (2001) agregaron el cuarto (Arteaga et al.,
+2009). Estos son ejemplos con el número de viviendas por zona:</p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="28%" />
+<col width="52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Nivel</th>
+<th align="left">Qué se hace</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Leer entre los datos</td>
+<td align="left">Leer literalmente lo que está en el gráfico</td>
+<td align="left">La Zona Sur tiene 4726 viviendas</td>
+</tr>
+<tr class="even">
+<td align="left">Leer dentro de los datos</td>
+<td align="left">Comparar e integrar los datos</td>
+<td align="left">La Zona Sur tiene más viviendas que las otras cuatro
+zonas sumadas</td>
+</tr>
+<tr class="odd">
+<td align="left">Leer más allá de los datos</td>
+<td align="left">Sacar conclusiones que no están en el gráfico</td>
+<td align="left">Si se agregan datos recogidos de la misma forma, se
+esperaría que el Sur siga siendo la zona con más viviendas</td>
+</tr>
+<tr class="even">
+<td align="left">Leer detrás de los datos</td>
+<td align="left">Valorar cómo se obtuvieron los datos</td>
+<td align="left">¿La base contiene todas las viviendas de Cali, o solo
+una parte?</td>
+</tr>
+</tbody>
+</table>
+<p>Cada página de tipos de gráficos explica cómo interpretar los más
+usados.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-construye-un-gráfico-con-ggplot2"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se construye un gráfico
+con ggplot2?</strong></span></h2>
+<p><strong>¿Qué problema resuelve?</strong> Con la base de
+<strong>R</strong>, cada tipo de gráfico tiene su propia función y sus
+propios argumentos. <code>ggplot2</code> usa la misma lógica para todos
+los gráficos.</p>
+<p><strong>¿Qué hace?</strong> Construye el gráfico por capas: se
+indican los datos, se asignan las variables a los ejes y se agrega la
+forma de dibujarlas. Después se ajustan las escalas, las etiquetas y el
+aspecto.</p>
+<p><strong>¿Cuándo usarlo?</strong> Cuando el gráfico va a un informe o
+necesita varias capas, grupos o paneles. Para una mirada rápida a una
+variable, también sirven <code>hist(x)</code> o
+<code>boxplot(x)</code>.</p>
+<p><strong>¿Cómo se usa?</strong> Se instala una sola vez con
+<code>install.packages("ggplot2")</code>, y se carga en cada sesión con
+<code>library(ggplot2)</code>. Cada capa se agrega con el signo
+<code>+</code>:</p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="39%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Capa</th>
+<th align="left">Pregunta que responde</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Datos</td>
+<td align="left">¿Qué tabla se usa?</td>
+<td align="left"><code>ggplot(estratos, ...)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Variables</td>
+<td align="left">¿Qué va en cada eje?</td>
+<td align="left"><code>aes(x = estrato, y = viviendas)</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Forma</td>
+<td align="left">¿Cómo se dibuja?</td>
+<td align="left"><code>geom_col()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Escalas</td>
+<td align="left">¿Qué rango y marcas tienen los ejes?</td>
+<td
+align="left"><code>scale_y_continuous(limits = c(0, 3000))</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Etiquetas</td>
+<td align="left">¿Qué dicen los ejes?</td>
+<td align="left"><code>labs(x = "Estrato")</code></td>
+</tr>
+<tr class="even">
+<td align="left">Aspecto</td>
+<td align="left">¿Cómo se ve el fondo?</td>
+<td align="left"><code>theme_minimal()</code></td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, para el número de viviendas por estrato se prepara
+primero la tabla de frecuencias:</p>
+<pre class="r"><code>estratos &lt;- as.data.frame(table(vivienda_faltantes$estrato))
+names(estratos) &lt;- c(&quot;estrato&quot;, &quot;viviendas&quot;)
+estratos
+  estrato viviendas
+1       3      1453
+2       4      2131
+3       5      2751
+4       6      1992</code></pre>
+<p>Después se escribe el gráfico. Los argumentos <code>limits</code> y
+<code>breaks</code> fijan el rango y las marcas del eje, para que
+contenga todas las barras. El argumento <code>expand = c(0, 0)</code>
+hace que las barras empiecen justo en el eje, y <code>plot.margin</code>
+deja espacio alrededor para que las últimas marcas no se corten.</p>
+<pre class="r"><code>ggplot(estratos, aes(x = estrato, y = viviendas)) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.7) +
+  scale_y_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 500), expand = c(0, 0)) +
+  labs(x = &quot;Estrato&quot;, y = &quot;Número de viviendas&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso300_files/figure-html/fig-estrato-1.png" alt="Gráfico de barras con cuatro barras: estrato 3 con 1453 viviendas, estrato 4 con 2131, estrato 5 con 2751 y estrato 6 con 1992" width="100%" />
+<p class="caption">
+Número de viviendas por estrato
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="31%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>could not find function "ggplot"</code></td>
+<td align="left">No se cargó el paquete</td>
+<td align="left">Ejecutar <code>library(ggplot2)</code></td>
+</tr>
+<tr class="even">
+<td align="left">El gráfico sale vacío</td>
+<td align="left">Faltó la capa de forma</td>
+<td align="left">Agregar <code>geom_col()</code>,
+<code>geom_point()</code> u otra</td>
+</tr>
+<tr class="odd">
+<td
+align="left"><code>geom_col() requires the following missing aesthetics: y</code></td>
+<td align="left"><code>geom_col()</code> necesita la altura de las
+barras</td>
+<td align="left">Indicar <code>y</code> en <code>aes()</code>, o usar
+<code>geom_bar()</code> para que cuente</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Removed 2 rows containing...</code></td>
+<td align="left">Hay datos faltantes, o <code>limits</code> deja datos
+por fuera</td>
+<td align="left">Filtrar los faltantes o ampliar
+<code>limits</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Las barras salen en otro color</td>
+<td align="left">El color se escribió dentro de <code>aes()</code></td>
+<td align="left">Escribir <code>fill = "#034A94"</code> fuera de
+<code>aes()</code></td>
+</tr>
+<tr class="even">
+<td align="left">El lector no sabe qué se mide</td>
+<td align="left">Faltan el título, la unidad o los ejes</td>
+<td align="left">Revisar los elementos clave antes de publicar</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-identificar-los-elementos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Identificar los
+elementos</strong></span></h3>
+<p>Observe la figura del número de viviendas por estrato. Indique cuál
+es el eje de valores, cuál es el eje de conceptos y qué elemento clave
+le falta. ¿Por qué esta figura no necesita leyenda?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>El eje de valores es el vertical, con el número de viviendas. El eje
+de conceptos es el horizontal, con los estratos. Le falta la fuente de
+los datos. No necesita leyenda porque todas las barras representan lo
+mismo.</p>
+</details>
+</div>
+<div id="reto-2.-su-primer-gráfico-con-ggplot2"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Su primer gráfico con
+ggplot2</strong></span></h3>
+<p>Haga un gráfico de barras del número de viviendas por tipo. Antes
+unifique las categorías como se hizo en <a href="recurso201.html">Tablas
+de frecuencia</a>. Fije el eje para que contenga las barras.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>tipo &lt;- tolower(vivienda_faltantes$tipo)
+tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
+
+tipos &lt;- as.data.frame(table(tipo))
+names(tipos) &lt;- c(&quot;tipo&quot;, &quot;viviendas&quot;)
+
+ggplot(tipos, aes(x = viviendas, y = reorder(tipo, viviendas))) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.6) +
+  scale_x_continuous(limits = c(0, 6000), breaks = seq(0, 6000, 1000), expand = c(0, 0)) +
+  labs(x = &quot;Número de viviendas&quot;, y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.y = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso300_files/figure-html/fig-reto5-1.png" alt="Dos barras horizontales: 5106 apartamentos y 3221 casas" width="100%" />
+<p class="caption">
+Número de viviendas por tipo
+</p>
+</div>
+</details>
+</div>
+<div id="reto-3.-corregir-el-código"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Corregir el
+código</strong></span></h3>
+<p>El siguiente código busca un gráfico de barras azules de los
+estratos, pero las barras salen de otro color, con una leyenda que no
+sirve. ¿Cuál es el error?</p>
+<pre class="r"><code>ggplot(estratos, aes(x = estrato, y = viviendas, fill = &quot;#034A94&quot;)) +
+  geom_col()</code></pre>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>El color está dentro de <code>aes()</code>. Allí <strong>R</strong>
+lo interpreta como una variable con un único valor, y no como un color.
+Debe escribirse dentro de <code>geom_col()</code>:</p>
+<pre class="r"><code>ggplot(estratos, aes(x = estrato, y = viviendas)) +
+  geom_col(fill = &quot;#034A94&quot;)</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="guías-oficiales-para-descargar" class="section level3">
+<h3><span style="color:#034a94"><strong>Guías oficiales para
+descargar</strong></span></h3>
+<ul>
+<li>INEGI. (2018). <a
+href="https://www.inegi.org.mx/contenidos/productos/prod_serv/contenidos/espanol/bvinegi/productos/nueva_estruc/702825094423.pdf"><em>Presentación
+de resultados estadísticos. Actualización 2017</em></a>. Instituto
+Nacional de Estadística y Geografía, México.</li>
+<li>INEI. (2009). <a
+href="https://www.inei.gob.pe/media/MenuRecursivo/metodologias/libro.pdf"><em>Guía
+para la presentación de gráficos estadísticos</em></a>. Instituto
+Nacional de Estadística e Informática, Perú.</li>
+<li>Contraloría General de la República e INEC. <a
+href="https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf"><em>Manual
+para la elaboración de cuadros y gráficos estadísticos</em></a> (6.ª
+ed.). Panamá.</li>
+</ul>
+</div>
+<div id="libros-para-leer-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer
+gratis</strong></span></h3>
+<ul>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media. El capítulo 2 explica cómo los
+datos se convierten en características visuales.</li>
+<li>Wickham, H., Navarro, D. y Pedersen, T. L. <a
+href="https://ggplot2-book.org/"><em>ggplot2: Elegant Graphics for Data
+Analysis</em></a> (3.ª ed.). Springer. Versión en línea de los
+autores.</li>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio"><em>Introducción
+a la estadística</em></a>. Está en español y se descarga en PDF desde
+esa página. La sección <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-1-graficos-de-tallo-y-hoja-grafico-de-tallo-graficos-de-lineas-y-graficos-de-barras">2.1</a>
+trata varios de estos gráficos.</li>
+</ul>
+</div>
+<div id="otros-recursos" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+recursos</strong></span></h3>
+<ul>
+<li>Posit. <a
+href="https://ggplot2.tidyverse.org/reference/index.html">Documentación
+de <code>ggplot2</code></a>. Lista de todas las funciones del
+paquete.</li>
+<li>Office for National Statistics. <a
+href="https://service-manual.ons.gov.uk/data-visualisation/about"><em>Data
+visualisation</em></a>. Manual de la oficina de estadística del Reino
+Unido.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>American Statistical Association. (2016). <a
+href="https://www.amstat.org/docs/default-source/amstat-documents/gaisecollege_full.pdf"><em>Guidelines
+for Assessment and Instruction in Statistics Education: College
+Report</em></a>.</li>
+<li>Anscombe, F. J. (1973). Graphs in statistical analysis. <em>The
+American Statistician</em>, 27(1), 17-21.</li>
+<li>Arteaga, P., Batanero, C., Díaz, C. y Contreras, J. M. (2009). <a
+href="https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1156663/Arteaga2009El.pdf">El
+lenguaje de los gráficos estadísticos</a>. <em>Revista Iberoamericana de
+Educación Matemática</em>, 18, 93-104.</li>
+<li>Contraloría General de la República e INEC. <a
+href="https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf"><em>Manual
+para la elaboración de cuadros y gráficos estadísticos</em></a> (6.ª
+ed.). Panamá.</li>
+<li>Friel, S. N., Curcio, F. R. y Bright, G. W. (2001). Making sense of
+graphs: Critical factors influencing comprehension and instructional
+implications. <em>Journal for Research in Mathematics Education</em>,
+32(2), 124-158.</li>
+<li>Government Analysis Function. (2022). <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/"><em>Data
+visualisation: charts</em></a>.</li>
+<li>INEGI. (2022). <em>Presentación de datos estadísticos en cuadros y
+gráficas. Actualización 2022</em>. Instituto Nacional de Estadística y
+Geografía, México.</li>
+<li>INEI. (2009). <a
+href="https://www.inei.gob.pe/media/MenuRecursivo/metodologias/libro.pdf"><em>Guía
+para la presentación de gráficos estadísticos</em></a>.</li>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

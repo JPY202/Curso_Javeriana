@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Cómo organizar los datos?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Cómo
+organizar los datos?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Después de importar, los datos rara vez están listos para el
+análisis. Esta etapa, conocida como <strong>limpieza de datos</strong> o
+<em>data cleaning</em>, incluye revisar los registros, cambiar el
+formato de la tabla, unir bases y quitar duplicados. Los <a
+href="recurso402.html">datos faltantes</a> se tratan en una página
+aparte.</p>
+<p>Esta página usa <code>CarreraLuz22</code> y
+<code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>, y los paquetes <code>dplyr</code> y
+<code>tidyr</code>. Los bloques de código se ejecutan en orden.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)</code></pre>
+<p><br/></p>
+<div id="cómo-revisar-los-registros" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo revisar los
+registros?</strong></span></h2>
+<p>Lo primero es mirar la tabla. En <code>vivienda_faltantes</code>, las
+últimas filas de <code>id</code> están vacías:</p>
+<pre class="r"><code>vivienda_faltantes[is.na(vivienda_faltantes$id), c(&quot;id&quot;, &quot;zona&quot;, &quot;estrato&quot;, &quot;preciom&quot;)]
+# A tibble: 3 × 4
+     id zona  estrato preciom
+  &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1    NA &lt;NA&gt;       NA      NA
+2    NA &lt;NA&gt;       NA      NA
+3    NA &lt;NA&gt;       NA     330</code></pre>
+<p>Son tres filas sin identificador. Dos están vacías, y la tercera solo
+tiene un precio, que no se puede atribuir a ninguna vivienda. Se
+quitan:</p>
+<pre class="r"><code>viviendas &lt;- filter(vivienda_faltantes, !is.na(id))
+nrow(vivienda_faltantes) - nrow(viviendas)
+[1] 3</code></pre>
+<p>Las categorías escritas de varias formas también se unifican, como se
+hizo en <a href="recurso201.html">Tablas de frecuencia</a>:</p>
+<pre class="r"><code>viviendas$tipo &lt;- tolower(viviendas$tipo)
+viviendas$tipo[viviendas$tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
+table(viviendas$tipo)
+
+apartamento        casa 
+       5106        3221 </code></pre>
+<p><br/></p>
+</div>
+<div id="qué-son-los-formatos-ancho-y-largo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los formatos ancho y
+largo?</strong></span></h2>
+<p>Una misma información se puede guardar de dos formas:</p>
+<ul>
+<li>En el <strong>formato ancho</strong>, cada unidad ocupa una fila, y
+sus mediciones van en columnas separadas.</li>
+<li>En el <strong>formato largo</strong>, cada medición ocupa una fila,
+con una columna que indica a qué corresponde.</li>
+</ul>
+<p>Los gráficos de <code>ggplot2</code> y muchos análisis usan el
+formato largo. Los informes suelen preferir el ancho, porque se lee
+mejor. <code>pivot_wider()</code> pasa de largo a ancho, y
+<code>pivot_longer()</code> hace lo contrario:</p>
+<pre class="r"><code># Formato largo: una fila por cada combinación de zona y tipo
+largo &lt;- aggregate(preciom ~ zona + tipo, data = viviendas, FUN = median)
+head(largo, 4)
+          zona        tipo preciom
+1  Zona Centro apartamento   152.5
+2   Zona Norte apartamento   250.0
+3   Zona Oeste apartamento   570.0
+4 Zona Oriente apartamento   115.0
+
+# Formato ancho: una fila por zona
+ancho &lt;- pivot_wider(largo, names_from = tipo, values_from = preciom)
+ancho
+# A tibble: 5 × 3
+  zona         apartamento  casa
+  &lt;chr&gt;              &lt;dbl&gt; &lt;dbl&gt;
+1 Zona Centro         152.   310
+2 Zona Norte          250    390
+3 Zona Oeste          570    680
+4 Zona Oriente        115    235
+5 Zona Sur            245    480
+
+# De nuevo a formato largo
+pivot_longer(ancho, cols = c(apartamento, casa),
+             names_to = &quot;tipo&quot;, values_to = &quot;preciom&quot;) |&gt;
+  head(4)
+# A tibble: 4 × 3
+  zona        tipo        preciom
+  &lt;chr&gt;       &lt;chr&gt;         &lt;dbl&gt;
+1 Zona Centro apartamento    152.
+2 Zona Centro casa           310 
+3 Zona Norte  apartamento    250 
+4 Zona Norte  casa           390 </code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-agregar-registros" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo agregar
+registros?</strong></span></h2>
+<p>Agregar registros es poner una tabla debajo de otra, cuando las dos
+tienen las mismas variables. Por ejemplo, unir dos tablas de
+corredores:</p>
+<pre class="r"><code>mujeres &lt;- filter(CarreraLuz22, sex == &quot;Mujer&quot;)
+hombres &lt;- filter(CarreraLuz22, sex == &quot;Hombre&quot;)
+
+corredores &lt;- bind_rows(mujeres, hombres)
+c(nrow(mujeres), nrow(hombres), nrow(corredores))
+[1]  744 1178 1922</code></pre>
+<p>La función <code>rbind()</code>, de la base de <strong>R</strong>,
+hace lo mismo, pero da error si las columnas no coinciden.
+<code>bind_rows()</code> une por nombre de columna y deja
+<code>NA</code> en las que faltan.</p>
+<p><br/></p>
+</div>
+<div id="cómo-unir-tablas-por-una-llave" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo unir tablas por una
+llave?</strong></span></h2>
+<p>Una <strong>llave</strong> es una variable que identifica cada
+registro, como <code>id</code>, y permite unir dos tablas aunque tengan
+otro orden. Para los ejemplos se crean dos tablas: <code>a</code>, con
+las viviendas 1 a 6 de la lista, y <code>b</code>, con las viviendas 3 a
+8.</p>
+<pre class="r"><code>a &lt;- viviendas[1:6, c(&quot;id&quot;, &quot;zona&quot;, &quot;estrato&quot;)]
+b &lt;- viviendas[3:8, c(&quot;id&quot;, &quot;preciom&quot;, &quot;tipo&quot;)]</code></pre>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="54%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Función</th>
+<th align="left">Qué conserva</th>
+<th align="left">Filas en el ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>left_join()</code></td>
+<td align="left">Todas las filas de la primera tabla</td>
+<td align="left">6</td>
+</tr>
+<tr class="even">
+<td align="left"><code>inner_join()</code></td>
+<td align="left">Solo las filas que están en las dos</td>
+<td align="left">4</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>full_join()</code></td>
+<td align="left">Las filas de cualquiera de las dos</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="left"><code>anti_join()</code></td>
+<td align="left">Las filas de la primera sin pareja</td>
+<td align="left">2</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>left_join(a, b, by = &quot;id&quot;)
+# A tibble: 6 × 5
+     id zona       estrato preciom tipo 
+  &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;
+1  8312 Zona Oeste       6      NA &lt;NA&gt; 
+2  8311 Zona Oeste       6      NA &lt;NA&gt; 
+3  8307 Zona Oeste       5    1200 casa 
+4  8296 Zona Sur         3     220 casa 
+5  8297 Zona Oeste       5     330 casa 
+6  8298 Zona Sur         5    1350 casa </code></pre>
+<p>Las viviendas que no están en <code>b</code> quedan con
+<code>NA</code> en las columnas nuevas. Antes de unir hay que revisar la
+llave (<a href="https://r4ds.hadley.nz/joins.html">Wickham et al.,
+2023</a>):</p>
+<pre class="r"><code>sum(is.na(a$id))           # no debe tener faltantes
+[1] 0
+anyDuplicated(a$id)        # 0 indica que no hay repetidos
+[1] 0</code></pre>
+<p>Si la llave se repite en las dos tablas, cada fila se combina con
+varias y la tabla crece sin que se note. Por eso, después de unir
+conviene comparar el número de filas.</p>
+<p>La función <code>cbind()</code> pega columnas sin una llave, según la
+posición. Solo sirve si las dos tablas tienen las mismas filas en el
+mismo orden. Si no es seguro, se debe usar una llave.</p>
+<p><br/></p>
+</div>
+<div id="cómo-tratar-los-registros-duplicados" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo tratar los registros
+duplicados?</strong></span></h2>
+<p><code>duplicated()</code> marca las filas repetidas y
+<code>distinct()</code> las quita. Conviene comparar sin el
+identificador, porque una misma vivienda pudo registrarse con dos
+<code>id</code>.</p>
+<pre class="r"><code>sin_id &lt;- select(viviendas, -id)
+sum(duplicated(sin_id))
+[1] 65
+
+repetidas &lt;- viviendas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
+head(repetidas[order(repetidas$barrio, repetidas$preciom),
+               c(&quot;id&quot;, &quot;barrio&quot;, &quot;preciom&quot;, &quot;areaconst&quot;, &quot;tipo&quot;)], 4)
+# A tibble: 4 × 5
+     id barrio    preciom areaconst tipo       
+  &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      
+1  2013 acopi         270       330 casa       
+2  2014 acopi         270       330 casa       
+3  8309 aguacatal     150        56 apartamento
+4  8309 aguacatal     150        56 apartamento</code></pre>
+<p>Antes de borrarlas, hay que preguntarse si son errores. Dos
+apartamentos de un mismo edificio pueden tener iguales precio y área, y
+ser viviendas distintas. Aquí no se pueden distinguir sin volver a la
+fuente.</p>
+<p><br/></p>
+</div>
+<div id="qué-hacer-con-los-valores-atípicos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué hacer con los valores
+atípicos?</strong></span></h2>
+<p>Un <strong>valor atípico</strong> es un dato que no se ajusta al
+comportamiento general. Se puede detectar con la regla del gráfico de
+cajas, que marca los valores por fuera de los límites:</p>
+<p><span class="math display">\[
+LI = Q_1 - 1.5 \times RIC
+\qquad \text{y} \qquad
+LS = Q_3 + 1.5 \times RIC
+\]</span></p>
+<pre class="r"><code>q &lt;- quantile(viviendas$preciom, c(0.25, 0.75), na.rm = TRUE)
+ls &lt;- q[[2]] + 1.5 * (q[[2]] - q[[1]])
+ls
+[1] 1020
+sum(viviendas$preciom &gt; ls, na.rm = TRUE)
+[1] 555</code></pre>
+<p>Otro criterio marca los valores a más de 3 desviaciones estándar de
+la media. No es lo mismo: la media y la desviación estándar se ven
+afectadas por los propios valores extremos.</p>
+<p>Un atípico no es un error automático. Hay que revisar si es un error
+de digitación, y solo en ese caso corregirlo. Si es un dato real, como
+una vivienda muy costosa, se conserva, y se puede reportar el análisis
+con y sin ese dato.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="36%" />
+<col width="32%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td
+align="left"><code>numbers of columns of arguments do not match</code></td>
+<td align="left"><code>rbind()</code> recibe tablas con distintas
+columnas</td>
+<td align="left">Usar <code>bind_rows()</code></td>
+</tr>
+<tr class="even">
+<td align="left">La tabla creció después de unir</td>
+<td align="left">La llave está repetida</td>
+<td align="left">Revisar <code>anyDuplicated()</code> antes de unir</td>
+</tr>
+<tr class="odd">
+<td
+align="left"><code>Detected an unexpected many-to-many relationship</code></td>
+<td align="left">La llave se repite en las dos tablas</td>
+<td align="left">Revisar la llave</td>
+</tr>
+<tr class="even">
+<td align="left">Datos mezclados entre personas</td>
+<td align="left">Se usó <code>cbind()</code> con tablas en distinto
+orden</td>
+<td align="left">Unir con una llave</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>could not find function "pivot_wider"</code></td>
+<td align="left">No se cargó el paquete</td>
+<td align="left">Ejecutar <code>library(tidyr)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Se borran atípicos reales</td>
+<td align="left">Se confunde atípico con error</td>
+<td align="left">Revisar la fuente antes de borrar</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-cambiar-el-formato"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Cambiar el
+formato</strong></span></h3>
+<p>Calcule la mediana del precio por zona y estrato, y preséntela en
+formato ancho, con una columna por estrato.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>por_estrato &lt;- aggregate(preciom ~ zona + estrato, data = viviendas, FUN = median)
+pivot_wider(por_estrato, names_from = estrato, values_from = preciom)
+# A tibble: 5 × 5
+  zona           `3`   `4`   `5`   `6`
+  &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Zona Centro    280   325  338.  1000
+2 Zona Norte     135   250  370    675
+3 Zona Oeste     165   210  445    700
+4 Zona Oriente   208   275  126.  1350
+5 Zona Sur       170   230  325    745</code></pre>
+</details>
+</div>
+<div id="reto-2.-comprobar-una-unión"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Comprobar una
+unión</strong></span></h3>
+<p>Una con <code>full_join()</code> las tablas <code>a</code> y
+<code>b</code>. ¿Cuántas filas tiene el resultado? ¿Cuántas tienen
+<code>NA</code> en <code>preciom</code>?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>completa &lt;- full_join(a, b, by = &quot;id&quot;)
+nrow(completa)
+[1] 8
+sum(is.na(completa$preciom))
+[1] 2</code></pre>
+<p>Son 8 filas, y 2 no tienen precio, porque esas viviendas solo están
+en <code>a</code>.</p>
+</details>
+</div>
+<div id="reto-3.-quiénes-faltan"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Quiénes
+faltan?</strong></span></h3>
+<p>Use <code>anti_join()</code> para encontrar las viviendas de
+<code>b</code> que no están en <code>a</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>anti_join(b, a, by = &quot;id&quot;)
+# A tibble: 2 × 3
+     id preciom tipo       
+  &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1  8299     305 apartamento
+2  8300     480 apartamento</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer
+gratis</strong></span></h3>
+<ul>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media. Los capítulos <a
+href="https://r4ds.hadley.nz/data-tidy.html">Data tidying</a> y <a
+href="https://r4ds.hadley.nz/joins.html">Joins</a> tratan estos
+temas.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

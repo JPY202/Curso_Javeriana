@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Qué hace bueno a un gráfico?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Qué
+hace bueno a un gráfico?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un buen gráfico muestra los datos sin deformarlos, se entiende rápido
+y lo pueden leer todas las personas. Esta página reúne las
+recomendaciones de guías oficiales y compara versiones mal hechas y
+corregidas de los mismos datos. Al final hay una lista para revisar
+cualquier gráfico.</p>
+<p>Esta página usa <code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>, y el paquete <code>ggplot2</code>. Los
+bloques de código se ejecutan en orden, porque algunos usan objetos
+creados en bloques anteriores.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p><br/></p>
+<div id="por-qué-el-eje-de-las-barras-debe-empezar-en-cero"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Por qué el eje de las barras
+debe empezar en cero?</strong></span></h2>
+<p>La longitud de una barra representa una cantidad. Si el eje se corta,
+las proporciones entre las barras se distorsionan (<a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a>; <a
+href="https://www.data-to-viz.com/caveat/cut_y_axis.html">Holtz y
+Healy</a>).</p>
+<p>El precio mediano de tres zonas es parecido:</p>
+<pre class="r"><code>medianas &lt;- as.data.frame(tapply(vivienda_faltantes$preciom, vivienda_faltantes$zona,
+                                 median, na.rm = TRUE))
+names(medianas) &lt;- &quot;mediana&quot;
+medianas$zona &lt;- rownames(medianas)
+parecidas &lt;- subset(medianas, zona %in% c(&quot;Zona Centro&quot;, &quot;Zona Norte&quot;, &quot;Zona Sur&quot;))
+parecidas
+            mediana        zona
+Zona Centro     297 Zona Centro
+Zona Norte      300  Zona Norte
+Zona Sur        320    Zona Sur</code></pre>
+<p>En la primera figura, el eje empieza en 290: la Zona Sur parece
+costar varias veces más. En la segunda, el eje empieza en cero y se ve
+la diferencia real, de unos 8 %.</p>
+<pre class="r"><code>ggplot(parecidas, aes(x = zona, y = mediana)) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.7) +
+  coord_cartesian(ylim = c(290, 325), expand = FALSE) +
+  labs(x = NULL, y = &quot;Precio mediano (millones)&quot;) +
+  theme_minimal(base_size = 14)</code></pre>
+<div class="figure">
+<img src="recurso306_files/figure-html/fig-eje-mal-1.png" alt="Tres barras con el eje cortado en 290; la barra de la Zona Sur parece mucho mayor" width="75%" />
+<p class="caption">
+Versión engañosa: el eje empieza en 290
+</p>
+</div>
+<pre class="r"><code>ggplot(parecidas, aes(x = zona, y = mediana)) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.7) +
+  geom_text(aes(label = mediana), vjust = -0.5, size = 4.8) +
+  scale_y_continuous(limits = c(0, 400), breaks = seq(0, 400, 100), expand = c(0, 0)) +
+  labs(x = NULL, y = &quot;Precio mediano (millones)&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso306_files/figure-html/fig-eje-bien-1.png" alt="Tres barras con el eje desde cero; las tres se ven casi iguales" width="75%" />
+<p class="caption">
+Versión correcta: el eje empieza en cero
+</p>
+</div>
+<p>Si las diferencias pequeñas son lo importante y no se quiere empezar
+en cero, se puede usar un gráfico de puntos en lugar de barras (<a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a>).</p>
+<p><br/></p>
+</div>
+<div id="qué-efectos-conviene-evitar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué efectos conviene
+evitar?</strong></span></h2>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="34%" />
+<col width="21%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Efecto</th>
+<th align="left">Por qué evitarlo</th>
+<th align="left">Qué hacer</th>
+<th align="left">Fuente</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3D</td>
+<td align="left">Distorsiona la percepción y reduce la precisión</td>
+<td align="left">Usar gráficos planos</td>
+<td align="left"><a
+href="https://www.data-to-viz.com/caveat/3d.html">Holtz y Healy</a></td>
+</tr>
+<tr class="even">
+<td align="left">Doble eje vertical</td>
+<td align="left">Puede malinterpretarse o manipularse</td>
+<td align="left">Hacer dos gráficos</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Fondos, sombras y texturas</td>
+<td align="left">Distraen del mensaje</td>
+<td align="left">Dejar el diseño simple</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a></td>
+</tr>
+<tr class="even">
+<td align="left">Cuadrícula oscura</td>
+<td align="left">Compite con los datos</td>
+<td align="left">Usar gris claro y máximo diez líneas</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/">Government
+Analysis Function, 2023</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Decimales de más</td>
+<td align="left">Agregan ruido</td>
+<td align="left">Dejar los necesarios</td>
+<td align="left"><a
+href="https://www.data-to-viz.com/caveat/declutter.html">Holtz y
+Healy</a></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cómo-usar-el-color" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo usar el
+color?</strong></span></h2>
+<p>El color debe usarse solo cuando aporta información: para mostrar
+grupos, resaltar un elemento o representar un gradiente. Si no comunica
+nada, distrae, porque el lector intenta descifrar qué significa (<a
+href="https://www.data-to-viz.com/caveat/color_com_nothing.html">Holtz y
+Healy</a>).</p>
+<pre class="r"><code>zonas &lt;- as.data.frame(table(vivienda_faltantes$zona))
+names(zonas) &lt;- c(&quot;zona&quot;, &quot;viviendas&quot;)
+
+ggplot(zonas, aes(x = zona, y = viviendas, fill = zona)) +
+  geom_col() +
+  scale_fill_manual(values = rainbow(5)) +
+  theme_gray(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<div class="figure">
+<img src="recurso306_files/figure-html/fig-color-mal-1.png" alt="Barras de cinco colores del arcoíris, con una leyenda que repite los nombres de las zonas" width="75%" />
+<p class="caption">
+Versión con colores decorativos
+</p>
+</div>
+<pre class="r"><code>ggplot(zonas, aes(x = viviendas, y = reorder(zona, viviendas))) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.7) +
+  geom_text(aes(label = viviendas), hjust = -0.15, size = 4.6) +
+  scale_x_continuous(limits = c(0, 6000), breaks = seq(0, 6000, 2000), expand = c(0, 0)) +
+  labs(x = &quot;Número de viviendas&quot;, y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.y = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso306_files/figure-html/fig-color-bien-1.png" alt="Barras horizontales de un solo color, ordenadas de mayor a menor, con el valor al final de cada barra" width="75%" />
+<p class="caption">
+Versión corregida: un color, barras ordenadas y etiquetas
+</p>
+</div>
+<p>La versión corregida también ordena las barras, pone el texto
+horizontal y quita la leyenda, que no aportaba nada.</p>
+<p>Según lo que se quiera mostrar, se escoge un tipo de paleta. Todas
+estas funciones vienen en <strong>R</strong>:</p>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="41%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo de paleta</th>
+<th align="left">Cuándo se usa</th>
+<th align="left">Ejemplo en <strong>R</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Categórica</td>
+<td align="left">Grupos sin orden, como sexo o zona</td>
+<td align="left"><code>palette.colors(palette = "Okabe-Ito")</code></td>
+</tr>
+<tr class="even">
+<td align="left">Ordenada</td>
+<td align="left">Grupos con orden, como el estrato</td>
+<td align="left"><code>hcl.colors(4, "viridis")</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Un solo color</td>
+<td align="left">Una sola variable</td>
+<td align="left"><code>fill = "#034A94"</code></td>
+</tr>
+</tbody>
+</table>
+<p>La misma variable debe tener el mismo color en todos los gráficos de
+un documento (<a
+href="https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/">Analysis
+Function</a>).</p>
+<p><br/></p>
+</div>
+<div id="cómo-etiquetar-un-gráfico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo etiquetar un
+gráfico?</strong></span></h2>
+<p>Cada gráfico necesita los <a href="recurso300.html">elementos
+clave</a>. Además, conviene seguir estas recomendaciones (<a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/">Government
+Analysis Function, 2022</a> y <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/">2023</a>):</p>
+<ul>
+<li>Usar un título que diga qué muestra el gráfico, y unidades claras en
+los ejes.</li>
+<li>Mantener el texto horizontal. Si no cabe, usar barras
+horizontales.</li>
+<li>Preferir etiquetas junto a los datos antes que una leyenda.</li>
+<li>Si se usa leyenda, mantener el mismo orden de los datos.</li>
+<li>Citar la fuente de los datos.</li>
+</ul>
+<p>Las anotaciones llevan al lector al mensaje, y escribir los valores
+clave le evita hacer cálculos (<a
+href="https://www.data-to-viz.com/caveat/annotation.html">Holtz y
+Healy</a>). En esta figura, la etiqueta reemplaza a la leyenda:</p>
+<pre class="r"><code>datos &lt;- subset(vivienda_faltantes, !is.na(preciom) &amp; !is.na(estrato))
+datos$tipo &lt;- tolower(datos$tipo)
+datos$tipo[datos$tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
+
+precios &lt;- aggregate(preciom ~ estrato + tipo, data = datos, FUN = median)
+nombres &lt;- subset(precios, estrato == 6)
+
+ggplot(precios, aes(x = estrato, y = preciom, color = tipo)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.8) +
+  geom_text(data = nombres, aes(label = tipo), hjust = -0.15, size = 4.8) +
+  scale_color_manual(values = c(&quot;apartamento&quot; = &quot;#0072B2&quot;, &quot;casa&quot; = &quot;#D55E00&quot;),
+                     guide = &quot;none&quot;) +
+  scale_x_continuous(limits = c(3, 6.8), breaks = 3:6) +
+  scale_y_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 200), expand = c(0, 0)) +
+  labs(x = &quot;Estrato&quot;, y = &quot;Precio mediano (millones)&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.minor.x = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso306_files/figure-html/fig-etiqueta-1.png" alt="Dos líneas, una de casas y una de apartamentos, identificadas con su nombre al final; el precio mediano sube con el estrato en ambas" width="100%" />
+<p class="caption">
+Precio mediano por estrato, con etiquetas directas
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cómo-hacer-un-gráfico-accesible" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo hacer un gráfico
+accesible?</strong></span></h2>
+<p>Un gráfico accesible lo pueden entender personas con baja visión, con
+dificultad para distinguir colores o que usan lectores de pantalla.</p>
+<table>
+<colgroup>
+<col width="37%" />
+<col width="33%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Recomendación</th>
+<th align="left">Por qué</th>
+<th align="left">Fuente</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No depender solo del color</td>
+<td align="left">Hay quienes no distinguen esos colores</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/">Lista
+de chequeo</a></td>
+</tr>
+<tr class="even">
+<td align="left">Contraste de 3:1 en barras, líneas y otras partes
+necesarias</td>
+<td align="left">Es el mínimo para distinguirlas</td>
+<td align="left"><a
+href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html">W3C</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Contraste de 4.5:1 en el texto</td>
+<td align="left">Es el mínimo para leerlo con facilidad</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/">Analysis
+Function</a></td>
+</tr>
+<tr class="even">
+<td align="left">Evitar líneas finas, barras delgadas y letra
+pequeña</td>
+<td align="left">Dificultan la lectura con baja visión</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/">Analysis
+Function</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Agregar una alternativa de texto</td>
+<td align="left">Un lector de pantalla no puede ver la imagen</td>
+<td align="left"><a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/">Lista
+de chequeo</a></td>
+</tr>
+</tbody>
+</table>
+<p>En <strong>R Markdown</strong>, la alternativa de texto se escribe
+con la opción <code>fig.alt</code> del bloque de código, y el pie de
+figura con <code>fig.cap</code>. La descripción debe decir qué muestra
+el gráfico, y no solo nombrarlo:</p>
+<pre class="markdown"><code>```{r, fig.cap=&quot;Viviendas por estrato&quot;, fig.alt=&quot;Cuatro barras; el estrato 5 es el mayor, con 2751 viviendas&quot;}
+ggplot(estratos, aes(x = estrato, y = viviendas)) + geom_col()
+```</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-revisar-un-gráfico-antes-de-publicarlo"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo revisar un gráfico antes
+de publicarlo?</strong></span></h2>
+<p>Antes de usar un gráfico, conviene responder estas preguntas:</p>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="82%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tema</th>
+<th align="left">Pregunta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mensaje</td>
+<td align="left">¿Se puede decir en pocas frases qué muestra?</td>
+</tr>
+<tr class="even">
+<td align="left">Tipo</td>
+<td align="left">¿Es el gráfico adecuado para la pregunta y las
+variables?</td>
+</tr>
+<tr class="odd">
+<td align="left">Ejes</td>
+<td align="left">¿Los ejes contienen todos los datos? ¿Las barras
+empiezan en cero?</td>
+</tr>
+<tr class="even">
+<td align="left">Unidades</td>
+<td align="left">¿Están claras las unidades de medida?</td>
+</tr>
+<tr class="odd">
+<td align="left">Orden</td>
+<td align="left">¿Las categorías están ordenadas por valor o por su
+orden propio?</td>
+</tr>
+<tr class="even">
+<td align="left">Etiquetas</td>
+<td align="left">¿El texto es horizontal y legible?</td>
+</tr>
+<tr class="odd">
+<td align="left">Color</td>
+<td align="left">¿Cada color significa algo? ¿Se entiende sin el
+color?</td>
+</tr>
+<tr class="even">
+<td align="left">Limpieza</td>
+<td align="left">¿Sobra algún elemento, como bordes, fondos o
+decimales?</td>
+</tr>
+<tr class="odd">
+<td align="left">Fuente</td>
+<td align="left">¿Se indica de dónde salen los datos?</td>
+</tr>
+<tr class="even">
+<td align="left">Accesibilidad</td>
+<td align="left">¿Tiene una descripción en texto?</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="31%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Diferencias pequeñas parecen enormes</td>
+<td align="left">El eje de las barras no empieza en cero</td>
+<td align="left">Empezar en cero o usar puntos</td>
+</tr>
+<tr class="even">
+<td align="left">Hay un color por categoría sin razón</td>
+<td align="left">Se escribió <code>fill = variable</code> por
+costumbre</td>
+<td align="left">Usar un solo color</td>
+</tr>
+<tr class="odd">
+<td align="left">Una leyenda repite el eje</td>
+<td align="left"><code>ggplot2</code> la agrega al usar
+<code>fill</code></td>
+<td align="left">Usar <code>guide = "none"</code></td>
+</tr>
+<tr class="even">
+<td align="left">El texto del eje está girado</td>
+<td align="left">Los nombres son largos</td>
+<td align="left">Usar barras horizontales</td>
+</tr>
+<tr class="odd">
+<td align="left">Las barras no se leen en blanco y negro</td>
+<td align="left">Los colores tienen la misma claridad</td>
+<td align="left">Agregar etiquetas o cambiar la paleta</td>
+</tr>
+<tr class="even">
+<td align="left">La imagen no tiene descripción</td>
+<td align="left">Faltó <code>fig.alt</code></td>
+<td align="left">Escribir qué muestra el gráfico</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-encontrar-los-problemas"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Encontrar los
+problemas</strong></span></h3>
+<p>Indique qué problemas tiene la figura de los colores decorativos. Use
+la lista de revisión.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Las barras están en orden alfabético, los colores no significan nada,
+el texto del eje está girado, la leyenda repite los nombres, el fondo
+gris sobra, y los ejes no aclaran que se trata del número de
+viviendas.</p>
+</details>
+</div>
+<div id="reto-2.-corregir-un-gráfico"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Corregir un
+gráfico</strong></span></h3>
+<p>Ejecute este código y corríjalo para que cumpla la lista de
+revisión:</p>
+<pre class="r"><code>ggplot(vivienda_faltantes, aes(x = factor(estrato), fill = factor(estrato))) +
+  geom_bar() +
+  coord_cartesian(ylim = c(1000, 3000))</code></pre>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>estratos &lt;- as.data.frame(table(vivienda_faltantes$estrato))
+names(estratos) &lt;- c(&quot;estrato&quot;, &quot;viviendas&quot;)
+
+ggplot(estratos, aes(x = estrato, y = viviendas)) +
+  geom_col(fill = &quot;#034A94&quot;, width = 0.7) +
+  geom_text(aes(label = viviendas), vjust = -0.5, size = 4.8) +
+  scale_y_continuous(limits = c(0, 3200), breaks = seq(0, 3000, 500), expand = c(0, 0)) +
+  labs(x = &quot;Estrato&quot;, y = &quot;Número de viviendas&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso306_files/figure-html/fig-reto2-1.png" alt="Cuatro barras azules con el eje desde cero: estrato 3 con 1453 viviendas, estrato 4 con 2131, estrato 5 con 2751 y estrato 6 con 1992" width="100%" />
+<p class="caption">
+Número de viviendas por estrato
+</p>
+</div>
+<p>Se quitó el eje cortado, se usó un solo color porque el eje ya indica
+el estrato, y se agregaron nombres y etiquetas.</p>
+</details>
+</div>
+<div id="reto-3.-escribir-la-alternativa-de-texto"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Escribir la alternativa
+de texto</strong></span></h3>
+<p>Escriba una descripción para la figura de la versión corregida de las
+zonas.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Una descripción posible es: <em>Gráfico de barras horizontales
+ordenadas de mayor a menor. La Zona Sur tiene 4726 viviendas, y le
+siguen Norte con 1922, Oeste con 1204, Oriente con 351 y Centro con
+124.</em></p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="guías-oficiales-para-descargar" class="section level3">
+<h3><span style="color:#034a94"><strong>Guías oficiales para
+descargar</strong></span></h3>
+<ul>
+<li>INEI. (2009). <a
+href="https://www.inei.gob.pe/media/MenuRecursivo/metodologias/libro.pdf"><em>Guía
+para la presentación de gráficos estadísticos</em></a>. Instituto
+Nacional de Estadística e Informática, Perú.</li>
+<li>Contraloría General de la República e INEC. <a
+href="https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf"><em>Manual
+para la elaboración de cuadros y gráficos estadísticos</em></a> (6.ª
+ed.). Panamá.</li>
+</ul>
+</div>
+<div id="libros-para-leer-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer
+gratis</strong></span></h3>
+<ul>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media. El capítulo 1 trata las figuras
+feas, malas y erróneas, el capítulo 4 las escalas de color y el capítulo
+19 los errores comunes con el color.</li>
+</ul>
+</div>
+<div id="otros-recursos" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+recursos</strong></span></h3>
+<ul>
+<li>Government Analysis Function. <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/"><em>Accessible
+charts: a checklist of the basics</em></a>. Lista de chequeo de
+accesibilidad.</li>
+<li>W3C. <a
+href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html"><em>Understanding
+Success Criterion 1.4.11: Non-text Contrast</em></a>. Criterio de
+contraste para gráficos.</li>
+<li>Holtz, Y. y Healy, C. <a
+href="https://www.data-to-viz.com/caveats.html"><em>Colección de
+advertencias</em></a> de From Data to Viz.</li>
+<li>R Core Team. <a
+href="https://stat.ethz.ch/R-manual/R-devel/library/grDevices/html/palette.html">Documentación
+de <code>palette.colors()</code> y <code>hcl.colors()</code></a>.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Analysis Function. <a
+href="https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/"><em>Accessibility
+and colour</em></a>.</li>
+<li>Government Analysis Function. (2022). <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/"><em>Data
+visualisation: charts</em></a>.</li>
+<li>Government Analysis Function. (2023). <a
+href="https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/"><em>Accessible
+charts: a checklist of the basics</em></a>.</li>
+<li>Holtz, Y. y Healy, C. <a
+href="https://www.data-to-viz.com/"><em>From Data to Viz</em></a>.</li>
+<li>W3C. <a
+href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html"><em>Understanding
+Success Criterion 1.4.11: Non-text Contrast</em></a>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

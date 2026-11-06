@@ -1,0 +1,262 @@
+---
+title: <span style="color:#034a94"> **¿Qué tipos de gráficos existen?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Los gráficos se pueden clasificar por su propósito o por el tipo de variable. Esta página presenta las dos clasificaciones, el árbol de decisión de From Data to Viz y los tipos de gráficos que se estudian en esta sección. La primera clasificación es la que usa [From Data to Viz](https://www.data-to-viz.com/).
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y el paquete `ggplot2`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+```{r}
+library(ggplot2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es From Data to Viz?**</span>
+
+[From Data to Viz](https://www.data-to-viz.com/) (Holtz y Healy) es un sitio con un **árbol de decisión** que lleva al gráfico apropiado según el formato de los datos. Está en inglés, y cada gráfico tiene su explicación, sus variantes y sus errores comunes. Sus ramas parten de seis tipos de datos:
+
+| Rama del árbol        | Significado                     | Ejemplo con los datos del curso             |
+|:----------------------|:--------------------------------|:--------------------------------------------|
+| Numeric               | Numéricos                       | Precio y área de las viviendas              |
+| Categoric             | Categóricos                     | Zona y estrato                              |
+| Num & Cat             | Numéricos y categóricos         | Tiempo de carrera por sexo                  |
+| Maps                  | Mapas                           | Longitud y latitud de las viviendas         |
+| Time series           | Series de tiempo                | Inflación por año                           |
+| Network               | Redes                           | No se usa en este curso                     |
+
+Para usar el árbol se siguen estos pasos:
+
+1. Identifique el tipo de datos que tiene.
+2. Abra [el árbol de decisión](https://www.data-to-viz.com/) y entre por esa rama.
+3. Responda las preguntas sobre sus variables y elija entre los gráficos que le propone.
+4. Abra la página del gráfico y lea sus errores comunes.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tipos hay según el propósito?**</span>
+
+From Data to Viz también agrupa los gráficos en siete familias, según lo que muestran. La siguiente tabla las resume con algunos ejemplos:
+
+| Familia                      | Qué responde                                | Ejemplos                              |
+|:-----------------------------|:--------------------------------------------|:--------------------------------------|
+| Distribución                 | ¿Cómo se reparten los valores?              | Histograma, densidad, cajas, violín   |
+| Correlación                  | ¿Cómo se relacionan dos variables?          | Dispersión, mapa de calor             |
+| Ranking                      | ¿Cuál categoría tiene más?                  | Barras, líneas y puntos, radar        |
+| Parte de un todo             | ¿Cómo se reparte un total?                  | Torta, dona, mapa de árbol            |
+| Evolución                    | ¿Cómo cambia en el tiempo?                  | Líneas, área                          |
+| Mapa                         | ¿Cómo cambia según el lugar?                | Mapa coroplético, mapa de burbujas    |
+| Flujo                        | ¿Cómo se mueve algo entre grupos?           | Sankey, diagrama de cuerdas           |
+
+Para escoger, conviene definir primero el mensaje. Si no se puede resumir en unas pocas frases, hay que replantear el gráfico ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/)). La siguiente figura muestra la ruta para los gráficos de este curso:
+
+```{r fig-ruta, echo=FALSE, fig.width=9.5, fig.height=5.6, fig.cap="Ruta para elegir un gráfico según lo que se quiere mostrar", fig.alt="Diagrama que parte de la pregunta qué quiere mostrar y lleva a cinco propósitos: comparar categorías, mostrar partes de un total, ver una distribución, ver una relación y ver un cambio en el tiempo, cada uno con sus gráficos", out.width="100%"}
+ruta <- data.frame(
+  y = 5:1,
+  proposito = c("Comparar categorías", "Mostrar partes de un total",
+                "Ver una distribución", "Ver la relación de dos\nvariables numéricas",
+                "Ver un cambio en el tiempo"),
+  graficos = c("Barras, líneas y puntos", "Barras apiladas, torta",
+               "Histograma, densidad, cajas", "Dispersión", "Líneas")
+)
+
+ggplot(ruta) +
+  geom_segment(aes(x = 1.8, xend = 3.05, y = 3, yend = y), color = "#8A94A0", linewidth = 0.7) +
+  geom_segment(aes(x = 5.75, xend = 6.45, y = y, yend = y), color = "#8A94A0", linewidth = 0.7,
+               arrow = arrow(length = unit(0.14, "inches"), type = "closed")) +
+  annotate("rect", xmin = 0.05, xmax = 1.85, ymin = 2.55, ymax = 3.45,
+           fill = "#034A94", color = NA) +
+  annotate("text", x = 0.95, y = 3, label = "¿Qué quiere\nmostrar?", color = "white",
+           fontface = "bold", size = 5) +
+  geom_rect(aes(xmin = 3.05, xmax = 5.75, ymin = y - 0.38, ymax = y + 0.38),
+            fill = "#D8ECF7", color = "#034A94") +
+  geom_text(aes(x = 4.4, y = y, label = proposito), color = "#034A94", size = 4.6,
+            lineheight = 0.9) +
+  geom_rect(aes(xmin = 6.5, xmax = 9.95, ymin = y - 0.38, ymax = y + 0.38),
+            fill = "#F4F7FB", color = "#8A94A0") +
+  geom_text(aes(x = 8.22, y = y, label = graficos), color = "#333333", size = 4.6) +
+  coord_cartesian(xlim = c(0, 10), ylim = c(0.5, 5.5), expand = FALSE) +
+  theme_void()
+```
+
+<details>
+<summary>Ver el código de la figura</summary>
+
+```{r ref.label="fig-ruta", eval=FALSE}
+```
+
+</details>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tipos hay según la variable?**</span>
+
+La **Tabla 1** presenta los gráficos más usados según el tipo de variable, con su sintaxis en la base de **R** y en `ggplot2`.
+
+<center>
+**Tabla 1.** Tipos de gráficos según el tipo de variable.
+</center>
+
+| Tipo de variable               | Gráfico            | Base de **R**          | `ggplot2`                            |
+|:-------------------------------|:-------------------|:-----------------------|:-------------------------------------|
+| Cualitativa                    | Torta              | `pie(table(x))`        | `geom_col()` + `coord_polar()`       |
+| Cualitativa                    | Barras             | `barplot(table(x))`    | `geom_bar()`                         |
+| Dos cualitativas               | Barras compuestas  | `barplot(table(x, y))` | `geom_bar(position = "dodge")`       |
+| Cuantitativa                   | Tallos y hojas     | `stem(x)`              | No tiene                             |
+| Cuantitativa                   | Histograma         | `hist(x)`              | `geom_histogram()`                   |
+| Cuantitativa                   | Densidad           | `plot(density(x))`     | `geom_density()`                     |
+| Cuantitativa                   | Cajas              | `boxplot(x)`           | `geom_boxplot()`                     |
+| Dos cuantitativas              | Dispersión         | `plot(x, y)`           | `geom_point()`                       |
+| Cuantitativa en el tiempo      | Líneas             | `plot(x, type = "l")`  | `geom_line()`                        |
+
+<div class="content-box-gray">
+Además de estas formas, existen otras que permiten combinar variables y explorar relaciones más complejas. Los **mapas** representan datos geográficos mediante colores, tamaños o símbolos. El **diagrama de mosaico** muestra la relación entre variables categóricas con rectángulos de área proporcional a las frecuencias. El **gráfico de radar** usa ejes radiales para comparar perfiles. El **diagrama Likert** muestra la distribución de respuestas en escalas de opinión.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué gráficos se estudian en esta sección?**</span>
+
+Cada página presenta los gráficos más usados, con su uso correcto, su interpretación y enlaces a From Data to Viz para ver más.
+
+```{=html}
+<div class="temas">
+<a class="tema" href="recurso302.html">
+<span class="tema-titulo">Variables categóricas</span>
+<span class="tema-texto">Barras simples, agrupadas y apiladas, y torta.</span>
+</a>
+<a class="tema" href="recurso303.html">
+<span class="tema-titulo">Variable numérica</span>
+<span class="tema-texto">Histograma, curva de densidad y gráfico de cajas.</span>
+</a>
+<a class="tema" href="recurso304.html">
+<span class="tema-titulo">Relaciones y cambios en el tiempo</span>
+<span class="tema-texto">Dispersión y series de tiempo.</span>
+</a>
+<a class="tema" href="recurso305.html">
+<span class="tema-titulo">Otros gráficos</span>
+<span class="tema-texto">Mapa, gráfico de radar y nube de palabras.</span>
+</a>
+</div>
+```
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                  | Causa                                                  | Solución                                                     |
+|:----------------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------------------|
+| Se escoge el gráfico antes de tener la pregunta           | Se parte del gráfico y no del mensaje                  | Escribir primero la pregunta que se quiere responder         |
+| Se confunde el gráfico de barras con el histograma        | Los dos usan rectángulos                               | Barras para categorías, histograma para una variable numérica |
+| Se usa una barra para resumir muchos valores por grupo    | La barra oculta la distribución del grupo              | Usar un gráfico de cajas                                     |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Del propósito al gráfico**</span>
+
+Indique a qué familia de From Data to Viz pertenece cada pregunta y qué gráfico usaría:
+
+- ¿Qué porcentaje de corredores corresponde a cada sexo?
+- ¿Cómo se distribuye la edad de los corredores?
+- ¿La edad se relaciona con el tiempo de carrera?
+
+<details>
+<summary>Ver solución</summary>
+
+- Parte de un todo: barras o torta, porque los porcentajes suman el total.
+- Distribución: histograma, densidad o cajas, porque la edad es numérica.
+- Correlación: dispersión, porque son dos variables numéricas.
+
+</details>
+
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Usar From Data to Viz**</span>
+
+Se quiere comparar el tiempo de carrera de hombres y mujeres. Lea la [página del gráfico de barras](https://www.data-to-viz.com/graph/barplot) y explique por qué no conviene usar una barra por sexo. Después haga un gráfico más adecuado e interprételo.
+
+<details>
+<summary>Ver solución</summary>
+
+Cada sexo tiene muchos valores de tiempo. La página advierte que, con varios valores por grupo, conviene un gráfico como el de cajas o el de violín.
+
+```{r fig-reto2, fig.width=8, fig.height=3.4, fig.cap="Tiempo de carrera por sexo", fig.alt="Gráfico de cajas horizontal: la mediana de los hombres es cercana a 60 minutos y la de las mujeres cercana a 69", out.width="100%"}
+carrera <- data.frame(sexo = CarreraLuz22$sex, minutos = CarreraLuz22$timerun / 60)
+
+ggplot(carrera, aes(x = minutos, y = sexo)) +
+  geom_boxplot(fill = "#D8ECF7", color = "#034A94") +
+  scale_x_continuous(limits = c(0, 180), breaks = seq(0, 180, 30), expand = c(0, 0)) +
+  labs(x = "Tiempo de carrera (minutos)", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+Los hombres tienen una mediana cercana a 60 minutos y las mujeres cercana a 69 minutos.
+
+</details>
+
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Guías oficiales para descargar**</span>
+
+- INEGI. (2018). [*Presentación de resultados estadísticos. Actualización 2017*](https://www.inegi.org.mx/contenidos/productos/prod_serv/contenidos/espanol/bvinegi/productos/nueva_estruc/702825094423.pdf). Instituto Nacional de Estadística y Geografía, México.
+- INEI. (2009). [*Guía para la presentación de gráficos estadísticos*](https://www.inei.gob.pe/media/MenuRecursivo/metodologias/libro.pdf). Instituto Nacional de Estadística e Informática, Perú.
+- Contraloría General de la República e INEC. [*Manual para la elaboración de cuadros y gráficos estadísticos*](https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf) (6.ª ed.). Panamá.
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media. El capítulo 5 es un directorio de visualizaciones.
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se descarga en PDF desde esa página. La sección [2.1](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-1-graficos-de-tallo-y-hoja-grafico-de-tallo-graficos-de-lineas-y-graficos-de-barras) trata varios de estos gráficos.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Otros recursos**</span>
+
+- Holtz, Y. y Healy, C. [*From Data to Viz*](https://www.data-to-viz.com/). Árbol de decisión para escoger un gráfico, con una [colección de advertencias](https://www.data-to-viz.com/caveats.html) sobre errores comunes.
+- Government Analysis Function. [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/). Guía del gobierno británico para elegir y presentar gráficos.
+- Healy, K. (2019). [*Data Visualization: A Practical Introduction*](https://kieranhealy.org/publications/dataviz/). Princeton University Press. El autor mantiene un [borrador del manuscrito](https://socviz.co) en línea.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Government Analysis Function. (2022). [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/).
+- Holtz, Y. y Healy, C. [*From Data to Viz*](https://www.data-to-viz.com/).
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

@@ -1,0 +1,82 @@
+---
+title: <span style="color:#034a94"> **Experiencia**</span>
+output:
+  html_document:
+    toc: no
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = NA)
+```
+
+```{r, out.width="100%", fig.align="center", fig.alt="Banner de Métodos y Simulación Estadística"}
+knitr::include_graphics("img/banner_presentacion.png")
+```
+
+<br/>
+
+Esta unidad se concentra en algunos conceptos básicos de estadística, el análisis exploratorio de datos y el manejo del software **R**.
+
+<br/>
+
+## <span style="color:#034a94">**Contenido de la unidad**</span>
+
+1.  **Software R**
+
+    - [Introducción](recurso100.html)
+    - [Objetos en R](recurso101.html)
+    - [Funciones en R](recurso106.html)
+    - [Funciones `apply`, `lapply` y `sapply`](recurso107.html)
+    - [RMarkdown](recurso102.html)
+    - [Proyecto en RStudio](recurso103.html)
+    - [Paquetes](recurso104.html)
+    - [IA en RStudio](recurso105.html)
+
+    <br/>
+
+2.  **Análisis de datos**
+
+    - [Conceptos básicos](recurso200.html)
+    - [Tablas de frecuencia](recurso201.html)
+    - [Indicadores estadísticos](recurso202.html)
+        - [Indicadores de centro](recurso203.html)
+        - [Indicadores de posición](recurso204.html)
+        - [Indicadores de dispersión](recurso205.html)
+        - [Indicadores de forma](recurso206.html)
+
+    <br/>
+
+3.  **Gráficos**
+
+    - [Introducción](recurso300.html)
+    - [¿Qué tipos de gráficos existen?](recurso301.html)
+        - [Variables categóricas](recurso302.html)
+        - [Variable numérica](recurso303.html)
+        - [Relaciones y cambios en el tiempo](recurso304.html)
+        - [Otros gráficos](recurso305.html)
+    - [¿Qué hace bueno a un gráfico?](recurso306.html)
+
+    <br/>
+
+4.  **Procesamiento de datos**
+
+    - [Importar datos](recurso400.html)
+    - [Organizar los datos](recurso401.html)
+    - [Datos faltantes](recurso402.html)
+    - [Transformar variables](recurso403.html)
+
+    <br/>
+
+5.  **Casos e informe**
+
+    - [Caso 1](recurso50a.html)
+    - [Caso 2](recurso51a.html)
+    - [Informe](recurso52a.html)
+
+    <br/>
+
+6.  [**Referencias**](recurso60a.html)
+
+<br/><br/>

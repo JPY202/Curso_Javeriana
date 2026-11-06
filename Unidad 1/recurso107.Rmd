@@ -1,0 +1,324 @@
+---
+title: <span style="color:#034a94"> **¿Qué son las funciones apply, lapply y sapply?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+```
+
+<br/>
+
+En **R**, las funciones `apply`, `lapply` y `sapply` forman parte de la familia de funciones de *aplicación*. Permiten aplicar operaciones a estructuras como listas, vectores, matrices y data frames, sin escribir bucles como `for`. Su uso da un código más conciso y legible.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué función usar?**</span>
+
+Con frecuencia se necesita aplicar la misma función a cada fila, columna o elemento de un objeto. La familia `apply` lo hace sin escribir un ciclo: recibe un objeto y una función, y organiza los resultados. Como las funciones son objetos, se pasan como argumento.
+
+| Función     | Sobre qué opera                 | Qué recorre            | Qué devuelve                                    |
+|:------------|:--------------------------------|:-----------------------|:------------------------------------------------|
+| `apply()`   | matriz, arreglo o data frame    | filas o columnas       | vector, matriz o lista                          |
+| `lapply()`  | vector, lista o data frame      | cada elemento          | siempre una lista                               |
+| `sapply()`  | vector, lista o data frame      | cada elemento          | vector o matriz si es posible; si no, una lista |
+| `vapply()`  | vector, lista o data frame      | cada elemento          | el tipo que se le indique                       |
+| `tapply()`  | vector y uno o varios factores  | cada grupo             | vector o arreglo                                |
+| `mapply()`  | varios vectores o listas        | sus elementos a la par | vector, matriz o lista                          |
+| `replicate()` | una expresión                 | n repeticiones         | vector, matriz o lista                          |
+
+<sub>Elaborada a partir de la documentación de [apply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/apply.html), [lapply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html), [tapply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/tapply.html) y [mapply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/mapply.html).</sub>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar apply()?**</span>
+
+Aplica una función por filas o columnas. Su sintaxis es `apply(X, MARGIN, FUN, ...)`, donde `MARGIN = 1` indica filas, `MARGIN = 2` columnas y `...` son argumentos adicionales para `FUN`.
+
+```{r}
+mi_matriz <- matrix(1:9, nrow = 3, byrow = TRUE)
+mi_matriz
+apply(mi_matriz, MARGIN = 1, FUN = sum)     # suma por fila
+apply(mi_matriz, MARGIN = 2, FUN = mean)    # media por columna
+```
+
+También admite funciones propias. Esta multiplica por 2 el primer valor de cada fila, le suma el promedio y divide entre 4:
+
+```{r}
+df <- data.frame(A = c(2, 4, 6), B = c(8, 10, 12), C = c(1, 3, 5))
+
+mi_funcion <- function(x) {
+  (2 * x[1] + mean(x)) / 4
+}
+
+apply(df, MARGIN = 1, FUN = mi_funcion)
+```
+
+Combinada con simulación, permite repetir un cálculo sobre muchas muestras. Cada fila de la matriz es una muestra de tamaño 4 de una distribución uniforme:
+
+```{r}
+generar_muestras <- function(m, n) {
+  matrix(runif(m * n), nrow = m, ncol = n)
+}
+
+operacion_vector <- function(x) {
+  (x[length(x)] * max(x)) / min(x)
+}
+
+set.seed(123)
+muestras <- generar_muestras(m = 5, n = 4)
+apply(muestras, MARGIN = 1, FUN = operacion_vector)
+```
+
+Los argumentos adicionales se escriben después de la función. Si la función devuelve más de un valor por fila, cada resultado queda en una **columna**, como indica la [documentación](https://stat.ethz.ch/R-manual/R-devel/library/base/html/apply.html):
+
+```{r}
+apply(iris[, 1:4], 2, quantile, probs = c(0.25, 0.75))
+apply(mi_matriz, 1, range)    # 3 filas originales: 3 columnas
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Cuidado**</span>
+
+`apply()` convierte un data frame en matriz con `as.matrix()`. Como una matriz admite un solo tipo, si hay una columna de texto todos los valores pasan a ser texto.
+</div>
+
+```{r}
+apply(iris[1:2, ], 1, class)
+```
+
+Para sumas y medias por fila o columna, `rowSums()`, `colSums()`, `rowMeans()` y `colMeans()` son equivalentes y, según su [documentación](https://stat.ethz.ch/R-manual/R-devel/library/base/html/colSums.html), mucho más rápidas.
+
+```{r}
+rowSums(mi_matriz)
+colMeans(mi_matriz)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar lapply()?**</span>
+
+Aplica una función a cada elemento y siempre devuelve una lista. Es útil cuando los resultados tienen longitudes distintas.
+
+```{r}
+mi_lista <- list(grupo1 = c(1, 2, 3), grupo2 = c(4, 5), grupo3 = c(6, 7, 8, 9))
+
+cuadrados_vector <- function(x) {
+  x^2
+}
+
+lapply(mi_lista, cuadrados_vector)
+```
+
+Como un data frame es una lista de columnas, `lapply()` lo recorre por columnas. Con `split()` se aplica por grupos:
+
+```{r}
+por_especie <- split(iris$Sepal.Length, iris$Species)
+lapply(por_especie, summary)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar sapply()?**</span>
+
+Es una [versión de `lapply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html) que intenta simplificar el resultado:
+
+- Si todos los resultados tienen longitud 1, devuelve un vector.
+- Si tienen la misma longitud mayor que 1, devuelve una matriz.
+- Si no puede simplificar, devuelve una lista.
+
+```{r}
+medidas <- list(grupo1 = c(2, 4, 6), grupo2 = c(5, 7, 9, 11), grupo3 = c(1, 3))
+
+sapply(medidas, mean)                     # vector
+sapply(medidas, range)                    # matriz
+sapply(medidas, function(x) x[x > 3])     # lista
+```
+
+También admite funciones propias. Esta multiplica el máximo por el número de elementos y lo divide entre la varianza:
+
+```{r}
+indicador <- function(x) {
+  (max(x) * length(x)) / var(x)
+}
+
+sapply(medidas, indicador)
+```
+
+<br/>
+
+## <span style="color:#034a94">**vapply()**</span>
+
+El resultado de `sapply()` depende de los datos, y eso puede causar errores difíciles de detectar. Con un vector vacío, por ejemplo, devuelve una lista. `vapply()` exige indicar el tipo de resultado, por lo que la documentación la describe como [más segura](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html). Se recomienda dentro de funciones que otras personas vayan a reutilizar.
+
+```{r, error=TRUE}
+sapply(character(0), nchar)                        # devuelve una lista vacía
+vapply(character(0), nchar, numeric(1))            # devuelve un numérico vacío
+vapply(iris[, 1:4], mean, numeric(1))
+vapply(iris[, 1:4], range, numeric(1))             # genera error: devuelve 2 valores
+```
+
+<br/>
+
+## <span style="color:#034a94">**tapply()**</span>
+
+Aplica una función por grupos definidos por uno o varios factores.
+
+```{r}
+tapply(mtcars$mpg, mtcars$cyl, mean)
+tapply(mtcars$mpg, list(cilindros = mtcars$cyl, transmision = mtcars$am), mean)
+```
+
+<br/>
+
+## <span style="color:#034a94">**mapply()**</span>
+
+Es la [versión de `sapply()` para varios argumentos](https://stat.ethz.ch/R-manual/R-devel/library/base/html/mapply.html): toma el primer elemento de cada uno, luego el segundo, y así sucesivamente.
+
+```{r}
+mapply(function(nombre, nota) paste(nombre, "obtuvo", nota),
+       c("Ana", "Luis"), c(4.2, 3.8), USE.NAMES = FALSE)
+```
+
+<br/>
+
+## <span style="color:#034a94">**replicate()**</span>
+
+Repite una expresión n veces. Es un [envoltorio de `sapply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html) pensado para simulación. El siguiente ejemplo genera 5,000 muestras de tamaño 30 de una distribución exponencial con media 10 y guarda la media de cada una. Aunque la población es asimétrica, la distribución de las medias se acerca a una normal, como se estudiará en la siguiente unidad.
+
+```{r, fig.width=7, fig.height=3.5}
+set.seed(123)
+medias <- replicate(5000, mean(rexp(30, rate = 0.1)))
+
+mean(medias)          # cercano a la media poblacional: 10
+sd(medias)            # cercano a 10 / sqrt(30)
+10 / sqrt(30)
+
+hist(medias, breaks = 40, col = "#0EB0C6", border = "white", las = 1,
+     main = "Medias de 5,000 muestras de tamaño 30",
+     xlab = "Media muestral", ylab = "Frecuencia")
+```
+
+<br/>
+
+## <span style="color:#034a94">**Funciones anónimas y encadenamiento**</span>
+
+Cuando una función se usa una sola vez no necesita nombre. Desde **R** 4.1.0, `\(x)` es una [forma corta](https://www.r-bloggers.com/2021/05/new-features-in-r-4-1-0/) de escribir `function(x)`, y el operador `|>` encadena instrucciones.
+
+```{r}
+sapply(iris[, 1:4], function(x) sd(x) / mean(x) * 100)    # coeficiente de variación
+sapply(iris[, 1:4], \(x) sd(x) / mean(x) * 100)           # forma corta
+
+iris[, 1:4] |>
+  sapply(mean) |>
+  round(2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Son más rápidas que un ciclo for?**</span>
+
+Es una creencia común, pero no es una regla. Esta es la conclusión de las fuentes consultadas:
+
+- `apply()` y `lapply()` no son vectorización real. [Burns (2011)](https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf) las describe como una forma de ocultar el ciclo, y señala que sus tiempos tienden a ser similares a los de un `for` explícito.
+- Lo que hace lento a un ciclo suele ser [hacer crecer un objeto](https://library.virginia.edu/data/articles/why-preallocate-memory-r-loops) en cada iteración. Se evita reservando su tamaño desde el inicio.
+- Elegir entre `for` y `apply` es en buena parte una [cuestión de preferencia y claridad](https://swcarpentry.github.io/r-novice-inflammation/15-supp-loops-in-depth.html). `for` suele ser más natural cuando cada paso tiene varias operaciones relacionadas.
+
+```{r}
+# Ciclo for con el resultado reservado desde el inicio
+resultado <- numeric(4)
+for (i in 1:4) {
+  resultado[i] <- mean(iris[[i]])
+}
+resultado
+
+# Mismo cálculo con sapply y con una función vectorizada
+unname(sapply(iris[, 1:4], mean))
+unname(colMeans(iris[, 1:4]))
+```
+
+Un orden de preferencia razonable es el siguiente:
+
+1. Usar una función vectorizada si existe, como `colMeans()`, `cumsum()` o `ifelse()`.
+2. Usar `sapply()`, `vapply()` o `lapply()` si se aplica una sola función a cada elemento.
+3. Usar `for` si la tarea tiene varios pasos o cada iteración depende de la anterior.
+
+El paquete [`purrr`](https://purrr.tidyverse.org/) ofrece una alternativa a esta familia. Su función `map()` trabaja como `lapply()`, y variantes como `map_dbl()` garantizan el tipo de resultado, como `vapply()`. Puede ser útil si se trabaja con el *tidyverse*, pero no se requiere en esta unidad.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                          | Causa                                                  | Solución                                         |
+|:--------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------|
+| `dim(X) must have a positive length`              | `apply()` recibió un vector                            | Usar `sapply()`, o una matriz                    |
+| `apply()` no calcula con un data frame            | Alguna columna es de texto y todo se vuelve carácter   | Seleccionar solo columnas numéricas              |
+| Se esperaba un vector y salió una lista           | Se usó `lapply()`, o `sapply()` no pudo simplificar    | Usar `sapply()`, o revisar el largo de los resultados |
+| Se confunden filas y columnas                     | `MARGIN` quedó invertido                               | `MARGIN = 1` filas y `MARGIN = 2` columnas       |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Por filas y por columnas**</span>
+
+Con `m <- matrix(1:12, nrow = 3)`, calcule el máximo de cada fila y la media de cada columna.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+m <- matrix(1:12, nrow = 3)
+apply(m, MARGIN = 1, FUN = max)
+apply(m, MARGIN = 2, FUN = mean)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. lapply o sapply**</span>
+
+Calcule la mediana de las cuatro columnas numéricas de `iris` con `lapply()` y con `sapply()`. ¿En qué se diferencian los resultados?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+lapply(iris[, 1:4], median)
+sapply(iris[, 1:4], median)
+```
+
+`lapply()` devuelve una lista, y `sapply()` la simplifica a un vector.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+- R Core Team. Documentación de [`apply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/apply.html), [`lapply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html), [`tapply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/tapply.html) y [`mapply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/mapply.html).
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- R Core Team. [Documentación de `apply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/apply.html).
+- R Core Team. [Documentación de `lapply()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html).
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Conceptos básicos</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Conceptos básicos</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Antes de calcular un promedio o hacer un gráfico hay que responder
+tres preguntas: ¿qué se quiere saber?, ¿sobre quién? y ¿qué se midió? De
+esas respuestas depende qué análisis tiene sentido y hasta dónde llegan
+las conclusiones.</p>
+<p>Esta página presenta el vocabulario que se usa en el resto de la
+sección. El ejemplo principal es la base <code>CarreraLuz22</code>, del
+paquete <code>paqueteMETODOS</code>, con los 1,922 atletas de la carrera
+La Luz 2022, en Cali.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)</code></pre>
+<pre class="r"><code>head(CarreraLuz22, 3)
+# A tibble: 3 × 7
+     id sex     edad origen  timerun categoria  nacionalidad
+  &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       
+1     1 Hombre    22 Sevilla    1988 2. Abierta COL         
+2     2 Hombre    31 Sevilla    2041 2. Abierta COL         
+3     3 Hombre    31 Yumbo      2083 2. Abierta COL         </code></pre>
+<p>Los bloques de código de esta página se ejecutan en orden, porque
+algunos usan objetos creados en bloques anteriores.</p>
+<p><br/></p>
+<div id="qué-es-la-estadística" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es la
+estadística?</strong></span></h2>
+<p>Existen varias definiciones de estadística. Estas son algunas de
+ellas:</p>
+<div class="definiciones">
+<div class="definicion">
+<p>
+Estudio matemático de la incertidumbre y la variabilidad que proporciona
+herramientas y métodos para describir, modelar y analizar fenómenos
+aleatorios, y tomar decisiones basadas en la información disponible.
+</p>
+<p><span class="definicion-autor">Kolmogorov, A. N. (1933)</span></p>
+</div>
+<div class="definicion">
+<p>
+Ciencia que trata de la toma de decisiones en presencia de incertidumbre
+mediante el uso de datos observados.
+</p>
+<p><span class="definicion-autor">Fisher, R. A. (1959)</span></p>
+</div>
+<div class="definicion">
+<p>
+Conjunto de métodos para recopilar, organizar, resumir, presentar y
+analizar datos, así como para obtener conclusiones válidas y tomar
+decisiones razonables basadas en tal análisis.
+</p>
+<p><span class="definicion-autor">Walpole, R. E. (2012)</span></p>
+</div>
+<div class="definicion">
+<p>
+Ciencia que utiliza métodos para recopilar, describir, analizar e
+interpretar datos, así como para tomar decisiones basadas en dichos
+análisis.
+</p>
+<p><span class="definicion-autor">Anderson, D. R. (2013)</span></p>
+</div>
+</div>
+<p>Estas definiciones tienen algo en común: usan datos o información
+para tomar decisiones. La incertidumbre aparece porque casi nunca se
+observa todo, y porque las mediciones varían de una persona, un objeto o
+un momento a otro.</p>
+<p>Su trabajo se suele dividir en dos partes:</p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="40%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Parte</th>
+<th align="left">Qué hace</th>
+<th align="left">Ejemplo con la carrera</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Estadística descriptiva</strong></td>
+<td align="left">Resume los datos observados con tablas, indicadores y
+gráficos</td>
+<td align="left">Calcular el tiempo promedio de los atletas</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Inferencia estadística</strong></td>
+<td align="left">Usa una muestra para concluir sobre una población, con
+un margen de error</td>
+<td align="left">Usar una muestra de 50 atletas para estimar el tiempo
+promedio de todos</td>
+</tr>
+</tbody>
+</table>
+<div id="cómo-se-desarrolla-un-estudio" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se desarrolla un
+estudio?</strong></span></h3>
+<p>Un estudio no empieza con los datos, sino con una pregunta. <a
+href="https://doi.org/10.1111/j.1751-5823.1999.tb00442.x">Wild y
+Pfannkuch (1999)</a> adaptan el modelo PPDAC, de MacKay y Oldford, con
+estas cinco etapas:</p>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="33%" />
+<col width="53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Etapa</th>
+<th align="left">Pregunta guía</th>
+<th align="left">Ejemplo con la carrera</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Problema</strong></td>
+<td align="left">¿Qué se quiere saber?</td>
+<td align="left">¿Cambia el tiempo según la edad y el sexo?</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Plan</strong></td>
+<td align="left">¿Qué se va a medir y a quiénes?</td>
+<td align="left">Atletas de la carrera: tiempo, sexo y edad</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Datos</strong></td>
+<td align="left">¿Cómo se recogen y organizan?</td>
+<td align="left">Revisar registros, unidades y datos faltantes</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Análisis</strong></td>
+<td align="left">¿Qué muestran los datos?</td>
+<td align="left">Tablas, indicadores y gráficos por grupo</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Conclusiones</strong></td>
+<td align="left">¿Qué se responde y con qué límites?</td>
+<td align="left">Comunicar el resultado y aclarar a quiénes aplica</td>
+</tr>
+</tbody>
+</table>
+<div class="definicion">
+<p>
+Llegará el día en el que el pensamiento estadístico será una condición
+tan necesaria para la convivencia eficiente como la capacidad de leer y
+escribir.
+</p>
+<p><span class="definicion-autor">H. G. Wells</span></p>
+</div>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-surgió" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo
+surgió?</strong></span></h2>
+<p>Estos son algunos hechos clave:</p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Año</th>
+<th align="left">Hecho</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1654</td>
+<td align="left">Pascal y Fermat discuten por carta cómo repartir una
+apuesta, un punto de partida de la <a
+href="https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application">teoría
+de la probabilidad</a></td>
+</tr>
+<tr class="even">
+<td align="left">1662</td>
+<td align="left">Graunt analiza registros de mortalidad</td>
+</tr>
+<tr class="odd">
+<td align="left">1713</td>
+<td align="left">Se publica <em>Ars Conjectandi</em>, de Bernoulli, con
+una primera forma de la ley de los grandes números</td>
+</tr>
+<tr class="even">
+<td align="left">1812</td>
+<td align="left">Laplace publica su teoría analítica de la
+probabilidad</td>
+</tr>
+<tr class="odd">
+<td align="left">1919-1933</td>
+<td align="left">Fisher trabaja en <a
+href="https://mathshistory.st-andrews.ac.uk/Biographies/Fisher/">Rothamsted</a>,
+donde introduce la aleatorización y el análisis de varianza en el diseño
+de experimentos</td>
+</tr>
+<tr class="even">
+<td align="left">1977</td>
+<td align="left">Tukey publica <em>Exploratory Data Analysis</em></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="qué-es-una-unidad-de-análisis" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una unidad de
+análisis?</strong></span></h2>
+<p>La <strong>unidad de análisis</strong> es el elemento sobre el cual
+se observa o se mide algo. Cada fila de una base de datos ordenada
+corresponde, por lo general, a una unidad. En <code>CarreraLuz22</code>,
+la unidad de análisis es cada <strong>atleta</strong>.</p>
+<table>
+<colgroup>
+<col width="58%" />
+<col width="41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Estudio</th>
+<th align="left">Unidad de análisis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Satisfacción de los clientes de un banco</td>
+<td align="left">Cliente</td>
+</tr>
+<tr class="even">
+<td align="left">Control de calidad de botellas</td>
+<td align="left">Botella</td>
+</tr>
+<tr class="odd">
+<td align="left">Fertilidad del suelo</td>
+<td align="left">Parcela</td>
+</tr>
+<tr class="even">
+<td align="left">Calidad del agua de un río</td>
+<td align="left">Muestra de agua en un punto y un momento</td>
+</tr>
+<tr class="odd">
+<td align="left">Precio de la vivienda en Cali</td>
+<td align="left">Vivienda</td>
+</tr>
+</tbody>
+</table>
+<p>Definirla mal lleva a conclusiones equivocadas. Por ejemplo, si se
+mide el rendimiento de varios estudiantes en cada colegio, la unidad
+puede ser el estudiante o el colegio, según la pregunta.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-una-variable" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una
+variable?</strong></span></h2>
+<p>Una <strong>variable</strong> es una característica que se registra
+en cada unidad de análisis y que puede cambiar de una unidad a otra. Su
+tipo determina qué tablas, indicadores y gráficos se pueden usar.</p>
+<div class="figure" style="text-align: center">
+<img src="recurso200_files/figure-html/fig-variables-1.png" alt="Diagrama: una variable es cualitativa, nominal u ordinal, o cuantitativa, discreta o continua, con la escala que corresponde a cada tipo" width="100%" />
+<p class="caption">
+Tipos de variables y escalas de medición. Elaboración propia a partir de
+Stevens (1946) y del material del curso.
+</p>
+</div>
+<details>
+<summary>
+Ver el código de la figura
+</summary>
+<pre class="r"><code>caja &lt;- function(x, y, ancho, alto, titulo, detalle = &quot;&quot;,
+                 borde = &quot;#034A94&quot;, fondo = &quot;#EEF4FB&quot;, color = &quot;#034A94&quot;) {
+  rect(x - ancho / 2, y - alto / 2, x + ancho / 2, y + alto / 2,
+       border = borde, col = fondo, lwd = 2)
+  text(x, y + ifelse(nzchar(detalle), alto * 0.17, 0), titulo, font = 2, col = color, cex = 1.05)
+  text(x, y - alto * 0.24, detalle, col = &quot;#555555&quot;, cex = 0.82)
+}
+
+op &lt;- par(mar = c(0, 0, 0, 0))
+plot.new()
+plot.window(xlim = c(0, 100), ylim = c(0, 100))
+
+segments(50, 89, 50, 81, col = &quot;gray50&quot;, lwd = 2)
+segments(c(25, 25, 75), 81, c(75, 25, 75), c(81, 74, 74), col = &quot;gray50&quot;, lwd = 2)
+segments(c(25, 12.5, 12.5, 37.5, 75, 62.5, 62.5, 87.5), c(60, 53, 53, 53, 60, 53, 53, 53),
+         c(25, 37.5, 12.5, 37.5, 75, 87.5, 62.5, 87.5), c(53, 53, 46, 46, 53, 53, 46, 46),
+         col = &quot;gray50&quot;, lwd = 2)
+segments(c(12.5, 37.5, 62.5, 87.5), 28, c(12.5, 37.5, 62.5, 87.5), 20, col = &quot;gray50&quot;, lwd = 2)
+
+caja(50, 94, 20, 10, &quot;Variable&quot;)
+caja(25, 67, 21, 14, &quot;Cualitativa&quot;, &quot;describe una categoría&quot;)
+caja(75, 67, 21, 14, &quot;Cuantitativa&quot;, &quot;expresa una cantidad&quot;)
+caja(12.5, 37, 23, 18, &quot;Nominal&quot;, &quot;sin orden: sexo, barrio&quot;)
+caja(37.5, 37, 23, 18, &quot;Ordinal&quot;, &quot;con orden: estrato, categoría&quot;)
+caja(62.5, 37, 23, 18, &quot;Discreta&quot;, &quot;se cuenta: hijos, visitas&quot;)
+caja(87.5, 37, 23, 18, &quot;Continua&quot;, &quot;se mide: tiempo, peso&quot;)
+
+amarillo &lt;- list(borde = &quot;#B8860B&quot;, fondo = &quot;#FFF7E0&quot;, color = &quot;#6B4E00&quot;)
+caja(12.5, 11, 23, 18, &quot;Escala nominal&quot;, &quot;igual o distinto&quot;,
+     amarillo$borde, amarillo$fondo, amarillo$color)
+caja(37.5, 11, 23, 18, &quot;Escala ordinal&quot;, &quot;mayor o menor&quot;,
+     amarillo$borde, amarillo$fondo, amarillo$color)
+caja(75, 11, 48, 18, &quot;Escala de intervalo o de razón&quot;,
+     &quot;intervalo: el cero es arbitrario. Razón: el cero indica ausencia&quot;,
+     amarillo$borde, amarillo$fondo, amarillo$color)
+par(op)</code></pre>
+</details>
+<ul>
+<li>Una variable <strong>cualitativa</strong> describe una categoría. Si
+no hay un orden natural es <strong>nominal</strong>. Si lo hay, es
+<strong>ordinal</strong>.</li>
+<li>Una variable <strong>cuantitativa</strong> expresa una cantidad. Es
+<strong>discreta</strong> si sus valores se pueden contar y
+<strong>continua</strong> si se obtiene al medir.</li>
+</ul>
+<p>Las variables de la carrera se clasifican así:</p>
+<table style="width:100%;">
+<colgroup>
+<col width="19%" />
+<col width="36%" />
+<col width="32%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Qué registra</th>
+<th align="left">Tipo</th>
+<th align="left">Escala</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>id</code></td>
+<td align="left">Identificador del atleta</td>
+<td align="left">Cualitativa nominal</td>
+<td align="left">Nominal</td>
+</tr>
+<tr class="even">
+<td align="left"><code>sex</code></td>
+<td align="left">Hombre o mujer</td>
+<td align="left">Cualitativa nominal</td>
+<td align="left">Nominal</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>origen</code></td>
+<td align="left">Lugar de origen</td>
+<td align="left">Cualitativa nominal</td>
+<td align="left">Nominal</td>
+</tr>
+<tr class="even">
+<td align="left"><code>nacionalidad</code></td>
+<td align="left">País</td>
+<td align="left">Cualitativa nominal</td>
+<td align="left">Nominal</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>categoria</code></td>
+<td align="left">Categoría de competencia</td>
+<td align="left">Cualitativa ordinal</td>
+<td align="left">Ordinal</td>
+</tr>
+<tr class="even">
+<td align="left"><code>edad</code></td>
+<td align="left">Edad</td>
+<td align="left">Cuantitativa discreta</td>
+<td align="left">Razón</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>timerun</code></td>
+<td align="left">Tiempo en segundos</td>
+<td align="left">Cuantitativa continua</td>
+<td align="left">Razón</td>
+</tr>
+</tbody>
+</table>
+<div id="cuidado-un-número-no-siempre-es-una-cantidad"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Cuidado: un número no siempre es
+una cantidad</strong></span></h3>
+<p><code>id</code> es numérica en <strong>R</strong>, pero promediarla
+no tiene sentido porque solo identifica. Lo mismo ocurre con un código
+de 1 = fraude y 0 = no fraude. El estrato socioeconómico usa números,
+pero es ordinal: el estrato 4 es mayor que el 2, pero no es el doble. El
+tipo de variable se decide por lo que significa, no por cómo se
+almacena.</p>
+</div>
+<p><code>edad</code> aparece en números enteros y por eso se clasifica
+como discreta.</p>
+<p><br/></p>
+</div>
+<div id="qué-escalas-de-medición-existen" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué escalas de medición
+existen?</strong></span></h2>
+<p><a href="https://www.jstor.org/stable/1671815">Stevens (1946)</a>
+propuso cuatro escalas, según las comparaciones que permiten:</p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="34%" />
+<col width="40%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Escala</th>
+<th align="left">Permite</th>
+<th align="left">Ejemplos</th>
+<th align="left">Promedio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Nominal</strong></td>
+<td align="left">Decir si dos valores son iguales</td>
+<td align="left">Sexo, barrio, nacionalidad</td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Ordinal</strong></td>
+<td align="left">Ordenar</td>
+<td align="left">Estrato, satisfacción, nivel educativo</td>
+<td align="left">Con cuidado</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Intervalo</strong></td>
+<td align="left">Comparar diferencias. El cero es una convención</td>
+<td align="left">Temperatura en °C o °F, fechas</td>
+<td align="left">Sí</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Razón</strong></td>
+<td align="left">Comparar diferencias y cocientes. El cero indica
+ausencia</td>
+<td align="left">Tiempo, peso, salario, temperatura en K</td>
+<td align="left">Sí</td>
+</tr>
+</tbody>
+</table>
+<p>En escala de intervalo no tiene sentido decir que un valor es el
+doble de otro. Por ejemplo, 20 °C no es el doble de calor que 10 °C. Si
+se pasan a kelvin, la escala absoluta, el cociente es cercano a 1:</p>
+<pre class="r"><code>(20 + 273.15) / (10 + 273.15)
+[1] 1.035317</code></pre>
+<p>En cambio, un tiempo de 80 minutos sí es el doble de uno de 40,
+porque el tiempo es de razón. La temperatura en kelvin se escribe K, sin
+el símbolo de grado.</p>
+<div id="por-qué-importa-la-escala-al-cambiar-de-unidad-o-de-código"
+class="section level3">
+<h3><span style="color:#034a94"><strong>¿Por qué importa la escala al
+cambiar de unidad o de código?</strong></span></h3>
+<p>Una misma medición se puede expresar de varias formas: un tiempo en
+minutos o en segundos, una temperatura en °C o en °F, o una satisfacción
+con los códigos 1, 2 y 3 o 1, 2 y 10. Una conclusión solo es confiable
+si no cambia al hacer esos cambios permitidos.</p>
+<p>Stevens (1946) define cada escala según los cambios que se pueden
+hacer sin perder información:</p>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="33%" />
+<col width="18%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Escala</th>
+<th align="left">Cambio permitido</th>
+<th align="left">Ejemplo</th>
+<th align="left">Qué se conserva</th>
+<th align="left">Indicadores que tienen sentido</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Nominal</strong></td>
+<td align="left">Cambiar los nombres: <span class="math inline">\(x&#39;
+= f(x)\)</span>, con <span class="math inline">\(f\)</span> uno a
+uno</td>
+<td align="left"><em>Hombre</em> por <em>H</em></td>
+<td align="left">Quiénes son iguales</td>
+<td align="left">Conteos y moda</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Ordinal</strong></td>
+<td align="left">Cambiar los códigos sin alterar el orden: <span
+class="math inline">\(x&#39; = f(x)\)</span>, con <span
+class="math inline">\(f\)</span> creciente</td>
+<td align="left">1, 2, 3 por 1, 2, 10</td>
+<td align="left">El orden</td>
+<td align="left">Lo anterior, mediana y percentiles</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Intervalo</strong></td>
+<td align="left">Cambiar la unidad y el cero: <span
+class="math inline">\(x&#39; = ax + b\)</span>, con <span
+class="math inline">\(a \neq 0\)</span></td>
+<td align="left">°C por °F</td>
+<td align="left">La comparación de diferencias</td>
+<td align="left">Lo anterior, media y desviación estándar</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Razón</strong></td>
+<td align="left">Cambiar solo la unidad: <span
+class="math inline">\(x&#39; = ax\)</span>, con <span
+class="math inline">\(a &gt; 0\)</span></td>
+<td align="left">Minutos por segundos</td>
+<td align="left">La comparación de cocientes</td>
+<td align="left">Lo anterior y coeficiente de variación</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo 1. En escala de razón, el doble sigue siendo el
+doble.</strong> Un tiempo de 80 minutos es el doble de 40, y lo sigue
+siendo en segundos:</p>
+<pre class="r"><code>minutos &lt;- c(40, 80)
+segundos &lt;- 60 * minutos
+
+minutos[2] / minutos[1]
+[1] 2
+segundos[2] / segundos[1]
+[1] 2</code></pre>
+<p><strong>Ejemplo 2. En escala de intervalo, el doble depende de la
+unidad.</strong> 20 parece el doble de 10 en °C, pero el cociente cambia
+en °F. Por eso, esa frase no tiene sentido en esta escala:</p>
+<pre class="r"><code>celsius &lt;- c(10, 20)
+fahrenheit &lt;- 1.8 * celsius + 32
+
+celsius[2] / celsius[1]
+[1] 2
+fahrenheit[2] / fahrenheit[1]
+[1] 1.36</code></pre>
+<p><strong>Ejemplo 3. En escala ordinal, el promedio puede cambiar la
+conclusión.</strong> Suponga dos grupos que califican un servicio como
+malo, regular o bueno. Si se cambian los códigos sin alterar el orden,
+el grupo con mayor media cambia, pero la mediana sigue indicando lo
+mismo:</p>
+<pre class="r"><code>grupo_a &lt;- c(&quot;regular&quot;, &quot;regular&quot;, &quot;regular&quot;)
+grupo_b &lt;- c(&quot;malo&quot;, &quot;malo&quot;, &quot;bueno&quot;)
+niveles &lt;- c(&quot;malo&quot;, &quot;regular&quot;, &quot;bueno&quot;)
+
+codigos_1 &lt;- c(malo = 1, regular = 2, bueno = 3)
+codigos_2 &lt;- c(malo = 1, regular = 2, bueno = 10)
+
+c(media_a = mean(codigos_1[grupo_a]), media_b = mean(codigos_1[grupo_b]))
+ media_a  media_b 
+2.000000 1.666667 
+c(media_a = mean(codigos_2[grupo_a]), media_b = mean(codigos_2[grupo_b]))
+media_a media_b 
+      2       4 
+
+niveles[median(codigos_1[grupo_a])]
+[1] &quot;regular&quot;
+niveles[median(codigos_1[grupo_b])]
+[1] &quot;malo&quot;</code></pre>
+<p>Con los primeros códigos, el grupo A tiene mayor media. Con los
+segundos, la tiene el grupo B. La mediana no cambia: <em>regular</em> en
+el grupo A y <em>malo</em> en el grupo B. Por eso, en una variable
+ordinal se prefiere la mediana.</p>
+</div>
+<div id="una-guía-no-una-regla-mecánica"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Una guía, no una regla
+mecánica</strong></span></h3>
+<p>Estas escalas orientan el análisis, pero <a
+href="https://doi.org/10.1080/00031305.1993.10475938">Velleman y
+Wilkinson (1993)</a> critican esta clasificación y la consideran
+engañosa. El método también depende de la pregunta y del contexto.</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-papel-cumple-cada-variable" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué papel cumple cada
+variable?</strong></span></h2>
+<p>En un estudio, las variables también se distinguen por su
+función:</p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="48%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Papel</th>
+<th align="left">Qué es</th>
+<th align="left">Ejemplo hipotético en un cultivo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Respuesta o dependiente</strong></td>
+<td align="left">Lo que se quiere explicar o predecir</td>
+<td align="left">Kilogramos cosechados</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Explicativa o independiente</strong></td>
+<td align="left">Lo que se manipula o se usa para explicar la
+respuesta</td>
+<td align="left">Tipo de fertilizante</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>De control</strong></td>
+<td align="left">Se mantiene constante o se tiene en cuenta en el
+análisis</td>
+<td align="left">Cantidad de riego</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Confusora</strong></td>
+<td align="left">Se relaciona con las dos anteriores y puede crear o
+esconder una asociación</td>
+<td align="left">Experiencia del agricultor, si los más expertos eligen
+un fertilizante</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Mediadora</strong></td>
+<td align="left">Explica <a
+href="https://pubmed.ncbi.nlm.nih.gov/3806354/">cómo o por qué</a>
+ocurre el efecto</td>
+<td align="left">Nitrógeno absorbido por la planta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Moderadora</strong></td>
+<td align="left">Indica <a
+href="https://pubmed.ncbi.nlm.nih.gov/3806354/">cuándo o con qué
+fuerza</a> ocurre el efecto</td>
+<td align="left">Tipo de suelo</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" style="text-align: center">
+<img src="recurso200_files/figure-html/fig-relaciones-1.png" alt="Tres esquemas: el calor causa más ventas de helados e insolación, el fertilizante aumenta la cosecha por medio del nitrógeno absorbido, y el tipo de suelo cambia el efecto del fertilizante sobre la cosecha" width="100%" />
+<p class="caption">
+Tres formas en que una tercera variable se relaciona con otras dos.
+Ejemplos hipotéticos. Elaboración propia; mediadora y moderadora a
+partir de Baron y Kenny (1986).
+</p>
+</div>
+<details>
+<summary>
+Ver el código de la figura
+</summary>
+<pre class="r"><code>nodo &lt;- function(x, y, etiqueta, tercera = FALSE) {
+  rect(x - 6.5, y - 8, x + 6.5, y + 8, lwd = 2,
+       border = if (tercera) &quot;#B8860B&quot; else &quot;#034A94&quot;,
+       col = if (tercera) &quot;#FFF7E0&quot; else &quot;#EEF4FB&quot;)
+  text(x, y, etiqueta, cex = 0.95)
+}
+flecha &lt;- function(x0, y0, x1, y1, lty = 1, code = 2, col = &quot;#034A94&quot;) {
+  arrows(x0, y0, x1, y1, length = 0.1, lwd = 2, lty = lty, code = code, col = col)
+}
+
+op &lt;- par(mar = c(0, 0, 0, 0))
+plot.new()
+plot.window(xlim = c(0, 100), ylim = c(0, 100))
+
+text(c(16.5, 50, 83.5), 96, c(&quot;Confusora&quot;, &quot;Mediadora&quot;, &quot;Moderadora&quot;),
+     font = 2, col = &quot;#034A94&quot;, cex = 1.1)
+
+nodo(16.5, 74, &quot;Calor&quot;, TRUE); nodo(8, 30, &quot;Helados&quot;); nodo(25, 30, &quot;Insolación&quot;)
+flecha(13, 66, 9, 38); flecha(20, 66, 24, 38)
+flecha(14.6, 30, 18.4, 30, lty = 3, code = 3, col = &quot;gray40&quot;)
+text(16.5, 8, &quot;Asociadas por una causa común&quot;, col = &quot;#555555&quot;)
+
+nodo(50, 74, &quot;Nitrógeno\nabsorbido&quot;, TRUE); nodo(41.5, 30, &quot;Fertilizante&quot;); nodo(58.5, 30, &quot;Cosecha&quot;)
+flecha(43, 38, 47, 66); flecha(53, 66, 57, 38)
+text(50, 8, &quot;Explica cómo ocurre el efecto&quot;, col = &quot;#555555&quot;)
+
+nodo(83.5, 74, &quot;Tipo de suelo&quot;, TRUE); nodo(75, 30, &quot;Fertilizante&quot;); nodo(92, 30, &quot;Cosecha&quot;)
+flecha(81.5, 30, 85.5, 30); flecha(83.5, 66, 83.5, 31.5)
+text(83.5, 8, &quot;Cambia cuándo o cuánto ocurre&quot;, col = &quot;#555555&quot;)
+par(op)</code></pre>
+</details>
+<p><strong>Una asociación no prueba una causa.</strong> Suponga que las
+ventas de helados y los casos de insolación aumentan juntos. Eso no
+significa que uno cause el otro: el calor puede influir en ambos. En ese
+caso, el calor es una variable confusora.</p>
+<p><br/></p>
+</div>
+<div id="qué-son-población-y-muestra" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son población y
+muestra?</strong></span></h2>
+<p>La <strong>población</strong> es el conjunto completo de unidades
+sobre el que se quiere concluir. La <strong>muestra</strong> es la parte
+de esa población que realmente se observa. La <strong>población
+objetivo</strong> debe definirse con claridad: quiénes, dónde y
+cuándo.</p>
+<table>
+<colgroup>
+<col width="46%" />
+<col width="38%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Pregunta</th>
+<th align="left">Población</th>
+<th align="left">Variable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">¿Cuál fue el tiempo promedio de la carrera?</td>
+<td align="left">Atletas de la carrera La Luz 2022</td>
+<td align="left"><code>timerun</code></td>
+</tr>
+<tr class="even">
+<td align="left">¿Cuánto cuesta en promedio un apartamento en Cali?</td>
+<td align="left">Apartamentos de Cali en una fecha determinada</td>
+<td align="left">Precio</td>
+</tr>
+<tr class="odd">
+<td align="left">¿Qué proporción de transacciones es fraudulenta?</td>
+<td align="left">Transacciones de un banco en un mes</td>
+<td align="left">Fraude (sí o no)</td>
+</tr>
+</tbody>
+</table>
+<p>Una misma población permite estudiar muchas variables. Una base no es
+una muestra o una población por sí misma: depende de la pregunta.
+<code>CarreraLuz22</code> es la población si se pregunta por esa
+carrera, pero no es una muestra aleatoria de los corredores de Cali,
+porque quienes se inscriben pueden ser distintos de quienes no lo
+hacen.</p>
+<div id="cómo-se-representan" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se
+representan?</strong></span></h3>
+<p>Si la población tiene <span class="math inline">\(N\)</span>
+unidades, los valores de una variable se representan como:</p>
+<p><span class="math display">\[
+\text{Población} = \{x_1, x_2, \dots, x_N\}
+\]</span></p>
+<p>Una muestra de tamaño <span class="math inline">\(n\)</span>, con
+<span class="math inline">\(n \leq N\)</span>, es un subconjunto de esos
+valores:</p>
+<p><span class="math display">\[
+\text{Muestra} = \{x_1, x_2, \dots, x_n\}
+\]</span></p>
+<p>Los valores que resumen la población se calculan con todas sus
+unidades:</p>
+<p><span class="math display">\[
+\mu = \frac{1}{N} \sum_{i=1}^{N} x_i
+\qquad
+\sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2
+\qquad
+p = \frac{A}{N}
+\]</span></p>
+<p>donde <span class="math inline">\(A\)</span> es el número de unidades
+con la característica de interés. En la carrera, con <span
+class="math inline">\(N\)</span> = 1,922:</p>
+<pre class="r"><code>tiempo &lt;- CarreraLuz22$timerun / 60               # tiempo en minutos
+N &lt;- length(tiempo)
+
+mu &lt;- sum(tiempo) / N                             # media poblacional
+sigma &lt;- sqrt(sum((tiempo - mu)^2) / N)           # desviación estándar poblacional
+p &lt;- sum(CarreraLuz22$sex == &quot;Mujer&quot;) / N         # proporción de mujeres
+
+c(mu = mu, sigma = sigma, p = p)
+        mu      sigma          p 
+65.2627385 12.7174653  0.3870968 </code></pre>
+<p>La función <code>sd()</code> divide entre <span
+class="math inline">\(n - 1\)</span>, porque está pensada para muestras.
+Por eso aquí <span class="math inline">\(\sigma\)</span> se calcula con
+su fórmula.</p>
+</div>
+<div id="cómo-se-selecciona-una-muestra" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se selecciona una
+muestra?</strong></span></h3>
+<p>En un <strong>muestreo probabilístico</strong>, cada unidad de la
+población tiene una probabilidad conocida y mayor que cero de ser
+elegida. Esto permite cuantificar el error, pero no garantiza que una
+muestra particular se parezca a la población. Para profundizar se puede
+consultar <a
+href="https://www.routledge.com/Sampling-Design-and-Analysis/Lohr/p/book/9780367279509">Lohr
+(2021)</a>.</p>
+<p>Formalmente, si <span class="math inline">\(\pi_i\)</span> es la
+probabilidad de que la unidad <span class="math inline">\(i\)</span>
+quede en la muestra, se requiere que <span class="math inline">\(\pi_i
+&gt; 0\)</span> y que sea conocida. En el muestreo aleatorio simple sin
+reemplazo, hay <span class="math inline">\(\binom{N}{n}\)</span>
+muestras posibles, todas con la misma probabilidad, y:</p>
+<p><span class="math display">\[
+\pi_i = \frac{n}{N}
+\]</span></p>
+<p>Con 50 atletas de la carrera, la probabilidad de inclusión es:</p>
+<pre class="r"><code>50 / nrow(CarreraLuz22)
+[1] 0.02601457</code></pre>
+<table>
+<colgroup>
+<col width="23%" />
+<col width="59%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo de muestreo</th>
+<th align="left">Cómo funciona</th>
+<th align="left">¿Probabilístico?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aleatorio simple</td>
+<td align="left">Todas las muestras del mismo tamaño tienen la misma
+probabilidad</td>
+<td align="left">Sí</td>
+</tr>
+<tr class="even">
+<td align="left">Sistemático</td>
+<td align="left">Se elige una unidad cada cierto número, con inicio
+aleatorio</td>
+<td align="left">Sí</td>
+</tr>
+<tr class="odd">
+<td align="left">Estratificado</td>
+<td align="left">Se divide en grupos y se selecciona en cada uno</td>
+<td align="left">Sí</td>
+</tr>
+<tr class="even">
+<td align="left">Por conglomerados</td>
+<td align="left">Se seleccionan grupos completos, como barrios o
+colegios</td>
+<td align="left">Sí</td>
+</tr>
+<tr class="odd">
+<td align="left">Por conveniencia</td>
+<td align="left">Se usa lo que está al alcance</td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">Por juicio</td>
+<td align="left">Quien investiga decide a quién incluir</td>
+<td align="left">No</td>
+</tr>
+<tr class="odd">
+<td align="left">Por cuotas</td>
+<td align="left">Se llenan cupos por grupo, sin selección al azar</td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">Bola de nieve</td>
+<td align="left">Cada participante lleva a otros</td>
+<td align="left">No</td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, para seleccionar 50 atletas al azar:</p>
+<pre class="r"><code>set.seed(2022)                               # fija el resultado aleatorio
+muestra &lt;- CarreraLuz22[sample(nrow(CarreraLuz22), 50), ]
+nrow(muestra)
+[1] 50</code></pre>
+</div>
+<div id="qué-es-una-muestra-aleatoria-i.i.d." class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué es una muestra aleatoria
+i.i.d.?</strong></span></h3>
+<p>Una muestra es <strong>independiente e idénticamente
+distribuida</strong> (i.i.d.) cuando cumple estas condiciones:</p>
+<ul>
+<li><strong>Independencia:</strong> el valor de una observación no da
+información sobre el valor de otra.</li>
+<li><strong>Distribución idéntica:</strong> todas las observaciones
+provienen de la misma distribución de probabilidad.</li>
+</ul>
+<p>Se escribe así, donde <span class="math inline">\(F\)</span> es la
+distribución de la población:</p>
+<p><span class="math display">\[
+X_1, X_2, \dots, X_n \overset{\text{i.i.d.}}{\sim} F
+\]</span></p>
+<p>Con reemplazo, las extracciones de una población finita son i.i.d.
+Sin reemplazo no son independientes, pero se aproximan a ese caso cuando
+<span class="math inline">\(n\)</span> es pequeño frente a <span
+class="math inline">\(N\)</span>.</p>
+<p><strong>Ejemplo.</strong> Suponga que las alturas de los adultos de
+una ciudad siguen una distribución normal con media de 170 cm y
+desviación estándar de 10 cm, y que se toma una muestra i.i.d. de tamaño
+50:</p>
+<p><span class="math display">\[
+X \sim N(\mu = 170,\ \sigma = 10)
+\qquad
+X_1, \dots, X_{50} \overset{\text{i.i.d.}}{\sim} N(170,\ 10)
+\]</span></p>
+<pre class="r"><code>set.seed(123)
+alturas &lt;- rnorm(50, mean = 170, sd = 10)
+mean(alturas)
+[1] 170.344
+sd(alturas)
+[1] 9.2587
+
+cortes_altura &lt;- seq(140, 200, by = 5)
+densidad &lt;- hist(alturas, breaks = cortes_altura, plot = FALSE)$density
+limite_y &lt;- max(pretty(c(densidad, dnorm(170, 170, 10))))
+
+hist(alturas, breaks = cortes_altura, freq = FALSE, col = &quot;#BFD7EE&quot;, border = &quot;white&quot;,
+     las = 1, xlim = range(cortes_altura), ylim = c(0, limite_y), xaxs = &quot;i&quot;, yaxs = &quot;i&quot;,
+     main = &quot;&quot;, xlab = &quot;Altura (cm)&quot;, ylab = &quot;Densidad&quot;)
+curve(dnorm(x, mean = 170, sd = 10), add = TRUE, col = &quot;#034A94&quot;, lwd = 3)</code></pre>
+<div class="figure">
+<img src="recurso200_files/figure-html/unnamed-chunk-12-1.png" alt="Histograma de 50 alturas simuladas entre 150 y 195 centímetros, con la curva normal de la población superpuesta" width="672" />
+<p class="caption">
+Histograma de una muestra i.i.d. de 50 alturas y curva de la población.
+</p>
+</div>
+<p>Si se cambia la semilla, se obtiene otra muestra y otros
+resultados.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-son-parámetro-estimador-y-estimación"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son parámetro, estimador y
+estimación?</strong></span></h2>
+<p>Un parámetro se suele representar con <span
+class="math inline">\(\theta\)</span>. Un <strong>estimador</strong> es
+una función de las observaciones de la muestra:</p>
+<p><span class="math display">\[
+\hat{\theta} = T(X_1, X_2, \dots, X_n)
+\]</span></p>
+<p>Al reemplazar los datos observados se obtiene un número: la
+<strong>estimación</strong>.</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="62%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Parámetro</th>
+<th align="left">Estimador</th>
+<th align="left">En R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Media <span class="math inline">\(\mu\)</span></td>
+<td align="left"><span class="math inline">\(\bar{X} = \dfrac{1}{n}
+\sum_{i=1}^{n} X_i\)</span></td>
+<td align="left"><code>mean(x)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Varianza <span
+class="math inline">\(\sigma^2\)</span></td>
+<td align="left"><span class="math inline">\(S^2 = \dfrac{1}{n-1}
+\sum_{i=1}^{n} (X_i - \bar{X})^2\)</span></td>
+<td align="left"><code>var(x)</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Desviación estándar <span
+class="math inline">\(\sigma\)</span></td>
+<td align="left"><span class="math inline">\(S =
+\sqrt{S^2}\)</span></td>
+<td align="left"><code>sd(x)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Proporción <span class="math inline">\(p\)</span></td>
+<td align="left"><span class="math inline">\(\hat{p} = \dfrac{1}{n}
+\sum_{i=1}^{n} X_i\)</span>, con <span
+class="math inline">\(X_i\)</span> igual a 0 o 1</td>
+<td align="left"><code>mean(x == "A")</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="42%" />
+<col width="45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Término</th>
+<th align="left">Qué es</th>
+<th align="left">Ejemplo con la carrera</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Parámetro</strong></td>
+<td align="left">Valor que resume una población</td>
+<td align="left">Media de los 1,922 atletas (<span
+class="math inline">\(\mu\)</span>)</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Estimador</strong></td>
+<td align="left">Regla para aproximar el parámetro con una muestra</td>
+<td align="left">La fórmula de la media muestral (<span
+class="math inline">\(\bar{X}\)</span>)</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Estimación</strong></td>
+<td align="left">Valor que resulta de aplicar esa regla a una
+muestra</td>
+<td align="left">La media de los 50 atletas seleccionados (<span
+class="math inline">\(\bar{x}\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>Como aquí se conocen los datos de todos los atletas, se puede
+comparar el parámetro con la estimación:</p>
+<pre class="r"><code>mean(CarreraLuz22$timerun / 60)    # parámetro: media de todos, en minutos
+[1] 65.26274
+mean(muestra$timerun / 60)         # estimación: media de los 50
+[1] 65.968</code></pre>
+<p>Otra muestra daría una estimación distinta. Esta variación se llama
+<strong>variabilidad muestral</strong>. La figura repite la selección
+1,000 veces y muestra las medias obtenidas: se reúnen alrededor del
+parámetro, pero no todas coinciden con él.</p>
+<pre class="r"><code>set.seed(2022)
+tiempo &lt;- CarreraLuz22$timerun / 60
+medias &lt;- replicate(1000, mean(sample(tiempo, 50)))
+
+cortes &lt;- seq(floor(min(medias)), ceiling(max(medias)), by = 0.5)
+conteos &lt;- hist(medias, breaks = cortes, plot = FALSE)$counts
+
+hist(medias, breaks = cortes, col = &quot;#BFD7EE&quot;, border = &quot;white&quot;, las = 1,
+     xlim = range(cortes), ylim = c(0, max(pretty(conteos))),
+     xaxp = c(range(cortes), length(cortes) - 1), xaxs = &quot;i&quot;, yaxs = &quot;i&quot;,
+     main = &quot;&quot;, xlab = &quot;Media de la muestra (minutos)&quot;, ylab = &quot;Número de muestras&quot;)
+abline(v = mean(tiempo), col = &quot;#034A94&quot;, lwd = 3)</code></pre>
+<div class="figure">
+<img src="recurso200_files/figure-html/unnamed-chunk-14-1.png" alt="Histograma con forma de campana de las medias muestrales, centrado cerca de 65 minutos, con una línea vertical en la media de todos los atletas" width="672" />
+<p class="caption">
+Medias de 1,000 muestras de 50 atletas. La línea indica la media de
+todos los atletas.
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-significa-que-un-estudio-sea-válido"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué significa que un estudio
+sea válido?</strong></span></h2>
+<p>La <strong>validez</strong> indica si un estudio mide lo que pretende
+medir y si sus conclusiones se sostienen. Shadish, Cook y Campbell
+(2002) distinguen cuatro tipos:</p>
+<table style="width:100%;">
+<colgroup>
+<col width="17%" />
+<col width="39%" />
+<col width="43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Pregunta que responde</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Validez interna</td>
+<td align="left">¿La relación observada se debe a lo que se
+estudia?</td>
+<td align="left">Un experimento controla otras explicaciones</td>
+</tr>
+<tr class="even">
+<td align="left">Validez externa</td>
+<td align="left">¿Los resultados aplican a otras poblaciones o
+contextos?</td>
+<td align="left">Un modelo de una región sirve en otra con
+características similares</td>
+</tr>
+<tr class="odd">
+<td align="left">Validez de constructo</td>
+<td align="left">¿El instrumento mide lo que dice medir?</td>
+<td align="left">Un cuestionario de satisfacción pregunta realmente por
+la satisfacción</td>
+</tr>
+<tr class="even">
+<td align="left">Validez de la conclusión estadística</td>
+<td align="left">¿Los métodos usados sostienen la conclusión?</td>
+<td align="left">Se revisan los supuestos de un modelo antes de
+interpretarlo</td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, un estudio busca estimar el ingreso promedio de las
+familias de Cali, pero solo incluye familias de estrato 1. Ese promedio
+no representa a todas las familias, porque excluye de forma sistemática
+a los otros estratos. Esto se llama <strong>sesgo de
+selección</strong>.</p>
+<p><br/></p>
+</div>
+<div id="asociación-significa-causalidad" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Asociación significa
+causalidad?</strong></span></h2>
+<p>Hay <strong>asociación</strong> cuando dos variables cambian juntas.
+Hay <strong>causalidad</strong> cuando un cambio en una variable produce
+un cambio en la otra. Una asociación puede deberse a una <a
+href="#qué-papel-cumple-cada-variable">variable confusora</a>, al azar o
+a la forma en que se seleccionó la muestra.</p>
+<p>La manera más directa de estudiar una causa es un experimento con
+asignación al azar. Cuando no es posible, Bradford Hill (1965) propuso
+nueve puntos de vista para evaluar si una asociación puede ser
+causal:</p>
+<table>
+<colgroup>
+<col width="29%" />
+<col width="70%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Criterio</th>
+<th align="left">Pregunta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fuerza</td>
+<td align="left">¿La asociación es grande?</td>
+</tr>
+<tr class="even">
+<td align="left">Consistencia</td>
+<td align="left">¿Se repite en otros estudios y lugares?</td>
+</tr>
+<tr class="odd">
+<td align="left">Especificidad</td>
+<td align="left">¿La exposición se relaciona con un efecto
+concreto?</td>
+</tr>
+<tr class="even">
+<td align="left">Temporalidad</td>
+<td align="left">¿La causa ocurre antes que el efecto?</td>
+</tr>
+<tr class="odd">
+<td align="left">Gradiente</td>
+<td align="left">¿A mayor exposición, mayor efecto?</td>
+</tr>
+<tr class="even">
+<td align="left">Plausibilidad</td>
+<td align="left">¿Tiene sentido según lo que se conoce?</td>
+</tr>
+<tr class="odd">
+<td align="left">Coherencia</td>
+<td align="left">¿Es compatible con el conocimiento disponible?</td>
+</tr>
+<tr class="even">
+<td align="left">Experimento</td>
+<td align="left">¿Al intervenir cambia el resultado?</td>
+</tr>
+<tr class="odd">
+<td align="left">Analogía</td>
+<td align="left">¿Se conocen casos parecidos?</td>
+</tr>
+</tbody>
+</table>
+<p>Hill los presentó como ayudas para pensar, no como una lista que se
+deba cumplir. De todos, solo la temporalidad es indispensable: la causa
+debe ocurrir antes que el efecto.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="32%" />
+<col width="34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Promediar <code>id</code>, estrato o un código</td>
+<td align="left">Tratar todo número como cantidad</td>
+<td align="left">Decidir el tipo por el significado de la variable</td>
+</tr>
+<tr class="even">
+<td align="left"><code>mean()</code> da <code>NA</code> con advertencia
+en una variable de texto</td>
+<td align="left">La variable no es numérica</td>
+<td align="left">Revisar con <code>class()</code> o
+<code>str()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Decir que 20 °C es el doble de 10 °C</td>
+<td align="left">La escala es de intervalo</td>
+<td align="left">Comparar diferencias, no cocientes</td>
+</tr>
+<tr class="even">
+<td align="left">Generalizar una encuesta en redes a toda una
+ciudad</td>
+<td align="left">La muestra es por conveniencia</td>
+<td align="left">Definir la población y cómo se seleccionó la
+muestra</td>
+</tr>
+<tr class="odd">
+<td align="left">Usar <code>sd()</code> para calcular <span
+class="math inline">\(\sigma\)</span> de una población</td>
+<td align="left"><code>sd()</code> divide entre <span
+class="math inline">\(n - 1\)</span></td>
+<td align="left">Aplicar la fórmula con <span
+class="math inline">\(N\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Decir que X causa Y porque están asociadas</td>
+<td align="left">Puede haber una variable confusora</td>
+<td align="left">Revisar el diseño del estudio</td>
+</tr>
+<tr class="odd">
+<td align="left">Confundir parámetro y estimación</td>
+<td align="left">Se usa una muestra como si fuera toda la población</td>
+<td align="left">Indicar de dónde sale cada valor</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-identifique-los-elementos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Identifique los
+elementos</strong></span></h3>
+<p>Suponga que una universidad selecciona al azar 200 de sus 8,000
+estudiantes de pregrado y les pregunta cuántas horas estudian por
+semana. El promedio fue de 14 horas. Indique la población, la muestra,
+la unidad de análisis, la variable, el parámetro y la estimación.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<ul>
+<li><strong>Población:</strong> los 8,000 estudiantes de pregrado.</li>
+<li><strong>Muestra:</strong> los 200 seleccionados.</li>
+<li><strong>Unidad de análisis:</strong> cada estudiante.</li>
+<li><strong>Variable:</strong> horas de estudio por semana. Es
+cuantitativa continua si se mide el tiempo.</li>
+<li><strong>Parámetro:</strong> promedio de horas de los 8,000, que se
+desconoce.</li>
+<li><strong>Estimación:</strong> 14 horas.</li>
+</ul>
+</details>
+</div>
+<div id="reto-2.-clasifique-las-variables"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Clasifique las
+variables</strong></span></h3>
+<p>Indique el tipo y la escala de cada variable: estrato de una
+vivienda, número de habitaciones, precio de venta y zona de la
+ciudad.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Tipo</th>
+<th align="left">Escala</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Estrato</td>
+<td align="left">Cualitativa ordinal</td>
+<td align="left">Ordinal</td>
+</tr>
+<tr class="even">
+<td align="left">Número de habitaciones</td>
+<td align="left">Cuantitativa discreta</td>
+<td align="left">Razón</td>
+</tr>
+<tr class="odd">
+<td align="left">Precio de venta</td>
+<td align="left">Cuantitativa continua</td>
+<td align="left">Razón</td>
+</tr>
+<tr class="even">
+<td align="left">Zona</td>
+<td align="left">Cualitativa nominal</td>
+<td align="left">Nominal</td>
+</tr>
+</tbody>
+</table>
+<p>El precio se trata como continuo porque puede tomar muchísimos
+valores, aunque se exprese en pesos.</p>
+</details>
+</div>
+<div id="reto-3.-confusora-mediadora-o-moderadora"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Confusora, mediadora o
+moderadora?</strong></span></h3>
+<p>Identifique el papel de la tercera variable en cada caso
+hipotético:</p>
+<ul>
+<li>Un programa de ejercicio mejora el estado físico, y eso reduce la
+presión arterial.</li>
+<li>Un medicamento funciona en adultos, pero no en niños.</li>
+<li>En los incendios con más bomberos hay más daños. El tamaño del
+incendio influye en ambos.</li>
+</ul>
+<details>
+<summary>
+Ver solución
+</summary>
+<ul>
+<li><strong>Estado físico:</strong> mediadora, porque explica cómo actúa
+el programa.</li>
+<li><strong>Edad:</strong> moderadora, porque cambia el efecto del
+medicamento.</li>
+<li><strong>Tamaño del incendio:</strong> confusora, porque influye en
+la cantidad de bomberos y en los daños.</li>
+</ul>
+</details>
+</div>
+<div id="reto-4.-la-muestra-por-comodidad"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. La muestra por
+comodidad</strong></span></h3>
+<p>Una persona toma los primeros 50 registros de
+<code>CarreraLuz22</code> en lugar de una muestra aleatoria. Calcule la
+media de esos 50 tiempos y compárela con la de todos los atletas. ¿Qué
+concluye?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>mean(head(CarreraLuz22$timerun / 60, 50))
+[1] 40.55133
+mean(CarreraLuz22$timerun / 60)
+[1] 65.26274</code></pre>
+<p>El archivo está ordenado por tiempo, así que los primeros registros
+son los atletas más rápidos. Por eso su media es mucho menor que la de
+todos. Tomar lo primero es un muestreo por conveniencia y produce un
+resultado sesgado. Conviene seleccionar al azar.</p>
+</details>
+</div>
+<div id="reto-5.-revise-los-datos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 5. Revise los
+datos</strong></span></h3>
+<p>Use <code>table()</code> para revisar las ciudades que contienen
+<code>Bogot</code> en la variable <code>origen</code>. ¿Qué problema
+encuentra? ¿Por qué importa?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>table(grep(&quot;Bogot&quot;, CarreraLuz22$origen, value = TRUE))
+
+    Bogota     Bogotá Bogota D.c 
+         8          6          1 </code></pre>
+<p>La misma ciudad aparece escrita de varias maneras. Si no se corrige,
+una tabla la contará como ciudades distintas. Por eso los datos se
+revisan antes de analizarlos.</p>
+</details>
+</div>
+<div id="reto-6.-muestras-de-una-distribución-exponencial"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 6. Muestras de una
+distribución exponencial</strong></span></h3>
+<p>Genere 10 muestras aleatorias de tamaño 100 de una distribución
+exponencial con media 10 y desviación estándar 10. Use
+<code>rexp(n = 100, rate = 0.1)</code> y estime la media y la desviación
+estándar en cada muestra. ¿Qué observa?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2022)
+muestras &lt;- replicate(10, rexp(n = 100, rate = 0.1))
+
+round(rbind(media = colMeans(muestras),
+            desviacion = apply(muestras, 2, sd)), 2)
+            [,1]  [,2] [,3]  [,4] [,5]  [,6] [,7] [,8]  [,9] [,10]
+media      10.21 10.24 9.21 10.38 9.65 10.39 9.83 9.46 11.21 11.09
+desviacion 10.63  9.79 8.92 10.24 8.49 12.08 8.21 8.36 10.08 10.28</code></pre>
+<p>Las estimaciones cambian de una muestra a otra, pero se ubican
+alrededor de los parámetros: 10 para la media y 10 para la desviación
+estándar.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-en-español" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros en
+español</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). <a
+href="https://www.pearson.com/en-us/subject-catalog/p/probability-statistics-for-engineers-scientists/P200000007119/9780137273546"><em>Probabilidad
+y estadística para ingeniería y ciencias</em></a> (9.ª ed.).
+Pearson.</li>
+<li>Devore, J. L. (2016). <a
+href="https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/"><em>Probabilidad
+y estadística para ingeniería y ciencias</em></a> (9.ª ed.). Cengage
+Learning.</li>
+<li>Peña, D. (2008). <a
+href="https://www.alianzaeditorial.es/libro/manuales/fundamentos-de-estadistica-daniel-pena-9788420683805/"><em>Fundamentos
+de estadística</em></a>. Alianza Editorial.</li>
+</ul>
+</div>
+<div id="libros-en-inglés" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros en
+inglés</strong></span></h3>
+<ul>
+<li>Agresti, A., Franklin, C. A. y Klingenberg, B. (2022). <a
+href="https://www.pearson.com/store/p/statistics-the-art-and-science-of-learning-from-data/P200000006061"><em>Statistics:
+The Art and Science of Learning from Data</em></a> (5.ª ed.).
+Pearson.</li>
+<li>Freedman, D., Pisani, R. y Purves, R. (2007). <a
+href="https://wwnorton.com/books/Statistics"><em>Statistics</em></a>
+(4.ª ed.). W. W. Norton.</li>
+<li>Lohr, S. L. (2021). <a
+href="https://www.routledge.com/Sampling-Design-and-Analysis/Lohr/p/book/9780367279509"><em>Sampling:
+Design and Analysis</em></a> (3.ª ed.). Chapman &amp; Hall/CRC.</li>
+<li>Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). <a
+href="https://store.macmillanlearning.com/us/p/9781319244446"><em>Introduction
+to the Practice of Statistics</em></a> (10.ª ed.). Macmillan
+Learning.</li>
+<li>Pearl, J., Glymour, M. y Jewell, N. P. (2016). <a
+href="https://www.wiley.com/en-us/Causal+Inference+in+Statistics:+A+Primer-p-9781119186847"><em>Causal
+Inference in Statistics: A Primer</em></a>. Wiley.</li>
+<li>Stigler, S. M. (1986). <a
+href="https://www.hup.harvard.edu/books/9780674403413"><em>The History
+of Statistics: The Measurement of Uncertainty before 1900</em></a>.
+Belknap Press of Harvard University Press.</li>
+<li>Tukey, J. W. (1977). <a
+href="https://www.pearson.com/en-us/subject-catalog/p/exploratory-data-analysis-classic-version/P200000006400/9780134995458"><em>Exploratory
+Data Analysis</em></a>. Addison-Wesley.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Hill, A. B. (1965). <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1898525/">The environment
+and disease: association or causation?</a> <em>Proceedings of the Royal
+Society of Medicine</em>, 58(5), 295-300.</li>
+<li>Baron, R. M. y Kenny, D. A. (1986). <a
+href="https://pubmed.ncbi.nlm.nih.gov/3806354/">The moderator-mediator
+variable distinction in social psychological research: Conceptual,
+strategic, and statistical considerations</a>. <em>Journal of
+Personality and Social Psychology</em>, 51(6), 1173-1182.</li>
+<li>Encyclopedia.com. <a
+href="https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application">Probability:
+History, Interpretation, and Application</a>.</li>
+<li>O’Connor, J. J. y Robertson, E. F. (2003). <a
+href="https://mathshistory.st-andrews.ac.uk/Biographies/Fisher/">Sir
+Ronald Aylmer Fisher</a>. MacTutor, University of St Andrews.</li>
+<li>Shadish, W. R., Cook, T. D. y Campbell, D. T. (2002).
+<em>Experimental and Quasi-Experimental Designs for Generalized Causal
+Inference</em>. Houghton Mifflin.</li>
+<li>Stevens, S. S. (1946). <a
+href="https://www.jstor.org/stable/1671815">On the theory of scales of
+measurement</a>. <em>Science</em>, 103(2684), 677-680.</li>
+<li>The Times. <a
+href="https://mathshistory.st-andrews.ac.uk/TimesObituaries/Fisher/">Obituary
+of R. A. Fisher</a>. Reproducido en MacTutor.</li>
+<li>Velleman, P. F. y Wilkinson, L. (1993). <a
+href="https://doi.org/10.1080/00031305.1993.10475938">Nominal, ordinal,
+interval, and ratio typologies are misleading</a>. <em>The American
+Statistician</em>, 47(1), 65-72.</li>
+<li>Wells, H. G. (1903). <em>Mankind in the Making</em>. Chapman &amp;
+Hall.</li>
+<li>Wild, C. J. y Pfannkuch, M. (1999). <a
+href="https://doi.org/10.1111/j.1751-5823.1999.tb00442.x">Statistical
+thinking in empirical enquiry</a>. <em>International Statistical
+Review</em>, 67(3), 223-248.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

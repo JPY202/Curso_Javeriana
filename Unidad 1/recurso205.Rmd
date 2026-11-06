@@ -1,0 +1,436 @@
+---
+title: <span style="color:#034a94"> **Indicadores de dispersión**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+```
+
+<br/>
+
+Suponga que dos grupos de participantes, patrocinados por dos empresas, tienen el mismo promedio de edad: 28 años. A primera vista parecen iguales. Sin embargo, la media no indica si las edades están cerca unas de otras o muy separadas.
+
+Los **indicadores de dispersión** miden qué tan separados están los datos. Esta página usa estos dos grupos y la base `CarreraLuz22`, del paquete `paqueteMETODOS`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r}
+grupo1 <- c(27, 27, 28, 28, 34, 28, 26, 33, 24, 28, 25, 25, 33, 27, 34,
+            38, 24, 26, 22, 23, 33, 23, 26, 26, 32, 33, 29, 30, 25, 23)
+grupo2 <- c(35, 25, 19, 17, 24, 17, 55, 25, 31, 35, 43, 28, 32, 19, 20,
+            17, 25, 18, 21, 22, 17, 35, 29, 20, 54, 46, 24, 29, 40, 18)
+
+c(media_1 = mean(grupo1), media_2 = mean(grupo2))
+```
+
+Aunque las dos medias son iguales, la figura muestra que los grupos son distintos:
+
+```{r, fig.width=8, fig.height=3.2, fig.cap="Edades de los dos grupos. La línea vertical indica la media.", fig.alt="Dos filas de puntos. El grupo 1 está concentrado entre 22 y 38 años, y el grupo 2 está disperso entre 17 y 55 años. Los dos tienen media de 28", out.width="100%"}
+par(mar = c(4.5, 6, 1, 1))
+
+stripchart(list(`Grupo 1` = grupo1, `Grupo 2` = grupo2), method = "stack", offset = 0.5,
+           at = c(2, 1), pch = 19, col = c("#034A94", "#C0392B"), las = 1,
+           xlim = c(15, 60), ylim = c(0.5, 3.2), xlab = "Edad (años)")
+abline(v = 28, lty = 2, lwd = 2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el rango?**</span>
+
+El **rango** es el indicador de dispersión más sencillo: la diferencia entre el valor máximo y el valor mínimo.
+
+$$
+r = \max(x) - \min(x)
+$$
+
+```{r}
+c(rango_1 = diff(range(grupo1)), rango_2 = diff(range(grupo2)))
+```
+
+El rango muestra que las edades del grupo 2 están más dispersas. Es fácil de calcular, pero solo usa dos datos, así que no refleja lo que ocurre en el resto y se ve muy afectado por los valores atípicos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la varianza?**</span>
+
+Para usar todos los datos, se mide qué tan lejos está cada uno de la media. Esa distancia es la **desviación**: $x_i - \bar{x}$. La figura muestra las desviaciones de los tiempos de las 7 mujeres juveniles:
+
+```{r, fig.width=8, fig.height=3.8, fig.cap="Desviación de cada dato con respecto a la media.", fig.alt="Siete puntos ordenados con líneas verticales que los unen a la línea horizontal de la media, algunas por encima y otras por debajo", out.width="100%"}
+juvenil <- subset(CarreraLuz22, categoria == "1. Juvenil" & sex == "Mujer")
+tiempo_juvenil <- sort(round(juvenil$timerun / 60, 2))
+media_juvenil <- mean(tiempo_juvenil)
+
+par(mar = c(4.5, 5, 1, 1))
+plot(tiempo_juvenil, pch = 19, col = "#034A94", cex = 1.3, las = 1,
+     xlim = c(0.5, 7.5), ylim = c(40, 100), xlab = "Atleta (de menor a mayor tiempo)",
+     ylab = "Tiempo (minutos)", bty = "l")
+abline(h = media_juvenil, lwd = 2, col = "#C0392B")
+segments(1:7, media_juvenil, 1:7, tiempo_juvenil, col = "#034A94", lwd = 2)
+text(7.4, media_juvenil + 3, "Media", col = "#C0392B", font = 2, pos = 2)
+```
+
+Las desviaciones no se pueden promediar directamente, porque su suma siempre es cero. Por eso se elevan al cuadrado. La **varianza** muestral es:
+
+$$
+s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2
+$$
+
+```{r}
+sum(tiempo_juvenil - media_juvenil)                                   # suma de desviaciones
+sum((tiempo_juvenil - media_juvenil)^2) / (length(tiempo_juvenil) - 1)   # aplicando la fórmula
+var(tiempo_juvenil)                                                   # con la función
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**¿Por qué se divide entre $n - 1$?**</span>
+
+Como las desviaciones suman cero, al conocer $n - 1$ de ellas la última queda determinada. Por eso se dice que hay $n - 1$ **grados de libertad**. La varianza de una población completa se divide entre $N$, como se vio en [Conceptos básicos](recurso200.html).
+</div>
+
+### <span style="color:#034a94">**¿Qué propiedades tiene?**</span>
+
+1. **Fórmula alternativa:**
+
+    $$
+    s^2 = \frac{1}{n-1} \left( \sum_{i=1}^{n} x_i^2 - n\bar{x}^2 \right)
+    $$
+
+2. **No es negativa:** $s^2 \geq 0$.
+
+3. **La varianza de una constante es cero:** si $x_i = k$ para todo $i$, entonces $s^2 = 0$.
+
+4. **Multiplicar por una constante:** si $y_i = k x_i$, entonces $s_y^2 = k^2 s_x^2$.
+
+5. **Sumar una constante:** si $y_i = x_i + k$, entonces $s_y^2 = s_x^2$.
+
+6. **Combinación lineal:** si $z_i = a x_i + b y_i$, entonces:
+
+    $$
+    s_z^2 = a^2 s_x^2 + b^2 s_y^2 + 2ab \, \text{cov}(x, y)
+    $$
+
+    donde la **covarianza** mide la relación lineal entre dos variables:
+
+    $$
+    \text{cov}(x, y) = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})
+    $$
+
+Las propiedades 4 y 5 se pueden comprobar en **R**:
+
+```{r}
+var(10 * tiempo_juvenil)            # propiedad 4
+100 * var(tiempo_juvenil)
+var(tiempo_juvenil + 5)             # propiedad 5
+var(tiempo_juvenil)
+```
+
+La varianza tiene una limitación: sus unidades están al cuadrado, por ejemplo, minutos$^2$. Esto dificulta su interpretación.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la desviación estándar?**</span>
+
+La **desviación estándar** es la raíz cuadrada de la varianza. Tiene las mismas unidades de los datos:
+
+$$
+s = \sqrt{s^2}
+$$
+
+Indica qué tan alejados están los datos de la media, de forma típica. Una desviación estándar pequeña indica que los datos están cerca de la media, y una grande, que están más dispersos.
+
+```{r}
+c(varianza_1 = var(grupo1), varianza_2 = var(grupo2))
+c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))
+```
+
+Las dos medias son de 28 años, pero la desviación estándar es de `r round(sd(grupo1), 2)` años en el grupo 1 y de `r round(sd(grupo2), 2)` años en el grupo 2.
+
+**Propiedades de la desviación estándar:**
+
+- No es negativa: $s \geq 0$.
+- Si $y_i = k x_i$, entonces $s_y = |k| \, s_x$.
+- Si $y_i = x_i + k$, entonces $s_y = s_x$.
+- La fórmula de la combinación lineal se aplica a la varianza. Para obtener $s_z$ se calcula primero $s_z^2$.
+- Los valores atípicos la aumentan.
+
+### <span style="color:#034a94">**¿Cómo se interpreta?**</span>
+
+Con la media y la desviación estándar se puede saber qué proporción de los datos está cerca de la media. Hay [dos reglas](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-7-medidas-de-la-dispersion-de-los-datos):
+
+| Distancia a la media | Regla empírica: datos en forma de campana y simétricos | Regla de Chebyshev: cualquier conjunto de datos |
+|:---------------------|:--------------------------------------------|:----------------------------------|
+| 1 desviación estándar  | Aproximadamente 68 %                      | No da información                 |
+| 2 desviaciones estándar | Aproximadamente 95 %                     | Al menos 75 %                     |
+| 3 desviaciones estándar | Más de 99 %                              | Al menos 89 %                     |
+
+La regla de Chebyshev viene de esta expresión, para $k > 1$:
+
+$$
+\text{Proporción de datos a menos de } k \text{ desviaciones} \geq 1 - \frac{1}{k^2}
+$$
+
+En la carrera se puede comprobar qué ocurre:
+
+```{r}
+tiempo <- CarreraLuz22$timerun / 60
+media <- mean(tiempo)
+desviacion <- sd(tiempo)
+
+100 * mean(abs(tiempo - media) <= 1 * desviacion)
+100 * mean(abs(tiempo - media) <= 2 * desviacion)
+100 * mean(abs(tiempo - media) <= 3 * desviacion)
+```
+
+```{r, fig.width=8, fig.height=4.2, fig.cap="Tiempos de la carrera, con la media y una y dos desviaciones estándar a cada lado.", fig.alt="Histograma de los tiempos con una línea en la media y líneas punteadas a una y dos desviaciones estándar", out.width="100%"}
+cortes <- seq(30, 170, by = 10)
+limites <- media + c(-2, -1, 1, 2) * desviacion
+
+hist(tiempo, breaks = cortes, col = "#BFD7EE", border = "white", las = 1,
+     xlim = range(cortes), ylim = c(0, 700), xaxp = c(30, 170, 14),
+     xaxs = "i", yaxs = "i", main = "",
+     xlab = "Tiempo (minutos)", ylab = "Número de atletas")
+abline(v = media, col = "#C0392B", lwd = 3)
+abline(v = limites, col = "#034A94", lwd = 2, lty = 2)
+text(limites, 670, c("-2s", "-1s", "+1s", "+2s"), pos = 4, cex = 0.8, font = 2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son el RIC y la MAD?**</span>
+
+La varianza y la desviación estándar se calculan con la media, por lo que un dato extremo las afecta. Hay dos indicadores que se ven menos afectados.
+
+| Indicador                           | Fórmula                          | En R                  |
+|:------------------------------------|:---------------------------------|:----------------------|
+| **Rango intercuartílico** (RIC)     | $RIC = Q_3 - Q_1$                | `IQR(x)`              |
+| **Desviación absoluta mediana** (MAD) | $MAD = \text{mediana}(\lvert x_i - Me \rvert)$ | `mad(x, constant = 1)` |
+
+El RIC mide el ancho del 50 % central de los datos. La MAD es la mediana de las distancias a la mediana.
+
+Por defecto, `mad()` multiplica el resultado por 1.4826. Ese ajuste se usa para compararla con la desviación estándar en datos con distribución normal. Con `constant = 1` se obtiene la fórmula anterior.
+
+En la carrera, si se quita el mayor tiempo, la desviación estándar cambia más que el RIC y la MAD:
+
+```{r}
+sin_maximo <- tiempo[tiempo < max(tiempo)]
+
+c(todos = sd(tiempo), sin_maximo = sd(sin_maximo))          # desviación estándar
+c(todos = IQR(tiempo), sin_maximo = IQR(sin_maximo))        # rango intercuartílico
+c(todos = mad(tiempo), sin_maximo = mad(sin_maximo))        # MAD ajustada
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el coeficiente de variación?**</span>
+
+Para comparar la dispersión de grupos con medias distintas, o de variables con unidades distintas, se usa el **coeficiente de variación**. Expresa la desviación estándar como un porcentaje de la media:
+
+$$
+CV = \frac{s}{|\bar{x}|} \times 100 \%
+$$
+
+No tiene unidades. Tiene sentido en variables de **razón** con media positiva, como el tiempo o el peso. No se usa con temperaturas en °C, porque su cero es una convención.
+
+Por ejemplo, la edad y el tiempo se miden en unidades distintas, pero su dispersión relativa se puede comparar:
+
+```{r}
+cv <- function(x) 100 * sd(x) / mean(x)
+
+c(edad = cv(CarreraLuz22$edad), tiempo = cv(tiempo))
+```
+
+La edad tiene una mayor dispersión relativa que el tiempo.
+
+Una guía usada para interpretarlo es la siguiente. Los cortes dependen del área y del contexto:
+
+| $CV$                  | Variabilidad   | Grupo de datos            |
+|:----------------------|:---------------|:--------------------------|
+| $CV \leq 10 \%$       | Muy baja       | Muy homogéneo             |
+| $10 \% < CV \leq 20 \%$ | Baja         | Homogéneo                 |
+| $20 \% < CV \leq 30 \%$ | Moderada     | Moderadamente heterogéneo |
+| $30 \% < CV \leq 40 \%$ | Alta         | Heterogéneo               |
+| $CV > 40 \%$          | Muy alta       | Muy heterogéneo           |
+
+Para los dos grupos de edades:
+
+```{r}
+c(cv_1 = cv(grupo1), cv_2 = cv(grupo2))
+```
+
+El grupo 1 tiene baja variabilidad y el grupo 2, alta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Dónde se usan?**</span>
+
+| Ámbito              | Publicación                        | Indicador                 | Uso                                                            |
+|:--------------------|:-----------------------------------|:--------------------------|:---------------------------------------------------------------|
+| Educación           | [Icfes, Saber 11, 2023](https://www.icfes.gov.co/wp-content/uploads/2025/04/Informe_Saber11_2023.pdf) | Desviación estándar | En el calendario A, el puntaje global tuvo promedio de 257 y desviación estándar de 51 |
+| Investigación clínica | [Guan et al. (2020), reseñado por Eastin y Eastin](https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766) | Rango intercuartílico | La edad se reporta con mediana de 47 años, y sus cuartiles 35 y 58 |
+| Artículos biomédicos | [Guías SAMPL](https://emwa.org/wp-content/uploads/Media/media/2309/mew-253-lang-and-altman.pdf) | Desviación estándar | Recomiendan describir los datos aproximadamente normales con media (desviación estándar) |
+
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué indicador usar?**</span>
+
+| Situación                                         | Indicador                                          |
+|:--------------------------------------------------|:---------------------------------------------------|
+| Una descripción rápida de la amplitud             | Rango, con mínimo y máximo                         |
+| Datos sin asimetría marcada                       | Desviación estándar, junto con la media            |
+| Datos asimétricos o con datos atípicos            | Rango intercuartílico, junto con la mediana        |
+| Comparar grupos con medias o unidades distintas   | Coeficiente de variación                           |
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                          | Causa                                              | Solución                                          |
+|:--------------------------------------------------|:---------------------------------------------------|:--------------------------------------------------|
+| `sd()` o `var()` da `NA`                          | Hay datos faltantes                                | Usar `na.rm = TRUE`                               |
+| Decir que la desviación estándar es el promedio de las desviaciones | Ese promedio siempre es cero     | Explicarla como una distancia típica a la media   |
+| Interpretar la varianza en las unidades de los datos | Sus unidades están al cuadrado                  | Usar la desviación estándar                       |
+| Aplicar la regla empírica a datos muy asimétricos | Solo vale para distribuciones de campana           | Usar la regla de Chebyshev o revisar los datos    |
+| Usar el CV con una media cercana a cero o con valores negativos | La razón pierde sentido             | Usar otro indicador                               |
+| `mad(x)` no coincide con el cálculo a mano        | `mad()` multiplica por 1.4826                      | Usar `constant = 1`                               |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Calcule a mano**</span>
+
+Calcule la media, la varianza y la desviación estándar de 2, 4, 4 y 6. Compruebe el resultado en **R**.
+
+<details>
+<summary>Ver solución</summary>
+
+La media es 4. Las desviaciones son -2, 0, 0 y 2, y sus cuadrados suman 8. Entonces, $s^2 = 8/3 = 2.67$ y $s = 1.63$.
+
+```{r}
+x <- c(2, 4, 4, 6)
+c(media = mean(x), varianza = var(x), desviacion = sd(x))
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Hombres y mujeres**</span>
+
+Calcule la desviación estándar y el coeficiente de variación del tiempo para hombres y mujeres. ¿Qué grupo tiene mayor dispersión relativa?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+tapply(tiempo, CarreraLuz22$sex, sd)
+tapply(tiempo, CarreraLuz22$sex, cv)
+```
+
+Los hombres tienen mayor dispersión relativa.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Cambio de unidades**</span>
+
+Los tiempos en minutos tienen una desviación estándar de `r round(sd(tiempo), 2)`. Sin usar los datos, ¿cuál es la desviación estándar en segundos? ¿Cambia el coeficiente de variación?
+
+<details>
+<summary>Ver solución</summary>
+
+La desviación estándar se multiplica por 60. El coeficiente de variación no cambia, porque la media también se multiplica por 60.
+
+```{r}
+c(minutos = sd(tiempo), segundos = sd(60 * tiempo))
+c(minutos = cv(tiempo), segundos = cv(60 * tiempo))
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Un bono para todos**</span>
+
+Se suman 0.5 puntos a todas las notas de un grupo. ¿Qué ocurre con la media, con la desviación estándar y con el coeficiente de variación? Compruébelo con 3, 3.5, 4 y 4.5.
+
+<details>
+<summary>Ver solución</summary>
+
+La media aumenta 0.5 y la desviación estándar no cambia. Por eso, el coeficiente de variación disminuye.
+
+```{r}
+notas <- c(3, 3.5, 4, 4.5)
+
+c(media = mean(notas), desviacion = sd(notas), cv = cv(notas))
+c(media = mean(notas + 0.5), desviacion = sd(notas + 0.5), cv = cv(notas + 0.5))
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Aplique la regla de Chebyshev**</span>
+
+Sin mirar la forma de los datos, ¿qué porcentaje mínimo debe estar a menos de 2 desviaciones estándar de la media? ¿Se cumple en la edad de los atletas?
+
+<details>
+<summary>Ver solución</summary>
+
+Debe ser al menos $1 - 1/2^2 = 75 \%$.
+
+```{r}
+edad <- CarreraLuz22$edad
+
+100 * mean(abs(edad - mean(edad)) <= 2 * sd(edad))
+```
+
+Se cumple.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se lee en línea o se descarga en PDF desde esa página. La sección [2.7](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-7-medidas-de-la-dispersion-de-los-datos) trata las medidas de la dispersión de los datos.
+- Illowsky, B. y Dean, S. [*Introductory Statistics 2e*](https://openstax.org/books/introductory-statistics-2e/pages/preface). OpenStax.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Devore, J. L. (2016). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/) (9.ª ed.). Cengage Learning.
+- Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
+- Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Eastin, C. y Eastin, T. (2020). [Reseña de Clinical Characteristics of Coronavirus Disease 2019 in China](https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766). *The Journal of Emergency Medicine*, 58(4), 711-712.
+- Icfes. (2024). [Informe nacional de resultados del examen Saber 11.º 2023](https://www.icfes.gov.co/wp-content/uploads/2025/04/Informe_Saber11_2023.pdf).
+- Lang, T. A. y Altman, D. G. (2016). [Statistical analyses and methods in the published literature: The SAMPL guidelines](https://emwa.org/wp-content/uploads/Media/media/2309/mew-253-lang-and-altman.pdf). *Medical Writing*, 25(3), 31-36.
+- OpenStax. [2.7 Medidas de la dispersión de los datos](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-7-medidas-de-la-dispersion-de-los-datos). En *Introducción a la estadística*.
+- R Core Team. Documentación de `mad()`.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

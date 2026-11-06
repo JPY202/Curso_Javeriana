@@ -1,0 +1,523 @@
+---
+title: <span style="color:#034a94"> **¿Cómo tratar los datos faltantes?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Un **dato faltante** es la ausencia de un valor donde se esperaba uno. Puede deberse a errores al recoger la información, a registros perdidos o a personas que no responden. Los datos faltantes pueden afectar la **validez** y la **precisión** de los resultados, y ningún método los recupera: solo permite trabajar con ellos bajo ciertos supuestos. Esta página presenta cómo detectarlos, por qué ocurren, cuándo se puede usar cada método y cómo se implementa en **R**.
+
+Esta página usa `vivienda_faltantes`, del paquete `paqueteMETODOS`, los datos `airquality`, incluidos en **R**, y los paquetes `ggplot2` y `mice`. Los bloques de código se ejecutan en orden.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("vivienda_faltantes")
+```
+
+```{r}
+library(ggplot2)
+library(mice)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se representan en R?**</span>
+
+**R** representa un dato faltante con `NA`. Casi cualquier operación con `NA` da `NA`, por lo que varias funciones tienen el argumento `na.rm = TRUE`.
+
+```{r}
+x <- c(4, 7, NA, 10)
+is.na(x)
+mean(x)
+mean(x, na.rm = TRUE)
+```
+
+No todos los faltantes se ven como `NA` ([Wickham et al., 2023](https://r4ds.hadley.nz/missing-values.html)):
+
+| Caso                 | Ejemplo                                     | Qué hacer                      |
+|:---------------------|:--------------------------------------------|:-------------------------------|
+| Código especial      | `-99` o `999` significan "sin dato"         | Convertir con `na_if()` o con `na` al importar |
+| Texto vacío          | Una celda con `""` o `"N/A"`                | Convertir a `NA`               |
+| Faltante implícito   | Falta la fila completa de un mes            | Crear la fila con `tidyr::complete()` |
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se detectan?**</span>
+
+Primero se quitan las filas vacías al final de la tabla, como se explicó en [¿Cómo organizar los datos?](recurso401.html). Después se cuentan los faltantes por variable:
+
+```{r}
+viviendas <- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
+faltantes <- colSums(is.na(viviendas))
+faltantes[faltantes > 0]
+
+round(100 * mean(complete.cases(viviendas)), 1)
+```
+
+Solo `piso` y `parquea` tienen faltantes, y el 57.8 % de las viviendas está completo. La función `md.pattern()`, de `mice`, muestra qué combinaciones de variables faltan juntas:
+
+```{r}
+md.pattern(viviendas[, c("preciom", "piso", "parquea")], plot = FALSE)
+```
+
+Cada fila es un patrón: el número de la izquierda indica cuántas viviendas lo tienen, el 1 indica que el dato está y el 0 que falta. Por ejemplo, a 726 viviendas les faltan las dos variables.
+
+<br/>
+
+## <span style="color:#034a94">**¿Todo faltante se debe llenar?**</span>
+
+No. Antes de imputar hay que preguntarse si el dato existe. En `vivienda_faltantes`, `parquea` podría estar vacío porque no se registró o porque la vivienda no tiene parqueadero:
+
+```{r}
+table(viviendas$parquea, useNA = "ifany")
+```
+
+No aparece ningún cero, lo que sugiere que una vivienda sin parqueadero podría haberse registrado como vacío. También `piso` podría no aplicar a una casa de un solo nivel. Si el faltante significa "no tiene" o "no aplica", no se imputa: se recodifica, después de confirmarlo con quien recogió los datos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Por qué faltan los datos?**</span>
+
+Imagine una encuesta a 300 personas que pregunta la edad y el ingreso. Todas dicen su edad, pero algunas no dicen su ingreso. La pregunta clave es: **¿por qué falta ese dato?** Rubin (1976) propuso tres posibles respuestas ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-idconcepts.html)):
+
+- **MCAR, faltante completamente al azar: "fue pura casualidad".** Se dañó un archivo y se perdieron algunas respuestas. Quienes faltan son personas como las demás.
+- **MAR, faltante al azar: "se explica con algo que sí tengo".** Los jóvenes responden menos, y la edad está en la base. Entre personas de la misma edad, quienes faltan se parecen a quienes respondieron.
+- **MNAR, faltante no al azar: "depende de lo que no veo".** Las personas de mayores ingresos prefieren no decir su ingreso. La razón de la falta es justamente el dato que no se tiene.
+
+El nombre MAR confunde, porque no significa que falte por casualidad. Significa que la falta se puede explicar con las variables que sí se observaron.
+
+La siguiente figura muestra los tres casos con datos simulados. Cada punto es una persona. Los puntos azules son quienes dijeron su ingreso, y los círculos naranja son quienes no lo dijeron. En una base real, esos círculos no se ven: aquí se muestran porque los datos son simulados.
+
+```{r fig-mecanismos, echo=FALSE, fig.width=9.5, fig.height=4, fig.cap="Los tres mecanismos de datos faltantes (datos simulados)", fig.alt="Tres paneles de edad e ingreso. En MCAR los círculos que faltan están repartidos por todo el gráfico, en MAR se concentran en las edades jóvenes y en MNAR se concentran en los ingresos altos", out.width="100%"}
+set.seed(2026)
+n <- 300
+edad <- round(runif(n, 18, 65))
+ingreso <- 1 + 0.08 * edad + rnorm(n, 0, 1)
+
+# Probabilidad de que falte el ingreso en cada caso
+falta_mcar <- runif(n) < 0.35
+falta_mar <- runif(n) < ifelse(edad < 35, 0.70, 0.10)
+falta_mnar <- runif(n) < ifelse(ingreso > median(ingreso), 0.60, 0.10)
+
+personas <- data.frame(
+  edad = rep(edad, 3),
+  ingreso = rep(ingreso, 3),
+  falta = c(falta_mcar, falta_mar, falta_mnar),
+  caso = factor(rep(c("MCAR: casualidad", "MAR: depende de la edad", "MNAR: depende del ingreso"),
+                    each = n),
+                levels = c("MCAR: casualidad", "MAR: depende de la edad",
+                           "MNAR: depende del ingreso"))
+)
+
+ggplot(personas, aes(x = edad, y = ingreso)) +
+  geom_point(data = subset(personas, !falta), color = "#034A94", size = 1.5) +
+  geom_point(data = subset(personas, falta), color = "#D55E00", shape = 1, size = 1.8,
+             stroke = 0.8) +
+  facet_wrap(~ caso) +
+  labs(x = "Edad (años)", y = "Ingreso (millones)") +
+  theme_minimal(base_size = 13)
+```
+
+<details>
+<summary>Ver el código de la figura</summary>
+
+```{r ref.label="fig-mecanismos", eval=FALSE}
+```
+
+</details>
+
+<br/>
+
+Para ver por qué importa, se compara el promedio de ingreso de todas las personas con el promedio de quienes respondieron:
+
+```{r}
+round(c(todas = mean(ingreso),
+        MCAR = mean(ingreso[!falta_mcar]),
+        MAR = mean(ingreso[!falta_mar]),
+        MNAR = mean(ingreso[!falta_mnar])), 2)
+```
+
+El promedio de todas las personas es 4.27 millones. Con MCAR queda cerca, en 4.16. Con MAR sube a 4.71, porque faltan sobre todo los jóvenes, que ganan menos. Con MNAR baja a 3.86, porque faltan los ingresos altos. La diferencia es que en MAR la edad permite corregir el problema, mientras que en MNAR no hay una variable observada que lo resuelva.
+
+| Tipo | En palabras sencillas           | ¿Por qué falta el ingreso?            | ¿Qué se puede hacer?                                            |
+|:-----|:--------------------------------|:--------------------------------------|:----------------------------------------------------------------|
+| MCAR | Fue pura casualidad             | Se dañó un archivo                    | Eliminar registros no produce sesgo, aunque se pierden datos    |
+| MAR  | Se explica con lo que sí tengo  | Los jóvenes responden menos           | Usar las otras variables para imputar, como la edad             |
+| MNAR | Depende de lo que no veo        | Los ingresos altos no se reportan     | Ningún método lo resuelve solo: se comparan varios supuestos    |
+
+Con datos reales, también se puede comparar quiénes tienen el dato y quiénes no. Si son distintos, los datos no son MCAR. En `vivienda_faltantes`, para `parquea`:
+
+```{r}
+falta <- is.na(viviendas$parquea)
+
+round(100 * tapply(falta, viviendas$estrato, mean), 1)
+tapply(viviendas$preciom, falta, median)
+```
+
+El `parquea` falta en el 52.9 % de las viviendas de estrato 3 y en el 5.9 % de las de estrato 6. Además, las viviendas sin el dato tienen un precio mediano de 178 millones, frente a 355 de las demás. Eliminar esas viviendas dejaría una base con menos viviendas de bajo precio.
+
+<div class="content-box-gray">
+El mecanismo no se puede demostrar con los datos. MAR frente a MNAR no se puede probar, porque la información necesaria es justamente la que falta ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-idconcepts.html)). MAR es un supuesto que justifica el análisis, no una propiedad de los datos ([Sterne et al., 2009](https://doi.org/10.1136/bmj.b2393)). Por eso, no rechazar la prueba de Little (1988) no demuestra que los datos sean MCAR.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué método se puede usar?**</span>
+
+La siguiente tabla resume cuándo sirve cada método, a partir de la Tabla 1.1 de [van Buuren (2018)](https://stefvanbuuren.name/fimd/sec-simplesolutions.html), y se detalla en las secciones siguientes.
+
+| Método                          | Cuándo se puede usar                                                | Principal riesgo                                    | En **R**                              |
+|:--------------------------------|:--------------------------------------------------------------------|:----------------------------------------------------|:--------------------------------------|
+| Eliminar registros              | MCAR, o se pierde una parte pequeña de los datos                    | Sesgo si no es MCAR; se pierde información          | `na.omit()`, `complete.cases()`       |
+| Media o mediana                 | Arreglo rápido, con muy pocos faltantes                             | Reduce la varianza y distorsiona relaciones         | `replace()`                           |
+| Regresión                       | Pocas veces; solo si la predicción es casi perfecta                 | Refuerza las relaciones de forma artificial         | `lm()`, `predict()`                   |
+| Regresión estocástica           | MAR, y se necesita una sola base completa                           | Puede dar valores imposibles                        | `mice(method = "norm.nob")`           |
+| Imputación múltiple             | MAR plausible y variables que ayudan a predecir el faltante         | Requiere un buen modelo de imputación               | `mice()`, `pool()`                    |
+
+¿Hay un porcentaje de faltantes a partir del cual se debe imputar? No hay una regla fija. Madley-Dowd et al. (2019) muestran que el porcentaje de faltantes no debe guiar la decisión: una imputación múltiple válida reduce el sesgo incluso con porcentajes altos. Importan más el mecanismo y las variables disponibles.
+
+Los ejemplos usan `airquality`, con mediciones diarias de calidad del aire en Nueva York, porque es el ejemplo de [van Buuren (2018)](https://stefvanbuuren.name/fimd/sec-simplesolutions.html). `Ozone` tiene 37 faltantes de 153 datos.
+
+```{r}
+aire <- airquality[, c("Ozone", "Solar.R", "Wind", "Temp")]
+colSums(is.na(aire))
+```
+
+<br/>
+
+### <span style="color:#034a94">**¿Cuándo eliminar registros?**</span>
+
+**¿Qué hace?** Quita cada registro con algún faltante en las variables del análisis. También se llama **análisis de casos completos**.
+
+**¿Cuándo se puede usar?** Si los datos son MCAR, produce estimaciones insesgadas. También puede ser adecuado si se pierde solo una parte pequeña de los datos.
+
+**¿Cómo se implementa?**
+
+```{r}
+completos <- na.omit(aire)
+nrow(completos)
+```
+
+**¿Qué cuidados tener?** Se perdieron 42 de 153 días. Si los datos no son MCAR, las estimaciones pueden quedar sesgadas ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-simplesolutions.html)).
+
+<br/>
+
+### <span style="color:#034a94">**¿Cuándo imputar con la media o la mediana?**</span>
+
+**¿Qué hace?** Reemplaza cada faltante por la media, o por la mediana si la variable es asimétrica. En una variable categórica se usa la moda.
+
+**¿Cuándo se puede usar?** Solo como arreglo rápido, cuando faltan muy pocos valores. En general se debe evitar ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-simplesolutions.html)).
+
+**¿Cómo se implementa?**
+
+```{r}
+ozono_media <- replace(aire$Ozone, is.na(aire$Ozone), mean(aire$Ozone, na.rm = TRUE))
+
+round(c(antes = sd(aire$Ozone, na.rm = TRUE), despues = sd(ozono_media)), 1)
+```
+
+**¿Qué cuidados tener?** La desviación estándar bajó de 33 a 28.7, porque todos los datos nuevos están en el centro. La siguiente figura muestra el pico artificial que se crea:
+
+```{r fig-media, fig.width=8, fig.height=4, fig.cap="Ozono observado y ozono con imputación por la media", fig.alt="Histograma de ozono con los datos observados en azul y una barra naranja alta en el intervalo de la media, formada por los 37 valores imputados", out.width="100%"}
+ozono <- data.frame(valor = ozono_media,
+                    origen = ifelse(is.na(aire$Ozone), "Imputado", "Observado"))
+
+ggplot(ozono, aes(x = valor, fill = origen)) +
+  geom_histogram(breaks = seq(0, 170, 10), color = "white") +
+  scale_fill_manual(values = c("Imputado" = "#D55E00", "Observado" = "#034A94")) +
+  scale_x_continuous(limits = c(0, 170), breaks = seq(0, 170, 20), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 10), expand = c(0, 0)) +
+  labs(x = "Ozono (ppb)", y = "Número de días", fill = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "top", plot.margin = margin(10, 20, 5, 5))
+```
+
+<br/>
+
+### <span style="color:#034a94">**¿Cuándo imputar con regresión?**</span>
+
+**¿Qué hace?** Ajusta un modelo con los datos observados y usa la predicción como valor imputado. Aquí se predice `Ozone` con `Wind` y `Temp`, que no tienen faltantes.
+
+**¿Cuándo se puede usar?** Pocas veces. Es realista solo si la predicción es casi perfecta. Van Buuren (2018) lo considera uno de los métodos más peligrosos, porque refuerza las relaciones de forma artificial.
+
+**¿Cómo se implementa?**
+
+```{r}
+modelo <- lm(Ozone ~ Wind + Temp, data = aire)
+ozono_reg <- aire$Ozone
+ozono_reg[is.na(ozono_reg)] <- predict(modelo, newdata = aire[is.na(aire$Ozone), ])
+```
+
+**¿Qué cuidados tener?** Los valores imputados quedan exactamente sobre el plano del modelo, por lo que la variabilidad se subestima. Si se usa una sola variable para predecir, los puntos imputados forman una línea perfecta.
+
+<br/>
+
+### <span style="color:#034a94">**¿Cuándo usar regresión estocástica?**</span>
+
+**¿Qué hace?** Agrega a la predicción un valor aleatorio, para recuperar la dispersión de los datos.
+
+**¿Cuándo se puede usar?** Bajo MAR, si el modelo es adecuado y se necesita una sola base completa.
+
+**¿Cómo se implementa?** Con `mice()` y el método `norm.nob`, usando `Wind` y `Temp`:
+
+```{r}
+base <- aire[, c("Ozone", "Wind", "Temp")]
+
+estocastica <- mice(base, method = "norm.nob", m = 1, maxit = 1, seed = 123, printFlag = FALSE)
+ozono_est <- complete(estocastica)$Ozone
+
+min(ozono_est)
+```
+
+**¿Qué cuidados tener?** Puede producir valores imposibles. Aquí el ozono mínimo salió negativo. Además, los errores estándar quedan demasiado pequeños, porque la base se analiza como si esos valores se hubieran observado ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-simplesolutions.html)).
+
+<br/>
+
+### <span style="color:#034a94">**¿Cuándo usar imputación múltiple?**</span>
+
+**¿Qué hace?** En lugar de un valor, crea varios valores posibles para cada faltante. Tiene tres pasos ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-nutshell.html)):
+
+1. **Imputar:** se crean $m$ bases completas, cada una con valores plausibles.
+2. **Analizar:** cada base se analiza como si estuviera completa.
+3. **Combinar:** los $m$ resultados se unen con las **reglas de Rubin**.
+
+La diferencia entre las bases refleja la incertidumbre sobre el dato que falta. Si $\hat{Q}_l$ es la estimación en la base $l$ y $\bar{U}$ es el promedio de sus varianzas, las reglas de Rubin (1987) son:
+
+$$
+\bar{Q} = \frac{1}{m}\sum_{l=1}^{m}\hat{Q}_l
+\qquad
+B = \frac{1}{m-1}\sum_{l=1}^{m}(\hat{Q}_l - \bar{Q})^2
+\qquad
+T = \bar{U} + \left(1 + \frac{1}{m}\right)B
+$$
+
+donde $B$ mide la variación entre imputaciones y $T$ es la varianza total.
+
+**¿Cuándo se puede usar?** Cuando MAR es plausible y se tienen variables que ayudan a predecir el faltante o se relacionan con la causa de la falta ([Sterne et al., 2009](https://doi.org/10.1136/bmj.b2393)). No resuelve el problema si los datos son MNAR.
+
+**¿Cómo se implementa?** `mice()` imputa cada variable con ayuda de las demás. El método por defecto para variables numéricas es la **comparación predictiva de medias** (*predictive mean matching*, PMM): busca casos parecidos y toma el valor observado de uno de ellos, por lo que no aparecen valores imposibles ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-pmm.html)).
+
+```{r}
+imputacion <- mice(aire, method = "pmm", m = 20, seed = 123, printFlag = FALSE)
+```
+
+Se usan 20 bases. Sterne et al. (2009) sugieren al menos 20, y una regla usual es usar tantas como el porcentaje de casos incompletos ([van Buuren, 2018](https://stefvanbuuren.name/fimd/sec-howmany.html)).
+
+Después se analiza cada base y se combinan los resultados. Por ejemplo, para la media de `Ozone`:
+
+```{r}
+ajuste <- with(imputacion, lm(Ozone ~ 1))
+resultado <- summary(pool(ajuste))
+round(resultado[, c("estimate", "std.error")], 2)
+```
+
+Hay que revisar si los valores imputados son razonables. En esta figura, cada línea gris es una base imputada y la azul son los datos observados:
+
+```{r fig-pmm, fig.width=8, fig.height=4, fig.cap="Densidad del ozono observado y de los valores imputados", fig.alt="Curva azul de los datos observados y veinte curvas grises de valores imputados con una forma parecida", out.width="100%"}
+largas <- complete(imputacion, action = "long")
+largas$imputado <- rep(is.na(aire$Ozone), times = 20)
+
+ggplot() +
+  geom_density(data = subset(largas, imputado), aes(x = Ozone, group = .imp),
+               color = "#A9B2BC", linewidth = 0.4) +
+  geom_density(data = aire, aes(x = Ozone), color = "#034A94", linewidth = 1.2) +
+  scale_x_continuous(limits = c(-20, 200), breaks = seq(0, 200, 25), expand = c(0, 0)) +
+  labs(x = "Ozono (ppb)", y = "Densidad") +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Qué cuidados tener?**
+
+- Si se imputa una variable que luego se analiza con un resultado, ese resultado debe estar en el modelo de imputación ([Sterne et al., 2009](https://doi.org/10.1136/bmj.b2393)).
+- No se debe promediar las bases para analizar una sola, porque se pierde la incertidumbre.
+- Los valores imputados no son datos reales, y no sirven para decisiones sobre un caso particular.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo cambian los resultados según el método?**</span>
+
+La siguiente tabla compara la media y la desviación estándar de `Ozone`, y su correlación con `Temp`. Para la imputación múltiple se promedian los valores de las 20 bases.
+
+```{r}
+resumir <- function(x) {
+  c(media = mean(x), de = sd(x), cor_temp = cor(x, aire$Temp))
+}
+
+multiple <- sapply(1:20, function(i) resumir(complete(imputacion, i)$Ozone))
+
+comparacion <- rbind(
+  "Datos observados" = c(mean(aire$Ozone, na.rm = TRUE), sd(aire$Ozone, na.rm = TRUE),
+                          cor(aire$Ozone, aire$Temp, use = "complete.obs")),
+  "Media" = resumir(ozono_media),
+  "Regresión" = resumir(ozono_reg),
+  "Regresión estocástica" = resumir(ozono_est),
+  "Imputación múltiple" = rowMeans(multiple)
+)
+colnames(comparacion) <- c("Media", "Desv. estándar", "Correlación con Temp")
+round(comparacion, 2)
+```
+
+Imputar con la media reduce la desviación estándar y debilita la correlación con la temperatura. La regresión hace lo contrario con la correlación: la aumenta. La imputación múltiple conserva mejor las dos medidas, pero no garantiza el valor real, que no se conoce.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se debe reportar?**</span>
+
+Sterne et al. (2009) recomiendan incluir en un informe:
+
+- El número de faltantes por variable y sus motivos, si se conocen.
+- La comparación entre los registros completos e incompletos.
+- El método usado, sus supuestos y por qué son razonables.
+- Si se usa imputación múltiple: el programa, el número de bases y las variables del modelo.
+- Los resultados con casos completos, para comparar.
+- Un análisis de sensibilidad si MNAR es posible, que muestre cuánto cambian las conclusiones bajo otros supuestos.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                  | Causa                                                  | Solución                                                     |
+|:----------------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------------------|
+| `mean()` da `NA`                                          | La variable tiene faltantes                            | Decidir qué hacer con ellos, o usar `na.rm = TRUE`           |
+| Se imputa un dato que no existe                           | El faltante significa "no aplica" o "no tiene"         | Confirmar con la fuente y recodificar                        |
+| Se concluye que los datos son MCAR                        | La prueba no rechazó                                   | No rechazar no demuestra MCAR                                |
+| La varianza baja después de imputar                       | Se usó una imputación con la media                     | Usar imputación múltiple                                     |
+| Se usa solo una regla del porcentaje de faltantes         | Se ignora el mecanismo                                 | Revisar por qué faltan los datos                             |
+| Se analiza una sola base de `mice()`                      | Se pierde la incertidumbre                             | Analizar las $m$ bases y usar `pool()`                       |
+| El resultado cambia en cada ejecución                     | `mice()` usa números aleatorios                        | Fijar `seed`                                                 |
+| `could not find function "mice"`                          | No se cargó el paquete                                 | Ejecutar `library(mice)`                                     |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. ¿Qué mecanismo es?**</span> {.toc-ignore}
+
+Clasifique cada caso como MCAR, MAR o MNAR, e indique qué supuesto se hace:
+
+- Un sensor de temperatura falla por cortes de energía, sin relación con el clima.
+- En una encuesta, las personas mayores responden menos las preguntas digitales, y la edad se registró.
+- Quienes tienen más deudas no reportan su valor.
+
+<details>
+<summary>Ver solución</summary>
+
+El primero sería MCAR, el segundo MAR y el tercero MNAR. En los tres casos es un supuesto basado en lo que se sabe del estudio, porque los datos por sí solos no lo demuestran.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Comparar grupos**</span> {.toc-ignore}
+
+Calcule el porcentaje de faltantes de `piso` por tipo de vivienda. ¿Parecen MCAR?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+tipo <- tolower(viviendas$tipo)
+tipo[tipo == "apto"] <- "apartamento"
+
+round(100 * tapply(is.na(viviendas$piso), tipo, mean), 1)
+```
+
+Falta en el 27.1 % de los apartamentos y en el 39 % de las casas. La falta se relaciona con el tipo, así que no parece MCAR. Además, en las casas el piso podría no aplicar.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. El efecto de la media**</span> {.toc-ignore}
+
+Impute `Solar.R` con su media y compare la desviación estándar antes y después.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+solar <- replace(aire$Solar.R, is.na(aire$Solar.R), mean(aire$Solar.R, na.rm = TRUE))
+round(c(antes = sd(aire$Solar.R, na.rm = TRUE), despues = sd(solar)), 1)
+```
+
+Baja poco, porque solo faltan 7 datos. El efecto depende de cuántos valores se reemplazan.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Imputación múltiple**</span> {.toc-ignore}
+
+Con `aire`, use `mice()` con 20 bases para estimar la media de `Solar.R`. Compárela con la media de los datos disponibles.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+ajuste_solar <- with(imputacion, lm(Solar.R ~ 1))
+round(summary(pool(ajuste_solar))[, c("estimate", "std.error")], 2)
+
+round(mean(aire$Solar.R, na.rm = TRUE), 2)
+```
+
+La base `imputacion` ya contiene `Solar.R`. Las dos medias son parecidas, porque faltan pocos datos.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer gratis**</span> {.toc-ignore}
+
+- van Buuren, S. (2018). [*Flexible Imputation of Missing Data*](https://stefvanbuuren.name/fimd/) (2.ª ed.). CRC Press. El autor publica el libro en línea, y creó el paquete `mice`.
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [*R for Data Science*](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly Media. Tiene un capítulo sobre [valores faltantes](https://r4ds.hadley.nz/missing-values.html).
+
+### <span style="color:#034a94">**Otros libros**</span> {.toc-ignore}
+
+- Little, R. J. A. y Rubin, D. B. (2019). [*Statistical Analysis with Missing Data*](https://onlinelibrary.wiley.com/doi/book/10.1002/9781119482260) (3.ª ed.). Wiley.
+- Enders, C. K. (2022). [*Applied Missing Data Analysis*](https://www.guilford.com/books/Applied-Missing-Data-Analysis/Craig-Enders/9781462549863) (2.ª ed.). Guilford Press.
+
+### <span style="color:#034a94">**Artículos y recursos**</span> {.toc-ignore}
+
+- Sterne, J. A. C. et al. (2009). [Multiple imputation for missing data in epidemiological and clinical research: potential and pitfalls](https://doi.org/10.1136/bmj.b2393). *BMJ*, 338, b2393.
+- van Buuren, S. y Groothuis-Oudshoorn, K. (2011). [mice: Multivariate Imputation by Chained Equations in R](https://doi.org/10.18637/jss.v045.i03). *Journal of Statistical Software*, 45(3).
+- [Paquete `mice` en CRAN](https://cran.r-project.org/web/packages/mice/index.html).
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Little, R. J. A. (1988). A test of missing completely at random for multivariate data with missing values. *Journal of the American Statistical Association*, 83(404), 1198-1202.
+- Little, R. J. A. y Rubin, D. B. (2019). [*Statistical Analysis with Missing Data*](https://onlinelibrary.wiley.com/doi/book/10.1002/9781119482260) (3.ª ed.). Wiley.
+- Madley-Dowd, P., Hughes, R., Tilling, K. y Heron, J. (2019). [The proportion of missing data should not be used to guide decisions on multiple imputation](https://doi.org/10.1016/j.jclinepi.2019.02.016). *Journal of Clinical Epidemiology*, 110, 63-73.
+- Rubin, D. B. (1976). Inference and missing data. *Biometrika*, 63(3), 581-592.
+- Rubin, D. B. (1987). *Multiple Imputation for Nonresponse in Surveys*. Wiley.
+- Sterne, J. A. C., White, I. R., Carlin, J. B., Spratt, M., Royston, P., Kenward, M. G., Wood, A. M. y Carpenter, J. R. (2009). [Multiple imputation for missing data in epidemiological and clinical research: potential and pitfalls](https://doi.org/10.1136/bmj.b2393). *BMJ*, 338, b2393.
+- van Buuren, S. (2018). [*Flexible Imputation of Missing Data*](https://stefvanbuuren.name/fimd/) (2.ª ed.). CRC Press.
+- van Buuren, S. y Groothuis-Oudshoorn, K. (2011). [mice: Multivariate Imputation by Chained Equations in R](https://doi.org/10.18637/jss.v045.i03). *Journal of Statistical Software*, 45(3).
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [*R for Data Science*](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

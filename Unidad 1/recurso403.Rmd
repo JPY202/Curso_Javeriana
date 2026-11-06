@@ -1,0 +1,286 @@
+---
+title: <span style="color:#034a94"> **¿Cómo transformar variables?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Transformar es cambiar la forma en que se expresa una variable, o crear variables nuevas, para preparar los datos para el análisis. Esta página presenta los procesos más usados: construir variables, estandarizar, normalizar y aplicar un logaritmo. Toda transformación debe tener una razón y quedar registrada en el código.
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y los paquetes `dplyr`, `ggplot2`, `scales` y `e1071`. Los bloques de código se ejecutan en orden.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(e1071)
+
+viviendas <- filter(vivienda_faltantes, !is.na(id))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo construir variables?**</span>
+
+Muchas veces la información útil no está en una variable, sino en una combinación de varias. La función `mutate()`, de `dplyr`, agrega columnas nuevas. También se puede hacer con `$`.
+
+```{r}
+viviendas <- mutate(viviendas,
+                    precio_area = preciom / areaconst,
+                    tamano = cut(areaconst, breaks = c(0, 100, 200, Inf),
+                                 labels = c("Pequeña", "Mediana", "Grande")))
+
+select(viviendas, preciom, areaconst, precio_area, tamano) |> head(3)
+tapply(viviendas$precio_area, viviendas$estrato, median, na.rm = TRUE) |> round(2)
+```
+
+El precio por unidad de área permite comparar viviendas de distinto tamaño: su mediana sube de 1.71 millones en estrato 3 a 3.66 en estrato 6. Los cortes de `tamano` son una decisión del analista, y deben justificarse.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es estandarizar?**</span>
+
+**¿Para qué sirve?** Lleva una variable a una escala con media 0 y desviación estándar 1. Permite comparar valores de variables o grupos con unidades o escalas diferentes.
+
+**¿Cómo se calcula?** Cada valor se convierte en un **valor z**, que indica a cuántas desviaciones estándar está de la media:
+
+$$
+z_i = \frac{x_i - \bar{x}}{s}
+$$
+
+**¿Cómo se hace en R?** Se aplica la fórmula, o se usa `scale()`:
+
+```{r}
+x <- 1:5
+
+(x - mean(x)) / sd(x)
+as.numeric(scale(x))
+```
+
+**¿Cómo se interpreta?** Por ejemplo, ¿qué tan rápido fue un tiempo de 60 minutos en la categoría Juvenil y en Veteranos C?
+
+```{r}
+minutos <- CarreraLuz22$timerun / 60
+
+valor_z <- function(categoria, tiempo) {
+  grupo <- minutos[CarreraLuz22$categoria == categoria]
+  (tiempo - mean(grupo)) / sd(grupo)
+}
+
+round(c(juvenil = valor_z("1. Juvenil", 60), veteranos_c = valor_z("5. Veteranos C", 60)), 2)
+```
+
+Un valor negativo indica un tiempo menor que el promedio de la categoría. Los 60 minutos están más por debajo del promedio en Veteranos C que en Juvenil.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es normalizar?**</span>
+
+**¿Para qué sirve?** Lleva una variable a un rango definido, usualmente de 0 a 1. Se conoce como *min-max*.
+
+**¿Cómo se calcula?**
+
+$$
+x_i' = \frac{x_i - \min(x)}{\max(x) - \min(x)}
+$$
+
+**¿Cómo se hace en R?** Se aplica la fórmula, o se usa `rescale()`, del paquete `scales`:
+
+```{r}
+(x - min(x)) / (max(x) - min(x))
+rescale(x)
+```
+
+**¿Qué cuidados tener?** Depende del mínimo y del máximo, así que un solo valor extremo aplasta a los demás. Además, produce exactamente los valores 0 y 1. Por eso no sirve para métodos que exigen valores estrictamente entre 0 y 1, como la regresión beta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Estandarizar o normalizar cambia la forma?**</span>
+
+No. Son transformaciones lineales: cambian la escala, pero no la forma de la distribución. Una variable asimétrica sigue igual de asimétrica.
+
+```{r fig-forma, fig.width=9.5, fig.height=3.6, fig.cap="El precio original, estandarizado y normalizado", fig.alt="Tres histogramas con la misma forma asimétrica; solo cambia la escala del eje horizontal", out.width="100%"}
+precio <- na.omit(viviendas$preciom)
+
+formas <- data.frame(
+  valor = c(precio, as.numeric(scale(precio)), rescale(precio)),
+  escala = factor(rep(c("Original", "Estandarizado", "Normalizado"), each = length(precio)),
+                  levels = c("Original", "Estandarizado", "Normalizado"))
+)
+
+ggplot(formas, aes(x = valor)) +
+  geom_histogram(bins = 30, fill = "#034A94", color = "white") +
+  facet_wrap(~ escala, scales = "free_x") +
+  labs(x = NULL, y = "Número de viviendas") +
+  theme_minimal(base_size = 13)
+```
+
+```{r}
+round(c(original = skewness(precio), estandarizado = skewness(scale(precio)),
+        normalizado = skewness(rescale(precio))), 3)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuándo aplicar un logaritmo?**</span>
+
+**¿Para qué sirve?** Reduce la asimetría a la derecha, porque acerca los valores grandes. Es útil en variables positivas como precios o ingresos, en las que importan más los cambios proporcionales que los absolutos.
+
+**¿Cómo se hace en R?** `log()` usa el logaritmo natural y `log10()` el de base 10.
+
+```{r fig-log, fig.width=9, fig.height=3.8, fig.cap="El precio antes y después del logaritmo", fig.alt="Dos histogramas: el precio original tiene una cola larga a la derecha; su logaritmo es más simétrico", out.width="100%"}
+comparar <- data.frame(
+  valor = c(precio, log(precio)),
+  escala = factor(rep(c("Precio", "Logaritmo del precio"), each = length(precio)),
+                  levels = c("Precio", "Logaritmo del precio"))
+)
+
+ggplot(comparar, aes(x = valor)) +
+  geom_histogram(bins = 30, fill = "#034A94", color = "white") +
+  facet_wrap(~ escala, scales = "free_x") +
+  labs(x = NULL, y = "Número de viviendas") +
+  theme_minimal(base_size = 14)
+```
+
+```{r}
+round(c(precio = skewness(precio), logaritmo = skewness(log(precio))), 2)
+```
+
+**¿Cómo se interpreta?** Una diferencia de 1 en logaritmo natural equivale a multiplicar por $e \approx 2.72$. Para volver a la escala original se usa `exp()`.
+
+**¿Qué cuidados tener?** No existe para cero ni para valores negativos. Si hay ceros, `log1p()` calcula $\log(1 + x)$, pero cambia la interpretación. Conviene reportar los resultados en la escala original.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuándo conviene cada transformación?**</span>
+
+| Transformación | Conviene para                                    | Cambia la forma | Cuidado                                  |
+|:---------------|:-------------------------------------------------|:----------------|:-----------------------------------------|
+| Construir      | Crear indicadores con sentido                    | No aplica       | Justificar la definición                 |
+| Estandarizar   | Comparar escalas distintas                       | No              | Queda sin unidades                       |
+| Normalizar     | Llevar a un rango fijo                           | No              | Sensible a valores extremos              |
+| Logaritmo      | Reducir la asimetría a la derecha                | Sí              | Solo para valores positivos              |
+
+La necesidad de estas transformaciones depende del método. Los que usan distancias o combinan variables, como k vecinos cercanos, el análisis de componentes principales o la regresión con penalización, son sensibles a la escala, por lo que se suelen estandarizar las variables antes ([James et al., 2021](https://statlearning.com)). La regresión lineal por mínimos cuadrados no lo necesita para sus predicciones: al cambiar la escala de una variable, su coeficiente se ajusta.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                  | Causa                                                  | Solución                                                     |
+|:----------------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------------------|
+| Se estandariza para corregir la asimetría                 | Se cree que cambia la forma                            | Usar otra transformación, como el logaritmo                  |
+| `log()` da `-Inf`                                         | La variable tiene ceros                                | Revisar los ceros o usar `log1p()`                           |
+| `log()` da `NaN`                                          | Hay valores negativos                                  | Revisar la variable                                          |
+| `scale()` devuelve una matriz                             | Es su salida normal                                    | Usar `as.numeric(scale(x))`                                  |
+| `mutate()` no cambia la tabla                             | No se guardó el resultado                              | Asignar con `<-`                                             |
+| Los resultados se reportan en escala transformada         | No se volvió a la escala original                      | Usar `exp()`, y explicarlo                                   |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Construir una variable**</span>
+
+Cree la variable `banios_hab`, con el número de baños por habitación. ¿Qué problema tiene si `habitac` vale cero?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+viviendas <- mutate(viviendas, banios_hab = banios / habitac)
+sum(viviendas$habitac == 0, na.rm = TRUE)
+sum(is.infinite(viviendas$banios_hab))
+```
+
+Dividir entre cero da `Inf` o `NaN`. Esos registros se revisan antes de usar la variable.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Comparar con valores z**</span>
+
+Estandarice el precio de las viviendas dentro de cada estrato. Una vivienda de estrato 3 cuesta 500 millones y una de estrato 6 cuesta 800. ¿Cuál es más costosa frente a su estrato?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+z_estrato <- function(e, valor) {
+  grupo <- viviendas$preciom[viviendas$estrato == e]
+  (valor - mean(grupo, na.rm = TRUE)) / sd(grupo, na.rm = TRUE)
+}
+
+round(c(estrato3 = z_estrato(3, 500), estrato6 = z_estrato(6, 800)), 2)
+```
+
+La vivienda de estrato 3 está muy por encima del promedio de su estrato, mientras que la de estrato 6 está cerca del suyo.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Elegir la transformación**</span>
+
+Calcule la asimetría de `areaconst` y de su logaritmo. ¿Qué transformación usaría para reducir la asimetría?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+area <- na.omit(viviendas$areaconst)
+round(c(area = skewness(area), logaritmo = skewness(log(area))), 2)
+```
+
+El logaritmo, porque reduce la asimetría. Estandarizar o normalizar no la cambiaría.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- James, G., Witten, D., Hastie, T. y Tibshirani, R. (2021). [*An Introduction to Statistical Learning*](https://statlearning.com) (2.ª ed.). Springer. Los autores lo ofrecen en PDF en su sitio.
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [*R for Data Science*](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly Media. El capítulo [Data transformation](https://r4ds.hadley.nz/data-transform.html) trata `mutate()`.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- James, G., Witten, D., Hastie, T. y Tibshirani, R. (2021). [*An Introduction to Statistical Learning*](https://statlearning.com) (2.ª ed.). Springer.
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [*R for Data Science*](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

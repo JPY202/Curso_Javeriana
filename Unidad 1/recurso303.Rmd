@@ -1,0 +1,324 @@
+---
+title: <span style="color:#034a94"> **¿Cómo graficar una variable numérica?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Para representar **variables cuantitativas** se usan gráficos que muestran las principales características de su distribución: el **centro**, la **dispersión** y la **forma**. Esta página presenta los tres gráficos más usados, cómo construirlos e interpretarlos: el histograma, la curva de densidad y el gráfico de cajas. Para ver más opciones, cada sección enlaza a [From Data to Viz](https://www.data-to-viz.com/).
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y el paquete `ggplot2`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+```{r}
+library(ggplot2)
+```
+
+Los ejemplos usan el tiempo de carrera, en minutos, de la categoría Veteranos B:
+
+```{r}
+veteranos <- subset(CarreraLuz22, categoria == "4. Veteranos B")
+veteranos$minutos <- veteranos$timerun / 60
+
+mujeres <- veteranos$minutos[veteranos$sex == "Mujer"]
+hombres <- veteranos$minutos[veteranos$sex == "Hombre"]
+
+c(mujeres = length(mujeres), hombres = length(hombres))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar un histograma?**</span>
+
+**¿Para qué sirve?** Para ver la forma de la distribución de una variable numérica: la simetría o asimetría, las modas y la dispersión. Representa la frecuencia de los datos en intervalos o clases.
+
+**¿Cuántas clases usar?** Se recomienda usar entre 7 y 15 clases. En **R**, `hist()` parte de la **regla de Sturges**, que estima el número de clases $k$ a partir del número de datos $n$:
+
+$$
+k = \lceil \log_2(n) + 1 \rceil
+$$
+
+donde $\lceil \cdot \rceil$ indica redondear hacia arriba. Con los 72 tiempos de las mujeres, la regla sugiere 8 clases. `hist()` usa ese número solo como sugerencia y ajusta los cortes a valores redondos, y aquí produce 10 clases de 5 minutos:
+
+```{r}
+ceiling(log2(72) + 1)
+
+clases <- hist(mujeres, plot = FALSE)
+clases$breaks
+clases$counts
+```
+
+**¿Cómo se hace?** Con `ggplot2` se fijan los cortes con `breaks`. Conviene usar límites enteros, porque describen mejor el fenómeno.
+
+```{r fig-hist, fig.width=8, fig.height=4.5, fig.cap="Tiempos de las mujeres de la categoría Veteranos B", fig.alt="Histograma de los tiempos entre 45 y 95 minutos, con la barra más alta entre 65 y 70 minutos y otra barra alta entre 80 y 85", out.width="100%"}
+cortes <- seq(45, 95, 5)
+datos_mujeres <- data.frame(minutos = mujeres)
+
+ggplot(datos_mujeres, aes(x = minutos)) +
+  geom_histogram(breaks = cortes, fill = "#034A94", color = "white") +
+  scale_x_continuous(limits = c(45, 95), breaks = cortes, expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 15), breaks = seq(0, 15, 3), expand = c(0, 0)) +
+  labs(x = "Tiempo (minutos)", y = "Número de mujeres") +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Cada barra indica cuántos datos caen en un intervalo. Se observan el centro, la dispersión, la forma y los valores alejados. En la figura:
+
+- El 72.2 % de las mujeres terminó entre 60 y 85 minutos, porque en esos intervalos hay 52 de los 72 datos.
+- Hacia los tiempos bajos la frecuencia cae de 11 a 2.
+- Las barras más altas están en `(65,70]` y `(80,85]`. Esto podría indicar dos grupos con tiempos típicos distintos, pero con 72 datos es solo una hipótesis.
+
+Un intervalo como `(65,70]` no incluye el 65, pero sí el 70. Este es el comportamiento de `hist()` y `cut()` por defecto.
+
+**¿Qué mide el eje vertical?** Puede mostrar tres medidas. La **frecuencia relativa** divide la frecuencia entre el total de datos, y la **densidad** divide la frecuencia relativa entre la amplitud del intervalo:
+
+$$
+f_r = \frac{f}{n}
+\qquad \text{y} \qquad
+d = \frac{f_r}{\text{amplitud}}
+$$
+
+En el intervalo `(65,70]`, la frecuencia relativa es $13/72 \approx 0.181$ y la densidad es $0.181/5 \approx 0.036$. Como todas las clases tienen la misma amplitud, las tres medidas dan un gráfico con la misma forma.
+
+**¿Qué cuidados tener?** El aspecto cambia con el ancho de los intervalos. Si son muy angostos, aparece mucho ruido, y si son muy anchos, se pierden detalles. Por eso conviene probar varios ([Wilke, 2019](https://clauswilke.com/dataviz/histograms-density-plots.html); [Holtz y Healy](https://www.data-to-viz.com/caveat/bin_size.html)). Los intervalos deben tener la misma amplitud, y no debe confundirse con un gráfico de barras.
+
+**Ver más:** [histograma](https://www.data-to-viz.com/graph/histogram.html) y [ancho de los intervalos](https://www.data-to-viz.com/caveat/bin_size.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar una curva de densidad?**</span>
+
+**¿Para qué sirve?** Para ver la forma de una distribución con una curva suave, y para comparar pocos grupos. Se construye con una **estimación kernel**: a cada dato se le asigna una curva pequeña, llamada *kernel*, y luego se suman todas las curvas. El **ancho de banda** es el grado de suavizado.
+
+**¿Cómo se hace?** Se usa `geom_density()`. Para comparar grupos, las curvas se superponen con transparencia usando `alpha`.
+
+```{r fig-densidad, fig.width=8.5, fig.height=4.6, fig.cap="Curvas de densidad de los tiempos por sexo", fig.alt="Dos curvas de densidad superpuestas: la de los hombres es alta, con su parte central entre 55 y 65 minutos y una cola a la derecha; la de las mujeres es más baja y está desplazada a la derecha", out.width="100%"}
+ggplot(veteranos, aes(x = minutos, fill = sex, color = sex)) +
+  geom_density(alpha = 0.3, linewidth = 0.8) +
+  scale_fill_manual(values = c("Hombre" = "#0072B2", "Mujer" = "#D55E00")) +
+  scale_color_manual(values = c("Hombre" = "#0072B2", "Mujer" = "#D55E00")) +
+  scale_x_continuous(limits = c(25, 120), breaks = seq(30, 120, 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 0.05), breaks = seq(0, 0.05, 0.01), expand = c(0, 0)) +
+  labs(x = "Tiempo (minutos)", y = "Densidad", fill = NULL, color = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "top", plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** La cima indica dónde se concentran los datos, el ancho general indica la dispersión y la forma muestra la simetría, las colas largas o los picos múltiples. En la figura, los hombres se ubican en tiempos menores, con una cola hacia la derecha. La curva de las mujeres es más baja y aplanada, y está desplazada hacia tiempos mayores.
+
+**¿Qué cuidados tener?** La curva depende del ancho de banda, y con pocos datos puede ser engañosa ([Wilke, 2019](https://clauswilke.com/dataviz/histograms-density-plots.html)). Con más de tres o cuatro grupos, el gráfico se vuelve confuso ([Holtz y Healy](https://www.data-to-viz.com/graph/density.html)).
+
+**Ver más:** [densidad](https://www.data-to-viz.com/graph/density.html), [crestas (ridgeline)](https://www.data-to-viz.com/graph/ridgeline.html) y [demasiadas distribuciones](https://www.data-to-viz.com/caveat/multi_distribution.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar un gráfico de cajas?**</span>
+
+**¿Para qué sirve?** Para resumir la distribución con la mediana, los cuartiles y los datos atípicos, y para comparar grupos. Los [indicadores de posición](recurso204.html) explican cómo se construye. Un dato es atípico si queda fuera de estos límites:
+
+$$
+LI = Q_1 - 1.5 \times RIC
+\qquad \text{y} \qquad
+LS = Q_3 + 1.5 \times RIC
+$$
+
+donde $RIC = Q_3 - Q_1$.
+
+```{r}
+resumen <- function(x) {
+  q <- quantile(x, c(0.25, 0.75))
+  ric <- q[[2]] - q[[1]]
+  round(c(minimo = min(x), Q1 = q[[1]], mediana = median(x), Q3 = q[[2]], maximo = max(x),
+          RIC = ric, LI = q[[1]] - 1.5 * ric, LS = q[[2]] + 1.5 * ric,
+          atipicos = sum(x < q[[1]] - 1.5 * ric | x > q[[2]] + 1.5 * ric)), 1)
+}
+
+rbind(mujeres = resumen(mujeres), hombres = resumen(hombres))
+```
+
+**¿Cómo se hace?** Se usa `geom_boxplot()`. Las cajas ocultan el tamaño de cada grupo y la forma de la distribución, por lo que conviene agregar los puntos con `geom_jitter()`, que los separa un poco al azar.
+
+```{r fig-cajas, fig.width=8.5, fig.height=3.8, fig.cap="Tiempos por sexo con los datos individuales", fig.alt="Dos cajas horizontales con sus puntos: las mujeres tienen mediana cercana a 69 minutos y los hombres cercana a 60, con varios atípicos por encima de 85", out.width="100%"}
+set.seed(1)
+
+ggplot(veteranos, aes(x = minutos, y = sex)) +
+  geom_boxplot(fill = "#D8ECF7", color = "#034A94", outlier.shape = NA, width = 0.6) +
+  geom_jitter(color = "#333333", alpha = 0.5, size = 1.5, height = 0.15) +
+  scale_x_continuous(limits = c(30, 110), breaks = seq(30, 110, 10), expand = c(0, 0)) +
+  labs(x = "Tiempo (minutos)", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** La línea central es la mediana y la caja contiene el 50 % central de los datos. Las líneas llegan hasta los datos más lejanos que no son atípicos. En la figura:
+
+- La mitad de las mujeres terminó en 68.8 minutos o menos, mientras que más del 75 % de los hombres ya había terminado a los 66.3 minutos.
+- Hay 8 hombres con tiempos atípicos, entre 85.5 y 105.2 minutos. Entre las mujeres no hay atípicos.
+- El 50 % central es más ancho en las mujeres: su RIC es de 16.7 minutos, frente a 12.3 de los hombres.
+
+**¿Qué cuidados tener?** No muestra el tamaño de cada grupo ni la forma completa: por ejemplo, oculta si los datos tienen dos picos ([Holtz y Healy](https://www.data-to-viz.com/caveat/boxplot.html)). Además, una sola medida no resume toda la dispersión. Si se incluyen los valores extremos, el coeficiente de variación es mayor en los hombres:
+
+```{r}
+round(rbind(mujeres = c(s = sd(mujeres), CV = 100 * sd(mujeres) / mean(mujeres)),
+            hombres = c(s = sd(hombres), CV = 100 * sd(hombres) / mean(hombres))), 1)
+```
+
+**Ver más:** [limitaciones del gráfico de cajas](https://www.data-to-viz.com/caveat/boxplot.html) y [gráfico de violín](https://www.data-to-viz.com/graph/violin.html).
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                 | Causa                                                  | Solución                                                     |
+|:---------------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------------------|
+| Un histograma se interpreta con un solo ancho            | Se acepta el valor por defecto                         | Probar varios anchos de intervalo                            |
+| Barras de distinta amplitud                              | Los cortes no son iguales                              | Usar `seq()` para definir los cortes                         |
+| Se comparan frecuencias de grupos de distinto tamaño     | El grupo mayor siempre parece más alto                 | Comparar porcentajes o densidades                            |
+| Los atípicos se dibujan dos veces                        | `geom_boxplot()` y `geom_jitter()` los muestran        | Usar `outlier.shape = NA`                                    |
+| Se afirma que hay dos grupos por ver dos picos           | Los picos dependen del ancho y del tamaño de la muestra | Presentarlo como hipótesis                                  |
+| Muchas curvas en un mismo gráfico                        | Hay demasiados grupos                                  | Usar cajas o paneles                                         |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Probar anchos**</span>
+
+Haga un histograma de la edad de todos los corredores con intervalos de 5 años. Fije los ejes para que contengan todas las barras y describa la forma.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r fig-reto1, fig.width=8, fig.height=4.4, fig.cap="Edad de los corredores", fig.alt="Histograma de la edad, con mayor frecuencia entre 30 y 35 años y cola hacia las edades altas", out.width="100%"}
+range(CarreraLuz22$edad)
+
+ggplot(CarreraLuz22, aes(x = edad)) +
+  geom_histogram(breaks = seq(10, 80, 5), fill = "#034A94", color = "white") +
+  scale_x_continuous(limits = c(10, 80), breaks = seq(10, 80, 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 500), breaks = seq(0, 500, 100), expand = c(0, 0)) +
+  labs(x = "Edad (años)", y = "Número de corredores") +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+La distribución tiene su pico entre 30 y 35 años, y una cola hacia las edades altas. Es asimétrica a la derecha.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Comparar grupos**</span>
+
+Compare la edad de hombres y mujeres con un gráfico de cajas. ¿Qué grupo tiene la mediana más alta?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r fig-reto2, fig.width=8, fig.height=3.4, fig.cap="Edad de los corredores por sexo", fig.alt="Dos cajas horizontales: la mediana de los hombres es 37 años y la de las mujeres 34", out.width="100%"}
+ggplot(CarreraLuz22, aes(x = edad, y = sex)) +
+  geom_boxplot(fill = "#D8ECF7", color = "#034A94") +
+  scale_x_continuous(limits = c(10, 80), breaks = seq(10, 80, 10), expand = c(0, 0)) +
+  labs(x = "Edad (años)", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+
+tapply(CarreraLuz22$edad, CarreraLuz22$sex, median)
+```
+
+Los hombres tienen la mediana más alta, con 37 años frente a 34.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Qué zona varía más?**</span>
+
+Haga un gráfico de cajas del precio de las viviendas por zona, ordenado por la mediana. ¿Qué zona parece tener mayor dispersión en el 50 % central? Compruébelo con el rango intercuartílico.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r fig-reto3, fig.width=8, fig.height=4.2, fig.cap="Precio de las viviendas por zona", fig.alt="Gráfico de cajas horizontal por zona; la Zona Oeste tiene la mediana más alta y la caja más ancha", out.width="100%"}
+viviendas <- subset(vivienda_faltantes, !is.na(preciom) & !is.na(zona))
+
+ggplot(viviendas, aes(x = preciom, y = reorder(zona, preciom, median))) +
+  geom_boxplot(fill = "#D8ECF7", color = "#034A94") +
+  scale_x_continuous(limits = c(0, 2000), breaks = seq(0, 2000, 500), expand = c(0, 0)) +
+  labs(x = "Precio (millones de pesos)", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+
+tapply(viviendas$preciom, viviendas$zona, IQR)
+```
+
+La caja más ancha es la de la Zona Oeste, que tiene el rango intercuartílico más alto, con 505.5 millones.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. ¿Qué gráfico elegiría?**</span>
+
+Indique qué gráfico usaría en cada caso: 8000 precios de viviendas; los tiempos de cinco categorías de corredores; los tiempos de dos grupos cuya forma se quiere comparar.
+
+<details>
+<summary>Ver solución</summary>
+
+Histograma para los precios, porque hay muchos datos y una sola variable. Cajas para las categorías, porque se comparan varios grupos. Curvas de densidad para los dos grupos, porque se superponen con facilidad.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se descarga en PDF desde esa página.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media. Los capítulos 7 a 9 tratan las distribuciones.
+- Wickham, H., Navarro, D. y Pedersen, T. L. [*ggplot2: Elegant Graphics for Data Analysis*](https://ggplot2-book.org/) (3.ª ed.). Springer. Versión en línea de los autores.
+
+### <span style="color:#034a94">**Otros recursos**</span>
+
+- R Core Team. Documentación de [`hist()`](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/hist.html) y [`nclass.Sturges()`](https://stat.ethz.ch/R-manual/R-devel/library/grDevices/html/nclass.html).
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Holtz, Y. y Healy, C. [*From Data to Viz*](https://www.data-to-viz.com/).
+- R Core Team. [Documentación de `hist()`](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/hist.html).
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

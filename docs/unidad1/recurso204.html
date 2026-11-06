@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Indicadores de posición</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Indicadores de posición</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Los <strong>indicadores de posición</strong> dividen los datos
+ordenados en partes iguales y permiten ubicar un valor dentro de un
+grupo. Responden preguntas como: ¿qué valor deja por debajo al 25 % de
+los datos? o ¿en qué posición está este resultado frente a los
+demás?</p>
+<p>Esta página usa <code>CarreraLuz22</code> y
+<code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>. Los bloques de código se ejecutan en orden,
+porque algunos usan objetos creados en bloques anteriores.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<p><br/></p>
+<div id="cómo-dividen-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo dividen los
+datos?</strong></span></h2>
+<p>Un <strong>cuantil</strong> es un valor que deja por debajo una
+proporción determinada de los datos ordenados. Los más usados tienen
+nombres propios:</p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="20%" />
+<col width="20%" />
+<col width="24%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Indicador</th>
+<th align="left">Divide los datos en</th>
+<th align="left">Cantidad de valores</th>
+<th align="left">Notación</th>
+<th align="left">Cada parte contiene</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Cuartiles</strong></td>
+<td align="left">4 partes</td>
+<td align="left">3</td>
+<td align="left"><span class="math inline">\(Q_1, Q_2, Q_3\)</span></td>
+<td align="left">25 %</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Quintiles</strong></td>
+<td align="left">5 partes</td>
+<td align="left">4</td>
+<td align="left"><span class="math inline">\(K_1, \dots,
+K_4\)</span></td>
+<td align="left">20 %</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Deciles</strong></td>
+<td align="left">10 partes</td>
+<td align="left">9</td>
+<td align="left"><span class="math inline">\(D_1, \dots,
+D_9\)</span></td>
+<td align="left">10 %</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Percentiles</strong></td>
+<td align="left">100 partes</td>
+<td align="left">99</td>
+<td align="left"><span class="math inline">\(P_1, \dots,
+P_{99}\)</span></td>
+<td align="left">1 %</td>
+</tr>
+</tbody>
+</table>
+<p>Estos indicadores están relacionados. Por ejemplo, <span
+class="math inline">\(P_{25} = Q_1\)</span>, <span
+class="math inline">\(P_{10} = D_1\)</span> y <span
+class="math inline">\(P_{50} = Q_2 = D_5 = Me\)</span>. La siguiente
+figura muestra cómo se parten los datos:</p>
+<div class="figure" style="text-align: center">
+<img src="recurso204_files/figure-html/fig-particion-1.png" alt="Tres barras de 0 a 100 por ciento divididas en 4 cuartiles, 10 deciles y 100 percentiles, con sus etiquetas" width="100%" />
+<p class="caption">
+Partición de los datos ordenados en cuartiles, deciles y percentiles.
+</p>
+</div>
+<details>
+<summary>
+Ver el código de la figura
+</summary>
+<pre class="r"><code>fila &lt;- function(y, cortes, colores) {
+  n &lt;- length(cortes) - 1
+  rect(cortes[-(n + 1)], y - 0.28, cortes[-1], y + 0.28,
+       col = rep(colores, length.out = n), border = &quot;white&quot;, lwd = 1)
+}
+
+op &lt;- par(mar = c(3, 8, 1, 3))
+plot.new()
+plot.window(xlim = c(0, 100), ylim = c(0.4, 3.75), xaxs = &quot;i&quot;)
+
+fila(3, seq(0, 100, by = 25), c(&quot;#034A94&quot;, &quot;#7FA8D1&quot;))
+fila(2, seq(0, 100, by = 10), c(&quot;#034A94&quot;, &quot;#7FA8D1&quot;))
+fila(1, seq(0, 100, by = 1), c(&quot;#034A94&quot;, &quot;#7FA8D1&quot;))
+
+text(c(25, 50, 75), 3.46, c(&quot;Q1&quot;, &quot;Q2&quot;, &quot;Q3&quot;), font = 2, col = &quot;#034A94&quot;)
+text(seq(10, 90, by = 10), 2.46, paste0(&quot;D&quot;, 1:9), font = 2, col = &quot;#034A94&quot;, cex = 0.85)
+text(c(10, 25, 50, 75, 90), 1.46, paste0(&quot;P&quot;, c(10, 25, 50, 75, 90)),
+     font = 2, col = &quot;#034A94&quot;, cex = 0.85)
+
+axis(1, at = seq(0, 100, by = 10), labels = paste0(seq(0, 100, by = 10), &quot; %&quot;))
+axis(2, at = 1:3, labels = c(&quot;Percentiles&quot;, &quot;Deciles&quot;, &quot;Cuartiles&quot;),
+     las = 1, tick = FALSE, line = -0.5)
+par(op)</code></pre>
+</details>
+<p><br/></p>
+</div>
+<div id="cómo-se-calculan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se
+calculan?</strong></span></h2>
+<p>Para obtener el cuantil de orden <span
+class="math inline">\(p\)</span>, con <span class="math inline">\(0 &lt;
+p &lt; 1\)</span>, se ordenan los datos, <span
+class="math inline">\(x_{(1)} \leq x_{(2)} \leq \dots \leq
+x_{(n)}\)</span>, y se ubica la posición:</p>
+<p><span class="math display">\[
+h = (n - 1)p + 1
+\]</span></p>
+<p>Si <span class="math inline">\(h\)</span> es un número entero, el
+cuantil es <span class="math inline">\(x_{(h)}\)</span>. Si no lo es, se
+interpola entre los dos datos más cercanos, donde <span
+class="math inline">\(\lfloor h \rfloor\)</span> es la parte entera de
+<span class="math inline">\(h\)</span>:</p>
+<p><span class="math display">\[
+x_p = x_{(\lfloor h \rfloor)} + (h - \lfloor h \rfloor)\left(x_{(\lfloor
+h \rfloor + 1)} - x_{(\lfloor h \rfloor)}\right)
+\]</span></p>
+<p><strong>Ejemplo.</strong> Con los 7 tiempos de las mujeres juveniles,
+para <span class="math inline">\(Q_1\)</span>: <span
+class="math inline">\(h = (7 - 1)(0.25) + 1 = 2.5\)</span>. Por eso, se
+interpola entre el segundo y el tercer dato:</p>
+<pre class="r"><code>juvenil &lt;- subset(CarreraLuz22, categoria == &quot;1. Juvenil&quot; &amp; sex == &quot;Mujer&quot;)
+tiempo_juvenil &lt;- sort(round(juvenil$timerun / 60, 2))
+tiempo_juvenil
+[1] 50.97 60.38 61.10 81.48 83.05 88.77 91.33
+
+tiempo_juvenil[2] + 0.5 * (tiempo_juvenil[3] - tiempo_juvenil[2])   # aplicando la fórmula
+[1] 60.74
+quantile(tiempo_juvenil, 0.25)                                      # con la función
+  25% 
+60.74 </code></pre>
+<div id="otros-programas-pueden-dar-otro-resultado"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Otros programas pueden dar otro
+resultado</strong></span></h3>
+<p>No hay una sola forma de calcular un cuantil. La función <a
+href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile"><code>quantile()</code></a>
+tiene 9 métodos, descritos por Hyndman y Fan (1996), y por defecto usa
+el tipo 7, que es la fórmula anterior. Con otro método, el resultado
+puede cambiar un poco, sobre todo en muestras pequeñas:</p>
+<pre class="r"><code>quantile(tiempo_juvenil, 0.25, type = 7)
+  25% 
+60.74 
+quantile(tiempo_juvenil, 0.25, type = 6)
+  25% 
+60.38 </code></pre>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-son-los-cuartiles" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los
+cuartiles?</strong></span></h2>
+<p>Los <strong>cuartiles</strong> son 3 valores que dividen los datos en
+cuatro partes iguales. Cada parte contiene cerca del 25 % de los
+datos:</p>
+<ul>
+<li><span class="math inline">\(Q_1\)</span>, o primer cuartil: deja por
+debajo cerca del 25 % de los datos.</li>
+<li><span class="math inline">\(Q_2\)</span>, o segundo cuartil: es la
+mediana, y deja por debajo cerca del 50 %.</li>
+<li><span class="math inline">\(Q_3\)</span>, o tercer cuartil: deja por
+debajo cerca del 75 %.</li>
+</ul>
+<p>En la carrera, la figura muestra las cuatro partes de la distribución
+de los tiempos:</p>
+<pre class="r"><code>tiempo &lt;- CarreraLuz22$timerun / 60
+cuartiles &lt;- quantile(tiempo, c(0.25, 0.50, 0.75))
+
+curva &lt;- density(tiempo, from = 30, to = 170)
+limite_y &lt;- 0.045
+
+par(mar = c(4.5, 5.5, 1, 1))
+
+zonas &lt;- cut(curva$x, breaks = c(30, cuartiles, 170), include.lowest = TRUE)
+colores &lt;- c(&quot;#034A94&quot;, &quot;#5B8FC4&quot;, &quot;#9DBFE0&quot;, &quot;#D3E3F2&quot;)
+
+plot(curva, type = &quot;n&quot;, main = &quot;&quot;, las = 1, xlim = c(30, 170), ylim = c(0, limite_y),
+     xaxs = &quot;i&quot;, yaxs = &quot;i&quot;, xlab = &quot;Tiempo (minutos)&quot;, ylab = &quot;&quot;, bty = &quot;l&quot;)
+title(ylab = &quot;Densidad&quot;, line = 4)
+
+for (i in 1:4) {
+  zona &lt;- as.integer(zonas) == i
+  polygon(c(curva$x[zona], rev(curva$x[zona])),
+          c(curva$y[zona], rep(0, sum(zona))), col = colores[i], border = NA)
+}
+
+lines(curva, lwd = 2)
+abline(v = cuartiles, lty = 2)
+text(cuartiles, limite_y * 0.95, c(&quot;Q1&quot;, &quot;Q2&quot;, &quot;Q3&quot;), pos = 4, font = 2)
+text(c(48, 60, 68.3, 86), limite_y * 0.06, &quot;25 %&quot;, font = 2, cex = 0.75,
+     col = c(&quot;white&quot;, &quot;white&quot;, &quot;black&quot;, &quot;black&quot;))</code></pre>
+<div class="figure">
+<img src="recurso204_files/figure-html/fig-cuartiles-1.png" alt="Curva de densidad de los tiempos dividida en cuatro zonas de colores por los cuartiles, cada una con el 25 por ciento de los atletas" width="100%" />
+<p class="caption">
+Cuartiles de los tiempos de la carrera. Curva de densidad con las cuatro
+partes de los datos.
+</p>
+</div>
+<pre class="r"><code>round(cuartiles, 2)
+  25%   50%   75% 
+56.35 63.51 73.26 </code></pre>
+<p>El 25 % de los atletas tardó 56.4 minutos o menos, la mitad tardó
+63.5 minutos o menos, y el 75 % tardó 73.3 minutos o menos.</p>
+<p><br/></p>
+</div>
+<div id="qué-son-los-quintiles" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los
+quintiles?</strong></span></h2>
+<p>Los <strong>quintiles</strong> son 4 valores que dividen los datos en
+cinco partes iguales. Son comunes en el estudio de los ingresos, porque
+permiten comparar el 20 % de menores ingresos con el 20 % de mayores
+ingresos.</p>
+<p><br/></p>
+</div>
+<div id="qué-son-los-deciles" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los
+deciles?</strong></span></h2>
+<p>Los <strong>deciles</strong> son 9 valores que dividen los datos en
+diez partes iguales. Muestran con más detalle lo que ocurre en la
+distribución:</p>
+<pre class="r"><code>deciles &lt;- quantile(tiempo, seq(0.1, 0.9, by = 0.1))
+
+par(mar = c(4.5, 5.5, 1, 1))
+
+plot(curva, main = &quot;&quot;, las = 1, lwd = 2, xlim = c(30, 170), ylim = c(0, limite_y),
+     xaxs = &quot;i&quot;, yaxs = &quot;i&quot;, xlab = &quot;Tiempo (minutos)&quot;, ylab = &quot;&quot;, bty = &quot;l&quot;, col = &quot;#034A94&quot;)
+title(ylab = &quot;Densidad&quot;, line = 4)
+abline(v = deciles, lty = 2, col = &quot;#5B8FC4&quot;)
+text(deciles, limite_y * c(0.97, 0.90), paste0(&quot;D&quot;, 1:9), cex = 0.75, font = 2)</code></pre>
+<div class="figure">
+<img src="recurso204_files/figure-html/fig-deciles-1.png" alt="Curva de densidad de los tiempos con nueve líneas verticales en los deciles, más juntas donde hay más atletas" width="100%" />
+<p class="caption">
+Deciles de los tiempos de la carrera. Entre dos líneas hay cerca del 10
+% de los atletas.
+</p>
+</div>
+<p>Donde hay más atletas, las líneas están más cerca. Hacia los tiempos
+altos se separan, porque hay menos datos.</p>
+<p><br/></p>
+</div>
+<div id="qué-son-los-percentiles" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los
+percentiles?</strong></span></h2>
+<p>Los <strong>percentiles</strong> son 99 valores que dividen los datos
+en cien partes iguales. El percentil <span
+class="math inline">\(P_k\)</span> deja por debajo cerca del <span
+class="math inline">\(k\)</span> % de los datos. La figura muestra el
+percentil 90:</p>
+<pre class="r"><code>p90 &lt;- quantile(tiempo, 0.90)
+izquierda &lt;- curva$x &lt;= p90
+
+par(mar = c(4.5, 5.5, 1, 1))
+
+plot(curva, type = &quot;n&quot;, main = &quot;&quot;, las = 1, xlim = c(30, 170), ylim = c(0, limite_y),
+     xaxs = &quot;i&quot;, yaxs = &quot;i&quot;, xlab = &quot;Tiempo (minutos)&quot;, ylab = &quot;&quot;, bty = &quot;l&quot;)
+title(ylab = &quot;Densidad&quot;, line = 4)
+polygon(c(curva$x[izquierda], rev(curva$x[izquierda])),
+        c(curva$y[izquierda], rep(0, sum(izquierda))), col = &quot;#9DBFE0&quot;, border = NA)
+lines(curva, lwd = 2)
+abline(v = p90, lty = 2)
+text(p90, limite_y * 0.95, &quot;P90&quot;, pos = 4, font = 2)
+text(62, limite_y * 0.45, &quot;90 %&quot;, font = 2, cex = 1.3)
+text(p90 + 14, limite_y * 0.25, &quot;10 %&quot;, font = 2, cex = 1.3)</code></pre>
+<div class="figure">
+<img src="recurso204_files/figure-html/fig-percentil-1.png" alt="Curva de densidad de los tiempos con el 90 por ciento izquierdo sombreado y una línea vertical en el percentil 90" width="100%" />
+<p class="caption">
+Percentil 90 de los tiempos. A la izquierda queda el 90 % de los
+atletas.
+</p>
+</div>
+<pre class="r"><code>round(p90, 2)
+  90% 
+82.46 </code></pre>
+<div id="rango-percentil" class="section level3">
+<h3><span style="color:#034a94"><strong>Rango
+percentil</strong></span></h3>
+<p>A veces la pregunta es la contraria: ¿qué porcentaje de los datos
+queda por debajo de un valor? El <strong>rango percentil</strong> de un
+valor <span class="math inline">\(x\)</span> es:</p>
+<p><span class="math display">\[
+RP(x) = \frac{\text{número de datos} \leq x}{n} \times 100
+\]</span></p>
+<p>Por ejemplo, para una persona que tardó 60 minutos:</p>
+<pre class="r"><code>100 * mean(tiempo &lt;= 60)
+[1] 38.44953</code></pre>
+<p>El 38.4 % de los atletas tardó 60 minutos o menos. En una carrera, un
+menor tiempo es mejor, por lo que estar en un percentil bajo es un buen
+resultado. Lo contrario ocurre en una prueba, donde un mayor puntaje es
+mejor.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-se-calculan-en-r" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se calculan en
+R?</strong></span></h2>
+<p>La función <code>quantile()</code> recibe los datos y las
+proporciones que se desean, en el argumento <code>probs</code>. Si hay
+datos faltantes, hay que indicarlo con <code>na.rm = TRUE</code>. Por
+ejemplo, la variable <code>preciom</code>, con los precios de las
+viviendas en millones, tiene 2 datos faltantes:</p>
+<pre class="r"><code>precio &lt;- vivienda_faltantes$preciom
+
+sum(is.na(precio))                 # número de datos faltantes
+[1] 2
+median(precio)                     # da NA porque hay datos faltantes
+[1] NA
+median(precio, na.rm = TRUE)
+[1] 330</code></pre>
+<p>Con <code>na.rm = TRUE</code> se obtienen los indicadores:</p>
+<pre class="r"><code>quantile(precio, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)    # cuartiles
+25% 50% 75% 
+220 330 540 
+quantile(precio, probs = seq(0.2, 0.8, by = 0.2), na.rm = TRUE)    # quintiles
+20% 40% 60% 80% 
+190 285 390 610 
+quantile(precio, probs = seq(0.1, 0.9, by = 0.1), na.rm = TRUE)    # deciles
+10% 20% 30% 40% 50% 60% 70% 80% 90% 
+145 190 240 285 330 390 475 610 870 
+quantile(precio, probs = c(0.10, 0.25, 0.50, 0.75, 0.90), na.rm = TRUE)    # percentiles
+10% 25% 50% 75% 90% 
+145 220 330 540 870 </code></pre>
+<p>Una forma de presentar estos resultados es integrarlos en un
+texto:</p>
+<div class="definicion">
+<p>
+El precio mediano de las viviendas fue de 330 millones. La mitad central
+de los precios estuvo entre 220 y 540 millones. El 10 % de las viviendas
+más económicas costó hasta 145 millones, mientras que el 10 % de las más
+costosas superó los 870 millones.
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cómo-se-usan-en-la-práctica" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se usan en la
+práctica?</strong></span></h2>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="25%" />
+<col width="11%" />
+<col width="48%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Ámbito</th>
+<th align="left">Publicación</th>
+<th align="left">Indicador</th>
+<th align="left">Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Salud infantil</td>
+<td align="left"><a
+href="https://www.who.int/tools/child-growth-standards/standards/weight-for-age">OMS,
+estándares de crecimiento</a></td>
+<td align="left">Percentiles</td>
+<td align="left">Tablas y gráficos de peso para la edad, por sexo y
+edad</td>
+</tr>
+<tr class="even">
+<td align="left">Educación</td>
+<td align="left"><a
+href="https://www.icfes.gov.co/wp-content/uploads/2025/02/14-Edicion-Como-se-reportan-los-resultados-individuales-teniendo-en-cuenta-el-enfoque-diferencial.pdf">Icfes,
+Saber 11</a></td>
+<td align="left">Percentiles</td>
+<td align="left">Indican la posición de un puntaje frente a un grupo de
+referencia. Un percentil 85 significa que supera aproximadamente al 85 %
+de ese grupo</td>
+</tr>
+<tr class="odd">
+<td align="left">Ingresos en Colombia</td>
+<td align="left"><a
+href="https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf">DANE,
+pobreza monetaria 2025</a></td>
+<td align="left">Quintiles</td>
+<td align="left">En 2025, el ingreso real per cápita aumentó 11.8 % en
+el quintil 1 y 0.5 % en el quintil 5</td>
+</tr>
+<tr class="even">
+<td align="left">Ingresos en Estados Unidos</td>
+<td align="left"><a
+href="https://www2.census.gov/library/publications/2026/demo/p60-289.pdf">U.S.
+Census Bureau, 2025</a></td>
+<td align="left">Quintiles</td>
+<td align="left">El quintil más bajo recibió 3.0 % del ingreso total, y
+el más alto, 52.4 %</td>
+</tr>
+<tr class="odd">
+<td align="left">Investigación clínica</td>
+<td align="left"><a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766">Guan et
+al. (2020), reseñado por Eastin y Eastin</a></td>
+<td align="left">Cuartiles</td>
+<td align="left">Edad mediana de 47 años, con rango intercuartílico de
+35 a 58</td>
+</tr>
+<tr class="even">
+<td align="left">Precios de vivienda</td>
+<td align="left">Base <code>vivienda_faltantes</code></td>
+<td align="left">Deciles</td>
+<td align="left"><span class="math inline">\(D_1\)</span> de 145
+millones y <span class="math inline">\(D_9\)</span> de 870 millones</td>
+</tr>
+</tbody>
+</table>
+<div id="qué-percentil-usar-en-un-informe" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué percentil usar en un
+informe?</strong></span></h3>
+<p>La elección depende del objetivo del análisis:</p>
+<ul>
+<li>Para una <strong>descripción general</strong> se usan los
+<strong>cuartiles</strong>.</li>
+<li>Para ver con <strong>más detalle</strong> una parte de la
+distribución se usan los <strong>deciles</strong> o los
+<strong>percentiles</strong>, por ejemplo, para estudiar desigualdades o
+definir umbrales.</li>
+<li>En estudios comparativos es común reportar los percentiles
+<strong>10, 25, 50, 75 y 90</strong>, porque muestran la dispersión y la
+simetría.</li>
+<li>En pruebas estandarizadas, los percentiles ubican un resultado
+dentro de un grupo de referencia.</li>
+</ul>
+</div>
+<div id="recomendación" class="section level3 content-box-gray">
+<h3><span
+style="color:#686868"><strong>Recomendación</strong></span></h3>
+<p>Revise qué percentiles se suelen reportar en su área. Así los
+resultados se pueden comparar con otros estudios. Además, no presente
+una lista de números sin contexto: intégrelos en un texto que explique
+qué significan.</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-es-un-gráfico-de-cajas" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un gráfico de
+cajas?</strong></span></h2>
+<p>El <strong>gráfico de cajas</strong> resume una variable con sus
+cuartiles y permite comparar grupos:</p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="77%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Elemento</th>
+<th align="left">Qué representa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Línea central</td>
+<td align="left">Mediana</td>
+</tr>
+<tr class="even">
+<td align="left">Extremos de la caja</td>
+<td align="left">Valores cercanos a <span
+class="math inline">\(Q_1\)</span> y <span
+class="math inline">\(Q_3\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Bigotes</td>
+<td align="left">Llegan hasta el dato más extremo a no más de 1.5 veces
+el rango intercuartílico de la caja</td>
+</tr>
+<tr class="even">
+<td align="left">Puntos</td>
+<td align="left">Datos que quedan fuera de los bigotes</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>par(mar = c(4.5, 6, 1, 1))
+
+boxplot(tiempo ~ CarreraLuz22$sex, horizontal = TRUE, col = &quot;#BFD7EE&quot;, border = &quot;#034A94&quot;,
+        ylim = c(30, 170), las = 1, xlab = &quot;&quot;, ylab = &quot;&quot;, outcol = &quot;#034A94&quot;)
+title(xlab = &quot;Tiempo (minutos)&quot;)</code></pre>
+<div class="figure">
+<img src="recurso204_files/figure-html/unnamed-chunk-10-1.png" alt="Dos gráficos de cajas horizontales. Las mujeres tienen una mediana mayor que los hombres, y hay puntos atípicos en los tiempos altos" width="100%" />
+<p class="caption">
+Tiempos de la carrera según el sexo.
+</p>
+</div>
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, quantile, probs = c(0.25, 0.50, 0.75))
+$Hombre
+     25%      50%      75% 
+53.60833 60.09167 69.01667 
+
+$Mujer
+     25%      50%      75% 
+61.59583 68.99167 78.56667 </code></pre>
+<p>La mediana de las mujeres es mayor que la de los hombres. Además, en
+los dos grupos hay tiempos altos que quedan por fuera de los
+bigotes.</p>
+<p><br/></p>
+</div>
+<div id="cómo-identificar-datos-atípicos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo identificar datos
+atípicos?</strong></span></h2>
+<p>Un método común para identificar valores atípicos usa los cuartiles y
+el <strong>rango intercuartílico</strong>, <span
+class="math inline">\(RIC = Q_3 - Q_1\)</span>. Es el criterio del
+gráfico de cajas, que se apoya en el trabajo de Tukey (1977):</p>
+<p><span class="math display">\[
+\text{Límite inferior} = Q_1 - 1.5 \times RIC
+\qquad
+\text{Límite superior} = Q_3 + 1.5 \times RIC
+\]</span></p>
+<p>Los valores que quedan fuera de esos límites se consideran atípicos.
+En los precios de las viviendas:</p>
+<pre class="r"><code>cuartiles_precio &lt;- quantile(precio, c(0.25, 0.75), na.rm = TRUE)
+ric &lt;- IQR(precio, na.rm = TRUE)
+
+limite_superior &lt;- cuartiles_precio[2] + 1.5 * ric
+limite_inferior &lt;- cuartiles_precio[1] - 1.5 * ric
+
+c(limite_inferior, limite_superior)
+ 25%  75% 
+-260 1020 
+sum(precio &gt; limite_superior, na.rm = TRUE)
+[1] 555</code></pre>
+<p>Hay 555 viviendas con un precio superior a 1,020 millones. Un dato
+atípico no siempre es un error. Antes de eliminarlo, conviene revisar
+por qué aparece: aquí puede tratarse de viviendas de precio alto.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="35%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>quantile()</code> genera un error por valores
+faltantes</td>
+<td align="left">La variable tiene <code>NA</code></td>
+<td align="left">Usar <code>na.rm = TRUE</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>median()</code> da <code>NA</code></td>
+<td align="left">La variable tiene <code>NA</code></td>
+<td align="left">Usar <code>na.rm = TRUE</code>, y reportar cuántos
+faltan</td>
+</tr>
+<tr class="odd">
+<td align="left">El resultado no coincide con otro programa</td>
+<td align="left">Se usan métodos distintos</td>
+<td align="left">Revisar el argumento <code>type</code></td>
+</tr>
+<tr class="even">
+<td align="left">Confundir un percentil con un porcentaje</td>
+<td align="left">Un percentil es un valor; el porcentaje indica cuántos
+datos deja por debajo</td>
+<td align="left">Indicar los dos: el 90 % tardó 82.5 minutos o
+menos</td>
+</tr>
+<tr class="odd">
+<td align="left">Decir que un percentil alto siempre es mejor</td>
+<td align="left">Depende de la variable</td>
+<td align="left">Revisar si conviene un valor alto o bajo</td>
+</tr>
+<tr class="even">
+<td align="left">Eliminar los atípicos de forma automática</td>
+<td align="left">Se asume que son errores</td>
+<td align="left">Revisar cada caso y reportar la decisión</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-calcule-a-mano"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Calcule a
+mano</strong></span></h3>
+<p>Con los datos 12, 15, 18, 20, 25, 30, 41 y 50, calcule <span
+class="math inline">\(Q_1\)</span> con la fórmula y compruébelo con
+<code>quantile()</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(h = (8 - 1)(0.25) + 1 = 2.75\)</span>. Se
+interpola entre el segundo y el tercer dato: <span
+class="math inline">\(15 + 0.75(18 - 15) = 17.25\)</span>.</p>
+<pre class="r"><code>quantile(c(12, 15, 18, 20, 25, 30, 41, 50), 0.25)
+  25% 
+17.25 </code></pre>
+</details>
+</div>
+<div id="reto-2.-edades-de-los-atletas"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Edades de los
+atletas</strong></span></h3>
+<p>Calcule los cuartiles de <code>edad</code> en
+<code>CarreraLuz22</code> y escriba una oración con el resultado.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>quantile(CarreraLuz22$edad, c(0.25, 0.50, 0.75))
+25% 50% 75% 
+ 30  36  44 </code></pre>
+<p>La edad mediana fue de 36 años, y la mitad central de los atletas
+tuvo entre 30 y 44 años.</p>
+</details>
+</div>
+<div id="reto-3.-en-qué-posición-está"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿En qué posición
+está?</strong></span></h3>
+<p>Un atleta tardó 75 minutos en <code>CarreraLuz22</code>. ¿Qué
+porcentaje de los atletas tardó ese tiempo o menos?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>100 * mean(tiempo &lt;= 75)
+[1] 77.73153</code></pre>
+<p>Cerca del 78 % de los atletas tardó 75 minutos o menos.</p>
+</details>
+</div>
+<div id="reto-4.-atípicos-en-la-carrera"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Atípicos en la
+carrera</strong></span></h3>
+<p>Aplique la regla de 1.5 veces el rango intercuartílico a los tiempos
+de la carrera. ¿Cuántos atletas quedan por encima del límite
+superior?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>Q &lt;- quantile(tiempo, c(0.25, 0.75))
+limite &lt;- Q[2] + 1.5 * IQR(tiempo)
+
+limite
+   75% 
+98.625 
+sum(tiempo &gt; limite)
+[1] 22</code></pre>
+</details>
+</div>
+<div id="reto-5.-mejore-la-redacción"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 5. Mejore la
+redacción</strong></span></h3>
+<p>Reescriba este texto para un informe: <em>Q1 es 56.35. Q2 es 63.51.
+Q3 es 73.26. Unidad: minutos.</em></p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Una redacción posible es: <em>El tiempo mediano fue de 63.5 minutos,
+y la mitad central de los atletas tardó entre 56.4 y 73.3
+minutos.</em></p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio"><em>Introducción
+a la estadística</em></a>. Está en español y se lee en línea o se
+descarga en PDF desde esa página. La sección <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-3-medidas-de-la-ubicacion-de-los-datos">2.3</a>
+trata las medidas de la ubicación de los datos.</li>
+<li>Illowsky, B. y Dean, S. <a
+href="https://openstax.org/books/introductory-statistics-2e/pages/preface"><em>Introductory
+Statistics 2e</em></a>. OpenStax.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Devore, J. L. (2016). <a
+href="https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/"><em>Probabilidad
+y estadística para ingeniería y ciencias</em></a> (9.ª ed.). Cengage
+Learning.</li>
+<li>Freedman, D., Pisani, R. y Purves, R. (2007). <a
+href="https://wwnorton.com/books/Statistics"><em>Statistics</em></a>
+(4.ª ed.). W. W. Norton.</li>
+<li>Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). <a
+href="https://store.macmillanlearning.com/us/p/9781319244446"><em>Introduction
+to the Practice of Statistics</em></a> (10.ª ed.). Macmillan
+Learning.</li>
+<li>Tukey, J. W. (1977). <a
+href="https://www.pearson.com/en-us/subject-catalog/p/exploratory-data-analysis-classic-version/P200000006400/9780134995458"><em>Exploratory
+Data Analysis</em></a>. Addison-Wesley.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>DANE. (2026). <a
+href="https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf">Pobreza
+monetaria en Colombia, año 2025</a>. Boletín técnico.</li>
+<li>Eastin, C. y Eastin, T. (2020). <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766">Reseña de
+Clinical Characteristics of Coronavirus Disease 2019 in China</a>.
+<em>The Journal of Emergency Medicine</em>, 58(4), 711-712.</li>
+<li>Hyndman, R. J. y Fan, Y. (1996). <a
+href="https://doi.org/10.1080/00031305.1996.10473566">Sample quantiles
+in statistical packages</a>. <em>The American Statistician</em>, 50(4),
+361-365.</li>
+<li>Icfes. (2024). <a
+href="https://www.icfes.gov.co/wp-content/uploads/2025/02/14-Edicion-Como-se-reportan-los-resultados-individuales-teniendo-en-cuenta-el-enfoque-diferencial.pdf">¿Cómo
+se reportan los resultados individuales teniendo en cuenta el enfoque
+diferencial?</a>. Edición 14.</li>
+<li>Kollar, M. y Scherer, Z. (2026). <a
+href="https://www2.census.gov/library/publications/2026/demo/p60-289.pdf">Income
+in the United States: 2025</a>. U.S. Census Bureau.</li>
+<li>Organización Mundial de la Salud. <a
+href="https://www.who.int/tools/child-growth-standards/standards/weight-for-age">Weight-for-age</a>.</li>
+<li>R Core Team. <a
+href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile">quantile:
+Sample Quantiles</a>.</li>
+<li>Tukey, J. W. (1977). <em>Exploratory Data Analysis</em>.
+Addison-Wesley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

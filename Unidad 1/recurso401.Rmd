@@ -1,0 +1,264 @@
+---
+title: <span style="color:#034a94"> **¿Cómo organizar los datos?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Después de importar, los datos rara vez están listos para el análisis. Esta etapa, conocida como **limpieza de datos** o *data cleaning*, incluye revisar los registros, cambiar el formato de la tabla, unir bases y quitar duplicados. Los [datos faltantes](recurso402.html) se tratan en una página aparte.
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y los paquetes `dplyr` y `tidyr`. Los bloques de código se ejecutan en orden.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo revisar los registros?**</span>
+
+Lo primero es mirar la tabla. En `vivienda_faltantes`, las últimas filas de `id` están vacías:
+
+```{r}
+vivienda_faltantes[is.na(vivienda_faltantes$id), c("id", "zona", "estrato", "preciom")]
+```
+
+Son tres filas sin identificador. Dos están vacías, y la tercera solo tiene un precio, que no se puede atribuir a ninguna vivienda. Se quitan:
+
+```{r}
+viviendas <- filter(vivienda_faltantes, !is.na(id))
+nrow(vivienda_faltantes) - nrow(viviendas)
+```
+
+Las categorías escritas de varias formas también se unifican, como se hizo en [Tablas de frecuencia](recurso201.html):
+
+```{r}
+viviendas$tipo <- tolower(viviendas$tipo)
+viviendas$tipo[viviendas$tipo == "apto"] <- "apartamento"
+table(viviendas$tipo)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son los formatos ancho y largo?**</span>
+
+Una misma información se puede guardar de dos formas:
+
+- En el **formato ancho**, cada unidad ocupa una fila, y sus mediciones van en columnas separadas.
+- En el **formato largo**, cada medición ocupa una fila, con una columna que indica a qué corresponde.
+
+Los gráficos de `ggplot2` y muchos análisis usan el formato largo. Los informes suelen preferir el ancho, porque se lee mejor. `pivot_wider()` pasa de largo a ancho, y `pivot_longer()` hace lo contrario:
+
+```{r}
+# Formato largo: una fila por cada combinación de zona y tipo
+largo <- aggregate(preciom ~ zona + tipo, data = viviendas, FUN = median)
+head(largo, 4)
+
+# Formato ancho: una fila por zona
+ancho <- pivot_wider(largo, names_from = tipo, values_from = preciom)
+ancho
+
+# De nuevo a formato largo
+pivot_longer(ancho, cols = c(apartamento, casa),
+             names_to = "tipo", values_to = "preciom") |>
+  head(4)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo agregar registros?**</span>
+
+Agregar registros es poner una tabla debajo de otra, cuando las dos tienen las mismas variables. Por ejemplo, unir dos tablas de corredores:
+
+```{r}
+mujeres <- filter(CarreraLuz22, sex == "Mujer")
+hombres <- filter(CarreraLuz22, sex == "Hombre")
+
+corredores <- bind_rows(mujeres, hombres)
+c(nrow(mujeres), nrow(hombres), nrow(corredores))
+```
+
+La función `rbind()`, de la base de **R**, hace lo mismo, pero da error si las columnas no coinciden. `bind_rows()` une por nombre de columna y deja `NA` en las que faltan.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo unir tablas por una llave?**</span>
+
+Una **llave** es una variable que identifica cada registro, como `id`, y permite unir dos tablas aunque tengan otro orden. Para los ejemplos se crean dos tablas: `a`, con las viviendas 1 a 6 de la lista, y `b`, con las viviendas 3 a 8.
+
+```{r}
+a <- viviendas[1:6, c("id", "zona", "estrato")]
+b <- viviendas[3:8, c("id", "preciom", "tipo")]
+```
+
+| Función        | Qué conserva                                | Filas en el ejemplo |
+|:---------------|:--------------------------------------------|:--------------------|
+| `left_join()`  | Todas las filas de la primera tabla         | 6                   |
+| `inner_join()` | Solo las filas que están en las dos         | 4                   |
+| `full_join()`  | Las filas de cualquiera de las dos          | 8                   |
+| `anti_join()`  | Las filas de la primera sin pareja          | 2                   |
+
+```{r}
+left_join(a, b, by = "id")
+```
+
+Las viviendas que no están en `b` quedan con `NA` en las columnas nuevas. Antes de unir hay que revisar la llave ([Wickham et al., 2023](https://r4ds.hadley.nz/joins.html)):
+
+```{r}
+sum(is.na(a$id))           # no debe tener faltantes
+anyDuplicated(a$id)        # 0 indica que no hay repetidos
+```
+
+Si la llave se repite en las dos tablas, cada fila se combina con varias y la tabla crece sin que se note. Por eso, después de unir conviene comparar el número de filas.
+
+La función `cbind()` pega columnas sin una llave, según la posición. Solo sirve si las dos tablas tienen las mismas filas en el mismo orden. Si no es seguro, se debe usar una llave.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo tratar los registros duplicados?**</span>
+
+`duplicated()` marca las filas repetidas y `distinct()` las quita. Conviene comparar sin el identificador, porque una misma vivienda pudo registrarse con dos `id`.
+
+```{r}
+sin_id <- select(viviendas, -id)
+sum(duplicated(sin_id))
+
+repetidas <- viviendas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
+head(repetidas[order(repetidas$barrio, repetidas$preciom),
+               c("id", "barrio", "preciom", "areaconst", "tipo")], 4)
+```
+
+Antes de borrarlas, hay que preguntarse si son errores. Dos apartamentos de un mismo edificio pueden tener iguales precio y área, y ser viviendas distintas. Aquí no se pueden distinguir sin volver a la fuente.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué hacer con los valores atípicos?**</span>
+
+Un **valor atípico** es un dato que no se ajusta al comportamiento general. Se puede detectar con la regla del gráfico de cajas, que marca los valores por fuera de los límites:
+
+$$
+LI = Q_1 - 1.5 \times RIC
+\qquad \text{y} \qquad
+LS = Q_3 + 1.5 \times RIC
+$$
+
+```{r}
+q <- quantile(viviendas$preciom, c(0.25, 0.75), na.rm = TRUE)
+ls <- q[[2]] + 1.5 * (q[[2]] - q[[1]])
+ls
+sum(viviendas$preciom > ls, na.rm = TRUE)
+```
+
+Otro criterio marca los valores a más de 3 desviaciones estándar de la media. No es lo mismo: la media y la desviación estándar se ven afectadas por los propios valores extremos.
+
+Un atípico no es un error automático. Hay que revisar si es un error de digitación, y solo en ese caso corregirlo. Si es un dato real, como una vivienda muy costosa, se conserva, y se puede reportar el análisis con y sin ese dato.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                   | Causa                                               | Solución                                           |
+|:-----------------------------------------------------------|:----------------------------------------------------|:---------------------------------------------------|
+| `numbers of columns of arguments do not match`             | `rbind()` recibe tablas con distintas columnas      | Usar `bind_rows()`                                 |
+| La tabla creció después de unir                            | La llave está repetida                              | Revisar `anyDuplicated()` antes de unir            |
+| `Detected an unexpected many-to-many relationship`         | La llave se repite en las dos tablas                | Revisar la llave                                   |
+| Datos mezclados entre personas                             | Se usó `cbind()` con tablas en distinto orden       | Unir con una llave                                 |
+| `could not find function "pivot_wider"`                    | No se cargó el paquete                              | Ejecutar `library(tidyr)`                          |
+| Se borran atípicos reales                                  | Se confunde atípico con error                       | Revisar la fuente antes de borrar                  |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Cambiar el formato**</span>
+
+Calcule la mediana del precio por zona y estrato, y preséntela en formato ancho, con una columna por estrato.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+por_estrato <- aggregate(preciom ~ zona + estrato, data = viviendas, FUN = median)
+pivot_wider(por_estrato, names_from = estrato, values_from = preciom)
+```
+
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Comprobar una unión**</span>
+
+Una con `full_join()` las tablas `a` y `b`. ¿Cuántas filas tiene el resultado? ¿Cuántas tienen `NA` en `preciom`?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+completa <- full_join(a, b, by = "id")
+nrow(completa)
+sum(is.na(completa$preciom))
+```
+
+Son 8 filas, y 2 no tienen precio, porque esas viviendas solo están en `a`.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Quiénes faltan?**</span>
+
+Use `anti_join()` para encontrar las viviendas de `b` que no están en `a`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+anti_join(b, a, by = "id")
+```
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [*R for Data Science*](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly Media. Los capítulos [Data tidying](https://r4ds.hadley.nz/data-tidy.html) y [Joins](https://r4ds.hadley.nz/joins.html) tratan estos temas.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [*R for Data Science*](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

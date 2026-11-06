@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Cómo graficar una variable numérica?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Cómo
+graficar una variable numérica?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Para representar <strong>variables cuantitativas</strong> se usan
+gráficos que muestran las principales características de su
+distribución: el <strong>centro</strong>, la <strong>dispersión</strong>
+y la <strong>forma</strong>. Esta página presenta los tres gráficos más
+usados, cómo construirlos e interpretarlos: el histograma, la curva de
+densidad y el gráfico de cajas. Para ver más opciones, cada sección
+enlaza a <a href="https://www.data-to-viz.com/">From Data to
+Viz</a>.</p>
+<p>Esta página usa <code>CarreraLuz22</code> y
+<code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>, y el paquete <code>ggplot2</code>. Los
+bloques de código se ejecutan en orden, porque algunos usan objetos
+creados en bloques anteriores.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;CarreraLuz22&quot;)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p>Los ejemplos usan el tiempo de carrera, en minutos, de la categoría
+Veteranos B:</p>
+<pre class="r"><code>veteranos &lt;- subset(CarreraLuz22, categoria == &quot;4. Veteranos B&quot;)
+veteranos$minutos &lt;- veteranos$timerun / 60
+
+mujeres &lt;- veteranos$minutos[veteranos$sex == &quot;Mujer&quot;]
+hombres &lt;- veteranos$minutos[veteranos$sex == &quot;Hombre&quot;]
+
+c(mujeres = length(mujeres), hombres = length(hombres))
+mujeres hombres 
+     72     155 </code></pre>
+<p><br/></p>
+<div id="cómo-usar-un-histograma" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo usar un
+histograma?</strong></span></h2>
+<p><strong>¿Para qué sirve?</strong> Para ver la forma de la
+distribución de una variable numérica: la simetría o asimetría, las
+modas y la dispersión. Representa la frecuencia de los datos en
+intervalos o clases.</p>
+<p><strong>¿Cuántas clases usar?</strong> Se recomienda usar entre 7 y
+15 clases. En <strong>R</strong>, <code>hist()</code> parte de la
+<strong>regla de Sturges</strong>, que estima el número de clases <span
+class="math inline">\(k\)</span> a partir del número de datos <span
+class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[
+k = \lceil \log_2(n) + 1 \rceil
+\]</span></p>
+<p>donde <span class="math inline">\(\lceil \cdot \rceil\)</span> indica
+redondear hacia arriba. Con los 72 tiempos de las mujeres, la regla
+sugiere 8 clases. <code>hist()</code> usa ese número solo como
+sugerencia y ajusta los cortes a valores redondos, y aquí produce 10
+clases de 5 minutos:</p>
+<pre class="r"><code>ceiling(log2(72) + 1)
+[1] 8
+
+clases &lt;- hist(mujeres, plot = FALSE)
+clases$breaks
+ [1] 45 50 55 60 65 70 75 80 85 90 95
+clases$counts
+ [1]  2  4  7 11 13  9  8 11  5  2</code></pre>
+<p><strong>¿Cómo se hace?</strong> Con <code>ggplot2</code> se fijan los
+cortes con <code>breaks</code>. Conviene usar límites enteros, porque
+describen mejor el fenómeno.</p>
+<pre class="r"><code>cortes &lt;- seq(45, 95, 5)
+datos_mujeres &lt;- data.frame(minutos = mujeres)
+
+ggplot(datos_mujeres, aes(x = minutos)) +
+  geom_histogram(breaks = cortes, fill = &quot;#034A94&quot;, color = &quot;white&quot;) +
+  scale_x_continuous(limits = c(45, 95), breaks = cortes, expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 15), breaks = seq(0, 15, 3), expand = c(0, 0)) +
+  labs(x = &quot;Tiempo (minutos)&quot;, y = &quot;Número de mujeres&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-hist-1.png" alt="Histograma de los tiempos entre 45 y 95 minutos, con la barra más alta entre 65 y 70 minutos y otra barra alta entre 80 y 85" width="100%" />
+<p class="caption">
+Tiempos de las mujeres de la categoría Veteranos B
+</p>
+</div>
+<p><strong>¿Cómo se interpreta?</strong> Cada barra indica cuántos datos
+caen en un intervalo. Se observan el centro, la dispersión, la forma y
+los valores alejados. En la figura:</p>
+<ul>
+<li>El 72.2 % de las mujeres terminó entre 60 y 85 minutos, porque en
+esos intervalos hay 52 de los 72 datos.</li>
+<li>Hacia los tiempos bajos la frecuencia cae de 11 a 2.</li>
+<li>Las barras más altas están en <code>(65,70]</code> y
+<code>(80,85]</code>. Esto podría indicar dos grupos con tiempos típicos
+distintos, pero con 72 datos es solo una hipótesis.</li>
+</ul>
+<p>Un intervalo como <code>(65,70]</code> no incluye el 65, pero sí el
+70. Este es el comportamiento de <code>hist()</code> y
+<code>cut()</code> por defecto.</p>
+<p><strong>¿Qué mide el eje vertical?</strong> Puede mostrar tres
+medidas. La <strong>frecuencia relativa</strong> divide la frecuencia
+entre el total de datos, y la <strong>densidad</strong> divide la
+frecuencia relativa entre la amplitud del intervalo:</p>
+<p><span class="math display">\[
+f_r = \frac{f}{n}
+\qquad \text{y} \qquad
+d = \frac{f_r}{\text{amplitud}}
+\]</span></p>
+<p>En el intervalo <code>(65,70]</code>, la frecuencia relativa es <span
+class="math inline">\(13/72 \approx 0.181\)</span> y la densidad es
+<span class="math inline">\(0.181/5 \approx 0.036\)</span>. Como todas
+las clases tienen la misma amplitud, las tres medidas dan un gráfico con
+la misma forma.</p>
+<p><strong>¿Qué cuidados tener?</strong> El aspecto cambia con el ancho
+de los intervalos. Si son muy angostos, aparece mucho ruido, y si son
+muy anchos, se pierden detalles. Por eso conviene probar varios (<a
+href="https://clauswilke.com/dataviz/histograms-density-plots.html">Wilke,
+2019</a>; <a
+href="https://www.data-to-viz.com/caveat/bin_size.html">Holtz y
+Healy</a>). Los intervalos deben tener la misma amplitud, y no debe
+confundirse con un gráfico de barras.</p>
+<p><strong>Ver más:</strong> <a
+href="https://www.data-to-viz.com/graph/histogram.html">histograma</a> y
+<a href="https://www.data-to-viz.com/caveat/bin_size.html">ancho de los
+intervalos</a>.</p>
+<p><br/></p>
+</div>
+<div id="cómo-usar-una-curva-de-densidad" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo usar una curva de
+densidad?</strong></span></h2>
+<p><strong>¿Para qué sirve?</strong> Para ver la forma de una
+distribución con una curva suave, y para comparar pocos grupos. Se
+construye con una <strong>estimación kernel</strong>: a cada dato se le
+asigna una curva pequeña, llamada <em>kernel</em>, y luego se suman
+todas las curvas. El <strong>ancho de banda</strong> es el grado de
+suavizado.</p>
+<p><strong>¿Cómo se hace?</strong> Se usa <code>geom_density()</code>.
+Para comparar grupos, las curvas se superponen con transparencia usando
+<code>alpha</code>.</p>
+<pre class="r"><code>ggplot(veteranos, aes(x = minutos, fill = sex, color = sex)) +
+  geom_density(alpha = 0.3, linewidth = 0.8) +
+  scale_fill_manual(values = c(&quot;Hombre&quot; = &quot;#0072B2&quot;, &quot;Mujer&quot; = &quot;#D55E00&quot;)) +
+  scale_color_manual(values = c(&quot;Hombre&quot; = &quot;#0072B2&quot;, &quot;Mujer&quot; = &quot;#D55E00&quot;)) +
+  scale_x_continuous(limits = c(25, 120), breaks = seq(30, 120, 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 0.05), breaks = seq(0, 0.05, 0.01), expand = c(0, 0)) +
+  labs(x = &quot;Tiempo (minutos)&quot;, y = &quot;Densidad&quot;, fill = NULL, color = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = &quot;top&quot;, plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-densidad-1.png" alt="Dos curvas de densidad superpuestas: la de los hombres es alta, con su parte central entre 55 y 65 minutos y una cola a la derecha; la de las mujeres es más baja y está desplazada a la derecha" width="100%" />
+<p class="caption">
+Curvas de densidad de los tiempos por sexo
+</p>
+</div>
+<p><strong>¿Cómo se interpreta?</strong> La cima indica dónde se
+concentran los datos, el ancho general indica la dispersión y la forma
+muestra la simetría, las colas largas o los picos múltiples. En la
+figura, los hombres se ubican en tiempos menores, con una cola hacia la
+derecha. La curva de las mujeres es más baja y aplanada, y está
+desplazada hacia tiempos mayores.</p>
+<p><strong>¿Qué cuidados tener?</strong> La curva depende del ancho de
+banda, y con pocos datos puede ser engañosa (<a
+href="https://clauswilke.com/dataviz/histograms-density-plots.html">Wilke,
+2019</a>). Con más de tres o cuatro grupos, el gráfico se vuelve confuso
+(<a href="https://www.data-to-viz.com/graph/density.html">Holtz y
+Healy</a>).</p>
+<p><strong>Ver más:</strong> <a
+href="https://www.data-to-viz.com/graph/density.html">densidad</a>, <a
+href="https://www.data-to-viz.com/graph/ridgeline.html">crestas
+(ridgeline)</a> y <a
+href="https://www.data-to-viz.com/caveat/multi_distribution.html">demasiadas
+distribuciones</a>.</p>
+<p><br/></p>
+</div>
+<div id="cómo-usar-un-gráfico-de-cajas" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo usar un gráfico de
+cajas?</strong></span></h2>
+<p><strong>¿Para qué sirve?</strong> Para resumir la distribución con la
+mediana, los cuartiles y los datos atípicos, y para comparar grupos. Los
+<a href="recurso204.html">indicadores de posición</a> explican cómo se
+construye. Un dato es atípico si queda fuera de estos límites:</p>
+<p><span class="math display">\[
+LI = Q_1 - 1.5 \times RIC
+\qquad \text{y} \qquad
+LS = Q_3 + 1.5 \times RIC
+\]</span></p>
+<p>donde <span class="math inline">\(RIC = Q_3 - Q_1\)</span>.</p>
+<pre class="r"><code>resumen &lt;- function(x) {
+  q &lt;- quantile(x, c(0.25, 0.75))
+  ric &lt;- q[[2]] - q[[1]]
+  round(c(minimo = min(x), Q1 = q[[1]], mediana = median(x), Q3 = q[[2]], maximo = max(x),
+          RIC = ric, LI = q[[1]] - 1.5 * ric, LS = q[[2]] + 1.5 * ric,
+          atipicos = sum(x &lt; q[[1]] - 1.5 * ric | x &gt; q[[2]] + 1.5 * ric)), 1)
+}
+
+rbind(mujeres = resumen(mujeres), hombres = resumen(hombres))
+        minimo   Q1 mediana   Q3 maximo  RIC   LI    LS atipicos
+mujeres   45.8 63.2    68.8 79.9   93.6 16.7 38.2 105.0        0
+hombres   37.8 54.0    60.2 66.3  105.2 12.3 35.6  84.7        8</code></pre>
+<p><strong>¿Cómo se hace?</strong> Se usa <code>geom_boxplot()</code>.
+Las cajas ocultan el tamaño de cada grupo y la forma de la distribución,
+por lo que conviene agregar los puntos con <code>geom_jitter()</code>,
+que los separa un poco al azar.</p>
+<pre class="r"><code>set.seed(1)
+
+ggplot(veteranos, aes(x = minutos, y = sex)) +
+  geom_boxplot(fill = &quot;#D8ECF7&quot;, color = &quot;#034A94&quot;, outlier.shape = NA, width = 0.6) +
+  geom_jitter(color = &quot;#333333&quot;, alpha = 0.5, size = 1.5, height = 0.15) +
+  scale_x_continuous(limits = c(30, 110), breaks = seq(30, 110, 10), expand = c(0, 0)) +
+  labs(x = &quot;Tiempo (minutos)&quot;, y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-cajas-1.png" alt="Dos cajas horizontales con sus puntos: las mujeres tienen mediana cercana a 69 minutos y los hombres cercana a 60, con varios atípicos por encima de 85" width="100%" />
+<p class="caption">
+Tiempos por sexo con los datos individuales
+</p>
+</div>
+<p><strong>¿Cómo se interpreta?</strong> La línea central es la mediana
+y la caja contiene el 50 % central de los datos. Las líneas llegan hasta
+los datos más lejanos que no son atípicos. En la figura:</p>
+<ul>
+<li>La mitad de las mujeres terminó en 68.8 minutos o menos, mientras
+que más del 75 % de los hombres ya había terminado a los 66.3
+minutos.</li>
+<li>Hay 8 hombres con tiempos atípicos, entre 85.5 y 105.2 minutos.
+Entre las mujeres no hay atípicos.</li>
+<li>El 50 % central es más ancho en las mujeres: su RIC es de 16.7
+minutos, frente a 12.3 de los hombres.</li>
+</ul>
+<p><strong>¿Qué cuidados tener?</strong> No muestra el tamaño de cada
+grupo ni la forma completa: por ejemplo, oculta si los datos tienen dos
+picos (<a href="https://www.data-to-viz.com/caveat/boxplot.html">Holtz y
+Healy</a>). Además, una sola medida no resume toda la dispersión. Si se
+incluyen los valores extremos, el coeficiente de variación es mayor en
+los hombres:</p>
+<pre class="r"><code>round(rbind(mujeres = c(s = sd(mujeres), CV = 100 * sd(mujeres) / mean(mujeres)),
+            hombres = c(s = sd(hombres), CV = 100 * sd(hombres) / mean(hombres))), 1)
+           s   CV
+mujeres 11.0 15.6
+hombres 11.3 18.3</code></pre>
+<p><strong>Ver más:</strong> <a
+href="https://www.data-to-viz.com/caveat/boxplot.html">limitaciones del
+gráfico de cajas</a> y <a
+href="https://www.data-to-viz.com/graph/violin.html">gráfico de
+violín</a>.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="31%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Un histograma se interpreta con un solo ancho</td>
+<td align="left">Se acepta el valor por defecto</td>
+<td align="left">Probar varios anchos de intervalo</td>
+</tr>
+<tr class="even">
+<td align="left">Barras de distinta amplitud</td>
+<td align="left">Los cortes no son iguales</td>
+<td align="left">Usar <code>seq()</code> para definir los cortes</td>
+</tr>
+<tr class="odd">
+<td align="left">Se comparan frecuencias de grupos de distinto
+tamaño</td>
+<td align="left">El grupo mayor siempre parece más alto</td>
+<td align="left">Comparar porcentajes o densidades</td>
+</tr>
+<tr class="even">
+<td align="left">Los atípicos se dibujan dos veces</td>
+<td align="left"><code>geom_boxplot()</code> y
+<code>geom_jitter()</code> los muestran</td>
+<td align="left">Usar <code>outlier.shape = NA</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Se afirma que hay dos grupos por ver dos picos</td>
+<td align="left">Los picos dependen del ancho y del tamaño de la
+muestra</td>
+<td align="left">Presentarlo como hipótesis</td>
+</tr>
+<tr class="even">
+<td align="left">Muchas curvas en un mismo gráfico</td>
+<td align="left">Hay demasiados grupos</td>
+<td align="left">Usar cajas o paneles</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-probar-anchos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Probar
+anchos</strong></span></h3>
+<p>Haga un histograma de la edad de todos los corredores con intervalos
+de 5 años. Fije los ejes para que contengan todas las barras y describa
+la forma.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>range(CarreraLuz22$edad)
+[1] 15 76
+
+ggplot(CarreraLuz22, aes(x = edad)) +
+  geom_histogram(breaks = seq(10, 80, 5), fill = &quot;#034A94&quot;, color = &quot;white&quot;) +
+  scale_x_continuous(limits = c(10, 80), breaks = seq(10, 80, 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 500), breaks = seq(0, 500, 100), expand = c(0, 0)) +
+  labs(x = &quot;Edad (años)&quot;, y = &quot;Número de corredores&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-reto1-1.png" alt="Histograma de la edad, con mayor frecuencia entre 30 y 35 años y cola hacia las edades altas" width="100%" />
+<p class="caption">
+Edad de los corredores
+</p>
+</div>
+<p>La distribución tiene su pico entre 30 y 35 años, y una cola hacia
+las edades altas. Es asimétrica a la derecha.</p>
+</details>
+</div>
+<div id="reto-2.-comparar-grupos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Comparar
+grupos</strong></span></h3>
+<p>Compare la edad de hombres y mujeres con un gráfico de cajas. ¿Qué
+grupo tiene la mediana más alta?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>ggplot(CarreraLuz22, aes(x = edad, y = sex)) +
+  geom_boxplot(fill = &quot;#D8ECF7&quot;, color = &quot;#034A94&quot;) +
+  scale_x_continuous(limits = c(10, 80), breaks = seq(10, 80, 10), expand = c(0, 0)) +
+  labs(x = &quot;Edad (años)&quot;, y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-reto2-1.png" alt="Dos cajas horizontales: la mediana de los hombres es 37 años y la de las mujeres 34" width="100%" />
+<p class="caption">
+Edad de los corredores por sexo
+</p>
+</div>
+<pre class="r"><code>
+tapply(CarreraLuz22$edad, CarreraLuz22$sex, median)
+Hombre  Mujer 
+    37     34 </code></pre>
+<p>Los hombres tienen la mediana más alta, con 37 años frente a 34.</p>
+</details>
+</div>
+<div id="reto-3.-qué-zona-varía-más"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Qué zona varía
+más?</strong></span></h3>
+<p>Haga un gráfico de cajas del precio de las viviendas por zona,
+ordenado por la mediana. ¿Qué zona parece tener mayor dispersión en el
+50 % central? Compruébelo con el rango intercuartílico.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>viviendas &lt;- subset(vivienda_faltantes, !is.na(preciom) &amp; !is.na(zona))
+
+ggplot(viviendas, aes(x = preciom, y = reorder(zona, preciom, median))) +
+  geom_boxplot(fill = &quot;#D8ECF7&quot;, color = &quot;#034A94&quot;) +
+  scale_x_continuous(limits = c(0, 2000), breaks = seq(0, 2000, 500), expand = c(0, 0)) +
+  labs(x = &quot;Precio (millones de pesos)&quot;, y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso303_files/figure-html/fig-reto3-1.png" alt="Gráfico de cajas horizontal por zona; la Zona Oeste tiene la mediana más alta y la caja más ancha" width="100%" />
+<p class="caption">
+Precio de las viviendas por zona
+</p>
+</div>
+<pre class="r"><code>
+tapply(viviendas$preciom, viviendas$zona, IQR)
+ Zona Centro   Zona Norte   Zona Oeste Zona Oriente     Zona Sur 
+       172.5        270.0        505.5        145.0        298.0 </code></pre>
+<p>La caja más ancha es la de la Zona Oeste, que tiene el rango
+intercuartílico más alto, con 505.5 millones.</p>
+</details>
+</div>
+<div id="reto-4.-qué-gráfico-elegiría"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. ¿Qué gráfico
+elegiría?</strong></span></h3>
+<p>Indique qué gráfico usaría en cada caso: 8000 precios de viviendas;
+los tiempos de cinco categorías de corredores; los tiempos de dos grupos
+cuya forma se quiere comparar.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Histograma para los precios, porque hay muchos datos y una sola
+variable. Cajas para las categorías, porque se comparan varios grupos.
+Curvas de densidad para los dos grupos, porque se superponen con
+facilidad.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio"><em>Introducción
+a la estadística</em></a>. Está en español y se descarga en PDF desde
+esa página.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro.</li>
+</ul>
+</div>
+<div id="libros-para-leer-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer
+gratis</strong></span></h3>
+<ul>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media. Los capítulos 7 a 9 tratan las
+distribuciones.</li>
+<li>Wickham, H., Navarro, D. y Pedersen, T. L. <a
+href="https://ggplot2-book.org/"><em>ggplot2: Elegant Graphics for Data
+Analysis</em></a> (3.ª ed.). Springer. Versión en línea de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-recursos" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+recursos</strong></span></h3>
+<ul>
+<li>R Core Team. Documentación de <a
+href="https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/hist.html"><code>hist()</code></a>
+y <a
+href="https://stat.ethz.ch/R-manual/R-devel/library/grDevices/html/nclass.html"><code>nclass.Sturges()</code></a>.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Holtz, Y. y Healy, C. <a
+href="https://www.data-to-viz.com/"><em>From Data to Viz</em></a>.</li>
+<li>R Core Team. <a
+href="https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/hist.html">Documentación
+de <code>hist()</code></a>.</li>
+<li>Wilke, C. O. (2019). <a
+href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data
+Visualization</em></a>. O’Reilly Media.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

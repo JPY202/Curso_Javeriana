@@ -1,0 +1,85 @@
+name: " "
+output_dir: "../docs/unidad1"
+exclude: ["README.md", "render.R"]
+include: ["data"]
+navbar:
+  title: " "
+  left:
+    - text: "Métodos"
+      icon: fa-home
+      href: index.html
+    - text: "Software R"
+      menu:
+        - text: "Introducción"
+          href: recurso100.html
+        - text: "Objetos en R"
+          href: recurso101.html
+        - text: "Funciones en R"
+          href: recurso106.html
+        - text: "Funciones apply, lapply y sapply"
+          href: recurso107.html
+        - text: "RMarkdown"
+          href: recurso102.html
+        - text: "Proyecto en RStudio"
+          href: recurso103.html
+        - text: "Paquetes"
+          href: recurso104.html
+        - text: "IA en RStudio"
+          href: recurso105.html
+    - text: "Análisis de datos"
+      menu:
+        - text: "Conceptos básicos"
+          href: recurso200.html
+        - text: "Tablas de frecuencia"
+          href: recurso201.html
+        - text: "---------"
+        - text: "Indicadores estadísticos"
+        - text: "Introducción"
+          href: recurso202.html
+        - text: "Indicadores de centro"
+          href: recurso203.html
+        - text: "Indicadores de posición"
+          href: recurso204.html
+        - text: "Indicadores de dispersión"
+          href: recurso205.html
+        - text: "Indicadores de forma"
+          href: recurso206.html
+    - text: "Gráficos"
+      menu:
+        - text: "Introducción"
+          href: recurso300.html
+        - text: "---------"
+        - text: "¿Qué tipos de gráficos existen?"
+        - text: "Panorama"
+          href: recurso301.html
+        - text: "Variables categóricas"
+          href: recurso302.html
+        - text: "Variable numérica"
+          href: recurso303.html
+        - text: "Relaciones y cambios en el tiempo"
+          href: recurso304.html
+        - text: "Otros gráficos"
+          href: recurso305.html
+        - text: "---------"
+        - text: "¿Qué hace bueno a un gráfico?"
+          href: recurso306.html
+    - text: "Procesamiento de datos"
+      menu:
+        - text: "Importar datos"
+          href: recurso400.html
+        - text: "Organizar los datos"
+          href: recurso401.html
+        - text: "Datos faltantes"
+          href: recurso402.html
+        - text: "Transformar variables"
+          href: recurso403.html
+    - text: "Casos e informe"
+      menu:
+        - text: "Caso 1"
+          href: recurso50a.html
+        - text: "Caso 2"
+          href: recurso51a.html
+        - text: "Informe"
+          href: recurso52a.html
+    - text: "Referencias"
+      href: recurso60a.html

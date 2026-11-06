@@ -1,0 +1,254 @@
+---
+title: <span style="color:#034a94"> **Indicadores estadísticos**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+```
+
+<br/>
+
+El tablero de un automóvil muestra la velocidad, el nivel de combustible y la temperatura del motor. Cada indicador resume información en un dato que el conductor entiende de inmediato.
+
+```{r, echo=FALSE, out.width="60%", fig.align="center", fig.alt="Tablero de un automóvil con varios indicadores"}
+knitr::include_graphics("img/tablero_carro.gif")
+```
+
+Con los datos ocurre algo similar. Una base puede tener miles de filas, pero unos pocos indicadores permiten describirla, compararla y comunicar lo importante. Esta página presenta qué son, qué tipos existen y dónde se usan.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un indicador estadístico?**</span>
+
+Un **indicador estadístico** es un número calculado a partir de los datos que resume una característica de una variable. Por ejemplo, la media resume el valor típico, y la desviación estándar resume qué tan separados están los datos.
+
+Si se calcula con todas las unidades de una población, se llama **parámetro**. Si se calcula con una muestra, es una **estimación**.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tipos existen?**</span>
+
+Para una variable cuantitativa, los indicadores se agrupan según la pregunta que responden:
+
+| Tipo                       | Pregunta que responde                       | Ejemplos                                                        |
+|:---------------------------|:--------------------------------------------|:----------------------------------------------------------------|
+| **De centro**              | ¿Cuál es un valor típico?                   | Media, mediana y moda                                           |
+| **De posición**            | ¿Qué valor deja un porcentaje de datos por debajo? | Cuartiles, deciles, quintiles y percentiles              |
+| **De dispersión**          | ¿Qué tan separados están los datos?         | Rango, varianza, desviación estándar y coeficiente de variación |
+| **De forma**               | ¿Cómo es la distribución?                   | Asimetría y curtosis                                            |
+
+Estos indicadores describen a los tiempos de la carrera La Luz 2022:
+
+```{r}
+tiempo <- CarreraLuz22$timerun / 60
+
+resumen <- c(
+  media = mean(tiempo),
+  mediana = median(tiempo),
+  cuartil_1 = unname(quantile(tiempo, 0.25)),
+  cuartil_3 = unname(quantile(tiempo, 0.75)),
+  desviacion = sd(tiempo),
+  coef_variacion = 100 * sd(tiempo) / mean(tiempo),
+  asimetria = mean((tiempo - mean(tiempo))^3) / sd(tiempo)^3
+)
+
+round(resumen, 2)
+```
+
+Con esos valores se puede decir que el tiempo típico fue de cerca de `r round(median(tiempo))` minutos, que la mitad central de los atletas tardó entre `r round(quantile(tiempo, 0.25), 1)` y `r round(quantile(tiempo, 0.75), 1)` minutos, y que hay una cola de tiempos altos. Las próximas páginas explican cada indicador.
+
+<br/>
+
+## <span style="color:#034a94">**¿Dónde se usan?**</span>
+
+Los indicadores aparecen en boletines oficiales, informes y artículos científicos. Estos son algunos ejemplos reales:
+
+| Ámbito              | Publicación                          | Indicador                          | Valor reportado            |
+|:--------------------|:-------------------------------------|:-----------------------------------|:---------------------------|
+| Precios             | [DANE, IPC, septiembre de 2026](https://www.dane.gov.co/files/operaciones/IPC/sep2026/bol-IPC-sep2026.pdf) | Variación anual del IPC | 6.29 % |
+| Empleo              | [DANE, GEIH, agosto de 2026](https://www.dane.gov.co/files/operaciones/GEIH/bol-GEIH-ago2026.pdf) | Tasa de desocupación | 9.4 %, frente a 8.6 % en agosto de 2025 |
+| Pobreza y desigualdad | [DANE, pobreza monetaria, 2025](https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf) | Incidencia de pobreza y coeficiente de Gini | 28.0 % y 0.531 |
+| Educación           | [Icfes, Saber 11, 2023](https://www.icfes.gov.co/wp-content/uploads/2025/04/Informe_Saber11_2023.pdf) | Promedio y desviación estándar del puntaje global, calendario A | 257 y 51 puntos |
+| Salud infantil      | [OMS, estándares de crecimiento](https://www.who.int/tools/child-growth-standards/standards/weight-for-age) | Percentiles y puntajes z de peso para la edad | Tablas por sexo y edad |
+| Ingresos            | [U.S. Census Bureau, 2025](https://www2.census.gov/library/publications/2026/demo/p60-289.pdf) | Mediana del ingreso de los hogares e índice de Gini | USD 87,460 y 0.490 |
+| Investigación clínica | [Guan et al. (2020), reseñado por Eastin y Eastin](https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766) | Edad mediana y rango intercuartílico de 1,099 pacientes | 47 años (35 a 58) |
+
+Algunos de estos indicadores son **proporciones**, como la tasa de desocupación, y otros se construyen con métodos propios. El [DANE](https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf), por ejemplo, define el coeficiente de Gini como un indicador de desigualdad cuyos valores van de 0, igualdad absoluta, a 1, desigualdad absoluta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Por qué no basta un solo indicador?**</span>
+
+Dos grupos pueden tener la misma media y ser muy distintos. Estas son las edades de dos grupos de 30 personas:
+
+```{r}
+grupo1 <- c(27, 27, 28, 28, 34, 28, 26, 33, 24, 28, 25, 25, 33, 27, 34,
+            38, 24, 26, 22, 23, 33, 23, 26, 26, 32, 33, 29, 30, 25, 23)
+grupo2 <- c(35, 25, 19, 17, 24, 17, 55, 25, 31, 35, 43, 28, 32, 19, 20,
+            17, 25, 18, 21, 22, 17, 35, 29, 20, 54, 46, 24, 29, 40, 18)
+
+c(media_1 = mean(grupo1), media_2 = mean(grupo2))
+c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))
+```
+
+Las dos medias son iguales, pero el grupo 2 tiene mucha más dispersión. Por eso, un indicador de centro se reporta junto con uno de dispersión.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se reportan en un artículo?**</span>
+
+Las revistas científicas tienen guías para informar los resultados. Las [guías SAMPL, de Lang y Altman](https://emwa.org/wp-content/uploads/Media/media/2309/mew-253-lang-and-altman.pdf), tratan el reporte estadístico en la literatura biomédica y recomiendan lo siguiente:
+
+| Si la distribución es       | Se reporta                                           | Ejemplo                    |
+|:----------------------------|:-----------------------------------------------------|:---------------------------|
+| Aproximadamente normal      | Media (desviación estándar)                          | 65.3 (12.7) minutos        |
+| No normal                   | Mediana y rango intercuartílico u otro rango, con sus límites | 63.5 (56.4 a 73.3) minutos |
+
+Los ejemplos usan los tiempos de la carrera, solo para mostrar el formato. Además, las guías indican lo siguiente:
+
+- Se escribe media (DE), y no media $\pm$ DE.
+- El error estándar de la media no se usa para describir la variabilidad de los datos.
+
+La [versión mejorada de Indrayan (2020)](https://www.indianpediatrics.net/jan2020/jan-43-48.htm) agrega que, en grupos de 4 datos o menos, se presentan los valores originales, y que los indicadores llevan un decimal más que los datos originales.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo leer un indicador?**</span>
+
+Antes de usar una cifra conviene responder estas preguntas:
+
+- **¿De quién habla?** Población, lugar y periodo.
+- **¿Cómo se calculó?** Una media y una mediana pueden dar valores distintos.
+- **¿Es un dato de toda la población o de una muestra?**
+- **¿En qué unidad está?** Por ejemplo, porcentaje, puntos, años o pesos.
+- **¿Con qué se compara?** El mes anterior, el mismo mes del año anterior u otro grupo.
+
+Por ejemplo, 9.4 % dice más cuando se sabe que es la tasa de desocupación del total nacional en agosto de 2026, y que en el mismo mes de 2025 fue de 8.6 %.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                       | Causa                                             | Solución                                           |
+|:-----------------------------------------------|:--------------------------------------------------|:---------------------------------------------------|
+| Reportar solo la media                         | No se describe la variabilidad                    | Agregar un indicador de dispersión                 |
+| Usar la media en una variable muy asimétrica   | Los datos extremos la afectan                     | Reportar también la mediana y el rango intercuartílico |
+| Comparar cifras de periodos distintos sin aclararlo | Falta el contexto                            | Indicar población, lugar y periodo                 |
+| Confundir puntos porcentuales con porcentaje   | De 8.6 % a 9.4 % hay 0.8 puntos porcentuales      | Indicar qué tipo de cambio se reporta              |
+| Interpretar un percentil como un puntaje       | El percentil indica una posición                  | Explicar qué porcentaje queda por debajo           |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Clasifique los indicadores**</span>
+
+Indique si cada indicador es de centro, posición, dispersión o forma: mediana, percentil 90, rango intercuartílico, asimetría, moda y coeficiente de variación.
+
+<details>
+<summary>Ver solución</summary>
+
+- **Centro:** mediana y moda.
+- **Posición:** percentil 90. La mediana también es una posición, porque es el percentil 50.
+- **Dispersión:** rango intercuartílico y coeficiente de variación.
+- **Forma:** asimetría.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Lea un resultado**</span>
+
+Un artículo informa que la edad de 1,099 pacientes tuvo una mediana de 47 años, con rango intercuartílico de 35 a 58. ¿Qué significan esas cifras?
+
+<details>
+<summary>Ver solución</summary>
+
+La mitad de los pacientes tiene 47 años o menos. Cerca del 25 % tiene 35 años o menos, cerca del 25 % tiene 58 años o más, y la mitad central está entre 35 y 58 años.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Media o mediana?**</span>
+
+Suponga que cinco personas ganan 1.2, 1.3, 1.5, 1.8 y 30 millones de pesos al mes. Calcule la media y la mediana. ¿Cuál describe mejor a un ingreso típico?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+ingresos <- c(1.2, 1.3, 1.5, 1.8, 30)
+
+c(media = mean(ingresos), mediana = median(ingresos))
+```
+
+La mediana describe mejor un ingreso típico, porque un solo ingreso muy alto eleva la media por encima de lo que ganan los otros cuatro.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Reporte por grupos**</span>
+
+Con `CarreraLuz22`, calcule la media y la desviación estándar del tiempo en minutos para hombres y mujeres. Escríbalas en el formato media (DE).
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+medias <- tapply(tiempo, CarreraLuz22$sex, mean)
+desviaciones <- tapply(tiempo, CarreraLuz22$sex, sd)
+
+paste0(names(medias), ": ", round(medias, 1), " (", round(desviaciones, 1), ")")
+```
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se lee en línea o se descarga en PDF desde esa página.
+- Illowsky, B. y Dean, S. [*Introductory Statistics 2e*](https://openstax.org/books/introductory-statistics-2e/pages/preface). OpenStax.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Fuentes oficiales de datos**</span>
+
+- [DANE](https://www.dane.gov.co/): boletines técnicos de precios, empleo y pobreza.
+- [Icfes](https://www.icfes.gov.co/estadisticas-oficiales/): estadísticas oficiales de evaluación educativa.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- DANE. (2026). [Índice de Precios al Consumidor, septiembre de 2026](https://www.dane.gov.co/files/operaciones/IPC/sep2026/bol-IPC-sep2026.pdf). Boletín técnico.
+- DANE. (2026). [Gran Encuesta Integrada de Hogares, agosto de 2026](https://www.dane.gov.co/files/operaciones/GEIH/bol-GEIH-ago2026.pdf). Boletín técnico.
+- DANE. (2026). [Pobreza monetaria en Colombia, año 2025](https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf). Boletín técnico.
+- Eastin, C. y Eastin, T. (2020). [Reseña de Clinical Characteristics of Coronavirus Disease 2019 in China](https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766). *The Journal of Emergency Medicine*, 58(4), 711-712.
+- Icfes. (2024). [Informe nacional de resultados del examen Saber 11.º 2023](https://www.icfes.gov.co/wp-content/uploads/2025/04/Informe_Saber11_2023.pdf).
+- Indrayan, A. (2020). [Reporting of Basic Statistical Methods in Biomedical Journals: Improved SAMPL Guidelines](https://www.indianpediatrics.net/jan2020/jan-43-48.htm). *Indian Pediatrics*, 57(1), 43-48.
+- Kollar, M. y Scherer, Z. (2026). [Income in the United States: 2025](https://www2.census.gov/library/publications/2026/demo/p60-289.pdf). U.S. Census Bureau.
+- Lang, T. A. y Altman, D. G. (2016). [Statistical analyses and methods in the published literature: The SAMPL guidelines](https://emwa.org/wp-content/uploads/Media/media/2309/mew-253-lang-and-altman.pdf). *Medical Writing*, 25(3), 31-36.
+- Organización Mundial de la Salud. [Weight-for-age](https://www.who.int/tools/child-growth-standards/standards/weight-for-age).
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

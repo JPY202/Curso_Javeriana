@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> ¿Cómo tratar los datos faltantes?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Cómo
+tratar los datos faltantes?</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un <strong>dato faltante</strong> es la ausencia de un valor donde se
+esperaba uno. Puede deberse a errores al recoger la información, a
+registros perdidos o a personas que no responden. Los datos faltantes
+pueden afectar la <strong>validez</strong> y la
+<strong>precisión</strong> de los resultados, y ningún método los
+recupera: solo permite trabajar con ellos bajo ciertos supuestos. Esta
+página presenta cómo detectarlos, por qué ocurren, cuándo se puede usar
+cada método y cómo se implementa en <strong>R</strong>.</p>
+<p>Esta página usa <code>vivienda_faltantes</code>, del paquete
+<code>paqueteMETODOS</code>, los datos <code>airquality</code>,
+incluidos en <strong>R</strong>, y los paquetes <code>ggplot2</code> y
+<code>mice</code>. Los bloques de código se ejecutan en orden.</p>
+<pre class="r"><code>library(paqueteMETODOS)
+data(&quot;vivienda_faltantes&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(mice)</code></pre>
+<p><br/></p>
+<div id="cómo-se-representan-en-r" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se representan en
+R?</strong></span></h2>
+<p><strong>R</strong> representa un dato faltante con <code>NA</code>.
+Casi cualquier operación con <code>NA</code> da <code>NA</code>, por lo
+que varias funciones tienen el argumento <code>na.rm = TRUE</code>.</p>
+<pre class="r"><code>x &lt;- c(4, 7, NA, 10)
+is.na(x)
+[1] FALSE FALSE  TRUE FALSE
+mean(x)
+[1] NA
+mean(x, na.rm = TRUE)
+[1] 7</code></pre>
+<p>No todos los faltantes se ven como <code>NA</code> (<a
+href="https://r4ds.hadley.nz/missing-values.html">Wickham et al.,
+2023</a>):</p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="45%" />
+<col width="32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Caso</th>
+<th align="left">Ejemplo</th>
+<th align="left">Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Código especial</td>
+<td align="left"><code>-99</code> o <code>999</code> significan “sin
+dato”</td>
+<td align="left">Convertir con <code>na_if()</code> o con
+<code>na</code> al importar</td>
+</tr>
+<tr class="even">
+<td align="left">Texto vacío</td>
+<td align="left">Una celda con <code>""</code> o <code>"N/A"</code></td>
+<td align="left">Convertir a <code>NA</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Faltante implícito</td>
+<td align="left">Falta la fila completa de un mes</td>
+<td align="left">Crear la fila con <code>tidyr::complete()</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cómo-se-detectan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se
+detectan?</strong></span></h2>
+<p>Primero se quitan las filas vacías al final de la tabla, como se
+explicó en <a href="recurso401.html">¿Cómo organizar los datos?</a>.
+Después se cuentan los faltantes por variable:</p>
+<pre class="r"><code>viviendas &lt;- vivienda_faltantes[!is.na(vivienda_faltantes$id), ]
+faltantes &lt;- colSums(is.na(viviendas))
+faltantes[faltantes &gt; 0]
+   piso parquea 
+   2638    1603 
+
+round(100 * mean(complete.cases(viviendas)), 1)
+[1] 57.8</code></pre>
+<p>Solo <code>piso</code> y <code>parquea</code> tienen faltantes, y el
+57.8 % de las viviendas está completo. La función
+<code>md.pattern()</code>, de <code>mice</code>, muestra qué
+combinaciones de variables faltan juntas:</p>
+<pre class="r"><code>md.pattern(viviendas[, c(&quot;preciom&quot;, &quot;piso&quot;, &quot;parquea&quot;)], plot = FALSE)
+     preciom parquea piso     
+4812       1       1    1    0
+1912       1       1    0    1
+877        1       0    1    1
+726        1       0    0    2
+           0    1603 2638 4241</code></pre>
+<p>Cada fila es un patrón: el número de la izquierda indica cuántas
+viviendas lo tienen, el 1 indica que el dato está y el 0 que falta. Por
+ejemplo, a 726 viviendas les faltan las dos variables.</p>
+<p><br/></p>
+</div>
+<div id="todo-faltante-se-debe-llenar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Todo faltante se debe
+llenar?</strong></span></h2>
+<p>No. Antes de imputar hay que preguntarse si el dato existe. En
+<code>vivienda_faltantes</code>, <code>parquea</code> podría estar vacío
+porque no se registró o porque la vivienda no tiene parqueadero:</p>
+<pre class="r"><code>table(viviendas$parquea, useNA = &quot;ifany&quot;)
+
+   1    2    3    4    5    6    7    8    9   10 &lt;NA&gt; 
+3156 2478  521  386   68   68   18   17    4    8 1603 </code></pre>
+<p>No aparece ningún cero, lo que sugiere que una vivienda sin
+parqueadero podría haberse registrado como vacío. También
+<code>piso</code> podría no aplicar a una casa de un solo nivel. Si el
+faltante significa “no tiene” o “no aplica”, no se imputa: se
+recodifica, después de confirmarlo con quien recogió los datos.</p>
+<p><br/></p>
+</div>
+<div id="por-qué-faltan-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Por qué faltan los
+datos?</strong></span></h2>
+<p>Imagine una encuesta a 300 personas que pregunta la edad y el
+ingreso. Todas dicen su edad, pero algunas no dicen su ingreso. La
+pregunta clave es: <strong>¿por qué falta ese dato?</strong> Rubin
+(1976) propuso tres posibles respuestas (<a
+href="https://stefvanbuuren.name/fimd/sec-idconcepts.html">van Buuren,
+2018</a>):</p>
+<ul>
+<li><strong>MCAR, faltante completamente al azar: “fue pura
+casualidad”.</strong> Se dañó un archivo y se perdieron algunas
+respuestas. Quienes faltan son personas como las demás.</li>
+<li><strong>MAR, faltante al azar: “se explica con algo que sí
+tengo”.</strong> Los jóvenes responden menos, y la edad está en la base.
+Entre personas de la misma edad, quienes faltan se parecen a quienes
+respondieron.</li>
+<li><strong>MNAR, faltante no al azar: “depende de lo que no
+veo”.</strong> Las personas de mayores ingresos prefieren no decir su
+ingreso. La razón de la falta es justamente el dato que no se
+tiene.</li>
+</ul>
+<p>El nombre MAR confunde, porque no significa que falte por casualidad.
+Significa que la falta se puede explicar con las variables que sí se
+observaron.</p>
+<p>La siguiente figura muestra los tres casos con datos simulados. Cada
+punto es una persona. Los puntos azules son quienes dijeron su ingreso,
+y los círculos naranja son quienes no lo dijeron. En una base real, esos
+círculos no se ven: aquí se muestran porque los datos son simulados.</p>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-mecanismos-1.png" alt="Tres paneles de edad e ingreso. En MCAR los círculos que faltan están repartidos por todo el gráfico, en MAR se concentran en las edades jóvenes y en MNAR se concentran en los ingresos altos" width="100%" />
+<p class="caption">
+Los tres mecanismos de datos faltantes (datos simulados)
+</p>
+</div>
+<details>
+<summary>
+Ver el código de la figura
+</summary>
+<pre class="r"><code>set.seed(2026)
+n &lt;- 300
+edad &lt;- round(runif(n, 18, 65))
+ingreso &lt;- 1 + 0.08 * edad + rnorm(n, 0, 1)
+
+# Probabilidad de que falte el ingreso en cada caso
+falta_mcar &lt;- runif(n) &lt; 0.35
+falta_mar &lt;- runif(n) &lt; ifelse(edad &lt; 35, 0.70, 0.10)
+falta_mnar &lt;- runif(n) &lt; ifelse(ingreso &gt; median(ingreso), 0.60, 0.10)
+
+personas &lt;- data.frame(
+  edad = rep(edad, 3),
+  ingreso = rep(ingreso, 3),
+  falta = c(falta_mcar, falta_mar, falta_mnar),
+  caso = factor(rep(c(&quot;MCAR: casualidad&quot;, &quot;MAR: depende de la edad&quot;, &quot;MNAR: depende del ingreso&quot;),
+                    each = n),
+                levels = c(&quot;MCAR: casualidad&quot;, &quot;MAR: depende de la edad&quot;,
+                           &quot;MNAR: depende del ingreso&quot;))
+)
+
+ggplot(personas, aes(x = edad, y = ingreso)) +
+  geom_point(data = subset(personas, !falta), color = &quot;#034A94&quot;, size = 1.5) +
+  geom_point(data = subset(personas, falta), color = &quot;#D55E00&quot;, shape = 1, size = 1.8,
+             stroke = 0.8) +
+  facet_wrap(~ caso) +
+  labs(x = &quot;Edad (años)&quot;, y = &quot;Ingreso (millones)&quot;) +
+  theme_minimal(base_size = 13)</code></pre>
+</details>
+<p><br/></p>
+<p>Para ver por qué importa, se compara el promedio de ingreso de todas
+las personas con el promedio de quienes respondieron:</p>
+<pre class="r"><code>round(c(todas = mean(ingreso),
+        MCAR = mean(ingreso[!falta_mcar]),
+        MAR = mean(ingreso[!falta_mar]),
+        MNAR = mean(ingreso[!falta_mnar])), 2)
+todas  MCAR   MAR  MNAR 
+ 4.27  4.16  4.71  3.86 </code></pre>
+<p>El promedio de todas las personas es 4.27 millones. Con MCAR queda
+cerca, en 4.16. Con MAR sube a 4.71, porque faltan sobre todo los
+jóvenes, que ganan menos. Con MNAR baja a 3.86, porque faltan los
+ingresos altos. La diferencia es que en MAR la edad permite corregir el
+problema, mientras que en MNAR no hay una variable observada que lo
+resuelva.</p>
+<table>
+<colgroup>
+<col width="4%" />
+<col width="23%" />
+<col width="27%" />
+<col width="45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">En palabras sencillas</th>
+<th align="left">¿Por qué falta el ingreso?</th>
+<th align="left">¿Qué se puede hacer?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MCAR</td>
+<td align="left">Fue pura casualidad</td>
+<td align="left">Se dañó un archivo</td>
+<td align="left">Eliminar registros no produce sesgo, aunque se pierden
+datos</td>
+</tr>
+<tr class="even">
+<td align="left">MAR</td>
+<td align="left">Se explica con lo que sí tengo</td>
+<td align="left">Los jóvenes responden menos</td>
+<td align="left">Usar las otras variables para imputar, como la
+edad</td>
+</tr>
+<tr class="odd">
+<td align="left">MNAR</td>
+<td align="left">Depende de lo que no veo</td>
+<td align="left">Los ingresos altos no se reportan</td>
+<td align="left">Ningún método lo resuelve solo: se comparan varios
+supuestos</td>
+</tr>
+</tbody>
+</table>
+<p>Con datos reales, también se puede comparar quiénes tienen el dato y
+quiénes no. Si son distintos, los datos no son MCAR. En
+<code>vivienda_faltantes</code>, para <code>parquea</code>:</p>
+<pre class="r"><code>falta &lt;- is.na(viviendas$parquea)
+
+round(100 * tapply(falta, viviendas$estrato, mean), 1)
+   3    4    5    6 
+52.9 22.9  8.3  5.9 
+tapply(viviendas$preciom, falta, median)
+FALSE  TRUE 
+  355   178 </code></pre>
+<p>El <code>parquea</code> falta en el 52.9 % de las viviendas de
+estrato 3 y en el 5.9 % de las de estrato 6. Además, las viviendas sin
+el dato tienen un precio mediano de 178 millones, frente a 355 de las
+demás. Eliminar esas viviendas dejaría una base con menos viviendas de
+bajo precio.</p>
+<div class="content-box-gray">
+<p>El mecanismo no se puede demostrar con los datos. MAR frente a MNAR
+no se puede probar, porque la información necesaria es justamente la que
+falta (<a href="https://stefvanbuuren.name/fimd/sec-idconcepts.html">van
+Buuren, 2018</a>). MAR es un supuesto que justifica el análisis, no una
+propiedad de los datos (<a
+href="https://doi.org/10.1136/bmj.b2393">Sterne et al., 2009</a>). Por
+eso, no rechazar la prueba de Little (1988) no demuestra que los datos
+sean MCAR.</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-método-se-puede-usar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué método se puede
+usar?</strong></span></h2>
+<p>La siguiente tabla resume cuándo sirve cada método, a partir de la
+Tabla 1.1 de <a
+href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
+Buuren (2018)</a>, y se detalla en las secciones siguientes.</p>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="35%" />
+<col width="27%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Método</th>
+<th align="left">Cuándo se puede usar</th>
+<th align="left">Principal riesgo</th>
+<th align="left">En <strong>R</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Eliminar registros</td>
+<td align="left">MCAR, o se pierde una parte pequeña de los datos</td>
+<td align="left">Sesgo si no es MCAR; se pierde información</td>
+<td align="left"><code>na.omit()</code>,
+<code>complete.cases()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Media o mediana</td>
+<td align="left">Arreglo rápido, con muy pocos faltantes</td>
+<td align="left">Reduce la varianza y distorsiona relaciones</td>
+<td align="left"><code>replace()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Regresión</td>
+<td align="left">Pocas veces; solo si la predicción es casi
+perfecta</td>
+<td align="left">Refuerza las relaciones de forma artificial</td>
+<td align="left"><code>lm()</code>, <code>predict()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Regresión estocástica</td>
+<td align="left">MAR, y se necesita una sola base completa</td>
+<td align="left">Puede dar valores imposibles</td>
+<td align="left"><code>mice(method = "norm.nob")</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Imputación múltiple</td>
+<td align="left">MAR plausible y variables que ayudan a predecir el
+faltante</td>
+<td align="left">Requiere un buen modelo de imputación</td>
+<td align="left"><code>mice()</code>, <code>pool()</code></td>
+</tr>
+</tbody>
+</table>
+<p>¿Hay un porcentaje de faltantes a partir del cual se debe imputar? No
+hay una regla fija. Madley-Dowd et al. (2019) muestran que el porcentaje
+de faltantes no debe guiar la decisión: una imputación múltiple válida
+reduce el sesgo incluso con porcentajes altos. Importan más el mecanismo
+y las variables disponibles.</p>
+<p>Los ejemplos usan <code>airquality</code>, con mediciones diarias de
+calidad del aire en Nueva York, porque es el ejemplo de <a
+href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
+Buuren (2018)</a>. <code>Ozone</code> tiene 37 faltantes de 153
+datos.</p>
+<pre class="r"><code>aire &lt;- airquality[, c(&quot;Ozone&quot;, &quot;Solar.R&quot;, &quot;Wind&quot;, &quot;Temp&quot;)]
+colSums(is.na(aire))
+  Ozone Solar.R    Wind    Temp 
+     37       7       0       0 </code></pre>
+<p><br/></p>
+<div id="cuándo-eliminar-registros" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cuándo eliminar
+registros?</strong></span></h3>
+<p><strong>¿Qué hace?</strong> Quita cada registro con algún faltante en
+las variables del análisis. También se llama <strong>análisis de casos
+completos</strong>.</p>
+<p><strong>¿Cuándo se puede usar?</strong> Si los datos son MCAR,
+produce estimaciones insesgadas. También puede ser adecuado si se pierde
+solo una parte pequeña de los datos.</p>
+<p><strong>¿Cómo se implementa?</strong></p>
+<pre class="r"><code>completos &lt;- na.omit(aire)
+nrow(completos)
+[1] 111</code></pre>
+<p><strong>¿Qué cuidados tener?</strong> Se perdieron 42 de 153 días. Si
+los datos no son MCAR, las estimaciones pueden quedar sesgadas (<a
+href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
+Buuren, 2018</a>).</p>
+<p><br/></p>
+</div>
+<div id="cuándo-imputar-con-la-media-o-la-mediana"
+class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cuándo imputar con la media o
+la mediana?</strong></span></h3>
+<p><strong>¿Qué hace?</strong> Reemplaza cada faltante por la media, o
+por la mediana si la variable es asimétrica. En una variable categórica
+se usa la moda.</p>
+<p><strong>¿Cuándo se puede usar?</strong> Solo como arreglo rápido,
+cuando faltan muy pocos valores. En general se debe evitar (<a
+href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
+Buuren, 2018</a>).</p>
+<p><strong>¿Cómo se implementa?</strong></p>
+<pre class="r"><code>ozono_media &lt;- replace(aire$Ozone, is.na(aire$Ozone), mean(aire$Ozone, na.rm = TRUE))
+
+round(c(antes = sd(aire$Ozone, na.rm = TRUE), despues = sd(ozono_media)), 1)
+  antes despues 
+   33.0    28.7 </code></pre>
+<p><strong>¿Qué cuidados tener?</strong> La desviación estándar bajó de
+33 a 28.7, porque todos los datos nuevos están en el centro. La
+siguiente figura muestra el pico artificial que se crea:</p>
+<pre class="r"><code>ozono &lt;- data.frame(valor = ozono_media,
+                    origen = ifelse(is.na(aire$Ozone), &quot;Imputado&quot;, &quot;Observado&quot;))
+
+ggplot(ozono, aes(x = valor, fill = origen)) +
+  geom_histogram(breaks = seq(0, 170, 10), color = &quot;white&quot;) +
+  scale_fill_manual(values = c(&quot;Imputado&quot; = &quot;#D55E00&quot;, &quot;Observado&quot; = &quot;#034A94&quot;)) +
+  scale_x_continuous(limits = c(0, 170), breaks = seq(0, 170, 20), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 10), expand = c(0, 0)) +
+  labs(x = &quot;Ozono (ppb)&quot;, y = &quot;Número de días&quot;, fill = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = &quot;top&quot;, plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-media-1.png" alt="Histograma de ozono con los datos observados en azul y una barra naranja alta en el intervalo de la media, formada por los 37 valores imputados" width="100%" />
+<p class="caption">
+Ozono observado y ozono con imputación por la media
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cuándo-imputar-con-regresión" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cuándo imputar con
+regresión?</strong></span></h3>
+<p><strong>¿Qué hace?</strong> Ajusta un modelo con los datos observados
+y usa la predicción como valor imputado. Aquí se predice
+<code>Ozone</code> con <code>Wind</code> y <code>Temp</code>, que no
+tienen faltantes.</p>
+<p><strong>¿Cuándo se puede usar?</strong> Pocas veces. Es realista solo
+si la predicción es casi perfecta. Van Buuren (2018) lo considera uno de
+los métodos más peligrosos, porque refuerza las relaciones de forma
+artificial.</p>
+<p><strong>¿Cómo se implementa?</strong></p>
+<pre class="r"><code>modelo &lt;- lm(Ozone ~ Wind + Temp, data = aire)
+ozono_reg &lt;- aire$Ozone
+ozono_reg[is.na(ozono_reg)] &lt;- predict(modelo, newdata = aire[is.na(aire$Ozone), ])</code></pre>
+<p><strong>¿Qué cuidados tener?</strong> Los valores imputados quedan
+exactamente sobre el plano del modelo, por lo que la variabilidad se
+subestima. Si se usa una sola variable para predecir, los puntos
+imputados forman una línea perfecta.</p>
+<p><br/></p>
+</div>
+<div id="cuándo-usar-regresión-estocástica" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cuándo usar regresión
+estocástica?</strong></span></h3>
+<p><strong>¿Qué hace?</strong> Agrega a la predicción un valor
+aleatorio, para recuperar la dispersión de los datos.</p>
+<p><strong>¿Cuándo se puede usar?</strong> Bajo MAR, si el modelo es
+adecuado y se necesita una sola base completa.</p>
+<p><strong>¿Cómo se implementa?</strong> Con <code>mice()</code> y el
+método <code>norm.nob</code>, usando <code>Wind</code> y
+<code>Temp</code>:</p>
+<pre class="r"><code>base &lt;- aire[, c(&quot;Ozone&quot;, &quot;Wind&quot;, &quot;Temp&quot;)]
+
+estocastica &lt;- mice(base, method = &quot;norm.nob&quot;, m = 1, maxit = 1, seed = 123, printFlag = FALSE)
+ozono_est &lt;- complete(estocastica)$Ozone
+
+min(ozono_est)
+[1] -31.64427</code></pre>
+<p><strong>¿Qué cuidados tener?</strong> Puede producir valores
+imposibles. Aquí el ozono mínimo salió negativo. Además, los errores
+estándar quedan demasiado pequeños, porque la base se analiza como si
+esos valores se hubieran observado (<a
+href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
+Buuren, 2018</a>).</p>
+<p><br/></p>
+</div>
+<div id="cuándo-usar-imputación-múltiple" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cuándo usar imputación
+múltiple?</strong></span></h3>
+<p><strong>¿Qué hace?</strong> En lugar de un valor, crea varios valores
+posibles para cada faltante. Tiene tres pasos (<a
+href="https://stefvanbuuren.name/fimd/sec-nutshell.html">van Buuren,
+2018</a>):</p>
+<ol style="list-style-type: decimal">
+<li><strong>Imputar:</strong> se crean <span
+class="math inline">\(m\)</span> bases completas, cada una con valores
+plausibles.</li>
+<li><strong>Analizar:</strong> cada base se analiza como si estuviera
+completa.</li>
+<li><strong>Combinar:</strong> los <span
+class="math inline">\(m\)</span> resultados se unen con las
+<strong>reglas de Rubin</strong>.</li>
+</ol>
+<p>La diferencia entre las bases refleja la incertidumbre sobre el dato
+que falta. Si <span class="math inline">\(\hat{Q}_l\)</span> es la
+estimación en la base <span class="math inline">\(l\)</span> y <span
+class="math inline">\(\bar{U}\)</span> es el promedio de sus varianzas,
+las reglas de Rubin (1987) son:</p>
+<p><span class="math display">\[
+\bar{Q} = \frac{1}{m}\sum_{l=1}^{m}\hat{Q}_l
+\qquad
+B = \frac{1}{m-1}\sum_{l=1}^{m}(\hat{Q}_l - \bar{Q})^2
+\qquad
+T = \bar{U} + \left(1 + \frac{1}{m}\right)B
+\]</span></p>
+<p>donde <span class="math inline">\(B\)</span> mide la variación entre
+imputaciones y <span class="math inline">\(T\)</span> es la varianza
+total.</p>
+<p><strong>¿Cuándo se puede usar?</strong> Cuando MAR es plausible y se
+tienen variables que ayudan a predecir el faltante o se relacionan con
+la causa de la falta (<a href="https://doi.org/10.1136/bmj.b2393">Sterne
+et al., 2009</a>). No resuelve el problema si los datos son MNAR.</p>
+<p><strong>¿Cómo se implementa?</strong> <code>mice()</code> imputa cada
+variable con ayuda de las demás. El método por defecto para variables
+numéricas es la <strong>comparación predictiva de medias</strong>
+(<em>predictive mean matching</em>, PMM): busca casos parecidos y toma
+el valor observado de uno de ellos, por lo que no aparecen valores
+imposibles (<a href="https://stefvanbuuren.name/fimd/sec-pmm.html">van
+Buuren, 2018</a>).</p>
+<pre class="r"><code>imputacion &lt;- mice(aire, method = &quot;pmm&quot;, m = 20, seed = 123, printFlag = FALSE)</code></pre>
+<p>Se usan 20 bases. Sterne et al. (2009) sugieren al menos 20, y una
+regla usual es usar tantas como el porcentaje de casos incompletos (<a
+href="https://stefvanbuuren.name/fimd/sec-howmany.html">van Buuren,
+2018</a>).</p>
+<p>Después se analiza cada base y se combinan los resultados. Por
+ejemplo, para la media de <code>Ozone</code>:</p>
+<pre class="r"><code>ajuste &lt;- with(imputacion, lm(Ozone ~ 1))
+resultado &lt;- summary(pool(ajuste))
+round(resultado[, c(&quot;estimate&quot;, &quot;std.error&quot;)], 2)
+  estimate std.error
+1    41.38       2.7</code></pre>
+<p>Hay que revisar si los valores imputados son razonables. En esta
+figura, cada línea gris es una base imputada y la azul son los datos
+observados:</p>
+<pre class="r"><code>largas &lt;- complete(imputacion, action = &quot;long&quot;)
+largas$imputado &lt;- rep(is.na(aire$Ozone), times = 20)
+
+ggplot() +
+  geom_density(data = subset(largas, imputado), aes(x = Ozone, group = .imp),
+               color = &quot;#A9B2BC&quot;, linewidth = 0.4) +
+  geom_density(data = aire, aes(x = Ozone), color = &quot;#034A94&quot;, linewidth = 1.2) +
+  scale_x_continuous(limits = c(-20, 200), breaks = seq(0, 200, 25), expand = c(0, 0)) +
+  labs(x = &quot;Ozono (ppb)&quot;, y = &quot;Densidad&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))</code></pre>
+<div class="figure">
+<img src="recurso402_files/figure-html/fig-pmm-1.png" alt="Curva azul de los datos observados y veinte curvas grises de valores imputados con una forma parecida" width="100%" />
+<p class="caption">
+Densidad del ozono observado y de los valores imputados
+</p>
+</div>
+<p><strong>¿Qué cuidados tener?</strong></p>
+<ul>
+<li>Si se imputa una variable que luego se analiza con un resultado, ese
+resultado debe estar en el modelo de imputación (<a
+href="https://doi.org/10.1136/bmj.b2393">Sterne et al., 2009</a>).</li>
+<li>No se debe promediar las bases para analizar una sola, porque se
+pierde la incertidumbre.</li>
+<li>Los valores imputados no son datos reales, y no sirven para
+decisiones sobre un caso particular.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-cambian-los-resultados-según-el-método"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo cambian los resultados
+según el método?</strong></span></h2>
+<p>La siguiente tabla compara la media y la desviación estándar de
+<code>Ozone</code>, y su correlación con <code>Temp</code>. Para la
+imputación múltiple se promedian los valores de las 20 bases.</p>
+<pre class="r"><code>resumir &lt;- function(x) {
+  c(media = mean(x), de = sd(x), cor_temp = cor(x, aire$Temp))
+}
+
+multiple &lt;- sapply(1:20, function(i) resumir(complete(imputacion, i)$Ozone))
+
+comparacion &lt;- rbind(
+  &quot;Datos observados&quot; = c(mean(aire$Ozone, na.rm = TRUE), sd(aire$Ozone, na.rm = TRUE),
+                          cor(aire$Ozone, aire$Temp, use = &quot;complete.obs&quot;)),
+  &quot;Media&quot; = resumir(ozono_media),
+  &quot;Regresión&quot; = resumir(ozono_reg),
+  &quot;Regresión estocástica&quot; = resumir(ozono_est),
+  &quot;Imputación múltiple&quot; = rowMeans(multiple)
+)
+colnames(comparacion) &lt;- c(&quot;Media&quot;, &quot;Desv. estándar&quot;, &quot;Correlación con Temp&quot;)
+round(comparacion, 2)
+                      Media Desv. estándar Correlación con Temp
+Datos observados      42.13          32.99                 0.70
+Media                 42.13          28.69                 0.61
+Regresión             41.86          30.76                 0.73
+Regresión estocástica 40.95          32.69                 0.69
+Imputación múltiple   41.38          32.09                 0.68</code></pre>
+<p>Imputar con la media reduce la desviación estándar y debilita la
+correlación con la temperatura. La regresión hace lo contrario con la
+correlación: la aumenta. La imputación múltiple conserva mejor las dos
+medidas, pero no garantiza el valor real, que no se conoce.</p>
+<p><br/></p>
+</div>
+<div id="qué-se-debe-reportar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se debe
+reportar?</strong></span></h2>
+<p>Sterne et al. (2009) recomiendan incluir en un informe:</p>
+<ul>
+<li>El número de faltantes por variable y sus motivos, si se
+conocen.</li>
+<li>La comparación entre los registros completos e incompletos.</li>
+<li>El método usado, sus supuestos y por qué son razonables.</li>
+<li>Si se usa imputación múltiple: el programa, el número de bases y las
+variables del modelo.</li>
+<li>Los resultados con casos completos, para comparar.</li>
+<li>Un análisis de sensibilidad si MNAR es posible, que muestre cuánto
+cambian las conclusiones bajo otros supuestos.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="31%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>mean()</code> da <code>NA</code></td>
+<td align="left">La variable tiene faltantes</td>
+<td align="left">Decidir qué hacer con ellos, o usar
+<code>na.rm = TRUE</code></td>
+</tr>
+<tr class="even">
+<td align="left">Se imputa un dato que no existe</td>
+<td align="left">El faltante significa “no aplica” o “no tiene”</td>
+<td align="left">Confirmar con la fuente y recodificar</td>
+</tr>
+<tr class="odd">
+<td align="left">Se concluye que los datos son MCAR</td>
+<td align="left">La prueba no rechazó</td>
+<td align="left">No rechazar no demuestra MCAR</td>
+</tr>
+<tr class="even">
+<td align="left">La varianza baja después de imputar</td>
+<td align="left">Se usó una imputación con la media</td>
+<td align="left">Usar imputación múltiple</td>
+</tr>
+<tr class="odd">
+<td align="left">Se usa solo una regla del porcentaje de faltantes</td>
+<td align="left">Se ignora el mecanismo</td>
+<td align="left">Revisar por qué faltan los datos</td>
+</tr>
+<tr class="even">
+<td align="left">Se analiza una sola base de <code>mice()</code></td>
+<td align="left">Se pierde la incertidumbre</td>
+<td align="left">Analizar las <span class="math inline">\(m\)</span>
+bases y usar <code>pool()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">El resultado cambia en cada ejecución</td>
+<td align="left"><code>mice()</code> usa números aleatorios</td>
+<td align="left">Fijar <code>seed</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>could not find function "mice"</code></td>
+<td align="left">No se cargó el paquete</td>
+<td align="left">Ejecutar <code>library(mice)</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-qué-mecanismo-es"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 1. ¿Qué
+mecanismo es?</strong></span></h3>
+<p>Clasifique cada caso como MCAR, MAR o MNAR, e indique qué supuesto se
+hace:</p>
+<ul>
+<li>Un sensor de temperatura falla por cortes de energía, sin relación
+con el clima.</li>
+<li>En una encuesta, las personas mayores responden menos las preguntas
+digitales, y la edad se registró.</li>
+<li>Quienes tienen más deudas no reportan su valor.</li>
+</ul>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>El primero sería MCAR, el segundo MAR y el tercero MNAR. En los tres
+casos es un supuesto basado en lo que se sabe del estudio, porque los
+datos por sí solos no lo demuestran.</p>
+</details>
+</div>
+<div id="reto-2.-comparar-grupos"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 2.
+Comparar grupos</strong></span></h3>
+<p>Calcule el porcentaje de faltantes de <code>piso</code> por tipo de
+vivienda. ¿Parecen MCAR?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>tipo &lt;- tolower(viviendas$tipo)
+tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
+
+round(100 * tapply(is.na(viviendas$piso), tipo, mean), 1)
+apartamento        casa 
+       27.1        39.0 </code></pre>
+<p>Falta en el 27.1 % de los apartamentos y en el 39 % de las casas. La
+falta se relaciona con el tipo, así que no parece MCAR. Además, en las
+casas el piso podría no aplicar.</p>
+</details>
+</div>
+<div id="reto-3.-el-efecto-de-la-media"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 3. El
+efecto de la media</strong></span></h3>
+<p>Impute <code>Solar.R</code> con su media y compare la desviación
+estándar antes y después.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>solar &lt;- replace(aire$Solar.R, is.na(aire$Solar.R), mean(aire$Solar.R, na.rm = TRUE))
+round(c(antes = sd(aire$Solar.R, na.rm = TRUE), despues = sd(solar)), 1)
+  antes despues 
+   90.1    88.0 </code></pre>
+<p>Baja poco, porque solo faltan 7 datos. El efecto depende de cuántos
+valores se reemplazan.</p>
+</details>
+</div>
+<div id="reto-4.-imputación-múltiple"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 4.
+Imputación múltiple</strong></span></h3>
+<p>Con <code>aire</code>, use <code>mice()</code> con 20 bases para
+estimar la media de <code>Solar.R</code>. Compárela con la media de los
+datos disponibles.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>ajuste_solar &lt;- with(imputacion, lm(Solar.R ~ 1))
+round(summary(pool(ajuste_solar))[, c(&quot;estimate&quot;, &quot;std.error&quot;)], 2)
+  estimate std.error
+1   184.72      7.51
+
+round(mean(aire$Solar.R, na.rm = TRUE), 2)
+[1] 185.93</code></pre>
+<p>La base <code>imputacion</code> ya contiene <code>Solar.R</code>. Las
+dos medias son parecidas, porque faltan pocos datos.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-gratis" class="section level3 toc-ignore">
+<h3 class="toc-ignore"><span style="color:#034a94"><strong>Libros para
+leer gratis</strong></span></h3>
+<ul>
+<li>van Buuren, S. (2018). <a
+href="https://stefvanbuuren.name/fimd/"><em>Flexible Imputation of
+Missing Data</em></a> (2.ª ed.). CRC Press. El autor publica el libro en
+línea, y creó el paquete <code>mice</code>.</li>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media. Tiene un capítulo sobre <a
+href="https://r4ds.hadley.nz/missing-values.html">valores
+faltantes</a>.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3 toc-ignore">
+<h3 class="toc-ignore"><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Little, R. J. A. y Rubin, D. B. (2019). <a
+href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119482260"><em>Statistical
+Analysis with Missing Data</em></a> (3.ª ed.). Wiley.</li>
+<li>Enders, C. K. (2022). <a
+href="https://www.guilford.com/books/Applied-Missing-Data-Analysis/Craig-Enders/9781462549863"><em>Applied
+Missing Data Analysis</em></a> (2.ª ed.). Guilford Press.</li>
+</ul>
+</div>
+<div id="artículos-y-recursos" class="section level3 toc-ignore">
+<h3 class="toc-ignore"><span style="color:#034a94"><strong>Artículos y
+recursos</strong></span></h3>
+<ul>
+<li>Sterne, J. A. C. et al. (2009). <a
+href="https://doi.org/10.1136/bmj.b2393">Multiple imputation for missing
+data in epidemiological and clinical research: potential and
+pitfalls</a>. <em>BMJ</em>, 338, b2393.</li>
+<li>van Buuren, S. y Groothuis-Oudshoorn, K. (2011). <a
+href="https://doi.org/10.18637/jss.v045.i03">mice: Multivariate
+Imputation by Chained Equations in R</a>. <em>Journal of Statistical
+Software</em>, 45(3).</li>
+<li><a
+href="https://cran.r-project.org/web/packages/mice/index.html">Paquete
+<code>mice</code> en CRAN</a>.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Little, R. J. A. (1988). A test of missing completely at random for
+multivariate data with missing values. <em>Journal of the American
+Statistical Association</em>, 83(404), 1198-1202.</li>
+<li>Little, R. J. A. y Rubin, D. B. (2019). <a
+href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119482260"><em>Statistical
+Analysis with Missing Data</em></a> (3.ª ed.). Wiley.</li>
+<li>Madley-Dowd, P., Hughes, R., Tilling, K. y Heron, J. (2019). <a
+href="https://doi.org/10.1016/j.jclinepi.2019.02.016">The proportion of
+missing data should not be used to guide decisions on multiple
+imputation</a>. <em>Journal of Clinical Epidemiology</em>, 110,
+63-73.</li>
+<li>Rubin, D. B. (1976). Inference and missing data.
+<em>Biometrika</em>, 63(3), 581-592.</li>
+<li>Rubin, D. B. (1987). <em>Multiple Imputation for Nonresponse in
+Surveys</em>. Wiley.</li>
+<li>Sterne, J. A. C., White, I. R., Carlin, J. B., Spratt, M., Royston,
+P., Kenward, M. G., Wood, A. M. y Carpenter, J. R. (2009). <a
+href="https://doi.org/10.1136/bmj.b2393">Multiple imputation for missing
+data in epidemiological and clinical research: potential and
+pitfalls</a>. <em>BMJ</em>, 338, b2393.</li>
+<li>van Buuren, S. (2018). <a
+href="https://stefvanbuuren.name/fimd/"><em>Flexible Imputation of
+Missing Data</em></a> (2.ª ed.). CRC Press.</li>
+<li>van Buuren, S. y Groothuis-Oudshoorn, K. (2011). <a
+href="https://doi.org/10.18637/jss.v045.i03">mice: Multivariate
+Imputation by Chained Equations in R</a>. <em>Journal of Statistical
+Software</em>, 45(3).</li>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

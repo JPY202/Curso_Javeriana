@@ -1,0 +1,311 @@
+---
+title: <span style="color:#034a94"> **¿Qué hace bueno a un gráfico?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Un buen gráfico muestra los datos sin deformarlos, se entiende rápido y lo pueden leer todas las personas. Esta página reúne las recomendaciones de guías oficiales y compara versiones mal hechas y corregidas de los mismos datos. Al final hay una lista para revisar cualquier gráfico.
+
+Esta página usa `vivienda_faltantes`, del paquete `paqueteMETODOS`, y el paquete `ggplot2`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("vivienda_faltantes")
+```
+
+```{r}
+library(ggplot2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Por qué el eje de las barras debe empezar en cero?**</span>
+
+La longitud de una barra representa una cantidad. Si el eje se corta, las proporciones entre las barras se distorsionan ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/); [Holtz y Healy](https://www.data-to-viz.com/caveat/cut_y_axis.html)).
+
+El precio mediano de tres zonas es parecido:
+
+```{r}
+medianas <- as.data.frame(tapply(vivienda_faltantes$preciom, vivienda_faltantes$zona,
+                                 median, na.rm = TRUE))
+names(medianas) <- "mediana"
+medianas$zona <- rownames(medianas)
+parecidas <- subset(medianas, zona %in% c("Zona Centro", "Zona Norte", "Zona Sur"))
+parecidas
+```
+
+En la primera figura, el eje empieza en 290: la Zona Sur parece costar varias veces más. En la segunda, el eje empieza en cero y se ve la diferencia real, de unos 8 %.
+
+```{r fig-eje-mal, fig.width=6, fig.height=4, fig.cap="Versión engañosa: el eje empieza en 290", fig.alt="Tres barras con el eje cortado en 290; la barra de la Zona Sur parece mucho mayor", out.width="75%"}
+ggplot(parecidas, aes(x = zona, y = mediana)) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  coord_cartesian(ylim = c(290, 325), expand = FALSE) +
+  labs(x = NULL, y = "Precio mediano (millones)") +
+  theme_minimal(base_size = 14)
+```
+
+```{r fig-eje-bien, fig.width=6, fig.height=4, fig.cap="Versión correcta: el eje empieza en cero", fig.alt="Tres barras con el eje desde cero; las tres se ven casi iguales", out.width="75%"}
+ggplot(parecidas, aes(x = zona, y = mediana)) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_text(aes(label = mediana), vjust = -0.5, size = 4.8) +
+  scale_y_continuous(limits = c(0, 400), breaks = seq(0, 400, 100), expand = c(0, 0)) +
+  labs(x = NULL, y = "Precio mediano (millones)") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+Si las diferencias pequeñas son lo importante y no se quiere empezar en cero, se puede usar un gráfico de puntos en lugar de barras ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/)).
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué efectos conviene evitar?**</span>
+
+| Efecto                    | Por qué evitarlo                                                  | Qué hacer                               | Fuente                                                     |
+|:--------------------------|:------------------------------------------------------------------|:----------------------------------------|:-----------------------------------------------------------|
+| 3D                        | Distorsiona la percepción y reduce la precisión                   | Usar gráficos planos                    | [Holtz y Healy](https://www.data-to-viz.com/caveat/3d.html) |
+| Doble eje vertical        | Puede malinterpretarse o manipularse                              | Hacer dos gráficos                      | [Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/) |
+| Fondos, sombras y texturas | Distraen del mensaje                                             | Dejar el diseño simple                  | [Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/) |
+| Cuadrícula oscura         | Compite con los datos                                             | Usar gris claro y máximo diez líneas    | [Government Analysis Function, 2023](https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/) |
+| Decimales de más          | Agregan ruido                                                     | Dejar los necesarios                    | [Holtz y Healy](https://www.data-to-viz.com/caveat/declutter.html) |
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar el color?**</span>
+
+El color debe usarse solo cuando aporta información: para mostrar grupos, resaltar un elemento o representar un gradiente. Si no comunica nada, distrae, porque el lector intenta descifrar qué significa ([Holtz y Healy](https://www.data-to-viz.com/caveat/color_com_nothing.html)).
+
+```{r fig-color-mal, fig.width=6, fig.height=4, fig.cap="Versión con colores decorativos", fig.alt="Barras de cinco colores del arcoíris, con una leyenda que repite los nombres de las zonas", out.width="75%"}
+zonas <- as.data.frame(table(vivienda_faltantes$zona))
+names(zonas) <- c("zona", "viviendas")
+
+ggplot(zonas, aes(x = zona, y = viviendas, fill = zona)) +
+  geom_col() +
+  scale_fill_manual(values = rainbow(5)) +
+  theme_gray(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r fig-color-bien, fig.width=6, fig.height=4, fig.cap="Versión corregida: un color, barras ordenadas y etiquetas", fig.alt="Barras horizontales de un solo color, ordenadas de mayor a menor, con el valor al final de cada barra", out.width="75%"}
+ggplot(zonas, aes(x = viviendas, y = reorder(zona, viviendas))) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_text(aes(label = viviendas), hjust = -0.15, size = 4.6) +
+  scale_x_continuous(limits = c(0, 6000), breaks = seq(0, 6000, 2000), expand = c(0, 0)) +
+  labs(x = "Número de viviendas", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.y = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+La versión corregida también ordena las barras, pone el texto horizontal y quita la leyenda, que no aportaba nada.
+
+Según lo que se quiera mostrar, se escoge un tipo de paleta. Todas estas funciones vienen en **R**:
+
+| Tipo de paleta | Cuándo se usa                         | Ejemplo en **R**                     |
+|:---------------|:--------------------------------------|:-------------------------------------|
+| Categórica     | Grupos sin orden, como sexo o zona    | `palette.colors(palette = "Okabe-Ito")` |
+| Ordenada       | Grupos con orden, como el estrato     | `hcl.colors(4, "viridis")`           |
+| Un solo color  | Una sola variable                     | `fill = "#034A94"`                   |
+
+La misma variable debe tener el mismo color en todos los gráficos de un documento ([Analysis Function](https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/)).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo etiquetar un gráfico?**</span>
+
+Cada gráfico necesita los [elementos clave](recurso300.html). Además, conviene seguir estas recomendaciones ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/) y [2023](https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/)):
+
+- Usar un título que diga qué muestra el gráfico, y unidades claras en los ejes.
+- Mantener el texto horizontal. Si no cabe, usar barras horizontales.
+- Preferir etiquetas junto a los datos antes que una leyenda.
+- Si se usa leyenda, mantener el mismo orden de los datos.
+- Citar la fuente de los datos.
+
+Las anotaciones llevan al lector al mensaje, y escribir los valores clave le evita hacer cálculos ([Holtz y Healy](https://www.data-to-viz.com/caveat/annotation.html)). En esta figura, la etiqueta reemplaza a la leyenda:
+
+```{r fig-etiqueta, fig.width=8.5, fig.height=4.2, fig.cap="Precio mediano por estrato, con etiquetas directas", fig.alt="Dos líneas, una de casas y una de apartamentos, identificadas con su nombre al final; el precio mediano sube con el estrato en ambas", out.width="100%"}
+datos <- subset(vivienda_faltantes, !is.na(preciom) & !is.na(estrato))
+datos$tipo <- tolower(datos$tipo)
+datos$tipo[datos$tipo == "apto"] <- "apartamento"
+
+precios <- aggregate(preciom ~ estrato + tipo, data = datos, FUN = median)
+nombres <- subset(precios, estrato == 6)
+
+ggplot(precios, aes(x = estrato, y = preciom, color = tipo)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.8) +
+  geom_text(data = nombres, aes(label = tipo), hjust = -0.15, size = 4.8) +
+  scale_color_manual(values = c("apartamento" = "#0072B2", "casa" = "#D55E00"),
+                     guide = "none") +
+  scale_x_continuous(limits = c(3, 6.8), breaks = 3:6) +
+  scale_y_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 200), expand = c(0, 0)) +
+  labs(x = "Estrato", y = "Precio mediano (millones)") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.minor.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo hacer un gráfico accesible?**</span>
+
+Un gráfico accesible lo pueden entender personas con baja visión, con dificultad para distinguir colores o que usan lectores de pantalla.
+
+| Recomendación                                                 | Por qué                                                 | Fuente                                         |
+|:--------------------------------------------------------------|:--------------------------------------------------------|:-----------------------------------------------|
+| No depender solo del color                                    | Hay quienes no distinguen esos colores                  | [Lista de chequeo](https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/) |
+| Contraste de 3:1 en barras, líneas y otras partes necesarias  | Es el mínimo para distinguirlas                         | [W3C](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html) |
+| Contraste de 4.5:1 en el texto                                | Es el mínimo para leerlo con facilidad                  | [Analysis Function](https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/) |
+| Evitar líneas finas, barras delgadas y letra pequeña          | Dificultan la lectura con baja visión                   | [Analysis Function](https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/) |
+| Agregar una alternativa de texto                              | Un lector de pantalla no puede ver la imagen            | [Lista de chequeo](https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/) |
+
+En **R Markdown**, la alternativa de texto se escribe con la opción `fig.alt` del bloque de código, y el pie de figura con `fig.cap`. La descripción debe decir qué muestra el gráfico, y no solo nombrarlo:
+
+````markdown
+`r ''````{r, fig.cap="Viviendas por estrato", fig.alt="Cuatro barras; el estrato 5 es el mayor, con 2751 viviendas"}
+ggplot(estratos, aes(x = estrato, y = viviendas)) + geom_col()
+```
+````
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo revisar un gráfico antes de publicarlo?**</span>
+
+Antes de usar un gráfico, conviene responder estas preguntas:
+
+| Tema           | Pregunta                                                                |
+|:---------------|:------------------------------------------------------------------------|
+| Mensaje        | ¿Se puede decir en pocas frases qué muestra?                            |
+| Tipo           | ¿Es el gráfico adecuado para la pregunta y las variables?               |
+| Ejes           | ¿Los ejes contienen todos los datos? ¿Las barras empiezan en cero?      |
+| Unidades       | ¿Están claras las unidades de medida?                                   |
+| Orden          | ¿Las categorías están ordenadas por valor o por su orden propio?        |
+| Etiquetas      | ¿El texto es horizontal y legible?                                      |
+| Color          | ¿Cada color significa algo? ¿Se entiende sin el color?                  |
+| Limpieza       | ¿Sobra algún elemento, como bordes, fondos o decimales?                 |
+| Fuente         | ¿Se indica de dónde salen los datos?                                    |
+| Accesibilidad  | ¿Tiene una descripción en texto?                                        |
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                 | Causa                                                  | Solución                                                     |
+|:---------------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------------------|
+| Diferencias pequeñas parecen enormes                     | El eje de las barras no empieza en cero                | Empezar en cero o usar puntos                                |
+| Hay un color por categoría sin razón                     | Se escribió `fill = variable` por costumbre            | Usar un solo color                                           |
+| Una leyenda repite el eje                                | `ggplot2` la agrega al usar `fill`                     | Usar `guide = "none"`                                        |
+| El texto del eje está girado                             | Los nombres son largos                                 | Usar barras horizontales                                     |
+| Las barras no se leen en blanco y negro                  | Los colores tienen la misma claridad                   | Agregar etiquetas o cambiar la paleta                        |
+| La imagen no tiene descripción                           | Faltó `fig.alt`                                        | Escribir qué muestra el gráfico                              |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Encontrar los problemas**</span>
+
+Indique qué problemas tiene la figura de los colores decorativos. Use la lista de revisión.
+
+<details>
+<summary>Ver solución</summary>
+
+Las barras están en orden alfabético, los colores no significan nada, el texto del eje está girado, la leyenda repite los nombres, el fondo gris sobra, y los ejes no aclaran que se trata del número de viviendas.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Corregir un gráfico**</span>
+
+Ejecute este código y corríjalo para que cumpla la lista de revisión:
+
+```{r, eval=FALSE}
+ggplot(vivienda_faltantes, aes(x = factor(estrato), fill = factor(estrato))) +
+  geom_bar() +
+  coord_cartesian(ylim = c(1000, 3000))
+```
+
+<details>
+<summary>Ver solución</summary>
+
+```{r fig-reto2, fig.width=8, fig.height=4.4, fig.cap="Número de viviendas por estrato", fig.alt="Cuatro barras azules con el eje desde cero: estrato 3 con 1453 viviendas, estrato 4 con 2131, estrato 5 con 2751 y estrato 6 con 1992", out.width="100%"}
+estratos <- as.data.frame(table(vivienda_faltantes$estrato))
+names(estratos) <- c("estrato", "viviendas")
+
+ggplot(estratos, aes(x = estrato, y = viviendas)) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_text(aes(label = viviendas), vjust = -0.5, size = 4.8) +
+  scale_y_continuous(limits = c(0, 3200), breaks = seq(0, 3000, 500), expand = c(0, 0)) +
+  labs(x = "Estrato", y = "Número de viviendas") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+Se quitó el eje cortado, se usó un solo color porque el eje ya indica el estrato, y se agregaron nombres y etiquetas.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Escribir la alternativa de texto**</span>
+
+Escriba una descripción para la figura de la versión corregida de las zonas.
+
+<details>
+<summary>Ver solución</summary>
+
+Una descripción posible es: *Gráfico de barras horizontales ordenadas de mayor a menor. La Zona Sur tiene 4726 viviendas, y le siguen Norte con 1922, Oeste con 1204, Oriente con 351 y Centro con 124.*
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Guías oficiales para descargar**</span>
+
+- INEI. (2009). [*Guía para la presentación de gráficos estadísticos*](https://www.inei.gob.pe/media/MenuRecursivo/metodologias/libro.pdf). Instituto Nacional de Estadística e Informática, Perú.
+- Contraloría General de la República e INEC. [*Manual para la elaboración de cuadros y gráficos estadísticos*](https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf) (6.ª ed.). Panamá.
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media. El capítulo 1 trata las figuras feas, malas y erróneas, el capítulo 4 las escalas de color y el capítulo 19 los errores comunes con el color.
+
+### <span style="color:#034a94">**Otros recursos**</span>
+
+- Government Analysis Function. [*Accessible charts: a checklist of the basics*](https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/). Lista de chequeo de accesibilidad.
+- W3C. [*Understanding Success Criterion 1.4.11: Non-text Contrast*](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html). Criterio de contraste para gráficos.
+- Holtz, Y. y Healy, C. [*Colección de advertencias*](https://www.data-to-viz.com/caveats.html) de From Data to Viz.
+- R Core Team. [Documentación de `palette.colors()` y `hcl.colors()`](https://stat.ethz.ch/R-manual/R-devel/library/grDevices/html/palette.html).
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Analysis Function. [*Accessibility and colour*](https://analysisfunction.civilservice.gov.uk/support/communicating-analysis/introduction-to-data-visualisation-e-learning/data-visualisation-e-learning-module-3-accessibility-and-colour-palettes/).
+- Government Analysis Function. (2022). [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/).
+- Government Analysis Function. (2023). [*Accessible charts: a checklist of the basics*](https://analysisfunction.civilservice.gov.uk/policy-store/charts-a-checklist/).
+- Holtz, Y. y Healy, C. [*From Data to Viz*](https://www.data-to-viz.com/).
+- W3C. [*Understanding Success Criterion 1.4.11: Non-text Contrast*](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

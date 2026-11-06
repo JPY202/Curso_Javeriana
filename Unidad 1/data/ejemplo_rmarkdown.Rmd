@@ -1,0 +1,36 @@
+---
+title: "Rendimiento de combustible"
+author: "Nombre del estudiante"
+date: "4 de noviembre de 2026"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+## Introducción
+
+Este informe analiza la relación entre el peso de un automóvil y su rendimiento de combustible. Se usa la base `mtcars`, incluida en **R**, que tiene `r nrow(mtcars)` modelos.
+
+## Resumen de los datos
+
+El rendimiento promedio es de `r round(mean(mtcars$mpg), 1)` millas por galón.
+
+```{r}
+resumen <- aggregate(mpg ~ cyl, data = mtcars, FUN = mean)
+names(resumen) <- c("Cilindros", "Rendimiento medio (mpg)")
+knitr::kable(resumen, digits = 1, caption = "Rendimiento medio según el número de cilindros")
+```
+
+## Gráfico
+
+```{r, fig.cap="Relación entre peso y rendimiento", fig.width=5.5, fig.height=3}
+plot(mtcars$wt, mtcars$mpg, pch = 19, col = "#034A94", las = 1,
+     xlab = "Peso (miles de libras)", ylab = "Rendimiento (mpg)")
+abline(lm(mpg ~ wt, data = mtcars), col = "#FF7F00", lwd = 2)
+```
+
+## Conclusión
+
+Los automóviles más pesados tienden a recorrer menos millas por galón.

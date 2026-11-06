@@ -1,0 +1,474 @@
+---
+title: <span style="color:#034a94"> **Tablas de frecuencia**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+options(knitr.kable.NA = "")
+```
+
+<br/>
+
+Las tablas de frecuencia resumen una variable: muestran qué valores aparecen y cuántas veces. Son una herramienta fundamental para tener una primera impresión de los datos, y también para identificar errores de digitación y datos faltantes (`NA`).
+
+En esta página se usan las bases `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+Los bloques de código de esta página se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo revisar una variable?**</span>
+
+Antes de analizar una variable conviene contar sus valores. La función `table()` muestra las categorías, y el argumento `useNA = "ifany"` agrega los datos faltantes, si los hay:
+
+```{r}
+table(vivienda_faltantes$tipo, useNA = "ifany")
+```
+
+La tabla muestra un problema: la misma categoría aparece escrita de varias maneras, como `CASA`, `Casa` y `casa`. Además, hay 3 datos faltantes. Si no se corrige, se analizarían seis categorías en lugar de dos.
+
+Para unificar las categorías se pasa todo a minúsculas con `tolower()` y se reemplaza `apto`:
+
+```{r}
+tipo <- tolower(vivienda_faltantes$tipo)
+tipo[tipo == "apto"] <- "apartamento"
+
+table(tipo, useNA = "ifany")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué contiene una tabla de frecuencias?**</span>
+
+Suponga que una variable tiene $k$ valores o categorías distintas y que hay $n$ datos. Una tabla de frecuencias tiene las siguientes columnas:
+
+| Símbolo | Nombre                         | Fórmula                          | Qué indica                                      |
+|:--------|:-------------------------------|:---------------------------------|:------------------------------------------------|
+| $x_i$   | Valor o clase                  |                                  | Cada valor o categoría de la variable           |
+| $n_i$   | Frecuencia absoluta            |                                  | Cuántos datos hay en el valor $i$               |
+| $f_i$   | Frecuencia relativa            | $f_i = \dfrac{n_i}{n}$           | Qué proporción representa el valor $i$          |
+| $N_i$   | Frecuencia absoluta acumulada  | $N_i = \displaystyle\sum_{j=1}^{i} n_j$ | Cuántos datos hay hasta el valor $i$     |
+| $F_i$   | Frecuencia relativa acumulada  | $F_i = \dfrac{N_i}{n}$           | Qué proporción de datos hay hasta el valor $i$  |
+
+La frecuencia relativa se expresa como proporción o como porcentaje, al multiplicarla por 100. Estas frecuencias cumplen las siguientes propiedades:
+
+$$
+\sum_{i=1}^{k} n_i = n
+\qquad
+\sum_{i=1}^{k} f_i = 1
+\qquad
+N_k = n
+\qquad
+F_k = 1
+$$
+
+Las columnas que se incluyen dependen del tipo de variable:
+
+| Tipo de variable        | Orden de las filas                 | Columnas                                  |
+|:------------------------|:-----------------------------------|:------------------------------------------|
+| Cualitativa nominal     | A criterio de quien analiza        | $x_i$, $n_i$, $f_i$                       |
+| Cualitativa ordinal     | Respeta la jerarquía de la variable | $x_i$, $n_i$, $f_i$, $N_i$, $F_i$        |
+| Cuantitativa discreta   | De menor a mayor                   | $x_i$, $n_i$, $f_i$, $N_i$, $F_i$         |
+| Cuantitativa continua   | Clases de menor a mayor            | Clase, marca de clase, $n_i$, $f_i$, $N_i$, $F_i$ |
+
+En una variable nominal no se acumula, porque sus categorías no tienen orden.
+
+Esta función construye la tabla completa, y se usará en los siguientes ejemplos:
+
+```{r}
+tabla_frecuencias <- function(x) {
+  ni <- as.vector(table(x))
+  Ni <- cumsum(ni)
+  n  <- sum(ni)
+
+  data.frame(valor = names(table(x)),
+             ni = ni,
+             fi = round(100 * ni / n, 2),
+             Ni = Ni,
+             Fi = round(100 * Ni / n, 2))
+}
+```
+
+Basta con entregarle una variable. Por ejemplo, para la categoría de los atletas, que es ordinal, se usan todas las columnas:
+
+```{r}
+tabla_frecuencias(CarreraLuz22$categoria)
+```
+
+Para el sexo de los atletas, que es nominal, se dejan las tres primeras columnas, porque no se acumula:
+
+```{r}
+tabla_frecuencias(CarreraLuz22$sex)[, 1:3]
+```
+
+Lo mismo se hace con la zona de las viviendas. La función omite los datos faltantes:
+
+```{r}
+tabla_frecuencias(vivienda_faltantes$zona)[, 1:3]
+```
+
+Con una variable numérica, como el estrato, cada valor forma una fila:
+
+```{r}
+tabla_frecuencias(vivienda_faltantes$estrato)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo construir una tabla para una variable nominal?**</span>
+
+Por ejemplo, estos son los [32 equipos del Mundial de Catar 2022](https://www.telemundo51.com/deportes/copa-mundial-fifa/rumbo-a-la-copa-mundial-2022-estos-son-los-32-equipos-que-iran-a-catar/2307670/) por confederación. Primero se crean los datos y después se calcula la frecuencia relativa con `prop.table()`:
+
+```{r}
+confederacion <- c("África (CAF)", "Asia (AFC)", "Europa (UEFA)",
+                   "Norte y Centroamérica (CONCACAF)", "Oceanía (OFC)",
+                   "Suramérica (CONMEBOL)")
+ni <- c(5, 6, 13, 4, 0, 4)
+fi <- 100 * prop.table(ni)
+
+mundial <- data.frame(Confederación = confederacion, ni = ni, `fi (%)` = round(fi, 2),
+                      check.names = FALSE)
+sum(ni)
+```
+
+```{r, echo=FALSE}
+knitr::kable(mundial, align = c("l", "r", "r"), caption = "Equipos del Mundial de Catar 2022 por confederación")
+```
+
+Europa tuvo la mayor participación, con 13 equipos, que equivalen al 40.6 % del total. Le siguen Asia, con 18.8 %, y África, con 15.6 %.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo construir una tabla para una variable ordinal?**</span>
+
+El estrato socioeconómico es ordinal, por eso las filas siguen su jerarquía y se pueden acumular las frecuencias. Los 3 datos faltantes no se incluyen en el cálculo:
+
+```{r}
+estrato <- tabla_frecuencias(vivienda_faltantes$estrato)
+```
+
+```{r, echo=FALSE}
+knitr::kable(setNames(estrato, c("Estrato", "ni", "fi (%)", "Ni", "Fi (%)")), caption = "Viviendas según el estrato")
+```
+
+El estrato 5 es el más frecuente, con `r estrato$fi[3]` % de las viviendas. Además, el `r estrato$Fi[2]` % de las viviendas está en los estratos 3 o 4.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo construir una tabla para una variable discreta?**</span>
+
+Si una variable discreta tiene pocos valores distintos, cada valor forma una fila. Por ejemplo, el número de habitaciones:
+
+```{r}
+habitaciones <- tabla_frecuencias(vivienda_faltantes$habitac)
+```
+
+```{r, echo=FALSE}
+knitr::kable(setNames(habitaciones, c("Habitaciones", "ni", "fi (%)", "Ni", "Fi (%)")), caption = "Viviendas según el número de habitaciones")
+```
+
+El valor más frecuente es 3 habitaciones, con `r habitaciones$fi[4]` % de las viviendas, y el `r habitaciones$Fi[5]` % tiene 4 habitaciones o menos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo construir una tabla para una variable continua?**</span>
+
+Una variable continua tiene muchos valores distintos, por lo que se agrupa en **clases**, es decir, en intervalos. Los pasos son los siguientes:
+
+1. Calcule el **rango**: $R = x_{\max} - x_{\min}$.
+2. Elija el **número de clases** $k$. La [regla de Sturges](https://www.rdocumentation.org/packages/grDevices/versions/3.6.2/topics/nclass) es una guía inicial:
+
+    $$
+    k \approx 1 + \log_2(n)
+    $$
+
+3. Calcule la **amplitud**: $c = \dfrac{R}{k}$. Se suele redondear a un valor fácil de leer.
+4. Defina los **límites** de cada clase, de modo que todos los datos queden en una sola clase.
+5. Calcule la **marca de clase**, que es el punto medio de la clase: $m_i = \dfrac{L_{i-1} + L_i}{2}$.
+6. Cuente los datos de cada clase y calcule las frecuencias.
+
+Para los tiempos de la carrera, en minutos:
+
+```{r}
+tiempo <- CarreraLuz22$timerun / 60
+
+n <- length(tiempo)
+rango <- max(tiempo) - min(tiempo)
+k <- nclass.Sturges(tiempo)
+
+c(n = n, rango = rango, k = k, amplitud = rango / k)
+```
+
+La amplitud obtenida se redondea a 10 minutos, porque es más fácil de leer. Como casi todos los tiempos están por debajo de 120 minutos y el máximo es de `r round(max(tiempo), 1)`, la última clase queda abierta.
+
+La función `cut()` asigna cada dato a su clase. Por defecto, cada clase incluye su límite superior: $(L_{i-1},\ L_i]$.
+
+```{r}
+limites <- c(seq(30, 120, by = 10), Inf)
+clases <- cut(tiempo, breaks = limites)
+
+carrera <- tabla_frecuencias(clases)
+carrera$marca <- c(seq(35, 115, by = 10), NA)
+carrera$valor[nrow(carrera)] <- "Más de 120"
+```
+
+```{r, echo=FALSE}
+knitr::kable(setNames(carrera[, c(1, 6, 2:5)], c("Tiempo (minutos)", "Marca de clase", "ni", "fi (%)", "Ni", "Fi (%)")), caption = "Tiempos de la carrera La Luz 2022")
+```
+
+La clase más frecuente es la de 50 a 60 minutos, con `r carrera$fi[3]` % de los atletas, y el `r carrera$Fi[4]` % terminó en 70 minutos o menos.
+
+### <span style="color:#034a94">**¿Cómo se representa?**</span>
+
+El **histograma** es el gráfico de una tabla de frecuencias con clases: cada barra corresponde a una clase, y su altura, a la frecuencia. Los ejes se definen para que contengan todas las barras:
+
+```{r, fig.cap="Histograma de los tiempos de la carrera La Luz 2022.", fig.alt="Histograma de los tiempos con clases de 10 minutos, entre 30 y 170 minutos. La mayoría de atletas está entre 50 y 80 minutos, con una cola hacia la derecha", fig.width=8, fig.height=4.2}
+cortes <- seq(30, 170, by = 10)
+
+hist(tiempo, breaks = cortes, col = "#BFD7EE", border = "white", las = 1,
+     xlim = range(cortes), ylim = c(0, 600), xaxp = c(30, 170, 14),
+     xaxs = "i", yaxs = "i", main = "",
+     xlab = "Tiempo (minutos)", ylab = "Número de atletas")
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**¿Cuántas clases usar?**</span>
+
+La forma de la tabla y del histograma depende del número de clases. La regla de Sturges no es la única: `nclass.scott()` y `nclass.FD()` usan otros criterios, y en estos datos dan `r nclass.scott(tiempo)` y `r nclass.FD(tiempo)` clases, frente a `r nclass.Sturges(tiempo)` de Sturges. Conviene probar varias opciones y elegir la que muestre mejor los datos.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo mejorar la presentación?**</span>
+
+### <span style="color:#034a94">**El paquete summarytools**</span>
+
+**¿Qué problema resuelve?** Evita construir a mano las columnas de la tabla.
+
+**¿Qué hace?** La función `freq()` calcula las frecuencias absolutas, relativas y acumuladas, con y sin datos faltantes.
+
+**¿Cómo se usa?**
+
+```{r, eval=FALSE}
+install.packages("summarytools")    # solo la primera vez
+
+library(summarytools)
+
+view(freq(vivienda_faltantes$estrato))
+```
+
+La función `view()` muestra la tabla con formato en el panel **Viewer** de **RStudio**. La columna `% Valid` calcula los porcentajes sin los datos faltantes, y `% Total`, con ellos.
+
+**¿Cuándo usarlo?** Para revisar una variable rápidamente.
+
+### <span style="color:#034a94">**El paquete kableExtra**</span>
+
+**¿Qué problema resuelve?** Una tabla impresa en la consola no sirve para un informe.
+
+**¿Qué hace?** Da formato a las tablas creadas con `knitr::kable()` en un documento HTML o PDF.
+
+**¿Cómo se usa?**
+
+```{r}
+library(kableExtra)
+
+tabla_sexo <- as.data.frame(table(Sexo = CarreraLuz22$sex), responseName = "ni")
+
+kbl(tabla_sexo) |>
+  kable_paper(full_width = FALSE) |>
+  row_spec(0, bold = TRUE)
+```
+
+**¿Cuándo usarlo?** Para presentar tablas en informes.
+
+### <span style="color:#034a94">**El paquete formattable**</span>
+
+**¿Qué problema resuelve?** En una tabla grande cuesta ver los valores más altos.
+
+**¿Qué hace?** [`formattable`](https://renkun-ken.github.io/formattable/) agrega colores y barras a las celdas.
+
+**¿Cómo se usa?** Con los datos ficticios de varios estudiantes:
+
+```{r}
+library(formattable)
+
+estudiantes <- data.frame(
+  nombre = c("Juan", "Carlos", "Ana", "Luz"),
+  edad = c(25, 27, 31, 30),
+  examen = c(8.9, 9.5, 8.5, 8.6),
+  aprobado = c(TRUE, TRUE, FALSE, TRUE)
+)
+
+formattable(estudiantes, list(
+  edad = color_tile("white", "orange"),
+  examen = normalize_bar("pink", 0.2),
+  aprobado = formatter("span",
+                       style = x ~ style(color = ifelse(x, "green", "red")),
+                       x ~ ifelse(x, "Sí", "No"))
+))
+```
+
+**¿Cuándo usarlo?** Cuando el formato ayuda a interpretar los datos. Si no aporta, una tabla sencilla es mejor.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                       | Causa                                               | Solución                                         |
+|:-----------------------------------------------|:----------------------------------------------------|:-------------------------------------------------|
+| Una categoría aparece varias veces             | Está escrita de formas distintas                    | Unificar el texto antes de construir la tabla    |
+| Los datos faltantes no aparecen en la tabla    | `table()` los omite por defecto                     | Usar `useNA = "ifany"`                           |
+| Las frecuencias acumuladas no tienen sentido   | La variable es nominal                              | Acumular solo si la variable tiene orden         |
+| Las categorías ordinales quedan en mal orden   | **R** las ordena alfabéticamente                    | Usar `factor()` con `levels` en el orden correcto |
+| Un dato queda en una clase distinta a la esperada | `cut()` incluye el límite superior por defecto   | Revisar el argumento `right`                     |
+| `cut()` devuelve `NA`                          | Hay datos fuera de los límites                      | Ajustar los límites o usar `include.lowest`      |
+| Las frecuencias relativas no suman 100 %       | Falta una categoría o es un efecto del redondeo     | Revisar $\sum n_i = n$                           |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Satisfacción con un servicio**</span>
+
+Una encuesta sobre el servicio de alimentación y bebidas de una aerolínea obtuvo estas respuestas: Muy regular, 12,837; Regular, 21,988; Bueno, 22,300; Muy bueno, 24,466; y Excelente, 22,313. Construya la tabla de frecuencias. ¿Qué porcentaje respondió Regular o Muy regular?
+
+<details>
+<summary>Ver solución</summary>
+
+La variable es ordinal, así que se conserva el orden y se acumula:
+
+```{r}
+ni <- c(12837, 21988, 22300, 24466, 22313)
+respuestas <- data.frame(
+  nivel = c("Muy regular", "Regular", "Bueno", "Muy bueno", "Excelente"),
+  ni = ni,
+  fi = round(100 * ni / sum(ni), 2),
+  Ni = cumsum(ni),
+  Fi = round(100 * cumsum(ni) / sum(ni), 2)
+)
+respuestas
+```
+
+El 33.52 % respondió Regular o Muy regular. Es el valor de $F_2$.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. ¿Se puede acumular?**</span>
+
+Indique si tiene sentido calcular $F_i$ en estas variables: zona de la ciudad, estrato, número de baños y barrio.
+
+<details>
+<summary>Ver solución</summary>
+
+Tiene sentido en estrato y número de baños, porque sus valores tienen orden. No lo tiene en zona ni en barrio, porque son nominales: el resultado dependería del orden en que se escriban las filas.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Limpie y resuma**</span>
+
+Construya la tabla de frecuencias de `tipo` de `vivienda_faltantes` después de unificar las categorías. ¿Qué porcentaje de las viviendas con dato son apartamentos?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+tipo <- tolower(vivienda_faltantes$tipo)
+tipo[tipo == "apto"] <- "apartamento"
+
+round(100 * prop.table(table(tipo)), 2)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Edades de los atletas**</span>
+
+Construya la tabla de frecuencias de `edad` en `CarreraLuz22`, con clases de 10 años entre 10 y 80, usando `cut()` y la función `tabla_frecuencias()`. ¿Qué porcentaje de atletas tiene 40 años o menos?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+clases_edad <- cut(CarreraLuz22$edad, breaks = seq(10, 80, by = 10))
+tabla_frecuencias(clases_edad)
+```
+
+El porcentaje es el valor de `Fi` en la clase $(30, 40]$: `r tabla_frecuencias(clases_edad)$Fi[3]` %.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Encuentre el error**</span>
+
+Una tabla del Mundial de Catar 2022 registra 5, 5, 13, 4, 0 y 4 equipos por confederación. Compruebe si cumple $\sum n_i = n$, con $n = 32$. ¿Qué concluye?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+sum(c(5, 5, 13, 4, 0, 4))
+```
+
+La suma es 31, así que falta un equipo. En la tabla correcta, Asia tiene 6 equipos, no 5. Por eso conviene comprobar siempre esa suma.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se lee en línea o se descarga en PDF desde esa página. La sección [1.3](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/1-3-frecuencia-tablas-de-frecuencia-y-niveles-de-medicion) trata frecuencia, tablas de frecuencia y niveles de medición.
+- Illowsky, B. y Dean, S. [*Introductory Statistics 2e*](https://openstax.org/books/introductory-statistics-2e/pages/preface). OpenStax.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Devore, J. L. (2016). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/) (9.ª ed.). Cengage Learning.
+- Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
+- Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.pearson.com/en-us/subject-catalog/p/probability-statistics-for-engineers-scientists/P200000007119/9780137273546) (9.ª ed.). Pearson.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Freedman, D. y Diaconis, P. (1981). On the histogram as a density estimator: L2 theory. *Zeitschrift für Wahrscheinlichkeitstheorie und Verwandte Gebiete*, 57(4), 453-476.
+- R Core Team. [nclass: Compute the Number of Classes for a Histogram](https://www.rdocumentation.org/packages/grDevices/versions/3.6.2/topics/nclass).
+- [formattable: Create Formattable Data Structures](https://renkun-ken.github.io/formattable/).
+- Scott, D. W. (1979). On optimal and data-based histograms. *Biometrika*, 66(3), 605-610.
+- Sturges, H. A. (1926). The choice of a class interval. *Journal of the American Statistical Association*, 21(153), 65-66.
+- Telemundo 51. [Rumbo a la Copa Mundial 2022: estos son los 32 equipos que irán a Catar](https://www.telemundo51.com/deportes/copa-mundial-fifa/rumbo-a-la-copa-mundial-2022-estos-son-los-32-equipos-que-iran-a-catar/2307670/).
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

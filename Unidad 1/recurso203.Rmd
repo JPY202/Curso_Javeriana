@@ -1,0 +1,353 @@
+---
+title: <span style="color:#034a94"> **Indicadores de centro**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Una vez organizados los datos en tablas y gráficos, en ocasiones es necesario resumirlos con un solo número. Los **indicadores de centro** o de **tendencia central** describen un valor típico de una variable. Los principales son la **media**, la **mediana** y la **moda**.
+
+Esta página usa la base `CarreraLuz22`, del paquete `paqueteMETODOS`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+En los primeros ejemplos se usan los tiempos, en minutos, de las mujeres de la categoría juvenil:
+
+```{r}
+juvenil <- subset(CarreraLuz22, categoria == "1. Juvenil" & sex == "Mujer")
+tiempo_juvenil <- round(juvenil$timerun / 60, 2)
+
+sort(tiempo_juvenil)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la media aritmética?**</span>
+
+La **media aritmética**, o promedio, es la suma de todos los valores dividida por el número total de datos:
+
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i
+$$
+
+donde $n$ es el número de observaciones y $x_i$ es el valor de la observación $i$. En **R** se calcula con `mean()`:
+
+```{r}
+sum(tiempo_juvenil) / length(tiempo_juvenil)    # aplicando la fórmula
+mean(tiempo_juvenil)                            # con la función
+```
+
+Las mujeres de la categoría juvenil tienen un tiempo promedio de `r round(mean(tiempo_juvenil), 2)` minutos.
+
+### <span style="color:#034a94">**¿Qué propiedades tiene?**</span>
+
+1. La suma de las desviaciones con respecto a la media es cero:
+
+    $$
+    \sum_{i=1}^{n} (x_i - \bar{x}) = 0
+    $$
+
+2. La suma de los cuadrados de las desviaciones con respecto a un valor $a$, $\sum (x_i - a)^2$, es mínima cuando $a = \bar{x}$.
+
+3. Si $x_i = k$ para todo $i$, entonces $\bar{x} = k$.
+
+4. Si cada dato se multiplica por una constante, $y_i = k x_i$, entonces $\bar{y} = k \bar{x}$.
+
+5. Si $z_i = a x_i + b y_i$, con $a$ y $b$ constantes, entonces $\bar{z} = a \bar{x} + b \bar{y}$.
+
+La propiedad 4 permite cambiar de unidad sin recalcular todo. Por ejemplo, la media en segundos es 60 veces la media en minutos:
+
+```{r}
+sum(tiempo_juvenil - mean(tiempo_juvenil))       # propiedad 1
+mean(60 * tiempo_juvenil)                        # media en segundos
+60 * mean(tiempo_juvenil)                        # propiedad 4
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la mediana?**</span>
+
+La **mediana** es el valor que divide los datos ordenados en dos partes iguales. Si $x_{(1)} \leq x_{(2)} \leq \dots \leq x_{(n)}$ son los datos ordenados:
+
+$$
+Me =
+\begin{cases}
+x_{\left(\frac{n+1}{2}\right)} & \text{si } n \text{ es impar} \\[2mm]
+\dfrac{x_{\left(\frac{n}{2}\right)} + x_{\left(\frac{n}{2}+1\right)}}{2} & \text{si } n \text{ es par}
+\end{cases}
+$$
+
+- Si $n$ es **impar**, es el valor que está en la posición $\frac{n+1}{2}$.
+- Si $n$ es **par**, es el promedio de los dos valores centrales.
+
+En el ejemplo, $n = 7$, así que la mediana está en la posición $\frac{7+1}{2} = 4$:
+
+```{r}
+sort(tiempo_juvenil)[4]        # aplicando la fórmula
+median(tiempo_juvenil)         # con la función
+```
+
+Por lo tanto, $Me = `r median(tiempo_juvenil)`$ minutos: la mitad de los tiempos es menor o igual a ese valor.
+
+En un **gráfico de cajas**, la línea central de la caja es la mediana, y los extremos de la caja son el primer y el tercer cuartil:
+
+```{r, fig.cap="Tiempos de las mujeres de la categoría juvenil. El punto rojo indica la media.", fig.alt="Gráfico de cajas horizontal de siete tiempos entre 51 y 91 minutos, con mediana de 81.48 y media de 73.87", fig.width=7, fig.height=2.8}
+boxplot(tiempo_juvenil, horizontal = TRUE, col = "#BFD7EE", border = "#034A94",
+        ylim = c(40, 100), xlab = "Tiempo (minutos)", las = 1)
+stripchart(tiempo_juvenil, add = TRUE, pch = 19, col = "#034A94")
+points(mean(tiempo_juvenil), 1, pch = 18, cex = 2, col = "#C0392B")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo influye un dato extremo?**</span>
+
+La media usa todos los valores, por eso un dato extremo la afecta. La mediana depende del orden de los datos y se ve poco afectada. Por ejemplo, si se agrega al grupo el mayor tiempo de la carrera, la media aumenta mucho más que la mediana:
+
+```{r}
+tiempo_con_extremo <- c(tiempo_juvenil, 166.03)
+
+c(media_antes = mean(tiempo_juvenil), media_despues = mean(tiempo_con_extremo))
+c(mediana_antes = median(tiempo_juvenil), mediana_despues = median(tiempo_con_extremo))
+```
+
+Si se observan todos los atletas, la media es mayor que la mediana, porque hay una cola de tiempos altos:
+
+```{r, fig.cap="Tiempos de todos los atletas con su media y su mediana.", fig.alt="Histograma de los tiempos entre 30 y 170 minutos con una cola a la derecha. La línea de la media está a la derecha de la línea de la mediana", fig.width=8, fig.height=4.2}
+tiempo <- CarreraLuz22$timerun / 60
+cortes <- seq(30, 170, by = 10)
+
+hist(tiempo, breaks = cortes, col = "#BFD7EE", border = "white", las = 1,
+     xlim = range(cortes), ylim = c(0, 600), xaxp = c(30, 170, 14),
+     xaxs = "i", yaxs = "i", main = "",
+     xlab = "Tiempo (minutos)", ylab = "Número de atletas")
+abline(v = mean(tiempo), col = "#C0392B", lwd = 3)
+abline(v = median(tiempo), col = "#034A94", lwd = 3, lty = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("#C0392B", "#034A94"),
+       lwd = 3, lty = c(1, 2), bty = "n")
+```
+
+```{r}
+c(media = mean(tiempo), mediana = median(tiempo))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la moda?**</span>
+
+La **moda** es el valor o la categoría que más se repite. Se usa sobre todo en:
+
+- **Variables cualitativas:** indica la categoría más frecuente.
+- **Variables cuantitativas discretas:** indica el valor más frecuente.
+
+Si dos o más valores tienen la mayor frecuencia, hay más de una moda. Con dos se habla de una distribución **bimodal**, y con más, de una **multimodal**. En una variable continua casi no hay valores repetidos, por eso se usa la **clase modal** de la tabla de frecuencias.
+
+**R** no tiene una función para la moda de unos datos, porque `mode()` indica cómo se guarda un objeto. Se obtiene a partir de una tabla de frecuencias, con `which.max()`:
+
+```{r}
+frecuencias <- table(CarreraLuz22$categoria)
+
+frecuencias
+names(which.max(frecuencias))
+```
+
+La moda es la categoría `2. Abierta`, con `r format(max(frecuencias), big.mark = ",")` atletas.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la media truncada?**</span>
+
+La **media truncada** reduce el efecto de los datos extremos: elimina una proporción de los valores más pequeños y la misma proporción de los más grandes, y calcula la media con los demás. Si $\alpha$ es la proporción que se recorta **en cada extremo** y $g = \lfloor \alpha n \rfloor$ es la parte entera de $\alpha n$:
+
+$$
+\bar{x}_{\alpha} = \frac{1}{n - 2g} \sum_{i=g+1}^{n-g} x_{(i)}
+$$
+
+En **R** se usa el argumento [`trim`](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/mean) de `mean()`. Por ejemplo, con 12 datos y $\alpha = 0.10$, $g = \lfloor 1.2 \rfloor = 1$. Se elimina un dato en cada extremo:
+
+```{r}
+x <- c(41.67, 42.23, 45.53, 50.82, 52.93, 57.03,
+       61.13, 62.48, 72.77, 75.58, 76.98, 78.05)
+
+mean(sort(x)[2:11])       # aplicando la fórmula
+mean(x, trim = 0.10)      # con la función
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el rango medio?**</span>
+
+El **rango medio** es el promedio entre el valor mínimo y el valor máximo:
+
+$$
+RM = \frac{\max(x) + \min(x)}{2}
+$$
+
+Es fácil de calcular, pero solo usa dos datos. Por eso, un dato extremo lo afecta mucho. En la carrera, el tiempo máximo lo aleja de la media y de la mediana:
+
+```{r}
+(min(tiempo) + max(tiempo)) / 2
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué indicador usar?**</span>
+
+| Tipo de variable                   | Moda | Mediana | Media |
+|:-----------------------------------|:-----|:--------|:------|
+| Cualitativa nominal                | Sí   | No      | No    |
+| Cualitativa ordinal                | Sí   | Sí      | No se recomienda |
+| Cuantitativa con pocos datos extremos | Sí | Sí     | Sí    |
+| Cuantitativa con datos extremos o cola larga | Sí | Sí | Conviene acompañarla de la mediana |
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                     | Causa                                         | Solución                                         |
+|:---------------------------------------------|:----------------------------------------------|:-------------------------------------------------|
+| `mean()` o `median()` da `NA`                | Hay datos faltantes                           | Usar `na.rm = TRUE`, y reportar cuántos faltan   |
+| `mean()` da `NA` con una advertencia         | La variable no es numérica                    | Revisar con `class()`                            |
+| `mode(x)` devuelve `"numeric"`               | `mode()` no calcula la moda estadística       | Usar `table()` y `which.max()`                   |
+| Se calcula la media de un código             | Los números solo identifican categorías       | Usar la moda                                     |
+| La media truncada recorta más de lo esperado | `trim` se aplica en cada extremo              | Con `trim = 0.10` se recorta hasta 10 % por cada lado |
+| Se calcula la mediana de datos sin ordenar a mano | La posición se aplica a datos ordenados  | Usar `sort()` antes de ubicar la posición        |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Mediana con un número par de datos**</span>
+
+Calcule a mano la mediana de 12, 7, 20, 15, 9 y 30. Compruebe el resultado con `median()`.
+
+<details>
+<summary>Ver solución</summary>
+
+Ordenados, los datos son 7, 9, 12, 15, 20 y 30. Como $n = 6$, se promedian las posiciones 3 y 4: $(12 + 15) / 2 = 13.5$.
+
+```{r}
+median(c(12, 7, 20, 15, 9, 30))
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Hombres y mujeres**</span>
+
+Con `tapply()`, calcule la media y la mediana del tiempo en minutos según `sex` en `CarreraLuz22`. ¿Quiénes tuvieron menor tiempo promedio? ¿En qué grupo la media supera a la mediana?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+tapply(tiempo, CarreraLuz22$sex, mean)
+tapply(tiempo, CarreraLuz22$sex, median)
+```
+
+Los hombres tuvieron menor tiempo promedio. En los dos grupos, la media supera a la mediana.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. La moda de las viviendas**</span>
+
+Use `table()` y `which.max()` para hallar la moda del número de habitaciones en `vivienda_faltantes`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+names(which.max(table(vivienda_faltantes$habitac)))
+```
+
+La moda es 3 habitaciones.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Compare tres centros**</span>
+
+Calcule la media, la media truncada al 10 % en cada extremo y la mediana de los tiempos de todos los atletas. ¿Qué observa?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+c(media = mean(tiempo), truncada = mean(tiempo, trim = 0.10), mediana = median(tiempo))
+```
+
+La media truncada queda entre la media y la mediana, porque deja por fuera los tiempos más extremos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Una propiedad de la media**</span>
+
+Un bono suma 2 puntos a cada nota de un grupo con media de 3.4. Después, todas las notas se multiplican por 1.1. ¿Cuál es la nueva media? Compruébelo con las notas 3, 3.2, 3.4, 3.6 y 3.8.
+
+<details>
+<summary>Ver solución</summary>
+
+Por las propiedades de la media, la nueva media es $1.1 \times (3.4 + 2) = 5.94$.
+
+```{r}
+notas <- c(3, 3.2, 3.4, 3.6, 3.8)
+mean(1.1 * (notas + 2))
+```
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se lee en línea o se descarga en PDF desde esa página. La sección [2.5](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-5-medidas-del-centro-de-los-datos) trata las medidas del centro de los datos.
+- Illowsky, B. y Dean, S. [*Introductory Statistics 2e*](https://openstax.org/books/introductory-statistics-2e/pages/preface). OpenStax.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Devore, J. L. (2016). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/) (9.ª ed.). Cengage Learning.
+- Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
+- Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.pearson.com/en-us/subject-catalog/p/probability-statistics-for-engineers-scientists/P200000007119/9780137273546) (9.ª ed.). Pearson.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- R Core Team. [mean: Arithmetic Mean](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/mean).
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

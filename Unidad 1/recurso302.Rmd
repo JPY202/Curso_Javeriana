@@ -1,0 +1,364 @@
+---
+title: <span style="color:#034a94"> **¿Cómo graficar variables categóricas?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Las **variables cualitativas nominales** se pueden visualizar con un **gráfico de barras** o con un **gráfico de torta**. Las **variables cualitativas ordinales** y las **cuantitativas discretas** con pocos valores se suelen representar con barras, porque este formato conserva el orden de las categorías. Esta página presenta los gráficos más usados, cómo construirlos e interpretarlos. Para ver más opciones, cada sección enlaza a [From Data to Viz](https://www.data-to-viz.com/).
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, y el paquete `ggplot2`, presentado en [¿Qué es un gráfico?](recurso300.html). Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+```{r}
+library(ggplot2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar un gráfico de barras?**</span>
+
+**¿Para qué sirve?** Para comparar cantidades entre categorías. Cada categoría es una barra, y su longitud representa la frecuencia.
+
+**¿Cómo se hace?** `ggplot2` ofrece dos funciones:
+
+| Función      | Cuándo se usa                                      | Qué necesita en `aes()`         |
+|:-------------|:---------------------------------------------------|:--------------------------------|
+| `geom_bar()` | Los datos no están contados; la función los cuenta | Solo la variable `x`            |
+| `geom_col()` | La tabla ya tiene las frecuencias                  | La variable `x` y la altura `y` |
+
+Para mostrar los porcentajes se prepara primero una tabla, y `geom_text()` escribe las etiquetas. El eje se deja más largo que la barra mayor para que quepan.
+
+```{r}
+categorias <- as.data.frame(table(CarreraLuz22$categoria))
+names(categorias) <- c("categoria", "corredores")
+categorias$porcentaje <- round(100 * categorias$corredores / sum(categorias$corredores), 1)
+categorias
+```
+
+```{r fig-porc, fig.width=8, fig.height=4.2, fig.cap="Porcentaje de corredores por categoría", fig.alt="Gráfico de barras con etiquetas: Juvenil 1 por ciento, Abierta 61.3, Veteranos A 22, Veteranos B 11.8 y Veteranos C 3.9", out.width="100%"}
+ggplot(categorias, aes(x = categoria, y = porcentaje)) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_text(aes(label = paste0(porcentaje, " %")), vjust = -0.5, size = 4.8) +
+  scale_y_continuous(limits = c(0, 70), breaks = seq(0, 70, 10), expand = c(0, 0)) +
+  labs(x = NULL, y = "Porcentaje de corredores") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Se compara la longitud de las barras, medidas desde cero. En la figura, la categoría Abierta reúne al 61.3 % de los corredores y Veteranos A al 22 %, mientras que Juvenil y Veteranos C tienen una participación pequeña, con 1 % y 3.9 %.
+
+**¿En qué orden van las barras?** Depende de la escala de la variable:
+
+| Escala                                  | Ejemplo                    | Orden de las barras          |
+|:----------------------------------------|:---------------------------|:-----------------------------|
+| Nominal                                 | Zona, tipo de vivienda     | De mayor a menor frecuencia  |
+| Ordinal                                 | Estrato, categoría de edad | El orden propio de la variable |
+| Cuantitativa discreta con pocos valores | Número de baños            | De menor a mayor valor       |
+
+**R** ordena el texto alfabéticamente. Para una variable nominal, `reorder()` ordena las categorías según otra variable. Las barras horizontales permiten leer los nombres sin girarlos:
+
+```{r fig-orden, fig.width=8, fig.height=4, fig.cap="Viviendas por zona, ordenadas por frecuencia", fig.alt="Barras horizontales de mayor a menor: Zona Sur 56.8 por ciento, Norte 23.1, Oeste 14.5, Oriente 4.2 y Centro 1.5", out.width="100%"}
+zonas <- as.data.frame(table(vivienda_faltantes$zona))
+names(zonas) <- c("zona", "viviendas")
+zonas$porcentaje <- round(100 * zonas$viviendas / sum(zonas$viviendas), 1)
+
+ggplot(zonas, aes(x = porcentaje, y = reorder(zona, porcentaje))) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_text(aes(label = paste0(porcentaje, " %")), hjust = -0.15, size = 4.8) +
+  scale_x_continuous(limits = c(0, 70), breaks = seq(0, 70, 10), expand = c(0, 0)) +
+  labs(x = "Porcentaje de viviendas", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.y = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Qué cuidados tener?**
+
+- El eje debe empezar en cero, porque si se corta, las proporciones se distorsionan ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/)).
+- Una barra no muestra lo que pasa dentro de cada categoría, como la variación de los precios en cada zona.
+- No debe confundirse con el histograma, que representa una variable numérica.
+
+**Ver más:** [gráfico de barras](https://www.data-to-viz.com/graph/barplot), [líneas y puntos (lollipop)](https://www.data-to-viz.com/graph/lollipop.html) para muchas categorías, y [por qué ordenar las barras](https://www.data-to-viz.com/caveat/order_data.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar un gráfico de torta?**</span>
+
+**¿Para qué sirve?** Para mostrar cómo se reparte un total. El círculo completo es el 100 %, y cada sector es la participación de una categoría.
+
+**¿Cómo se hace?** Se usa `pie()`, con etiquetas que incluyan el porcentaje. El argumento `init.angle` gira el círculo para que las etiquetas de los sectores pequeños no se monten.
+
+```{r fig-torta, fig.width=8, fig.height=5, fig.cap="Distribución de los corredores por categoría", fig.alt="Gráfico de torta con cinco sectores de distinto color: Abierta 61.3 por ciento, Veteranos A 22, Veteranos B 11.8, Veteranos C 3.9 y Juvenil 1", out.width="100%"}
+etiquetas <- paste0(categorias$categoria, " (", categorias$porcentaje, " %)")
+
+par(mar = c(1, 1, 1, 1))
+pie(categorias$corredores, labels = etiquetas, clockwise = TRUE, init.angle = 0,
+    col = hcl.colors(5, "viridis"), border = "white", radius = 0.85)
+```
+
+**¿Cómo se interpreta?** Se compara el tamaño de cada sector con el círculo, y los porcentajes deben sumar 100 %. En la figura, la categoría Abierta ocupa más de la mitad del círculo.
+
+**¿Cuándo conviene?** Las fuentes no coinciden del todo:
+
+| Fuente                                                                                                                      | Posición                                                                                                                   |
+|:----------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| [Holtz y Healy](https://www.data-to-viz.com/caveat/pie.html)                                                                | Lo desaconsejan, porque los ángulos se leen mal. Proponen barras                                                           |
+| [Government Analysis Function (2022)](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/) | Lo aceptan con cinco categorías o menos, un total con sentido y una categoría dominante. Si son similares, proponen barras |
+
+**¿Qué cuidados tener?**
+
+- Si hay muchas categorías, se reagrupan las de baja frecuencia en una llamada **Otras**.
+- No sirve para comparar sectores parecidos: para eso conviene un gráfico de barras.
+- No muestra el número de datos.
+
+**Ver más:** [por qué se critica la torta](https://www.data-to-viz.com/caveat/pie.html), [dona](https://www.data-to-viz.com/graph/donut.html) y [mapa de árbol](https://www.data-to-viz.com/graph/treemap.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar barras agrupadas?**</span>
+
+**¿Para qué sirve?** Para comparar dos variables categóricas, con las barras de cada grupo una al lado de la otra. Antes de graficar hay que decidir qué representa el 100 %:
+
+```{r}
+sexo_categoria <- table(CarreraLuz22$sex, CarreraLuz22$categoria)
+
+# El 100 % es cada sexo (filas)
+round(100 * prop.table(sexo_categoria, margin = 1), 1)
+
+# El 100 % es cada categoría (columnas)
+round(100 * prop.table(sexo_categoria, margin = 2), 1)
+```
+
+La primera tabla dice que el 67.5 % de las mujeres está en la categoría Abierta. La segunda dice que el 42.6 % de quienes están en la categoría Abierta son mujeres. Son dos afirmaciones diferentes.
+
+**¿Cómo se hace?** Se usa `position_dodge()`. Los colores vienen de la paleta Okabe-Ito, incluida en **R**, que se consulta con `palette.colors()`.
+
+```{r fig-agrupadas, fig.width=8.5, fig.height=4.6, fig.cap="Distribución de cada sexo por categoría", fig.alt="Barras agrupadas por categoría: en Abierta, 57.5 por ciento de los hombres y 67.5 de las mujeres; en Veteranos A, 23.4 y 19.8; en Veteranos B, 13.2 y 9.7; en Veteranos C, 4.9 y 2.2; en Juvenil, 1 y 0.9", out.width="100%"}
+por_sexo <- as.data.frame(round(100 * prop.table(sexo_categoria, margin = 1), 1))
+names(por_sexo) <- c("sexo", "categoria", "porcentaje")
+
+ggplot(por_sexo, aes(x = categoria, y = porcentaje, fill = sexo)) +
+  geom_col(position = position_dodge(0.8), width = 0.75) +
+  geom_text(aes(label = porcentaje), position = position_dodge(0.8),
+            vjust = -0.5, size = 3.8) +
+  scale_fill_manual(values = c("Hombre" = "#0072B2", "Mujer" = "#D55E00")) +
+  scale_y_continuous(limits = c(0, 80), breaks = seq(0, 80, 20), expand = c(0, 0)) +
+  labs(x = NULL, y = "Porcentaje dentro de cada sexo", fill = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), legend.position = "top",
+        plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Primero se identifica qué representa el 100 %, y después se comparan las barras dentro de cada categoría. En la figura, las mujeres se concentran más en la categoría Abierta (67.5 %) que los hombres (57.5 %), y los hombres tienen mayor participación en las tres categorías de veteranos.
+
+**¿Qué cuidados tener?** Se recomienda un máximo de cuatro barras por grupo ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/)), y las barras de un mismo grupo deben quedar más cerca entre sí que de las otras.
+
+**Ver más:** [barras agrupadas](https://www.data-to-viz.com/caveat/grouped_bar.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar barras apiladas?**</span>
+
+**¿Para qué sirve?** Para mostrar cómo se reparte el total en cada grupo. Por ejemplo, la composición por estrato de cada zona.
+
+**¿Cómo se hace?** Se usa `position_stack()`. Como las zonas tienen tamaños muy distintos, conviene escribir el número de viviendas en la etiqueta. Los colores de `hcl.colors(4, "viridis")` van de oscuro a claro y conservan el orden del estrato.
+
+```{r fig-apiladas, fig.width=8.5, fig.height=4.6, fig.cap="Composición por estrato de las viviendas de cada zona", fig.alt="Barras apiladas horizontales al 100 por ciento. El estrato 3 es 96.9 por ciento en Oriente y 84.7 en Centro; el estrato 6 es 64.4 por ciento en Oeste", out.width="100%"}
+zona_estrato <- table(vivienda_faltantes$zona, vivienda_faltantes$estrato)
+
+por_zona <- as.data.frame(100 * prop.table(zona_estrato, margin = 1))
+names(por_zona) <- c("zona", "estrato", "porcentaje")
+
+total <- rowSums(zona_estrato)
+por_zona$etiqueta <- paste0(por_zona$zona, " (n = ", total[as.character(por_zona$zona)], ")")
+
+# Las zonas se ordenan según su porcentaje de estrato 3
+estrato3 <- por_zona$porcentaje * (por_zona$estrato == 3)
+
+ggplot(por_zona, aes(x = porcentaje, y = reorder(etiqueta, estrato3, max), fill = estrato)) +
+  geom_col(position = position_stack(reverse = TRUE), color = "#333333",
+           linewidth = 0.3, width = 0.75) +
+  geom_text(aes(label = ifelse(porcentaje >= 8, round(porcentaje), ""), color = estrato),
+            position = position_stack(vjust = 0.5, reverse = TRUE), size = 4.2) +
+  scale_fill_manual(values = hcl.colors(4, "viridis")) +
+  scale_color_manual(values = c("white", "white", "black", "black"), guide = "none") +
+  scale_x_continuous(breaks = seq(0, 100, 20), expand = c(0, 0)) +
+  labs(x = "Porcentaje de viviendas de la zona", y = NULL, fill = "Estrato") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.y = element_blank(), legend.position = "top",
+        plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Cada barra suma 100 %, y se compara el tamaño de los segmentos. Las zonas Oriente y Centro están formadas casi por completo por viviendas de estrato 3 (96.9 % y 84.7 %), mientras que en la Zona Oeste predomina el estrato 6 (64.4 %).
+
+**¿Qué cuidados tener?**
+
+- Se recomienda un máximo de cuatro categorías por pila ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/)).
+- Solo el primer y el último segmento comparten una línea de inicio. Los del medio son difíciles de comparar.
+- En los segmentos pequeños no caben las cifras. Aquí solo se escriben las de 8 % o más.
+
+**Ver más:** [por qué cuesta leer los gráficos apilados](https://www.data-to-viz.com/caveat/stacking.html).
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                       | Causa                                                  | Solución                                         |
+|:-----------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------|
+| Todas las barras miden 1                       | Se usó `geom_bar()` con una tabla ya contada           | Usar `geom_col()` con `aes(y = frecuencia)`      |
+| Las barras nominales salen en orden alfabético | **R** ordena el texto alfabéticamente                  | Ordenar con `reorder()`                          |
+| El estrato sale desordenado                    | Se aplicó `reorder()` a una variable ordinal           | Conservar el orden propio de la variable         |
+| Una etiqueta se corta arriba de la barra       | El eje termina justo en la barra mayor                 | Ampliar `limits`                                 |
+| El porcentaje se interpreta mal                | No se definió qué representa el 100 %                  | Revisar `margin` en `prop.table()`               |
+| Una torta con muchos sectores no se entiende   | Hay demasiadas categorías, o son parecidas             | Agrupar en Otras, o usar barras                  |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. ¿Qué orden lleva?**</span>
+
+Indique en qué orden pondría las barras de estas variables: nacionalidad, estrato, número de habitaciones y tipo de vivienda.
+
+<details>
+<summary>Ver solución</summary>
+
+La nacionalidad y el tipo de vivienda son nominales, así que van de mayor a menor frecuencia. El estrato es ordinal y el número de habitaciones es cuantitativo discreto, así que conservan su orden de menor a mayor.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Una escala de evaluación**</span>
+
+En la evaluación de un proceso de inducción, las respuestas fueron: Muy regular 5, Regular 13, Bueno 30, Muy bueno 52 y Excelente 35. Haga un gráfico de barras en porcentaje, con las categorías en el orden de la escala, e interprételo.
+
+<details>
+<summary>Ver solución</summary>
+
+La función `factor()` con `levels` fija el orden de las categorías.
+
+```{r fig-reto2, fig.width=8, fig.height=4.2, fig.cap="Resultados de la evaluación", fig.alt="Barras en el orden de la escala: Muy regular 3.7 por ciento, Regular 9.6, Bueno 22.2, Muy bueno 38.5 y Excelente 25.9", out.width="100%"}
+escala <- c("Muy regular", "Regular", "Bueno", "Muy bueno", "Excelente")
+evaluacion <- data.frame(
+  respuesta = factor(escala, levels = escala),
+  frecuencia = c(5, 13, 30, 52, 35)
+)
+evaluacion$porcentaje <- round(100 * evaluacion$frecuencia / sum(evaluacion$frecuencia), 1)
+
+ggplot(evaluacion, aes(x = respuesta, y = porcentaje)) +
+  geom_col(fill = "#034A94", width = 0.7) +
+  geom_text(aes(label = paste0(porcentaje, " %")), vjust = -0.5, size = 4.8) +
+  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, 10), expand = c(0, 0)) +
+  labs(x = NULL, y = "Porcentaje de respuestas") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+La respuesta más frecuente fue Muy bueno, con 38.5 %. Sumadas, Muy bueno y Excelente llegan a 64.4 %.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Agrupar en Otras**</span>
+
+Con la variable `origen` de `CarreraLuz22`, deje Cali, Jamundi y Palmira, y agrupe los demás lugares en Otras. Antes quite las tildes. Calcule los porcentajes y diga si se cumplen las condiciones para usar una torta.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+origen <- chartr("áéíóú", "aeiou", CarreraLuz22$origen)
+grupo <- ifelse(origen %in% c("Cali", "Jamundi", "Palmira"), origen, "Otras")
+round(100 * prop.table(table(grupo)), 1)
+```
+
+Se cumplen: son cuatro categorías, el total es el número de corredores y Cali domina con claridad.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. ¿Quién es el 100 %?**</span>
+
+Haga un gráfico de barras apiladas del porcentaje de hombres y mujeres dentro de cada categoría de corredor. ¿En qué categoría es menor la participación de las mujeres?
+
+<details>
+<summary>Ver solución</summary>
+
+Aquí el 100 % es cada categoría, por lo que se usa `margin = 2`.
+
+```{r fig-reto4, fig.width=8.5, fig.height=4.4, fig.cap="Composición por sexo de cada categoría", fig.alt="Barras apiladas horizontales al 100 por ciento; las mujeres son 42.6 por ciento en Abierta y 21.6 en Veteranos C", out.width="100%"}
+por_categoria <- as.data.frame(100 * prop.table(sexo_categoria, margin = 2))
+names(por_categoria) <- c("sexo", "categoria", "porcentaje")
+
+ggplot(por_categoria, aes(x = porcentaje, y = categoria, fill = sexo)) +
+  geom_col(position = position_stack(reverse = TRUE), color = "white", width = 0.75) +
+  geom_text(aes(label = round(porcentaje, 1)),
+            position = position_stack(vjust = 0.5, reverse = TRUE),
+            color = "white", size = 4.2) +
+  scale_fill_manual(values = c("Hombre" = "#0072B2", "Mujer" = "#D55E00")) +
+  scale_x_continuous(breaks = seq(0, 100, 20), expand = c(0, 0)) +
+  scale_y_discrete(limits = rev) +
+  labs(x = "Porcentaje dentro de la categoría", y = NULL, fill = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.major.y = element_blank(), legend.position = "top",
+        plot.margin = margin(10, 20, 5, 5))
+```
+
+La participación de las mujeres es menor en Veteranos C, con 21.6 %.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media. El autor publica el manuscrito completo en su sitio. Los capítulos 6, 10 y 11 tratan las cantidades y las proporciones.
+- Wickham, H., Navarro, D. y Pedersen, T. L. [*ggplot2: Elegant Graphics for Data Analysis*](https://ggplot2-book.org/) (3.ª ed.). Springer. Versión en línea de los autores.
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se descarga en PDF desde esa página. La sección [2.1](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-1-graficos-de-tallo-y-hoja-grafico-de-tallo-graficos-de-lineas-y-graficos-de-barras) trata los gráficos de barras.
+
+### <span style="color:#034a94">**Guías y recursos oficiales**</span>
+
+- Government Analysis Function. [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/). Guía del gobierno británico para elegir y presentar gráficos.
+- Posit. [Documentación de `geom_bar()`](https://ggplot2.tidyverse.org/reference/geom_bar.html) y [preguntas frecuentes sobre barras](https://ggplot2.tidyverse.org/articles/faq-bars.html).
+- R Core Team. [Documentación de `palette.colors()`](https://stat.ethz.ch/R-manual/R-devel/library/grDevices/html/palette.html). Incluye la paleta Okabe-Ito.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Government Analysis Function. (2022). [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/).
+- Holtz, Y. y Healy, C. [*From Data to Viz*](https://www.data-to-viz.com/).
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

@@ -1,0 +1,482 @@
+---
+title: <span style="color:#034a94"> **Indicadores de posición**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Los **indicadores de posición** dividen los datos ordenados en partes iguales y permiten ubicar un valor dentro de un grupo. Responden preguntas como: ¿qué valor deja por debajo al 25 % de los datos? o ¿en qué posición está este resultado frente a los demás?
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo dividen los datos?**</span>
+
+Un **cuantil** es un valor que deja por debajo una proporción determinada de los datos ordenados. Los más usados tienen nombres propios:
+
+| Indicador    | Divide los datos en | Cantidad de valores | Notación                | Cada parte contiene |
+|:-------------|:--------------------|:--------------------|:------------------------|:--------------------|
+| **Cuartiles** | 4 partes           | 3                   | $Q_1, Q_2, Q_3$         | 25 %                |
+| **Quintiles** | 5 partes           | 4                   | $K_1, \dots, K_4$       | 20 %                |
+| **Deciles**  | 10 partes           | 9                   | $D_1, \dots, D_9$       | 10 %                |
+| **Percentiles** | 100 partes       | 99                  | $P_1, \dots, P_{99}$    | 1 %                 |
+
+Estos indicadores están relacionados. Por ejemplo, $P_{25} = Q_1$, $P_{10} = D_1$ y $P_{50} = Q_2 = D_5 = Me$. La siguiente figura muestra cómo se parten los datos:
+
+```{r fig-particion, echo=FALSE, fig.width=9, fig.height=4, out.width="100%", fig.align="center", fig.cap="Partición de los datos ordenados en cuartiles, deciles y percentiles.", fig.alt="Tres barras de 0 a 100 por ciento divididas en 4 cuartiles, 10 deciles y 100 percentiles, con sus etiquetas"}
+fila <- function(y, cortes, colores) {
+  n <- length(cortes) - 1
+  rect(cortes[-(n + 1)], y - 0.28, cortes[-1], y + 0.28,
+       col = rep(colores, length.out = n), border = "white", lwd = 1)
+}
+
+op <- par(mar = c(3, 8, 1, 3))
+plot.new()
+plot.window(xlim = c(0, 100), ylim = c(0.4, 3.75), xaxs = "i")
+
+fila(3, seq(0, 100, by = 25), c("#034A94", "#7FA8D1"))
+fila(2, seq(0, 100, by = 10), c("#034A94", "#7FA8D1"))
+fila(1, seq(0, 100, by = 1), c("#034A94", "#7FA8D1"))
+
+text(c(25, 50, 75), 3.46, c("Q1", "Q2", "Q3"), font = 2, col = "#034A94")
+text(seq(10, 90, by = 10), 2.46, paste0("D", 1:9), font = 2, col = "#034A94", cex = 0.85)
+text(c(10, 25, 50, 75, 90), 1.46, paste0("P", c(10, 25, 50, 75, 90)),
+     font = 2, col = "#034A94", cex = 0.85)
+
+axis(1, at = seq(0, 100, by = 10), labels = paste0(seq(0, 100, by = 10), " %"))
+axis(2, at = 1:3, labels = c("Percentiles", "Deciles", "Cuartiles"),
+     las = 1, tick = FALSE, line = -0.5)
+par(op)
+```
+
+<details>
+<summary>Ver el código de la figura</summary>
+
+```{r ref.label="fig-particion", eval=FALSE}
+```
+
+</details>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se calculan?**</span>
+
+Para obtener el cuantil de orden $p$, con $0 < p < 1$, se ordenan los datos, $x_{(1)} \leq x_{(2)} \leq \dots \leq x_{(n)}$, y se ubica la posición:
+
+$$
+h = (n - 1)p + 1
+$$
+
+Si $h$ es un número entero, el cuantil es $x_{(h)}$. Si no lo es, se interpola entre los dos datos más cercanos, donde $\lfloor h \rfloor$ es la parte entera de $h$:
+
+$$
+x_p = x_{(\lfloor h \rfloor)} + (h - \lfloor h \rfloor)\left(x_{(\lfloor h \rfloor + 1)} - x_{(\lfloor h \rfloor)}\right)
+$$
+
+**Ejemplo.** Con los 7 tiempos de las mujeres juveniles, para $Q_1$: $h = (7 - 1)(0.25) + 1 = 2.5$. Por eso, se interpola entre el segundo y el tercer dato:
+
+```{r}
+juvenil <- subset(CarreraLuz22, categoria == "1. Juvenil" & sex == "Mujer")
+tiempo_juvenil <- sort(round(juvenil$timerun / 60, 2))
+tiempo_juvenil
+
+tiempo_juvenil[2] + 0.5 * (tiempo_juvenil[3] - tiempo_juvenil[2])   # aplicando la fórmula
+quantile(tiempo_juvenil, 0.25)                                      # con la función
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Otros programas pueden dar otro resultado**</span>
+
+No hay una sola forma de calcular un cuantil. La función [`quantile()`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile) tiene 9 métodos, descritos por Hyndman y Fan (1996), y por defecto usa el tipo 7, que es la fórmula anterior. Con otro método, el resultado puede cambiar un poco, sobre todo en muestras pequeñas:
+
+```{r}
+quantile(tiempo_juvenil, 0.25, type = 7)
+quantile(tiempo_juvenil, 0.25, type = 6)
+```
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son los cuartiles?**</span>
+
+Los **cuartiles** son 3 valores que dividen los datos en cuatro partes iguales. Cada parte contiene cerca del 25 % de los datos:
+
+- $Q_1$, o primer cuartil: deja por debajo cerca del 25 % de los datos.
+- $Q_2$, o segundo cuartil: es la mediana, y deja por debajo cerca del 50 %.
+- $Q_3$, o tercer cuartil: deja por debajo cerca del 75 %.
+
+En la carrera, la figura muestra las cuatro partes de la distribución de los tiempos:
+
+```{r fig-cuartiles, fig.width=8, fig.height=4, fig.cap="Cuartiles de los tiempos de la carrera. Curva de densidad con las cuatro partes de los datos.", fig.alt="Curva de densidad de los tiempos dividida en cuatro zonas de colores por los cuartiles, cada una con el 25 por ciento de los atletas", out.width="100%"}
+tiempo <- CarreraLuz22$timerun / 60
+cuartiles <- quantile(tiempo, c(0.25, 0.50, 0.75))
+
+curva <- density(tiempo, from = 30, to = 170)
+limite_y <- 0.045
+
+par(mar = c(4.5, 5.5, 1, 1))
+
+zonas <- cut(curva$x, breaks = c(30, cuartiles, 170), include.lowest = TRUE)
+colores <- c("#034A94", "#5B8FC4", "#9DBFE0", "#D3E3F2")
+
+plot(curva, type = "n", main = "", las = 1, xlim = c(30, 170), ylim = c(0, limite_y),
+     xaxs = "i", yaxs = "i", xlab = "Tiempo (minutos)", ylab = "", bty = "l")
+title(ylab = "Densidad", line = 4)
+
+for (i in 1:4) {
+  zona <- as.integer(zonas) == i
+  polygon(c(curva$x[zona], rev(curva$x[zona])),
+          c(curva$y[zona], rep(0, sum(zona))), col = colores[i], border = NA)
+}
+
+lines(curva, lwd = 2)
+abline(v = cuartiles, lty = 2)
+text(cuartiles, limite_y * 0.95, c("Q1", "Q2", "Q3"), pos = 4, font = 2)
+text(c(48, 60, 68.3, 86), limite_y * 0.06, "25 %", font = 2, cex = 0.75,
+     col = c("white", "white", "black", "black"))
+```
+
+```{r}
+round(cuartiles, 2)
+```
+
+El 25 % de los atletas tardó `r round(cuartiles[1], 1)` minutos o menos, la mitad tardó `r round(cuartiles[2], 1)` minutos o menos, y el 75 % tardó `r round(cuartiles[3], 1)` minutos o menos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son los quintiles?**</span>
+
+Los **quintiles** son 4 valores que dividen los datos en cinco partes iguales. Son comunes en el estudio de los ingresos, porque permiten comparar el 20 % de menores ingresos con el 20 % de mayores ingresos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son los deciles?**</span>
+
+Los **deciles** son 9 valores que dividen los datos en diez partes iguales. Muestran con más detalle lo que ocurre en la distribución:
+
+```{r fig-deciles, fig.width=8, fig.height=4, fig.cap="Deciles de los tiempos de la carrera. Entre dos líneas hay cerca del 10 % de los atletas.", fig.alt="Curva de densidad de los tiempos con nueve líneas verticales en los deciles, más juntas donde hay más atletas", out.width="100%"}
+deciles <- quantile(tiempo, seq(0.1, 0.9, by = 0.1))
+
+par(mar = c(4.5, 5.5, 1, 1))
+
+plot(curva, main = "", las = 1, lwd = 2, xlim = c(30, 170), ylim = c(0, limite_y),
+     xaxs = "i", yaxs = "i", xlab = "Tiempo (minutos)", ylab = "", bty = "l", col = "#034A94")
+title(ylab = "Densidad", line = 4)
+abline(v = deciles, lty = 2, col = "#5B8FC4")
+text(deciles, limite_y * c(0.97, 0.90), paste0("D", 1:9), cex = 0.75, font = 2)
+```
+
+Donde hay más atletas, las líneas están más cerca. Hacia los tiempos altos se separan, porque hay menos datos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son los percentiles?**</span>
+
+Los **percentiles** son 99 valores que dividen los datos en cien partes iguales. El percentil $P_k$ deja por debajo cerca del $k$ % de los datos. La figura muestra el percentil 90:
+
+```{r fig-percentil, fig.width=8, fig.height=4, fig.cap="Percentil 90 de los tiempos. A la izquierda queda el 90 % de los atletas.", fig.alt="Curva de densidad de los tiempos con el 90 por ciento izquierdo sombreado y una línea vertical en el percentil 90", out.width="100%"}
+p90 <- quantile(tiempo, 0.90)
+izquierda <- curva$x <= p90
+
+par(mar = c(4.5, 5.5, 1, 1))
+
+plot(curva, type = "n", main = "", las = 1, xlim = c(30, 170), ylim = c(0, limite_y),
+     xaxs = "i", yaxs = "i", xlab = "Tiempo (minutos)", ylab = "", bty = "l")
+title(ylab = "Densidad", line = 4)
+polygon(c(curva$x[izquierda], rev(curva$x[izquierda])),
+        c(curva$y[izquierda], rep(0, sum(izquierda))), col = "#9DBFE0", border = NA)
+lines(curva, lwd = 2)
+abline(v = p90, lty = 2)
+text(p90, limite_y * 0.95, "P90", pos = 4, font = 2)
+text(62, limite_y * 0.45, "90 %", font = 2, cex = 1.3)
+text(p90 + 14, limite_y * 0.25, "10 %", font = 2, cex = 1.3)
+```
+
+```{r}
+round(p90, 2)
+```
+
+### <span style="color:#034a94">**Rango percentil**</span>
+
+A veces la pregunta es la contraria: ¿qué porcentaje de los datos queda por debajo de un valor? El **rango percentil** de un valor $x$ es:
+
+$$
+RP(x) = \frac{\text{número de datos} \leq x}{n} \times 100
+$$
+
+Por ejemplo, para una persona que tardó 60 minutos:
+
+```{r}
+100 * mean(tiempo <= 60)
+```
+
+El `r round(100 * mean(tiempo <= 60), 1)` % de los atletas tardó 60 minutos o menos. En una carrera, un menor tiempo es mejor, por lo que estar en un percentil bajo es un buen resultado. Lo contrario ocurre en una prueba, donde un mayor puntaje es mejor.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se calculan en R?**</span>
+
+La función `quantile()` recibe los datos y las proporciones que se desean, en el argumento `probs`. Si hay datos faltantes, hay que indicarlo con `na.rm = TRUE`. Por ejemplo, la variable `preciom`, con los precios de las viviendas en millones, tiene 2 datos faltantes:
+
+```{r}
+precio <- vivienda_faltantes$preciom
+
+sum(is.na(precio))                 # número de datos faltantes
+median(precio)                     # da NA porque hay datos faltantes
+median(precio, na.rm = TRUE)
+```
+
+Con `na.rm = TRUE` se obtienen los indicadores:
+
+```{r}
+quantile(precio, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)    # cuartiles
+quantile(precio, probs = seq(0.2, 0.8, by = 0.2), na.rm = TRUE)    # quintiles
+quantile(precio, probs = seq(0.1, 0.9, by = 0.1), na.rm = TRUE)    # deciles
+quantile(precio, probs = c(0.10, 0.25, 0.50, 0.75, 0.90), na.rm = TRUE)    # percentiles
+```
+
+Una forma de presentar estos resultados es integrarlos en un texto:
+
+<div class="definicion">
+<p>El precio mediano de las viviendas fue de 330 millones. La mitad central de los precios estuvo entre 220 y 540 millones. El 10 % de las viviendas más económicas costó hasta 145 millones, mientras que el 10 % de las más costosas superó los 870 millones.</p>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se usan en la práctica?**</span>
+
+| Ámbito              | Publicación                        | Indicador      | Uso                                                                 |
+|:--------------------|:-----------------------------------|:---------------|:--------------------------------------------------------------------|
+| Salud infantil      | [OMS, estándares de crecimiento](https://www.who.int/tools/child-growth-standards/standards/weight-for-age) | Percentiles | Tablas y gráficos de peso para la edad, por sexo y edad |
+| Educación           | [Icfes, Saber 11](https://www.icfes.gov.co/wp-content/uploads/2025/02/14-Edicion-Como-se-reportan-los-resultados-individuales-teniendo-en-cuenta-el-enfoque-diferencial.pdf) | Percentiles | Indican la posición de un puntaje frente a un grupo de referencia. Un percentil 85 significa que supera aproximadamente al 85 % de ese grupo |
+| Ingresos en Colombia | [DANE, pobreza monetaria 2025](https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf) | Quintiles | En 2025, el ingreso real per cápita aumentó 11.8 % en el quintil 1 y 0.5 % en el quintil 5 |
+| Ingresos en Estados Unidos | [U.S. Census Bureau, 2025](https://www2.census.gov/library/publications/2026/demo/p60-289.pdf) | Quintiles | El quintil más bajo recibió 3.0 % del ingreso total, y el más alto, 52.4 % |
+| Investigación clínica | [Guan et al. (2020), reseñado por Eastin y Eastin](https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766) | Cuartiles | Edad mediana de 47 años, con rango intercuartílico de 35 a 58 |
+| Precios de vivienda | Base `vivienda_faltantes` | Deciles | $D_1$ de 145 millones y $D_9$ de 870 millones |
+
+### <span style="color:#034a94">**¿Qué percentil usar en un informe?**</span>
+
+La elección depende del objetivo del análisis:
+
+- Para una **descripción general** se usan los **cuartiles**.
+- Para ver con **más detalle** una parte de la distribución se usan los **deciles** o los **percentiles**, por ejemplo, para estudiar desigualdades o definir umbrales.
+- En estudios comparativos es común reportar los percentiles **10, 25, 50, 75 y 90**, porque muestran la dispersión y la simetría.
+- En pruebas estandarizadas, los percentiles ubican un resultado dentro de un grupo de referencia.
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Recomendación**</span>
+
+Revise qué percentiles se suelen reportar en su área. Así los resultados se pueden comparar con otros estudios. Además, no presente una lista de números sin contexto: intégrelos en un texto que explique qué significan.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un gráfico de cajas?**</span>
+
+El **gráfico de cajas** resume una variable con sus cuartiles y permite comparar grupos:
+
+| Elemento           | Qué representa                                                    |
+|:-------------------|:------------------------------------------------------------------|
+| Línea central      | Mediana                                                           |
+| Extremos de la caja | Valores cercanos a $Q_1$ y $Q_3$                                 |
+| Bigotes            | Llegan hasta el dato más extremo a no más de 1.5 veces el rango intercuartílico de la caja |
+| Puntos             | Datos que quedan fuera de los bigotes                             |
+
+```{r, fig.width=8, fig.height=3.6, fig.cap="Tiempos de la carrera según el sexo.", fig.alt="Dos gráficos de cajas horizontales. Las mujeres tienen una mediana mayor que los hombres, y hay puntos atípicos en los tiempos altos", out.width="100%"}
+par(mar = c(4.5, 6, 1, 1))
+
+boxplot(tiempo ~ CarreraLuz22$sex, horizontal = TRUE, col = "#BFD7EE", border = "#034A94",
+        ylim = c(30, 170), las = 1, xlab = "", ylab = "", outcol = "#034A94")
+title(xlab = "Tiempo (minutos)")
+```
+
+```{r}
+tapply(tiempo, CarreraLuz22$sex, quantile, probs = c(0.25, 0.50, 0.75))
+```
+
+La mediana de las mujeres es mayor que la de los hombres. Además, en los dos grupos hay tiempos altos que quedan por fuera de los bigotes.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo identificar datos atípicos?**</span>
+
+Un método común para identificar valores atípicos usa los cuartiles y el **rango intercuartílico**, $RIC = Q_3 - Q_1$. Es el criterio del gráfico de cajas, que se apoya en el trabajo de Tukey (1977):
+
+$$
+\text{Límite inferior} = Q_1 - 1.5 \times RIC
+\qquad
+\text{Límite superior} = Q_3 + 1.5 \times RIC
+$$
+
+Los valores que quedan fuera de esos límites se consideran atípicos. En los precios de las viviendas:
+
+```{r}
+cuartiles_precio <- quantile(precio, c(0.25, 0.75), na.rm = TRUE)
+ric <- IQR(precio, na.rm = TRUE)
+
+limite_superior <- cuartiles_precio[2] + 1.5 * ric
+limite_inferior <- cuartiles_precio[1] - 1.5 * ric
+
+c(limite_inferior, limite_superior)
+sum(precio > limite_superior, na.rm = TRUE)
+```
+
+Hay `r sum(precio > limite_superior, na.rm = TRUE)` viviendas con un precio superior a `r format(unname(limite_superior), big.mark = ",")` millones. Un dato atípico no siempre es un error. Antes de eliminarlo, conviene revisar por qué aparece: aquí puede tratarse de viviendas de precio alto.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                       | Causa                                               | Solución                                         |
+|:-----------------------------------------------|:----------------------------------------------------|:-------------------------------------------------|
+| `quantile()` genera un error por valores faltantes | La variable tiene `NA`                          | Usar `na.rm = TRUE`                              |
+| `median()` da `NA`                             | La variable tiene `NA`                              | Usar `na.rm = TRUE`, y reportar cuántos faltan   |
+| El resultado no coincide con otro programa     | Se usan métodos distintos                           | Revisar el argumento `type`                      |
+| Confundir un percentil con un porcentaje       | Un percentil es un valor; el porcentaje indica cuántos datos deja por debajo | Indicar los dos: el 90 % tardó 82.5 minutos o menos |
+| Decir que un percentil alto siempre es mejor   | Depende de la variable                              | Revisar si conviene un valor alto o bajo         |
+| Eliminar los atípicos de forma automática      | Se asume que son errores                            | Revisar cada caso y reportar la decisión         |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Calcule a mano**</span>
+
+Con los datos 12, 15, 18, 20, 25, 30, 41 y 50, calcule $Q_1$ con la fórmula y compruébelo con `quantile()`.
+
+<details>
+<summary>Ver solución</summary>
+
+$h = (8 - 1)(0.25) + 1 = 2.75$. Se interpola entre el segundo y el tercer dato: $15 + 0.75(18 - 15) = 17.25$.
+
+```{r}
+quantile(c(12, 15, 18, 20, 25, 30, 41, 50), 0.25)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Edades de los atletas**</span>
+
+Calcule los cuartiles de `edad` en `CarreraLuz22` y escriba una oración con el resultado.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+quantile(CarreraLuz22$edad, c(0.25, 0.50, 0.75))
+```
+
+La edad mediana fue de 36 años, y la mitad central de los atletas tuvo entre 30 y 44 años.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿En qué posición está?**</span>
+
+Un atleta tardó 75 minutos en `CarreraLuz22`. ¿Qué porcentaje de los atletas tardó ese tiempo o menos?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+100 * mean(tiempo <= 75)
+```
+
+Cerca del `r round(100 * mean(tiempo <= 75))` % de los atletas tardó 75 minutos o menos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Atípicos en la carrera**</span>
+
+Aplique la regla de 1.5 veces el rango intercuartílico a los tiempos de la carrera. ¿Cuántos atletas quedan por encima del límite superior?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+Q <- quantile(tiempo, c(0.25, 0.75))
+limite <- Q[2] + 1.5 * IQR(tiempo)
+
+limite
+sum(tiempo > limite)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Mejore la redacción**</span>
+
+Reescriba este texto para un informe: *Q1 es 56.35. Q2 es 63.51. Q3 es 73.26. Unidad: minutos.*
+
+<details>
+<summary>Ver solución</summary>
+
+Una redacción posible es: *El tiempo mediano fue de 63.5 minutos, y la mitad central de los atletas tardó entre 56.4 y 73.3 minutos.*
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se lee en línea o se descarga en PDF desde esa página. La sección [2.3](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-3-medidas-de-la-ubicacion-de-los-datos) trata las medidas de la ubicación de los datos.
+- Illowsky, B. y Dean, S. [*Introductory Statistics 2e*](https://openstax.org/books/introductory-statistics-2e/pages/preface). OpenStax.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Devore, J. L. (2016). [*Probabilidad y estadística para ingeniería y ciencias*](https://www.cengage.com/c/ebook-probabilidad-y-estad%C3%ADstica-para-ingenier%C3%ADa-y-ciencias-9e-devore/9780357086933/) (9.ª ed.). Cengage Learning.
+- Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
+- Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
+- Tukey, J. W. (1977). [*Exploratory Data Analysis*](https://www.pearson.com/en-us/subject-catalog/p/exploratory-data-analysis-classic-version/P200000006400/9780134995458). Addison-Wesley.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- DANE. (2026). [Pobreza monetaria en Colombia, año 2025](https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf). Boletín técnico.
+- Eastin, C. y Eastin, T. (2020). [Reseña de Clinical Characteristics of Coronavirus Disease 2019 in China](https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766). *The Journal of Emergency Medicine*, 58(4), 711-712.
+- Hyndman, R. J. y Fan, Y. (1996). [Sample quantiles in statistical packages](https://doi.org/10.1080/00031305.1996.10473566). *The American Statistician*, 50(4), 361-365.
+- Icfes. (2024). [¿Cómo se reportan los resultados individuales teniendo en cuenta el enfoque diferencial?](https://www.icfes.gov.co/wp-content/uploads/2025/02/14-Edicion-Como-se-reportan-los-resultados-individuales-teniendo-en-cuenta-el-enfoque-diferencial.pdf). Edición 14.
+- Kollar, M. y Scherer, Z. (2026). [Income in the United States: 2025](https://www2.census.gov/library/publications/2026/demo/p60-289.pdf). U.S. Census Bureau.
+- Organización Mundial de la Salud. [Weight-for-age](https://www.who.int/tools/child-growth-standards/standards/weight-for-age).
+- R Core Team. [quantile: Sample Quantiles](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile).
+- Tukey, J. W. (1977). *Exploratory Data Analysis*. Addison-Wesley.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

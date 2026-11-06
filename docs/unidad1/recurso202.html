@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Indicadores estadísticos</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Indicadores estadísticos</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>El tablero de un automóvil muestra la velocidad, el nivel de
+combustible y la temperatura del motor. Cada indicador resume
+información en un dato que el conductor entiende de inmediato.</p>
+<p><img src="img/tablero_carro.gif" alt="Tablero de un automóvil con varios indicadores" width="60%" style="display: block; margin: auto;" /></p>
+<p>Con los datos ocurre algo similar. Una base puede tener miles de
+filas, pero unos pocos indicadores permiten describirla, compararla y
+comunicar lo importante. Esta página presenta qué son, qué tipos existen
+y dónde se usan.</p>
+<p><br/></p>
+<div id="qué-es-un-indicador-estadístico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un indicador
+estadístico?</strong></span></h2>
+<p>Un <strong>indicador estadístico</strong> es un número calculado a
+partir de los datos que resume una característica de una variable. Por
+ejemplo, la media resume el valor típico, y la desviación estándar
+resume qué tan separados están los datos.</p>
+<p>Si se calcula con todas las unidades de una población, se llama
+<strong>parámetro</strong>. Si se calcula con una muestra, es una
+<strong>estimación</strong>.</p>
+<p><br/></p>
+</div>
+<div id="qué-tipos-existen" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tipos
+existen?</strong></span></h2>
+<p>Para una variable cuantitativa, los indicadores se agrupan según la
+pregunta que responden:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="32%" />
+<col width="47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Pregunta que responde</th>
+<th align="left">Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>De centro</strong></td>
+<td align="left">¿Cuál es un valor típico?</td>
+<td align="left">Media, mediana y moda</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>De posición</strong></td>
+<td align="left">¿Qué valor deja un porcentaje de datos por debajo?</td>
+<td align="left">Cuartiles, deciles, quintiles y percentiles</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>De dispersión</strong></td>
+<td align="left">¿Qué tan separados están los datos?</td>
+<td align="left">Rango, varianza, desviación estándar y coeficiente de
+variación</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>De forma</strong></td>
+<td align="left">¿Cómo es la distribución?</td>
+<td align="left">Asimetría y curtosis</td>
+</tr>
+</tbody>
+</table>
+<p>Estos indicadores describen a los tiempos de la carrera La Luz
+2022:</p>
+<pre class="r"><code>tiempo &lt;- CarreraLuz22$timerun / 60
+
+resumen &lt;- c(
+  media = mean(tiempo),
+  mediana = median(tiempo),
+  cuartil_1 = unname(quantile(tiempo, 0.25)),
+  cuartil_3 = unname(quantile(tiempo, 0.75)),
+  desviacion = sd(tiempo),
+  coef_variacion = 100 * sd(tiempo) / mean(tiempo),
+  asimetria = mean((tiempo - mean(tiempo))^3) / sd(tiempo)^3
+)
+
+round(resumen, 2)
+         media        mediana      cuartil_1      cuartil_3     desviacion 
+         65.26          63.51          56.35          73.26          12.72 
+coef_variacion      asimetria 
+         19.49           0.69 </code></pre>
+<p>Con esos valores se puede decir que el tiempo típico fue de cerca de
+64 minutos, que la mitad central de los atletas tardó entre 56.4 y 73.3
+minutos, y que hay una cola de tiempos altos. Las próximas páginas
+explican cada indicador.</p>
+<p><br/></p>
+</div>
+<div id="dónde-se-usan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Dónde se
+usan?</strong></span></h2>
+<p>Los indicadores aparecen en boletines oficiales, informes y artículos
+científicos. Estos son algunos ejemplos reales:</p>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="30%" />
+<col width="29%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Ámbito</th>
+<th align="left">Publicación</th>
+<th align="left">Indicador</th>
+<th align="left">Valor reportado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Precios</td>
+<td align="left"><a
+href="https://www.dane.gov.co/files/operaciones/IPC/sep2026/bol-IPC-sep2026.pdf">DANE,
+IPC, septiembre de 2026</a></td>
+<td align="left">Variación anual del IPC</td>
+<td align="left">6.29 %</td>
+</tr>
+<tr class="even">
+<td align="left">Empleo</td>
+<td align="left"><a
+href="https://www.dane.gov.co/files/operaciones/GEIH/bol-GEIH-ago2026.pdf">DANE,
+GEIH, agosto de 2026</a></td>
+<td align="left">Tasa de desocupación</td>
+<td align="left">9.4 %, frente a 8.6 % en agosto de 2025</td>
+</tr>
+<tr class="odd">
+<td align="left">Pobreza y desigualdad</td>
+<td align="left"><a
+href="https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf">DANE,
+pobreza monetaria, 2025</a></td>
+<td align="left">Incidencia de pobreza y coeficiente de Gini</td>
+<td align="left">28.0 % y 0.531</td>
+</tr>
+<tr class="even">
+<td align="left">Educación</td>
+<td align="left"><a
+href="https://www.icfes.gov.co/wp-content/uploads/2025/04/Informe_Saber11_2023.pdf">Icfes,
+Saber 11, 2023</a></td>
+<td align="left">Promedio y desviación estándar del puntaje global,
+calendario A</td>
+<td align="left">257 y 51 puntos</td>
+</tr>
+<tr class="odd">
+<td align="left">Salud infantil</td>
+<td align="left"><a
+href="https://www.who.int/tools/child-growth-standards/standards/weight-for-age">OMS,
+estándares de crecimiento</a></td>
+<td align="left">Percentiles y puntajes z de peso para la edad</td>
+<td align="left">Tablas por sexo y edad</td>
+</tr>
+<tr class="even">
+<td align="left">Ingresos</td>
+<td align="left"><a
+href="https://www2.census.gov/library/publications/2026/demo/p60-289.pdf">U.S.
+Census Bureau, 2025</a></td>
+<td align="left">Mediana del ingreso de los hogares e índice de
+Gini</td>
+<td align="left">USD 87,460 y 0.490</td>
+</tr>
+<tr class="odd">
+<td align="left">Investigación clínica</td>
+<td align="left"><a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766">Guan et
+al. (2020), reseñado por Eastin y Eastin</a></td>
+<td align="left">Edad mediana y rango intercuartílico de 1,099
+pacientes</td>
+<td align="left">47 años (35 a 58)</td>
+</tr>
+</tbody>
+</table>
+<p>Algunos de estos indicadores son <strong>proporciones</strong>, como
+la tasa de desocupación, y otros se construyen con métodos propios. El
+<a
+href="https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf">DANE</a>,
+por ejemplo, define el coeficiente de Gini como un indicador de
+desigualdad cuyos valores van de 0, igualdad absoluta, a 1, desigualdad
+absoluta.</p>
+<p><br/></p>
+</div>
+<div id="por-qué-no-basta-un-solo-indicador" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Por qué no basta un solo
+indicador?</strong></span></h2>
+<p>Dos grupos pueden tener la misma media y ser muy distintos. Estas son
+las edades de dos grupos de 30 personas:</p>
+<pre class="r"><code>grupo1 &lt;- c(27, 27, 28, 28, 34, 28, 26, 33, 24, 28, 25, 25, 33, 27, 34,
+            38, 24, 26, 22, 23, 33, 23, 26, 26, 32, 33, 29, 30, 25, 23)
+grupo2 &lt;- c(35, 25, 19, 17, 24, 17, 55, 25, 31, 35, 43, 28, 32, 19, 20,
+            17, 25, 18, 21, 22, 17, 35, 29, 20, 54, 46, 24, 29, 40, 18)
+
+c(media_1 = mean(grupo1), media_2 = mean(grupo2))
+media_1 media_2 
+     28      28 
+c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))
+desviacion_1 desviacion_2 
+    4.076848    10.811871 </code></pre>
+<p>Las dos medias son iguales, pero el grupo 2 tiene mucha más
+dispersión. Por eso, un indicador de centro se reporta junto con uno de
+dispersión.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-reportan-en-un-artículo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se reportan en un
+artículo?</strong></span></h2>
+<p>Las revistas científicas tienen guías para informar los resultados.
+Las <a
+href="https://emwa.org/wp-content/uploads/Media/media/2309/mew-253-lang-and-altman.pdf">guías
+SAMPL, de Lang y Altman</a>, tratan el reporte estadístico en la
+literatura biomédica y recomiendan lo siguiente:</p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="48%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Si la distribución es</th>
+<th align="left">Se reporta</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aproximadamente normal</td>
+<td align="left">Media (desviación estándar)</td>
+<td align="left">65.3 (12.7) minutos</td>
+</tr>
+<tr class="even">
+<td align="left">No normal</td>
+<td align="left">Mediana y rango intercuartílico u otro rango, con sus
+límites</td>
+<td align="left">63.5 (56.4 a 73.3) minutos</td>
+</tr>
+</tbody>
+</table>
+<p>Los ejemplos usan los tiempos de la carrera, solo para mostrar el
+formato. Además, las guías indican lo siguiente:</p>
+<ul>
+<li>Se escribe media (DE), y no media <span
+class="math inline">\(\pm\)</span> DE.</li>
+<li>El error estándar de la media no se usa para describir la
+variabilidad de los datos.</li>
+</ul>
+<p>La <a
+href="https://www.indianpediatrics.net/jan2020/jan-43-48.htm">versión
+mejorada de Indrayan (2020)</a> agrega que, en grupos de 4 datos o
+menos, se presentan los valores originales, y que los indicadores llevan
+un decimal más que los datos originales.</p>
+<p><br/></p>
+</div>
+<div id="cómo-leer-un-indicador" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo leer un
+indicador?</strong></span></h2>
+<p>Antes de usar una cifra conviene responder estas preguntas:</p>
+<ul>
+<li><strong>¿De quién habla?</strong> Población, lugar y periodo.</li>
+<li><strong>¿Cómo se calculó?</strong> Una media y una mediana pueden
+dar valores distintos.</li>
+<li><strong>¿Es un dato de toda la población o de una
+muestra?</strong></li>
+<li><strong>¿En qué unidad está?</strong> Por ejemplo, porcentaje,
+puntos, años o pesos.</li>
+<li><strong>¿Con qué se compara?</strong> El mes anterior, el mismo mes
+del año anterior u otro grupo.</li>
+</ul>
+<p>Por ejemplo, 9.4 % dice más cuando se sabe que es la tasa de
+desocupación del total nacional en agosto de 2026, y que en el mismo mes
+de 2025 fue de 8.6 %.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="33%" />
+<col width="34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Reportar solo la media</td>
+<td align="left">No se describe la variabilidad</td>
+<td align="left">Agregar un indicador de dispersión</td>
+</tr>
+<tr class="even">
+<td align="left">Usar la media en una variable muy asimétrica</td>
+<td align="left">Los datos extremos la afectan</td>
+<td align="left">Reportar también la mediana y el rango
+intercuartílico</td>
+</tr>
+<tr class="odd">
+<td align="left">Comparar cifras de periodos distintos sin
+aclararlo</td>
+<td align="left">Falta el contexto</td>
+<td align="left">Indicar población, lugar y periodo</td>
+</tr>
+<tr class="even">
+<td align="left">Confundir puntos porcentuales con porcentaje</td>
+<td align="left">De 8.6 % a 9.4 % hay 0.8 puntos porcentuales</td>
+<td align="left">Indicar qué tipo de cambio se reporta</td>
+</tr>
+<tr class="odd">
+<td align="left">Interpretar un percentil como un puntaje</td>
+<td align="left">El percentil indica una posición</td>
+<td align="left">Explicar qué porcentaje queda por debajo</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-clasifique-los-indicadores"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Clasifique los
+indicadores</strong></span></h3>
+<p>Indique si cada indicador es de centro, posición, dispersión o forma:
+mediana, percentil 90, rango intercuartílico, asimetría, moda y
+coeficiente de variación.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<ul>
+<li><strong>Centro:</strong> mediana y moda.</li>
+<li><strong>Posición:</strong> percentil 90. La mediana también es una
+posición, porque es el percentil 50.</li>
+<li><strong>Dispersión:</strong> rango intercuartílico y coeficiente de
+variación.</li>
+<li><strong>Forma:</strong> asimetría.</li>
+</ul>
+</details>
+</div>
+<div id="reto-2.-lea-un-resultado"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Lea un
+resultado</strong></span></h3>
+<p>Un artículo informa que la edad de 1,099 pacientes tuvo una mediana
+de 47 años, con rango intercuartílico de 35 a 58. ¿Qué significan esas
+cifras?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>La mitad de los pacientes tiene 47 años o menos. Cerca del 25 % tiene
+35 años o menos, cerca del 25 % tiene 58 años o más, y la mitad central
+está entre 35 y 58 años.</p>
+</details>
+</div>
+<div id="reto-3.-media-o-mediana"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Media o
+mediana?</strong></span></h3>
+<p>Suponga que cinco personas ganan 1.2, 1.3, 1.5, 1.8 y 30 millones de
+pesos al mes. Calcule la media y la mediana. ¿Cuál describe mejor a un
+ingreso típico?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>ingresos &lt;- c(1.2, 1.3, 1.5, 1.8, 30)
+
+c(media = mean(ingresos), mediana = median(ingresos))
+  media mediana 
+   7.16    1.50 </code></pre>
+<p>La mediana describe mejor un ingreso típico, porque un solo ingreso
+muy alto eleva la media por encima de lo que ganan los otros cuatro.</p>
+</details>
+</div>
+<div id="reto-4.-reporte-por-grupos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Reporte por
+grupos</strong></span></h3>
+<p>Con <code>CarreraLuz22</code>, calcule la media y la desviación
+estándar del tiempo en minutos para hombres y mujeres. Escríbalas en el
+formato media (DE).</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>medias &lt;- tapply(tiempo, CarreraLuz22$sex, mean)
+desviaciones &lt;- tapply(tiempo, CarreraLuz22$sex, sd)
+
+paste0(names(medias), &quot;: &quot;, round(medias, 1), &quot; (&quot;, round(desviaciones, 1), &quot;)&quot;)
+[1] &quot;Hombre: 62 (12.3)&quot;  &quot;Mujer: 70.4 (11.7)&quot;</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio"><em>Introducción
+a la estadística</em></a>. Está en español y se lee en línea o se
+descarga en PDF desde esa página.</li>
+<li>Illowsky, B. y Dean, S. <a
+href="https://openstax.org/books/introductory-statistics-2e/pages/preface"><em>Introductory
+Statistics 2e</em></a>. OpenStax.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro.</li>
+</ul>
+</div>
+<div id="fuentes-oficiales-de-datos" class="section level3">
+<h3><span style="color:#034a94"><strong>Fuentes oficiales de
+datos</strong></span></h3>
+<ul>
+<li><a href="https://www.dane.gov.co/">DANE</a>: boletines técnicos de
+precios, empleo y pobreza.</li>
+<li><a
+href="https://www.icfes.gov.co/estadisticas-oficiales/">Icfes</a>:
+estadísticas oficiales de evaluación educativa.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>DANE. (2026). <a
+href="https://www.dane.gov.co/files/operaciones/IPC/sep2026/bol-IPC-sep2026.pdf">Índice
+de Precios al Consumidor, septiembre de 2026</a>. Boletín técnico.</li>
+<li>DANE. (2026). <a
+href="https://www.dane.gov.co/files/operaciones/GEIH/bol-GEIH-ago2026.pdf">Gran
+Encuesta Integrada de Hogares, agosto de 2026</a>. Boletín técnico.</li>
+<li>DANE. (2026). <a
+href="https://www.dane.gov.co/files/operaciones/PM/bol-PM-2025.pdf">Pobreza
+monetaria en Colombia, año 2025</a>. Boletín técnico.</li>
+<li>Eastin, C. y Eastin, T. (2020). <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7266766">Reseña de
+Clinical Characteristics of Coronavirus Disease 2019 in China</a>.
+<em>The Journal of Emergency Medicine</em>, 58(4), 711-712.</li>
+<li>Icfes. (2024). <a
+href="https://www.icfes.gov.co/wp-content/uploads/2025/04/Informe_Saber11_2023.pdf">Informe
+nacional de resultados del examen Saber 11.º 2023</a>.</li>
+<li>Indrayan, A. (2020). <a
+href="https://www.indianpediatrics.net/jan2020/jan-43-48.htm">Reporting
+of Basic Statistical Methods in Biomedical Journals: Improved SAMPL
+Guidelines</a>. <em>Indian Pediatrics</em>, 57(1), 43-48.</li>
+<li>Kollar, M. y Scherer, Z. (2026). <a
+href="https://www2.census.gov/library/publications/2026/demo/p60-289.pdf">Income
+in the United States: 2025</a>. U.S. Census Bureau.</li>
+<li>Lang, T. A. y Altman, D. G. (2016). <a
+href="https://emwa.org/wp-content/uploads/Media/media/2309/mew-253-lang-and-altman.pdf">Statistical
+analyses and methods in the published literature: The SAMPL
+guidelines</a>. <em>Medical Writing</em>, 25(3), 31-36.</li>
+<li>Organización Mundial de la Salud. <a
+href="https://www.who.int/tools/child-growth-standards/standards/weight-for-age">Weight-for-age</a>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

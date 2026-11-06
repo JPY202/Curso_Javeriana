@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> RMarkdown</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>RMarkdown</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Analizar datos es solo una parte del trabajo: también hay que
+comunicar los resultados. Si el análisis se hace en un programa y el
+informe en otro, cada cambio en los datos obliga a copiar y pegar de
+nuevo tablas y gráficos, y es fácil cometer errores.</p>
+<p><strong>RMarkdown</strong> resuelve este problema: un solo archivo
+<code>.Rmd</code> reúne el texto, el código y sus resultados. Al generar
+el documento, el código se ejecuta de nuevo y los resultados se
+actualizan. Esto hace que el análisis sea <strong>reproducible</strong>:
+otra persona, o uno mismo tiempo después, puede repetirlo y obtener lo
+mismo.</p>
+<p><br/></p>
+<div id="qué-se-necesita" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se
+necesita?</strong></span></h2>
+<p>Según <a
+href="https://bookdown.org/yihui/rmarkdown/installation.html">R
+Markdown: The Definitive Guide</a>, para empezar se requiere:</p>
+<ul>
+<li><strong>R</strong> y <strong>RStudio</strong>. RStudio ya incluye
+Pandoc, el programa que convierte los documentos de un formato a
+otro.</li>
+<li>El paquete <code>rmarkdown</code>, que convierte un archivo
+<code>.Rmd</code> en un documento final. <strong>R</strong> lo necesita
+para generar cualquier documento.</li>
+<li><strong>LaTeX</strong>, el sistema que crea los PDF. Solo hace falta
+para generar ese formato. La forma más sencilla de instalarlo es con el
+paquete <code>tinytex</code>, que instala TinyTeX, una versión liviana
+de LaTeX.</li>
+</ul>
+<pre class="r"><code>install.packages(&quot;rmarkdown&quot;)
+
+# Solo para generar PDF
+install.packages(&quot;tinytex&quot;)
+tinytex::install_tinytex()</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-funciona" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo
+funciona?</strong></span></h2>
+<p>Según la documentación del paquete <code>rmarkdown</code>, un
+documento se genera en dos etapas. Primero, el paquete
+<code>knitr</code> ejecuta el código y escribe sus resultados en el
+texto. Luego, Pandoc convierte ese texto al formato elegido.</p>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_flujo.png" alt="Diagrama: el archivo Rmd pasa por knitr, se convierte en Markdown y Pandoc genera HTML, Word, PDF o presentaciones" width="100%" />
+<p class="caption">
+Proceso para generar un documento desde un archivo .Rmd
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cómo-crear-un-documento" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo crear un
+documento?</strong></span></h2>
+<div id="paso-1.-crear-el-archivo" class="section level3">
+<h3><span style="color:#034a94"><strong>Paso 1. Crear el
+archivo</strong></span></h3>
+<p>En <strong>RStudio</strong>, ingresar a <strong>File &gt; New File
+&gt; R Markdown…</strong></p>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_paso1_menu.png" alt="Menú File, New File de RStudio con la opción R Markdown seleccionada" width="70%" />
+<p class="caption">
+Menú para crear un archivo R Markdown
+</p>
+</div>
+</div>
+<div id="paso-2.-elegir-título-autor-y-formato" class="section level3">
+<h3><span style="color:#034a94"><strong>Paso 2. Elegir título, autor y
+formato</strong></span></h3>
+<p>En la ventana que aparece se escribe el título y el autor, y se elige
+el formato. Se recomienda empezar con <strong>HTML</strong>. El formato
+se puede cambiar después sin rehacer el documento.</p>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_paso2_ventana.png" alt="Ventana New R Markdown con campos de título, autor, fecha y las opciones HTML, PDF y Word" width="70%" />
+<p class="caption">
+Ventana New R Markdown
+</p>
+</div>
+<p>Al hacer clic en <strong>OK</strong>, RStudio abre una plantilla de
+ejemplo. Conviene guardarla de inmediato con extensión
+<code>.Rmd</code>, dentro del proyecto de <strong>RStudio</strong>.</p>
+</div>
+<div id="paso-3.-escribir-el-contenido" class="section level3">
+<h3><span style="color:#034a94"><strong>Paso 3. Escribir el
+contenido</strong></span></h3>
+<p>Un archivo <code>.Rmd</code> tiene tres partes:</p>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_paso3_partes.png" alt="Ejemplo de archivo Rmd con el encabezado YAML, el texto en Markdown y un bloque de código resaltados" width="100%" />
+<p class="caption">
+Partes de un archivo .Rmd
+</p>
+</div>
+</div>
+<div id="paso-4.-insertar-código-y-generar-el-documento"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Paso 4. Insertar código y
+generar el documento</strong></span></h3>
+<p>Un bloque de código se inserta con el botón verde <strong>C</strong>
+o con <strong>Ctrl + Alt + I</strong> (<strong>Cmd + Option + I</strong>
+en macOS). Cada bloque se puede probar con el triángulo verde que
+aparece a su derecha.</p>
+<p>Para generar el documento se usa el botón <strong>Knit</strong> o
+<strong>Ctrl + Shift + K</strong> (<strong>Cmd + Shift + K</strong> en
+macOS).</p>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_paso4_botones.png" alt="Barra de herramientas de RStudio con los botones Knit e insertar bloque de código resaltados" width="100%" />
+<p class="caption">
+Botones para insertar código y generar el documento
+</p>
+</div>
+</div>
+<div id="paso-5.-revisar-el-resultado" class="section level3">
+<h3><span style="color:#034a94"><strong>Paso 5. Revisar el
+resultado</strong></span></h3>
+<p><strong>RStudio</strong> muestra el documento y guarda el archivo de
+salida en la misma carpeta del <code>.Rmd</code>. Este es el resultado
+del ejemplo de esta página:</p>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_salida_html.png" alt="Documento HTML con título, texto, tabla y gráfico de dispersión" width="75%" />
+<p class="caption">
+Documento HTML generado
+</p>
+</div>
+</div>
+<div id="ejemplo-completo" class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Ejemplo
+completo</strong></span></h3>
+<p><a href="data/ejemplo_rmarkdown.Rmd" download>Descargar
+ejemplo_rmarkdown.Rmd</a>. Ábralo en <strong>RStudio</strong> y haga
+clic en <strong>Knit</strong>.</p>
+</div>
+<p>Este es su contenido:</p>
+<pre><code>---
+title: &quot;Rendimiento de combustible&quot;
+author: &quot;Nombre del estudiante&quot;
+date: &quot;4 de noviembre de 2026&quot;
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+## Introducción
+
+Este informe analiza la relación entre el peso de un automóvil y su rendimiento de combustible. Se usa la base `mtcars`, incluida en **R**, que tiene `r nrow(mtcars)` modelos.
+
+## Resumen de los datos
+
+El rendimiento promedio es de `r round(mean(mtcars$mpg), 1)` millas por galón.
+
+```{r}
+resumen &lt;- aggregate(mpg ~ cyl, data = mtcars, FUN = mean)
+names(resumen) &lt;- c(&quot;Cilindros&quot;, &quot;Rendimiento medio (mpg)&quot;)
+knitr::kable(resumen, digits = 1, caption = &quot;Rendimiento medio según el número de cilindros&quot;)
+```
+
+## Gráfico
+
+```{r, fig.cap=&quot;Relación entre peso y rendimiento&quot;, fig.width=5.5, fig.height=3}
+plot(mtcars$wt, mtcars$mpg, pch = 19, col = &quot;#034A94&quot;, las = 1,
+     xlab = &quot;Peso (miles de libras)&quot;, ylab = &quot;Rendimiento (mpg)&quot;)
+abline(lm(mpg ~ wt, data = mtcars), col = &quot;#FF7F00&quot;, lwd = 2)
+```
+
+## Conclusión
+
+Los automóviles más pesados tienden a recorrer menos millas por galón.</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-escribir-con-markdown" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo escribir con
+Markdown?</strong></span></h2>
+<p>Markdown es una forma simple de dar formato usando texto plano.</p>
+<table>
+<colgroup>
+<col width="51%" />
+<col width="48%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Se escribe</th>
+<th align="left">Se obtiene</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code># Título 1</code></td>
+<td align="left">título de primer nivel</td>
+</tr>
+<tr class="even">
+<td align="left"><code>## Título 2</code></td>
+<td align="left">título de segundo nivel</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>**negrita**</code></td>
+<td align="left"><strong>negrita</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>*cursiva*</code></td>
+<td align="left"><em>cursiva</em></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>`codigo`</code></td>
+<td align="left"><code>codigo</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>- elemento</code></td>
+<td align="left">lista con viñetas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>1. elemento</code></td>
+<td align="left">lista numerada</td>
+</tr>
+<tr class="even">
+<td align="left"><code>[Posit](https://posit.co)</code></td>
+<td align="left"><a href="https://posit.co">Posit</a></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>![Descripción](img/logoR.png)</code></td>
+<td align="left">imagen</td>
+</tr>
+<tr class="even">
+<td align="left"><code>$\bar{x}$</code></td>
+<td align="left"><span class="math inline">\(\bar{x}\)</span></td>
+</tr>
+<tr class="odd">
+<td
+align="left"><code>$$s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2$$</code></td>
+<td align="left">ecuación centrada</td>
+</tr>
+</tbody>
+</table>
+<p>Una tabla se puede escribir directamente:</p>
+<pre><code>| Grupo | Promedio |
+|:------|---------:|
+| A     |      3.8 |
+| B     |      4.1 |</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-incluir-código-y-resultados" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo incluir código y
+resultados?</strong></span></h2>
+<div id="bloques-de-código" class="section level3">
+<h3><span style="color:#034a94"><strong>Bloques de
+código</strong></span></h3>
+<p>Un bloque empieza con <code>```{r}</code> y termina con
+<code>```</code>. Se le puede dar un nombre y agregar opciones que
+controlan qué aparece en el documento:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Opción</th>
+<th align="left">Qué hace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>echo = FALSE</code></td>
+<td align="left">oculta el código y muestra el resultado</td>
+</tr>
+<tr class="even">
+<td align="left"><code>eval = FALSE</code></td>
+<td align="left">muestra el código sin ejecutarlo</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>include = FALSE</code></td>
+<td align="left">ejecuta el código sin mostrar nada</td>
+</tr>
+<tr class="even">
+<td align="left"><code>message = FALSE</code></td>
+<td align="left">oculta los mensajes</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>warning = FALSE</code></td>
+<td align="left">oculta las advertencias</td>
+</tr>
+<tr class="even">
+<td align="left"><code>fig.cap = "Título"</code></td>
+<td align="left">agrega un título a la figura</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>fig.width</code>, <code>fig.height</code></td>
+<td align="left">define el tamaño de la figura, en pulgadas</td>
+</tr>
+<tr class="even">
+<td align="left"><code>cache = TRUE</code></td>
+<td align="left">guarda el resultado para no recalcularlo</td>
+</tr>
+</tbody>
+</table>
+<p>Las opciones que se repiten se definen una sola vez en el primer
+bloque:</p>
+<pre class="r"><code>knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)</code></pre>
+</div>
+<div id="código-dentro-del-texto" class="section level3">
+<h3><span style="color:#034a94"><strong>Código dentro del
+texto</strong></span></h3>
+<p>Un resultado también se puede insertar en una oración. Así, al
+escribir</p>
+<pre>
+La base tiene `r nrow(mtcars)` modelos.
+</pre>
+<p>se obtiene: La base tiene 32 modelos. De esta forma las cifras del
+texto se actualizan solas si cambian los datos.</p>
+</div>
+<div id="tablas" class="section level3">
+<h3><span style="color:#034a94"><strong>Tablas</strong></span></h3>
+<p>La función <code>kable()</code>, del paquete <code>knitr</code>,
+convierte un data frame en una tabla con formato. El paquete
+<code>knitr</code> se instala junto con <code>rmarkdown</code>. Se
+escribe <code>knitr::kable()</code> para usar la función sin cargar todo
+el paquete con <code>library()</code>:</p>
+<pre class="r"><code>knitr::kable(head(iris, 3), caption = &quot;Primeros registros de la base iris&quot;)</code></pre>
+<table>
+<caption>Primeros registros de la base iris</caption>
+<thead>
+<tr class="header">
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="left">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">5.1</td>
+<td align="right">3.5</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">4.9</td>
+<td align="right">3.0</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="right">4.7</td>
+<td align="right">3.2</td>
+<td align="right">1.3</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-tipos-de-documento-se-pueden-generar"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tipos de documento se
+pueden generar?</strong></span></h2>
+<p>El formato se define en el campo <code>output</code> del encabezado.
+El paquete <code>rmarkdown</code> incluye los siguientes:</p>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="29%" />
+<col width="26%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Valor de <code>output</code></th>
+<th align="left">Genera</th>
+<th align="left">Requiere</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Documento</td>
+<td align="left"><code>html_document</code></td>
+<td align="left">página web</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"><code>pdf_document</code></td>
+<td align="left">PDF</td>
+<td align="left">LaTeX</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"><code>word_document</code></td>
+<td align="left">Word (.docx)</td>
+<td align="left">Word o LibreOffice para abrirlo</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"><code>odt_document</code></td>
+<td align="left">OpenDocument (.odt)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"><code>rtf_document</code></td>
+<td align="left">texto enriquecido (.rtf)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"><code>md_document</code></td>
+<td align="left">Markdown</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"><code>github_document</code></td>
+<td align="left">Markdown para GitHub</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Cuaderno</td>
+<td align="left"><code>html_notebook</code></td>
+<td align="left">cuaderno interactivo</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Presentación</td>
+<td align="left"><code>ioslides_presentation</code></td>
+<td align="left">diapositivas HTML</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"><code>slidy_presentation</code></td>
+<td align="left">diapositivas HTML</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"><code>beamer_presentation</code></td>
+<td align="left">diapositivas PDF</td>
+<td align="left">LaTeX</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"><code>powerpoint_presentation</code></td>
+<td align="left">PowerPoint (.pptx)</td>
+<td align="left">PowerPoint o LibreOffice para abrirlo</td>
+</tr>
+</tbody>
+</table>
+<div id="un-mismo-archivo-varios-formatos" class="section level3">
+<h3><span style="color:#034a94"><strong>Un mismo archivo, varios
+formatos</strong></span></h3>
+<p>Estas imágenes salieron del mismo archivo
+<code>ejemplo_rmarkdown.Rmd</code>. Solo cambió el valor de
+<code>output</code>.</p>
+<div class="row">
+<div class="col-sm-6">
+<div class="figure">
+<img src="img/rmd_salida_pdf.png" alt="Página del ejemplo en PDF" width="100%" />
+<p class="caption">
+pdf_document
+</p>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="figure">
+<img src="img/rmd_salida_word.png" alt="Página del ejemplo en Word" width="100%" />
+<p class="caption">
+word_document
+</p>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-6">
+<div class="figure">
+<img src="img/rmd_salida_beamer.png" alt="Diapositiva del ejemplo en Beamer" width="100%" />
+<p class="caption">
+beamer_presentation
+</p>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="figure">
+<img src="img/rmd_salida_powerpoint.png" alt="Diapositiva del ejemplo en PowerPoint" width="100%" />
+<p class="caption">
+powerpoint_presentation
+</p>
+</div>
+</div>
+</div>
+<div class="figure" style="text-align: center">
+<img src="img/rmd_salida_slidy.png" alt="Diapositiva del ejemplo en Slidy" width="60%" />
+<p class="caption">
+slidy_presentation
+</p>
+</div>
+<p>En las presentaciones, cada título <code>##</code> inicia una
+diapositiva.</p>
+</div>
+<div id="opciones-del-encabezado" class="section level3">
+<h3><span style="color:#034a94"><strong>Opciones del
+encabezado</strong></span></h3>
+<p>Cada formato admite opciones. Por ejemplo, este encabezado agrega una
+tabla de contenido, numera las secciones y permite ocultar el
+código:</p>
+<pre><code>---
+title: &quot;Mi informe&quot;
+author: &quot;Nombre&quot;
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+---</code></pre>
+</div>
+<div id="otros-documentos-con-paquetes-adicionales"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Otros documentos con paquetes
+adicionales</strong></span></h3>
+<p>Con otros paquetes se pueden crear <a
+href="https://bookdown.org/yihui/rmarkdown/">más tipos de documento</a>.
+Cada uno se instala con <code>install.packages()</code> y agrega sus
+plantillas a <strong>File &gt; New File &gt; R Markdown &gt; From
+Template</strong>.</p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="55%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Para qué sirve</th>
+<th align="left">Ejemplo de uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>flexdashboard</code></td>
+<td align="left">Organiza gráficos e indicadores en un tablero</td>
+<td align="left">Seguimiento mensual de ventas</td>
+</tr>
+<tr class="even">
+<td align="left"><code>bookdown</code></td>
+<td align="left">Escribe documentos largos con capítulos y referencias
+cruzadas</td>
+<td align="left">Libro, tesis o manual</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>blogdown</code></td>
+<td align="left">Crea sitios web y blogs</td>
+<td align="left">Página personal con publicaciones</td>
+</tr>
+<tr class="even">
+<td align="left"><code>rticles</code></td>
+<td align="left">Ofrece plantillas con el formato de revistas
+científicas</td>
+<td align="left">Artículo para enviar a una revista</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>xaringan</code></td>
+<td align="left">Crea presentaciones HTML con más opciones de
+diseño</td>
+<td align="left">Clase o sustentación</td>
+</tr>
+<tr class="even">
+<td align="left"><code>revealjs</code></td>
+<td align="left">Crea presentaciones HTML con transiciones</td>
+<td align="left">Charla o conferencia</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>learnr</code></td>
+<td align="left">Convierte un documento en un tutorial con
+ejercicios</td>
+<td align="left">Material de práctica para estudiantes</td>
+</tr>
+<tr class="even">
+<td align="left"><code>shiny</code></td>
+<td align="left">Agrega controles que el lector puede cambiar</td>
+<td align="left">Aplicación para explorar datos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tufte</code></td>
+<td align="left">Da formato de documento con notas al margen</td>
+<td align="left">Informe con comentarios laterales</td>
+</tr>
+</tbody>
+</table>
+<p>Este sitio no necesita un paquete adicional: se construye con
+<code>rmarkdown::render_site()</code>, que convierte varios
+<code>.Rmd</code> en un sitio web.</p>
+</div>
+<div id="informes-con-parámetros" class="section level3">
+<h3><span style="color:#034a94"><strong>Informes con
+parámetros</strong></span></h3>
+<p>Un mismo informe se puede repetir para distintos casos. Los
+parámetros se definen en el encabezado y se usan en el código como
+<code>params$ciudad</code>:</p>
+<pre><code>---
+title: &quot;Informe por ciudad&quot;
+output: html_document
+params:
+  ciudad: &quot;Cali&quot;
+---</code></pre>
+<pre class="r"><code>rmarkdown::render(&quot;informe.Rmd&quot;, params = list(ciudad = &quot;Pasto&quot;))</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-diferencia-hay-entre-rmarkdown-y-quarto"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué diferencia hay entre
+RMarkdown y Quarto?</strong></span></h2>
+<p><a href="https://quarto.org/">Quarto</a> es el sistema de publicación
+más reciente, creado también por Posit. Funciona con R, Python y Julia,
+y usa archivos <code>.qmd</code> con una sintaxis muy parecida. Se elige
+desde <strong>File &gt; New File &gt; Quarto Document…</strong> y el
+formato se indica con <code>format: html</code>.</p>
+<p>RMarkdown <a
+href="https://blog.jumpingrivers.com/blog/quarto-rmarkdown-comparison/">sigue
+con mantenimiento y soporte</a>, de modo que no es obligatorio migrar.
+Lo aprendido en esta página sirve para ambos.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table>
+<colgroup>
+<col width="28%" />
+<col width="38%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Funciona en la consola, pero Knit falla con
+<code>object not found</code></td>
+<td align="left">Knit trabaja en una sesión nueva y no ve los objetos
+del ambiente</td>
+<td align="left">Crear o cargar los objetos dentro del
+<code>.Rmd</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>could not find function</code></td>
+<td align="left">Falta cargar un paquete</td>
+<td align="left">Agregar <code>library()</code> en un bloque</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>cannot open file</code></td>
+<td align="left">La ruta no es relativa a la carpeta del
+<code>.Rmd</code></td>
+<td align="left">Usar proyectos y rutas relativas</td>
+</tr>
+<tr class="even">
+<td align="left">El PDF no se genera</td>
+<td align="left">No hay LaTeX instalado</td>
+<td align="left">Instalar TinyTeX</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>duplicate label</code></td>
+<td align="left">Dos bloques tienen el mismo nombre</td>
+<td align="left">Cambiar uno de los nombres</td>
+</tr>
+<tr class="even">
+<td align="left">Error con <code>install.packages()</code></td>
+<td align="left">Se dejó esa instrucción en un bloque</td>
+<td align="left">Instalar en la consola, una sola vez</td>
+</tr>
+<tr class="odd">
+<td align="left">El documento se corta o se ve mal</td>
+<td align="left">Falta cerrar un bloque con <code>```</code></td>
+<td align="left">Revisar el cierre de cada bloque</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-un-archivo-dos-formatos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Un archivo, dos
+formatos</strong></span></h3>
+<p>Descargue <code>ejemplo_rmarkdown.Rmd</code>, ábralo en
+<strong>RStudio</strong> y genere el documento. Después obtenga una
+versión en Word sin cambiar el contenido.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>En el encabezado, cambie <code>output: html_document</code> por
+<code>output: word_document</code> y haga clic en <strong>Knit</strong>.
+El archivo <code>.docx</code> queda en la misma carpeta del
+<code>.Rmd</code>.</p>
+</details>
+</div>
+<div id="reto-2.-su-primer-informe"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Su primer
+informe</strong></span></h3>
+<p>Cree un documento HTML con la base <code>iris</code> que incluya
+título, autor, una tabla con la media de <code>Sepal.Length</code> por
+especie, un gráfico y una oración cuya cifra se calcule con código
+dentro del texto.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Esta es una solución posible:</p>
+<pre><code>---
+title: &quot;Longitud del sépalo por especie&quot;
+author: &quot;Nombre del estudiante&quot;
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+## Resumen
+
+La base `iris` tiene `r nrow(iris)` flores y la longitud media del sépalo es de `r round(mean(iris$Sepal.Length), 2)` cm.
+
+```{r}
+medias &lt;- aggregate(Sepal.Length ~ Species, data = iris, FUN = mean)
+names(medias) &lt;- c(&quot;Especie&quot;, &quot;Longitud media (cm)&quot;)
+knitr::kable(medias, digits = 2, caption = &quot;Longitud media del sépalo por especie&quot;)
+```
+
+## Gráfico
+
+```{r, fig.cap=&quot;Longitud del sépalo por especie&quot;}
+boxplot(Sepal.Length ~ Species, data = iris, las = 1,
+        xlab = &quot;Especie&quot;, ylab = &quot;Longitud del sépalo (cm)&quot;)
+```</code></pre>
+</details>
+</div>
+<div id="reto-3.-un-informe-para-otro-lector"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Un informe para otro
+lector</strong></span></h3>
+<p>Modifique el informe del reto anterior para que tenga tabla de
+contenido y no muestre el código ni los mensajes. Luego elimine las
+filas de la especie <code>setosa</code> y compruebe que las cifras del
+texto se actualizan solas.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>La tabla de contenido se activa en el encabezado:</p>
+<pre><code>output:
+  html_document:
+    toc: true</code></pre>
+<p>El código y los mensajes se ocultan en el primer bloque. Allí mismo
+se pueden cambiar los datos, y los demás bloques deben usar
+<code>datos</code> en lugar de <code>iris</code>:</p>
+<pre class="r"><code>knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+datos &lt;- subset(iris, Species != &quot;setosa&quot;)</code></pre>
+<p>Al generar de nuevo el documento, la oración indica 100 flores en
+lugar de 150.</p>
+</details>
+</div>
+<div id="reto-4.-funciona-en-la-consola-pero-no-en-knit"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Funciona en la consola,
+pero no en Knit</strong></span></h3>
+<p>Una persona ejecuta <code>datos &lt;- iris</code> en la consola. Su
+archivo <code>.Rmd</code> solo tiene un bloque con
+<code>summary(datos)</code>. Al hacer clic en <strong>Knit</strong>
+aparece el error <code>object 'datos' not found</code>. ¿Qué pasó y cómo
+se corrige?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><strong>Knit</strong> trabaja en una sesión nueva y no ve los objetos
+creados en la consola. Se debe crear el objeto dentro del
+<code>.Rmd</code>, antes de usarlo:</p>
+<pre class="r"><code>datos &lt;- iris
+summary(datos)</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-gratuitos-en-línea" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros gratuitos en
+línea</strong></span></h3>
+<ul>
+<li>Xie, Y., Allaire, J. J. y Grolemund, G. (2018). <a
+href="https://bookdown.org/yihui/rmarkdown/">R Markdown: The Definitive
+Guide</a>. Chapman &amp; Hall/CRC. Es la guía completa.</li>
+<li>Xie, Y., Dervieux, C. y Riederer, E. (2020). <a
+href="https://bookdown.org/yihui/rmarkdown-cookbook/">R Markdown
+Cookbook</a>. Chapman &amp; Hall/CRC. Reúne soluciones prácticas a
+tareas concretas.</li>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://davidrsch.github.io/r4ds-es/">R para Ciencia de Datos</a>
+(2.ª ed., traducción al español). La parte de comunicación trata
+Quarto.</li>
+<li>Xie, Y. <a href="https://bookdown.org/yihui/bookdown/">bookdown:
+Authoring Books and Technical Documents with R Markdown</a>. Explica
+cómo escribir libros y documentos largos.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Xie, Y. (2015). <em>Dynamic Documents with R and knitr</em> (2.ª
+ed.). Chapman &amp; Hall/CRC.</li>
+<li>Gandrud, C. (2020). <em>Reproducible Research with R and
+RStudio</em> (3.ª ed.). Chapman &amp; Hall/CRC.</li>
+</ul>
+</div>
+<div id="recursos-oficiales" class="section level3">
+<h3><span style="color:#034a94"><strong>Recursos
+oficiales</strong></span></h3>
+<ul>
+<li><a href="https://rmarkdown.rstudio.com/">Sitio de R Markdown</a>,
+con tutoriales.</li>
+<li><a href="https://rmarkdown.rstudio.com/gallery.html">Galería de R
+Markdown</a>, con ejemplos de documentos.</li>
+<li><a href="https://rstudio.github.io/cheatsheets/">Hojas de referencia
+de Posit</a>, con traducciones al español.</li>
+<li><a href="https://quarto.org/docs/guide/">Guía de Quarto</a>.</li>
+</ul>
+</div>
+<div id="videos" class="section level3">
+<h3><span style="color:#034a94"><strong>Videos</strong></span></h3>
+<p>Estos videos en español complementan la página. Algunos son de hace
+varios años, así que la apariencia de <strong>RStudio</strong> puede
+variar.</p>
+<table>
+<colgroup>
+<col width="42%" />
+<col width="19%" />
+<col width="4%" />
+<col width="32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Video</th>
+<th align="left">Canal</th>
+<th align="left">Año</th>
+<th align="left">Tema</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><a
+href="https://www.youtube.com/watch?v=6Qj8yBFgT9Q">Aprende lo Básico de
+R Markdown en 20 Minutos</a></td>
+<td align="left">José Antonio: Estadística Aplicada</td>
+<td align="left">2021</td>
+<td align="left">Introducción</td>
+</tr>
+<tr class="even">
+<td align="left"><a
+href="https://www.youtube.com/watch?v=V0eJE55aTrY">Videotutorial 3.
+RMarkdown para principiantes</a></td>
+<td align="left">Máxima Formación</td>
+<td align="left">2018</td>
+<td align="left">Documentos reproducibles</td>
+</tr>
+<tr class="odd">
+<td align="left"><a
+href="https://www.youtube.com/watch?v=H6DXz3m0ZN4">Aspectos básicos de R
+Markdown</a></td>
+<td align="left">DaniMedi</td>
+<td align="left">2020</td>
+<td align="left">Crear el archivo y sintaxis básica</td>
+</tr>
+<tr class="even">
+<td align="left"><a
+href="https://www.youtube.com/watch?v=_ei3eTTg8tU">Incluyendo código en
+R Markdown (chunks)</a></td>
+<td align="left">DaniMedi</td>
+<td align="left">2020</td>
+<td align="left">Bloques de código y opciones</td>
+</tr>
+<tr class="odd">
+<td align="left"><a
+href="https://www.youtube.com/watch?v=F2oeQmKCzNw">Generar documento PDF
+en RMarkdown</a></td>
+<td align="left">Renzo Caceres Rossi</td>
+<td align="left">2022</td>
+<td align="left">PDF e índice</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://www.youtube.com/watch?v=C6Xuimk7p8A">R
+markdown en Rstudio: documentos y presentaciones</a></td>
+<td align="left">YenLab</td>
+<td align="left">2022</td>
+<td align="left">Clase completa, incluye <code>xaringan</code></td>
+</tr>
+</tbody>
+</table>
+<p>En inglés: <a
+href="https://posit.co/resources/videos/quarto-for-rmarkdown-users">Quarto
+for the curious</a>, de Tom Mock (Posit, 2022), compara RMarkdown y
+Quarto.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Xie, Y., Allaire, J. J. y Grolemund, G. <a
+href="https://bookdown.org/yihui/rmarkdown/installation.html">Installation</a>,
+en <em>R Markdown: The Definitive Guide</em>.</li>
+<li>Autores del paquete <code>rmarkdown</code>. Documentación del
+paquete y de la función <code>render()</code>.</li>
+<li>Jumping Rivers. <a
+href="https://blog.jumpingrivers.com/blog/quarto-rmarkdown-comparison/">Quarto
+vs R Markdown</a>.</li>
+<li>Las imágenes de los formatos de salida se generaron con el archivo
+de ejemplo de esta página.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 4 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

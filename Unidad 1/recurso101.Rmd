@@ -1,0 +1,745 @@
+---
+title: <span style="color:#034a94"> **Objetos en R**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+```
+
+<br/>
+
+John Chambers, uno de los creadores del lenguaje S, resumió la forma de trabajar en **R** en [dos ideas](https://arxiv.org/abs/1409.3531): todo lo que existe es un objeto y todo lo que ocurre es una llamada a una función. Un número, una base de datos, un gráfico guardado o un modelo ajustado son objetos. Conocerlos permite entender qué se puede hacer con cada resultado y por qué algunas instrucciones producen errores.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo crear un objeto?**</span>
+
+Un objeto se crea asignándole un nombre con el operador `<-`. El atajo en **RStudio** es **Alt + -** en Windows y Linux, y **Option + -** en macOS.
+
+```{r}
+edad <- 21          # crea el objeto
+edad                # muestra su contenido
+edad + 4            # lo usa en un cálculo; no cambia el objeto
+edad <- edad + 4    # reemplaza el contenido
+edad
+```
+
+Los nombres pueden contener letras, números, puntos y guiones bajos, y no pueden empezar con un número. **R** distingue mayúsculas de minúsculas: `Edad` y `edad` son objetos distintos.
+
+Para consultar y eliminar objetos del ambiente de trabajo se usan `ls()` y `rm()`:
+
+```{r}
+ls()
+rm(edad)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué objetos existen en R?**</span>
+
+Los objetos más usados se distinguen por dos preguntas: cuántas dimensiones tienen y si admiten elementos de distinto tipo.
+
+| Dimensiones | Un solo tipo | Varios tipos |
+|:------------|:-------------|:-------------|
+| 1           | vector       | lista        |
+| 2           | matriz       | data frame   |
+| n           | arreglo      |              |
+
+La siguiente tabla resume los tipos de datos que admite cada objeto.
+
+| Objeto     | Tipos                                                     | ¿Permite varios tipos? |
+|:-----------|:----------------------------------------------------------|:-----------------------|
+| vector     | numérico, carácter, complejo, lógico                      | No                     |
+| factor     | numérico, carácter                                        | No                     |
+| arreglo    | numérico, carácter, complejo, lógico                      | No                     |
+| matriz     | numérico, carácter, complejo, lógico                      | No                     |
+| data frame | numérico, carácter, complejo, lógico                      | Sí                     |
+| ts         | numérico, carácter, complejo, lógico                      | No                     |
+| lista      | numérico, carácter, complejo, lógico, función, expresión  | Sí                     |
+
+<sub>Adaptada de: [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/).</sub>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tipos de datos existen?**</span>
+
+Cada valor tiene un tipo. La función `typeof()` lo informa y `class()` indica cómo se comporta el objeto.
+
+```{r}
+typeof(3.5)      # número decimal (double)
+typeof(5L)       # número entero: la L lo indica
+typeof("hola")   # texto
+typeof(TRUE)     # lógico
+typeof(2 + 3i)   # complejo
+```
+
+**R** también tiene valores especiales:
+
+| Valor  | Significado           | Ejemplo               |
+|:-------|:----------------------|:----------------------|
+| `NA`   | dato faltante         | `c(1, NA, 3)`         |
+| `NaN`  | resultado indefinido  | `0 / 0`               |
+| `Inf`  | infinito              | `1 / 0`               |
+| `NULL` | ausencia de objeto    | `length(NULL)` es 0   |
+
+Un dato faltante se propaga en los cálculos. Por eso muchas funciones tienen el argumento `na.rm`:
+
+```{r}
+notas <- c(4.0, NA, 3.5)
+mean(notas)
+mean(notas, na.rm = TRUE)
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Curiosidad**</span>
+
+Los números decimales se guardan con precisión finita, así que algunas comparaciones exactas fallan. Para comparar decimales se usa `all.equal()`, como explica la [FAQ de R](https://cran.r-project.org/doc/FAQ/R-FAQ.html).
+</div>
+
+```{r}
+0.1 + 0.2 == 0.3
+all.equal(0.1 + 0.2, 0.3)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un vector?**</span>
+
+Un **vector** es una estructura unidimensional con elementos del **mismo tipo**. Es la unidad básica de **R**: un solo número es un vector de longitud 1.
+
+```{r}
+x <- c(1, 2, 3, 4, 5)
+y <- c("Muy regular", "Regular", "Bueno", "Muy bueno", "Excelente")
+x
+y
+length(y)
+```
+
+### <span style="color:#034a94">**Selección de elementos**</span>
+
+Los elementos se seleccionan con corchetes. Las posiciones empiezan en 1.
+
+```{r}
+precios <- c(cafe = 3500, pan = 1200, jugo = 4800, arepa = 2500)
+
+precios[2]                 # por posición
+precios[c(1, 3)]           # varias posiciones
+precios[-1]                # todos menos el primero
+precios["jugo"]            # por nombre
+precios[precios > 3000]    # por condición
+```
+
+### <span style="color:#034a94">**Operaciones elemento a elemento**</span>
+
+Las operaciones se aplican a cada elemento sin necesidad de un ciclo. Esta propiedad se llama **vectorización**.
+
+```{r}
+precios * 1.05            # aumento del 5 %
+c(1, 2, 3) + c(10, 20, 30)
+```
+
+Si los vectores tienen longitudes distintas, **R** repite el más corto. Esta regla se llama **reciclaje** y solo genera una advertencia cuando las longitudes no son múltiplos.
+
+```{r, warning=TRUE}
+1:6 + c(10, 20)
+1:5 + c(10, 20)
+```
+
+### <span style="color:#034a94">**Conversión automática de tipos**</span>
+
+Como un vector admite un solo tipo, **R** convierte todos los elementos al tipo más general: de lógico a numérico y de numérico a texto.
+
+```{r}
+c(1, TRUE, FALSE)
+c(1, "dos", TRUE)
+```
+
+Al convertir valores lógicos en números, `TRUE` vale 1 y `FALSE` vale 0. Esto permite contar y calcular proporciones:
+
+```{r}
+tiempos <- c(52, 61, 48, 75, 58, 66)
+sum(tiempos < 60)     # cuántos tardaron menos de 60 minutos
+mean(tiempos < 60)    # qué proporción
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un factor?**</span>
+
+Un **factor** representa una variable categórica. Guarda los valores posibles, llamados **niveles**, y se usa para clasificar datos en grupos.
+
+```{r}
+colores <- rep(c("rojo", "verde", "azul"), times = 4)
+colores <- factor(colores)
+colores
+levels(colores)
+table(colores)
+```
+
+Por defecto, los niveles se ordenan alfabéticamente. En una variable ordinal hay que indicar el orden:
+
+```{r}
+respuestas <- c("Bueno", "Regular", "Excelente", "Bueno")
+calificacion <- factor(respuestas,
+                       levels = c("Regular", "Bueno", "Excelente"),
+                       ordered = TRUE)
+calificacion
+calificacion >= "Bueno"
+```
+
+La función `cut()` crea un factor a partir de una variable cuantitativa:
+
+```{r}
+cut(tiempos, breaks = c(0, 50, 60, Inf), labels = c("Alto", "Medio", "Bajo"))
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Cuidado**</span>
+
+Un factor guarda códigos internos, no los valores escritos. Si las categorías parecen números, primero se convierte a texto.
+</div>
+
+```{r}
+estrato <- factor(c("10", "20", "20", "50"))
+as.numeric(estrato)                  # devuelve los códigos internos
+as.numeric(as.character(estrato))    # devuelve los valores
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una matriz?**</span>
+
+Una **matriz** es un arreglo de dos dimensiones con elementos del mismo tipo. Por defecto se llena por columnas.
+
+```{r}
+m <- matrix(1:6, nrow = 2)
+p <- matrix(1:6, nrow = 2, byrow = TRUE)
+m
+p
+dim(m)
+```
+
+Los elementos se seleccionan indicando `[fila, columna]`. Si se omite uno de los dos, se obtiene toda la fila o la columna.
+
+```{r}
+m[2, 3]    # fila 2, columna 3
+m[1, ]     # fila 1
+m[, 2]     # columna 2
+```
+
+El operador `*` multiplica elemento a elemento. El producto matricial se calcula con `%*%`:
+
+```{r}
+A <- matrix(c(2, 1, 0, 3), nrow = 2)
+A * A
+A %*% A
+t(A)        # transpuesta
+solve(A)    # inversa
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un arreglo?**</span>
+
+Un **arreglo** (*array*) extiende la matriz a más de dos dimensiones. El siguiente ejemplo apila 3 matrices de 3x3, como un cubo de datos.
+
+```{r}
+cubo <- array(1:27, dim = c(3, 3, 3))
+cubo[2, 3, 1]    # fila 2, columna 3, matriz 1
+cubo[, , 2]      # matriz 2 completa
+```
+
+Las tablas cruzadas de varias variables son arreglos. `UCBAdmissions`, incluida en **R**, tiene las solicitudes de admisión a la Universidad de California en Berkeley en 1973 por resultado, sexo y departamento.
+
+```{r}
+dim(UCBAdmissions)
+dimnames(UCBAdmissions)
+UCBAdmissions["Admitted", "Female", "A"]    # consulta por nombre
+apply(UCBAdmissions, c(1, 2), sum)          # total por resultado y sexo
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una lista?**</span>
+
+Una **lista** es una colección ordenada que puede contener objetos de cualquier tipo y longitud, incluso otras listas.
+
+```{r}
+curso <- list(
+  nombre = "Métodos y Simulación Estadística",
+  notas  = c(3.5, 4.2, 4.8),
+  activo = TRUE
+)
+str(curso)
+```
+
+Hay tres formas de acceder a una lista, y la diferencia importa:
+
+```{r}
+curso[2]          # una lista con el elemento: sigue siendo lista
+curso[[2]]        # el elemento: un vector numérico
+curso$notas       # el elemento, por nombre
+mean(curso$notas)
+```
+
+Una imagen útil: si la lista es un tren, `[ ]` devuelve un vagón y `[[ ]]` devuelve lo que va dentro del vagón.
+
+### <span style="color:#034a94">**Muchos resultados de R son listas**</span>
+
+Las funciones que entregan varios resultados suelen devolver una lista. Por ejemplo, `hist()` construye el gráfico y además guarda sus cálculos.
+
+```{r}
+set.seed(123)
+h <- hist(rnorm(100, 45, 5), col = "#FF7F00",
+          main = "Distribución del tiempo de carrera K10",
+          xlab = "Tiempo (min)", ylab = "Frecuencia", las = 1)
+names(h)
+h$breaks
+h$counts
+```
+
+Lo mismo ocurre con un modelo: `lm()` devuelve una lista de la que se puede extraer lo que se necesite.
+
+```{r}
+modelo <- lm(mpg ~ wt, data = mtcars)
+typeof(modelo)
+names(modelo)[1:4]
+modelo$coefficients
+summary(modelo)$r.squared
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un data frame?**</span>
+
+Un **data frame** es la estructura habitual para una base de datos: las filas son observaciones y las columnas son variables. Internamente es una lista de vectores de la misma longitud, y por eso cada columna puede tener un tipo distinto.
+
+```{r}
+estudiantes <- data.frame(
+  nombre   = c("Ana", "Luis", "Marta", "Pedro"),
+  edad     = c(21, 24, 22, 30),
+  ciudad   = c("Cali", "Pasto", "Cali", "Popayán"),
+  aprobado = c(TRUE, TRUE, FALSE, TRUE)
+)
+estudiantes
+```
+
+Para explorar un data frame se usan estas funciones. `iris` tiene 150 registros (filas) y 5 variables (columnas).
+
+```{r}
+dim(iris)         # filas y columnas
+head(iris, 3)     # primeros registros
+str(iris)         # estructura
+summary(iris)     # resumen por variable
+```
+
+Las columnas y filas se seleccionan de varias maneras:
+
+```{r}
+estudiantes$edad                              # una columna
+estudiantes[2, ]                              # una fila
+estudiantes[estudiantes$ciudad == "Cali", ]   # filas que cumplen una condición
+estudiantes$mayor25 <- estudiantes$edad > 25  # nueva columna
+estudiantes
+```
+
+Las funciones `tapply()` y `sapply()` permiten calcular resúmenes rápidos:
+
+```{r}
+tapply(iris$Sepal.Length, iris$Species, mean)    # media por especie
+sapply(iris, class)                              # clase de cada columna
+```
+
+Los paquetes `readr`, para leer archivos de texto como `.csv`, y `readxl`, para leer archivos de Excel, entregan un *tibble*. Es una versión moderna del data frame que se usa de la misma manera y muestra los datos de forma más ordenada. Desde **R** 4.0.0, `data.frame()` ya no convierte el texto en factores de forma automática.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una serie de tiempo?**</span>
+
+Un objeto `ts` guarda una serie con periodicidad regular. Se compone de los datos, el inicio y la frecuencia.
+
+```{r}
+set.seed(123)
+temperatura <- ts(round(rnorm(24, 20, 3), 1), frequency = 12, start = c(2024, 1))
+temperatura
+```
+
+`AirPassengers`, incluida en **R**, registra los pasajeros mensuales de aerolíneas internacionales entre 1949 y 1960.
+
+```{r, fig.width=7, fig.height=3.5}
+class(AirPassengers)
+start(AirPassengers)
+end(AirPassengers)
+frequency(AirPassengers)
+window(AirPassengers, start = c(1960, 1))    # solo 1960
+plot(AirPassengers, col = "#034A94", lwd = 2, las = 1,
+     xlab = "Año", ylab = "Pasajeros (miles)")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo trabajar con fechas?**</span>
+
+Las fechas tienen su propia clase, `Date`. Internamente son el número de días transcurridos desde el 1 de enero de 1970, y por eso se puede operar con ellas.
+
+```{r}
+inicio <- as.Date("2026-02-02")
+fin    <- as.Date("2026-05-29")
+class(inicio)
+fin - inicio
+as.numeric(as.Date("1970-01-10"))
+seq(inicio, by = "week", length.out = 4)
+format(inicio, "%d/%m/%Y")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Las funciones también son objetos?**</span>
+
+Sí. Las funciones también son objetos: se crean con `function` y se pueden pasar como argumento de otra función. Esto se estudia en [Funciones en R](recurso106.html) y en [Funciones `apply`, `lapply` y `sapply`](recurso107.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo están construidos los objetos?**</span>
+
+Muchos objetos son un vector con **atributos**, es decir, información adicional. Una matriz es un vector con el atributo `dim`:
+
+```{r}
+v <- 1:6
+dim(v) <- c(2, 3)
+v
+attributes(v)
+```
+
+Un factor es un vector de enteros con niveles, y un data frame es una lista:
+
+```{r}
+unclass(factor(c("a", "b", "a")))
+typeof(iris)
+```
+
+La siguiente tabla compara lo que informan `typeof()` y `class()` para distintos objetos.
+
+```{r, echo=FALSE}
+objetos <- list(
+  "Vector numérico" = 1:3 + 0.5,
+  "Factor" = factor("a"),
+  "Matriz" = matrix(1:4, 2),
+  "Data frame" = iris,
+  "Serie de tiempo" = AirPassengers,
+  "Fecha" = as.Date("2026-01-01"),
+  "Modelo lineal" = lm(mpg ~ wt, data = mtcars),
+  "Función" = mean
+)
+knitr::kable(data.frame(
+  Objeto = names(objetos),
+  typeof = sapply(objetos, typeof),
+  class = sapply(objetos, function(o) paste(class(o), collapse = ", "))
+), row.names = FALSE)
+```
+
+La clase explica por qué una misma función responde distinto según el objeto. `summary()` y `plot()` son **funciones genéricas**: revisan la clase y aplican el método que corresponde.
+
+```{r}
+summary(iris$Sepal.Length)    # numérico: cuartiles y media
+summary(iris$Species)         # factor: conteo por nivel
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué operadores se usan?**</span>
+
+### <span style="color:#034a94">**Aritméticos**</span>
+
+| Operador | Significado     |
+|:---------|:----------------|
+| `+`      | adición         |
+| `-`      | sustracción     |
+| `*`      | multiplicación  |
+| `/`      | división        |
+| `^`      | potencia        |
+| `%%`     | residuo         |
+| `%/%`    | división entera |
+
+### <span style="color:#034a94">**De comparación**</span>
+
+| Operador | Significado       |
+|:---------|:------------------|
+| `<`      | menor que         |
+| `>`      | mayor que         |
+| `<=`     | menor o igual que |
+| `>=`     | mayor o igual que |
+| `==`     | igual a           |
+| `!=`     | diferente de      |
+
+### <span style="color:#034a94">**Lógicos**</span>
+
+| Operador    | Significado |
+|:------------|:------------|
+| `!x`        | NO          |
+| `x & y`     | Y           |
+| x &#124; y  | O           |
+| `xor(x, y)` | O exclusivo |
+| `%in%`      | pertenece a |
+
+<sub>Adaptada de: [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/).</sub>
+
+```{r}
+17 %% 5                        # residuo
+17 %/% 5                       # cociente entero
+"Cali" %in% c("Pasto", "Cali")
+-2^2                           # la potencia se evalúa antes que el signo
+(-2)^2
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué otras funciones son útiles?**</span>
+
+### <span style="color:#034a94">**rep()**</span>
+
+Repite los elementos de un objeto.
+
+<pre>
+rep(x,                # objeto a replicar
+    times = 1,        # número de veces que se replica el objeto
+    length.out = NA,  # longitud del vector resultante
+    each = 1)         # número de veces que se replica cada elemento
+</pre>
+
+```{r}
+vector <- c("uno", "dos", "tres")
+rep(vector, times = 2)
+rep(vector, each = 2)
+rep(vector, length.out = 7)
+```
+
+### <span style="color:#034a94">**seq()**</span>
+
+Genera secuencias.
+
+<pre>
+seq(from = 1,            # valor inicial
+    to = 1,              # valor final
+    by = ,               # incremento
+    length.out = NULL,   # longitud de la secuencia
+    along.with = NULL)   # toma la longitud de este vector
+</pre>
+
+```{r}
+seq(20)                       # equivalente a 1:20
+seq(2, 20, by = 2)            # números pares entre 2 y 20
+seq(0, 1, by = 0.1)           # del 0 al 1 con incrementos de 0.1
+seq(0, 1, length.out = 5)     # 5 valores igualmente espaciados
+```
+
+### <span style="color:#034a94">**round(), trunc(), floor() y ceiling()**</span>
+
+```{r}
+round(pi, 3)      # aproxima a 3 decimales
+signif(pi, 3)     # conserva 3 cifras significativas
+trunc(-2.7)       # elimina la parte decimal
+floor(-2.7)       # redondea hacia abajo
+ceiling(-2.7)     # redondea hacia arriba
+```
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Curiosidad**</span>
+
+`round()` sigue la norma IEC 60559: cuando un valor queda justo en la mitad, busca el número par. Por eso `round(0.5)` da 0 y `round(2.5)` da 2, como indica su [documentación](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Round.html).
+</div>
+
+```{r}
+round(c(0.5, 1.5, 2.5, 3.5))
+```
+
+### <span style="color:#034a94">**Otras funciones**</span>
+
+| Función      | Uso                                 | Ejemplo                  |
+|:-------------|:------------------------------------|:-------------------------|
+| `length()`   | número de elementos                 | `length(x)`              |
+| `sort()`     | ordena los valores                  | `sort(x)`                |
+| `order()`    | posiciones que ordenan los valores  | `iris[order(iris$Sepal.Length), ]` |
+| `rev()`      | invierte el orden                   | `rev(x)`                 |
+| `unique()`   | valores distintos                   | `unique(x)`              |
+| `which()`    | posiciones que cumplen una condición | `which(x > 2)`          |
+| `cumsum()`   | suma acumulada                      | `cumsum(x)`              |
+| `paste()`    | une textos                          | `paste("Grupo", 1:3)`    |
+| `is.na()`    | identifica datos faltantes          | `sum(is.na(x))`          |
+| `str()`      | muestra la estructura de un objeto  | `str(x)`                 |
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+Muchos errores se explican por el tipo de objeto. Antes de corregirlos conviene revisar `class()` y `str()`. Los mensajes pueden aparecer en español, según el idioma de **R**.
+
+Usar `$` en un vector, que no tiene columnas:
+
+```{r, error=TRUE}
+x <- c(a = 1, b = 2)
+x$a
+```
+
+Pedir dos dimensiones a un vector:
+
+```{r, error=TRUE}
+x[1, 2]
+```
+
+Operar con texto que parece número:
+
+```{r, error=TRUE}
+"5" + 2
+as.numeric("5") + 2
+```
+
+Usar `=` en lugar de `==` en una comparación:
+
+```{r, error=TRUE}
+estudiantes[estudiantes$edad = 21, ]
+```
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Datos faltantes en un vector**</span>
+
+Para el vector `ventas <- c(120, 85, NA, 240, 60)`, calcule la media sin el dato faltante, cuente los valores mayores que 100 y halle su proporción entre los datos observados.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+ventas <- c(120, 85, NA, 240, 60)
+mean(ventas, na.rm = TRUE)
+sum(ventas > 100, na.rm = TRUE)
+mean(ventas > 100, na.rm = TRUE)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Un factor ordenado**</span>
+
+Cree un factor ordenado con los valores `"Bajo"`, `"Alto"`, `"Medio"`, `"Bajo"` y los niveles Bajo, Medio y Alto. Construya su tabla de frecuencias.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+nivel <- factor(c("Bajo", "Alto", "Medio", "Bajo"),
+                levels = c("Bajo", "Medio", "Alto"), ordered = TRUE)
+table(nivel)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Resultados de un modelo**</span>
+
+Ajuste `lm(mpg ~ hp, data = mtcars)` y guárdelo en un objeto. Extraiga la pendiente, los primeros tres residuales y el $R^2$.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+ajuste <- lm(mpg ~ hp, data = mtcars)
+ajuste$coefficients["hp"]
+ajuste$residuals[1:3]
+summary(ajuste)$r.squared
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Cálculos por columna**</span>
+
+Con la base `mtcars`, calcule la media de cada columna con `apply()` y con `colMeans()`. Luego use `sapply()` para obtener el coeficiente de variación de cada columna, y `tapply()` para obtener la mediana de `hp` según `cyl`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+apply(mtcars, 2, mean)
+colMeans(mtcars)
+sapply(mtcars, \(x) sd(x) / mean(x) * 100)
+tapply(mtcars$hp, mtcars$cyl, median)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Una simulación con replicate()**</span>
+
+Con `replicate()`, simule 2,000 muestras de tamaño 50 de una distribución uniforme entre 0 y 1. Guarde la mediana de cada muestra y calcule su media y su desviación estándar. Use `set.seed(1)`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(1)
+medianas <- replicate(2000, median(runif(50)))
+mean(medianas)
+sd(medianas)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 6. ¿Por qué cambia el tipo de dato?**</span>
+
+¿Por qué `c(1, "2") + 1` produce un error, mientras que `c(1, TRUE) + 1` funciona? ¿Qué devuelve `class(iris[, 1])` y qué devuelve `class(iris[1])`?
+
+<details>
+<summary>Ver solución</summary>
+
+El primer vector se convierte a texto y el segundo a numérico. `iris[, 1]` devuelve un vector numérico, mientras que `iris[1]` devuelve un data frame con una columna.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+- Mendoza Vega, J. B. [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/). Introducción a **R** en español.
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R para Ciencia de Datos](https://davidrsch.github.io/r4ds-es/) (2.ª ed., traducción al español).
+- Wickham, H. (2019). [Advanced R](https://adv-r.hadley.nz/) (2.ª ed.). Chapman & Hall/CRC. Para profundizar, ver el capítulo [Functionals](https://adv-r.hadley.nz/functionals.html).
+- Burns, P. (2011). [The R Inferno](https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf). Trata errores y trampas frecuentes de **R**.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Burns, P. (2011). [The R Inferno](https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf).
+- Chambers, J. M. (2014). [Object-Oriented Programming, Functional Programming and R](https://arxiv.org/abs/1409.3531). *Statistical Science*, 29(2), 167-180.
+- Mendoza Vega, J. B. [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/).
+- R Core Team. [R Language Definition](https://cran.r-project.org/doc/manuals/r-release/R-lang.html).
+- R Core Team. Documentación de [apply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/apply.html), [lapply, sapply, vapply y replicate](https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html), [tapply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/tapply.html), [mapply](https://stat.ethz.ch/R-manual/R-devel/library/base/html/mapply.html) y [colSums](https://stat.ethz.ch/R-manual/R-devel/library/base/html/colSums.html).
+- Software Carpentry. [Loops in R](https://swcarpentry.github.io/r-novice-inflammation/15-supp-loops-in-depth.html).
+- University of Virginia Library. [Why Preallocate Memory in R Loops?](https://library.virginia.edu/data/articles/why-preallocate-memory-r-loops)
+- Wickham, H. y Henry, L. [purrr](https://purrr.tidyverse.org/).
+
+<br/>
+
+*Última revisión: 4 de noviembre de 2026.*
+
+<br/><br/>

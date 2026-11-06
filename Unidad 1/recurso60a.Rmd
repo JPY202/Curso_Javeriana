@@ -1,0 +1,34 @@
+---
+title: <span style="color:#034a94"> **Referencias**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: no
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+```
+
+<br/>
+
+Estas son las referencias generales de la unidad. Cada página tiene, además, sus propias referencias y libros recomendados.
+
+- Anderson, D. R. (2013). *Modern business statistics with Microsoft Excel* (5.ª ed.). Cengage Learning.
+- Fisher, R. A. (1959). *Statistical methods and scientific inference*. Oliver and Boyd.
+- Hill, A. B. (1965). The environment and disease: Association or causation? *Proceedings of the Royal Society of Medicine, 58*(5), 295–300. [https://doi.org/10.1177/003591576505800503](https://doi.org/10.1177/003591576505800503)
+- Ismay, C., Kim, A. Y. y Valdivia, A. (2025). *Statistical inference via data science* (2.ª ed.). [https://moderndive.com/](https://moderndive.com/)
+- Kolmogorov, A. N. (1933). *Foundations of the theory of probability*. Chelsea Publishing Company.
+- Rubin, D. B. (1976). Inference and missing data. *Biometrika, 63*(3), 581–592. [https://doi.org/10.1093/biomet/63.3.581](https://doi.org/10.1093/biomet/63.3.581)
+- Scheaffer, R. L., Mendenhall, W., & Ott, L. (2006). *Elementos de muestreo*. Paraninfo.
+- Walpole, R. E. (2012). *Probability and statistics for engineers and scientists* (9.ª ed.). Pearson Education.
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). *R for data science* (2.ª ed.). O'Reilly Media. [https://r4ds.hadley.nz/](https://r4ds.hadley.nz/)
+- Xie, Y. (s.f.). *bookdown: Authoring books and technical documents with R Markdown*. Recuperado de [https://bookdown.org/yihui/bookdown/](https://bookdown.org/yihui/bookdown/)
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

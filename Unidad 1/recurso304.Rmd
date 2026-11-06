@@ -1,0 +1,259 @@
+---
+title: <span style="color:#034a94"> **¿Cómo graficar relaciones y cambios en el tiempo?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = TRUE)
+load("data/CarreraLuz22.rda")
+load("data/vivienda_faltantes.rda")
+```
+
+<br/>
+
+Hasta ahora se han graficado variables una por una. Esta página presenta los dos gráficos más usados para ver cómo se comporta una variable junto a otra: el **gráfico de dispersión**, que muestra la relación entre dos variables cuantitativas, y el **gráfico de líneas**, que muestra cómo cambia una variable en el tiempo. Para ver más opciones, cada sección enlaza a [From Data to Viz](https://www.data-to-viz.com/).
+
+Esta página usa `CarreraLuz22` y `vivienda_faltantes`, del paquete `paqueteMETODOS`, los datos `mtcars`, incluidos en **R**, y el paquete `ggplot2`. Los bloques de código se ejecutan en orden, porque algunos usan objetos creados en bloques anteriores.
+
+```{r, eval=FALSE}
+library(paqueteMETODOS)
+data("CarreraLuz22")
+data("vivienda_faltantes")
+```
+
+```{r}
+library(ggplot2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar un gráfico de dispersión?**</span>
+
+**¿Para qué sirve?** Para ver la relación entre dos variables cuantitativas, reconocer tendencias e identificar valores alejados. Cada punto corresponde a una observación, es decir, a un par de valores $(x_i, y_i)$.
+
+**¿Cómo se hace?** Se usa `geom_point()`. Con muchos datos, el argumento `alpha` vuelve transparentes los puntos para que se note dónde se acumulan.
+
+```{r fig-disp, fig.width=8, fig.height=4.8, fig.cap="Área construida y precio de las viviendas", fig.alt="Gráfico de dispersión con muchos puntos en la zona de área y precio bajos; el precio tiende a subir con el área", out.width="100%"}
+viviendas <- subset(vivienda_faltantes, !is.na(preciom) & !is.na(areaconst))
+
+ggplot(viviendas, aes(x = areaconst, y = preciom)) +
+  geom_point(color = "#034A94", alpha = 0.2, size = 1.5) +
+  scale_x_continuous(limits = c(0, 1800), breaks = seq(0, 1800, 300), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 2000), breaks = seq(0, 2000, 500), expand = c(0, 0)) +
+  labs(x = "Área construida", y = "Precio (millones de pesos)") +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Se observan la dirección de la nube, su forma, qué tan agrupados están los puntos y si hay puntos alejados. En la figura, el precio tiende a subir con el área, aunque hay viviendas de área parecida con precios muy diferentes, y algunas de más de 1200 de área tienen precios bajos.
+
+Una nube **ascendente** sugiere una relación positiva, una **descendente** indica una relación negativa, y una **sin forma clara** sugiere que no hay relación. La siguiente figura muestra los tres casos. El segundo usa `mtcars`: el peso del auto frente a las millas por galón, que miden el rendimiento. Más millas por galón significa menos consumo.
+
+```{r fig-patrones, fig.width=9.5, fig.height=3.9, fig.cap="Tres patrones en gráficos de dispersión", fig.alt="Tres paneles: el área y el precio suben juntos, el rendimiento baja con el peso del auto y la edad frente al tiempo de carrera no muestra forma clara", out.width="100%"}
+patrones <- rbind(
+  data.frame(caso = "Ascendente: área y precio",
+             x = viviendas$areaconst, y = viviendas$preciom),
+  data.frame(caso = "Descendente: peso y rendimiento",
+             x = mtcars$wt, y = mtcars$mpg),
+  data.frame(caso = "Sin forma clara: edad y tiempo",
+             x = CarreraLuz22$edad, y = CarreraLuz22$timerun / 60)
+)
+
+ggplot(patrones, aes(x = x, y = y)) +
+  geom_point(color = "#034A94", alpha = 0.3, size = 1.2) +
+  facet_wrap(~ caso, scales = "free") +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12)
+```
+
+**¿Qué cuidados tener?**
+
+- Una relación no indica causa: dos variables pueden moverse juntas por otros motivos. Lo correcto es describir lo que se ve.
+- Con muchos datos, los puntos se tapan. Además de `alpha`, se puede reducir su tamaño o hacer un panel por grupo ([Holtz y Healy](https://www.data-to-viz.com/caveat/overplotting.html)).
+- Una relación general puede ocultar patrones en subgrupos ([Holtz y Healy](https://www.data-to-viz.com/graph/scatter.html)).
+
+**Ver más:** [dispersión](https://www.data-to-viz.com/graph/scatter.html), [puntos superpuestos](https://www.data-to-viz.com/caveat/overplotting.html), [densidad 2D](https://www.data-to-viz.com/graph/density2d.html), [mapa de calor](https://www.data-to-viz.com/graph/heatmap.html) y [burbujas](https://www.data-to-viz.com/graph/bubble.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo usar un gráfico de líneas?**</span>
+
+**¿Para qué sirve?** Para ver cómo cambia una variable a lo largo del tiempo, es decir, una **serie de tiempo**. Permite:
+
+- **Identificar tendencias:** cambios a largo plazo.
+- **Detectar estacionalidad:** fluctuaciones regulares y repetitivas.
+- **Analizar patrones cíclicos:** oscilaciones a largo plazo, sin un periodo fijo.
+
+**¿Cómo se hace?** Se usa `geom_line()`, y `geom_point()` marca los datos observados. Cuando el eje horizontal tiene un orden, como el tiempo, conviene unir los puntos, porque ayuda a percibir la secuencia ([Wilke, 2019](https://clauswilke.com/dataviz/time-series.html)). El ejemplo usa la variación anual del IPC de Colombia a diciembre, publicada por el DANE (ver [Referencias](#referencias)).
+
+```{r fig-ipc, fig.width=8.5, fig.height=4.4, fig.cap="Variación anual del IPC en Colombia a diciembre, 2014 a 2025. Fuente: DANE", fig.alt="Gráfico de líneas: la variación anual baja hasta 1.61 por ciento en 2020, sube hasta 13.12 en 2022 y llega a 5.10 en 2025", out.width="100%"}
+inflacion <- data.frame(
+  anio = 2014:2025,
+  variacion = c(3.66, 6.77, 5.75, 4.09, 3.18, 3.80, 1.61, 5.62, 13.12, 9.28, 5.20, 5.10)
+)
+destacados <- subset(inflacion, anio %in% c(2015, 2020, 2022, 2025))
+destacados$posicion <- c(-1, 1.9, -1, -1)
+
+ggplot(inflacion, aes(x = anio, y = variacion)) +
+  geom_line(color = "#034A94", linewidth = 1) +
+  geom_point(color = "#034A94", size = 2.5) +
+  geom_text(data = destacados, aes(label = sprintf("%.2f", variacion), vjust = posicion),
+            size = 4.5) +
+  scale_x_continuous(breaks = 2014:2025) +
+  scale_y_continuous(limits = c(0, 15), breaks = seq(0, 15, 3), expand = c(0, 0)) +
+  labs(x = "Año", y = "Variación anual (%)") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.minor.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+**¿Cómo se interpreta?** Se sigue la línea de izquierda a derecha: la tendencia, los cambios de dirección y los valores máximos y mínimos. En la figura, la variación anual bajó hasta 1.61 % en 2020, subió hasta 13.12 % en 2022 y fue de 5.10 % en 2025. La figura muestra qué pasó y cuándo, pero no por qué pasó. Tampoco muestra lo que ocurrió entre un punto y el siguiente, porque cada punto es el dato de diciembre.
+
+**¿Qué cuidados tener?**
+
+- El eje vertical no siempre debe empezar en cero, porque lo que importa es el cambio, pero conviene justificar la decisión ([Holtz y Healy](https://www.data-to-viz.com/graph/line.html)).
+- La proporción entre ancho y alto cambia la impresión de los cambios ([Holtz y Healy](https://www.data-to-viz.com/caveat/aspect_ratio.html)).
+- Se recomienda un máximo de cuatro líneas ([Government Analysis Function, 2022](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/)). Con más, se forma un gráfico de *espagueti*. Una alternativa es dibujar en gris las demás series y resaltar la que interesa.
+- Conviene escribir el nombre junto a cada línea, en lugar de usar una leyenda ([Wilke, 2019](https://clauswilke.com/dataviz/time-series.html)).
+
+**Ver más:** [gráfico de líneas](https://www.data-to-viz.com/graph/line.html), [gráficos de espagueti](https://www.data-to-viz.com/caveat/spaghetti.html), [unir los puntos](https://www.data-to-viz.com/caveat/connect_your_dot.html) y [dispersión conectada](https://www.data-to-viz.com/graph/connectedscatter.html).
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema                                                 | Causa                                                  | Solución                                                     |
+|:---------------------------------------------------------|:-------------------------------------------------------|:-------------------------------------------------------------|
+| Se afirma que una variable causa la otra                 | Se confunde relación con causa                         | Describir la relación sin atribuir causas                    |
+| Los puntos forman una mancha                             | Hay muchos datos en el mismo lugar                     | Usar `alpha`, puntos pequeños o paneles                      |
+| Los puntos de una serie no muestran la secuencia         | Falta unir los puntos                                  | Agregar `geom_line()`                                        |
+| `geom_path: Each group consists of only one observation` | La variable del eje horizontal es un factor            | Usar `aes(group = 1)` o una variable numérica                |
+| Demasiadas líneas                                        | Se dibujan todas con la misma importancia              | Resaltar una serie o usar paneles                            |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. ¿Qué patrón ve?**</span>
+
+Haga un gráfico de dispersión de la edad y el tiempo de carrera, en minutos, de las mujeres. Describa el patrón.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r fig-reto1, fig.width=8, fig.height=4.4, fig.cap="Edad y tiempo de las corredoras", fig.alt="Nube de puntos sin forma clara", out.width="100%"}
+corredoras <- subset(CarreraLuz22, sex == "Mujer")
+corredoras$minutos <- corredoras$timerun / 60
+
+ggplot(corredoras, aes(x = edad, y = minutos)) +
+  geom_point(color = "#034A94", alpha = 0.4) +
+  scale_x_continuous(limits = c(10, 80), breaks = seq(10, 80, 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(30, 120), breaks = seq(30, 120, 15), expand = c(0, 0)) +
+  labs(x = "Edad (años)", y = "Tiempo (minutos)") +
+  theme_minimal(base_size = 14) +
+  theme(plot.margin = margin(10, 20, 5, 5))
+```
+
+La nube no tiene una dirección clara: en casi todas las edades hay tiempos altos y bajos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Identificar los elementos**</span>
+
+Observe la figura de la variación anual del IPC. Indique cuál es el eje de valores, cuál es el eje de conceptos y cuál es la fuente. ¿Por qué esta figura no necesita leyenda?
+
+<details>
+<summary>Ver solución</summary>
+
+El eje de valores es el vertical, con la variación anual en porcentaje. El eje de conceptos es el horizontal, con los años. La fuente es el DANE. No necesita leyenda porque solo tiene una línea.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Niveles de lectura**</span>
+
+Con la figura de la variación anual del IPC, escriba una frase para cada [nivel de lectura](recurso300.html).
+
+<details>
+<summary>Ver solución</summary>
+
+Estas son respuestas posibles:
+
+- **Leer entre los datos:** en 2022 la variación anual fue de 13.12 %.
+- **Leer dentro de los datos:** entre 2020 y 2022 la variación aumentó en 11.51 puntos porcentuales.
+- **Leer más allá de los datos:** la figura no permite saber el valor de 2026; para estimarlo se necesitaría más información.
+- **Leer detrás de los datos:** ¿cómo calcula el DANE el IPC, y qué ciudades y productos incluye?
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Una parte de la serie**</span>
+
+Con la tabla `inflacion`, grafique solo los años de 2019 a 2025. Marque con una etiqueta el valor máximo.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r fig-reto4, fig.width=8, fig.height=4.2, fig.cap="Variación anual del IPC, 2019 a 2025. Fuente: DANE", fig.alt="Línea de 2019 a 2025 con el máximo marcado en 13.12 por ciento en 2022", out.width="100%"}
+reciente <- subset(inflacion, anio >= 2019)
+maximo <- subset(reciente, variacion == max(variacion))
+
+ggplot(reciente, aes(x = anio, y = variacion)) +
+  geom_line(color = "#034A94", linewidth = 1) +
+  geom_point(color = "#034A94", size = 2.5) +
+  geom_text(data = maximo, aes(label = variacion), vjust = -1, size = 4.8) +
+  scale_x_continuous(breaks = 2019:2025) +
+  scale_y_continuous(limits = c(0, 15), breaks = seq(0, 15, 3), expand = c(0, 0)) +
+  labs(x = "Año", y = "Variación anual (%)") +
+  theme_minimal(base_size = 14) +
+  theme(panel.grid.minor.x = element_blank(), plot.margin = margin(10, 20, 5, 5))
+```
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/prefacio). Está en español y se descarga en PDF desde esa página. La sección [2.1](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/2-1-graficos-de-tallo-y-hoja-grafico-de-tallo-graficos-de-lineas-y-graficos-de-barras) trata los gráficos de líneas.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. D. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro.
+
+### <span style="color:#034a94">**Libros para leer gratis**</span>
+
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media. El [capítulo 13](https://clauswilke.com/dataviz/time-series.html) trata las series de tiempo.
+- Wickham, H., Navarro, D. y Pedersen, T. L. [*ggplot2: Elegant Graphics for Data Analysis*](https://ggplot2-book.org/) (3.ª ed.). Springer. Versión en línea de los autores.
+
+### <span style="color:#034a94">**Otros recursos**</span>
+
+- DANE. [Histórico del IPC](https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-precios-al-consumidor-ipc/ipc-historico).
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- DANE. Boletines y comunicados del IPC de diciembre: [2015](https://www.dane.gov.co/files/investigaciones/boletines/ipc/bol_ipc_dic15.pdf), [2016](https://www.dane.gov.co/files/investigaciones/boletines/ipc/cp_ipc_dic16.pdf), [2018](https://www.dane.gov.co/files/investigaciones/boletines/ipc/bol_ipc_dic18.pdf), [2019](https://www.dane.gov.co/files/investigaciones/boletines/ipc/cp_ipc_dic19.pdf), [2021](https://www.dane.gov.co/files/investigaciones/boletines/ipc/cp_ipc_dic21.pdf), [2023](https://www.dane.gov.co/files/operaciones/IPC/bol-IPC-dic2023.pdf), [2024](https://www.dane.gov.co/files/operaciones/IPC/dic2024/bol-IPC-dic2024.pdf) y [2025](https://www.dane.gov.co/files/operaciones/IPC/dic2025/bol-IPC-dic2025.pdf).
+- Government Analysis Function. (2022). [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/).
+- Holtz, Y. y Healy, C. [*From Data to Viz*](https://www.data-to-viz.com/).
+- Wilke, C. O. (2019). [*Fundamentals of Data Visualization*](https://clauswilke.com/dataviz/). O'Reilly Media.
+
+<br/>
+
+*Última revisión: 5 de noviembre de 2026.*
+
+<br/><br/>

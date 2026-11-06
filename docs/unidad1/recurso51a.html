@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Caso 2</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Software R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Objetos en R</a>
+    </li>
+    <li>
+      <a href="recurso106.html">Funciones en R</a>
+    </li>
+    <li>
+      <a href="recurso107.html">Funciones apply, lapply y sapply</a>
+    </li>
+    <li>
+      <a href="recurso102.html">RMarkdown</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Proyecto en RStudio</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Paquetes</a>
+    </li>
+    <li>
+      <a href="recurso105.html">IA en RStudio</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Análisis de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Tablas de frecuencia</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Indicadores estadísticos</li>
+    <li>
+      <a href="recurso202.html">Introducción</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Indicadores de centro</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Indicadores de posición</a>
+    </li>
+    <li>
+      <a href="recurso205.html">Indicadores de dispersión</a>
+    </li>
+    <li>
+      <a href="recurso206.html">Indicadores de forma</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Gráficos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Introducción</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">¿Qué tipos de gráficos existen?</li>
+    <li>
+      <a href="recurso301.html">Panorama</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Variables categóricas</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Variable numérica</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Relaciones y cambios en el tiempo</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Otros gráficos</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="recurso306.html">¿Qué hace bueno a un gráfico?</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Procesamiento de datos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Importar datos</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Organizar los datos</a>
+    </li>
+    <li>
+      <a href="recurso402.html">Datos faltantes</a>
+    </li>
+    <li>
+      <a href="recurso403.html">Transformar variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Casos e informe
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso50a.html">Caso 1</a>
+    </li>
+    <li>
+      <a href="recurso51a.html">Caso 2</a>
+    </li>
+    <li>
+      <a href="recurso52a.html">Informe</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso60a.html">Referencias</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>Caso
+2</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p><br/></p>
+<div id="introducción" class="section level2">
+<h2><span
+style="color:#034a94"><strong>Introducción</strong></span></h2>
+<p>El objetivo principal de este caso de estudio es predecir y explicar
+la variable ‘tasa de graduación’, identificando los factores que mejor
+la describen. Para ello, es necesario seleccionar métodos de imputación
+adecuados para los datos faltantes y determinar cuáles variables, como
+el promedio de la prueba SAT, el número de nuevos estudiantes
+matriculados o la categoría de la universidad, están más fuertemente
+asociadas con la tasa de graduación.</p>
+<p>Una vez realizada la limpieza de los datos, se debe analizar el tipo
+de datos faltantes. Posteriormente, se procede con la imputación de los
+mismos. Luego, se plantean dos modelos para explicar la variable de
+respuesta. El manejo adecuado de los datos faltantes es crucial para
+garantizar predicciones confiables sobre la tasa de graduación. <a
+href="https://lib.stat.cmu.edu/datasets/colleges/">Acceder a los datos
+de universidades</a></p>
+<p><br/></p>
+</div>
+<div id="objetivos" class="section level2">
+<h2><span style="color:#034a94"><strong>Objetivos</strong></span></h2>
+<p>En esta sección se presenta una discusión sobre el enfoque de
+análisis, centrado en el manejo de los datos faltantes, el cual debe
+realizarse antes de la modelación. Por lo tanto, solo se abordarán los
+resultados relacionados con los siguientes objetivos. La implementación
+de estas actividades queda como tarea para que se apliquen los
+conocimientos adquiridos en este módulo:</p>
+<ul>
+<li><p>Calcular el porcentaje de valores faltantes en cada una de las
+variables de interés para el caso en cuestión.</p></li>
+<li><p>Identificar el mecanismo de los datos faltantes (MCAR, MAR o
+MNAR).</p></li>
+<li><p>Proponer una estrategia para la imputación de los valores
+faltantes.</p></li>
+</ul>
+<p><br/></p>
+</div>
+<div id="respecto-al-objetivo-1" class="section level2">
+<h2><span style="color:#034a94"><strong>Respecto al objetivo
+1</strong></span></h2>
+<p>El conjunto de datos incluye información de 1,302 universidades de
+EE.UU. y abarca 35 variables. Para este trabajo, se seleccionaron las
+siguientes variables clave:</p>
+<ul>
+<li><p>Graduate rate (GR): Proporción de estudiantes que se gradúan en
+relación con los matriculados cuatro años antes.</p></li>
+<li><p>Average combined SAT score (SAT): Promedio combinado de los
+puntajes verbales y matemáticos del examen SAT.</p></li>
+<li><p>Number of new students enrolled (ENROLL): Número de nuevos
+estudiantes matriculados.</p></li>
+<li><p>Public/private indicator (DUMMYP): Indicador del tipo de
+universidad (1= pública, 2= privada).</p></li>
+<li><p>Room and board costs (COST): Costo total anual de alojamiento y
+comida (en miles de dólares estadounidenses).</p></li>
+<li><p>Average ACT score (ACT): Promedio de puntajes en la prueba
+ACT.</p></li>
+</ul>
+<p>La <strong>Tabla 1.20</strong> presenta un análisis descriptivo de
+las variables. La falta de datos varía desde un 0.38% hasta un 45.16%,
+como ocurre con la variable ACT. Se observa que el 40.17% y el 45.16% de
+las universidades no reportan el promedio combinado de los resultados en
+la prueba SAT (verbal y matemática) y el promedio de puntajes en la
+prueba ACT, respectivamente. Estos son los porcentajes más altos de
+omisión. En contraste, solo el 0.38%, 5.84% y 7.53% de las universidades
+no reportan el número de nuevos estudiantes matriculados, los costos de
+alojamiento y comida, y la proporción de graduados entre los alumnos
+matriculados cuatro años antes, respectivamente.</p>
+<center>
+<strong>Tabla 1.20</strong> Algunas estadístisticas de las variables
+seleccionadas.
+</center>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="7%" />
+<col width="12%" />
+<col width="19%" />
+<col width="13%" />
+<col width="15%" />
+<col width="9%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="center">N</th>
+<th align="center">Promedio</th>
+<th align="center">Desv. Estándar</th>
+<th align="center">Faltantes</th>
+<th align="center">% Faltantes</th>
+<th align="center">Mínimo</th>
+<th align="center">Máximo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>DUMMYP</strong></td>
+<td align="center">1302</td>
+<td align="center">1.64</td>
+<td align="center">0.48</td>
+<td align="center">0</td>
+<td align="center">0.00</td>
+<td align="center">1</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>SAT</strong></td>
+<td align="center">779</td>
+<td align="center">967.87</td>
+<td align="center">123.58</td>
+<td align="center">523</td>
+<td align="center">40.17</td>
+<td align="center">600</td>
+<td align="center">1410</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>ACT</strong></td>
+<td align="center">714</td>
+<td align="center">22.12</td>
+<td align="center">2.58</td>
+<td align="center">588</td>
+<td align="center">45.16</td>
+<td align="center">11</td>
+<td align="center">31</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>ENROLL</strong></td>
+<td align="center">1297</td>
+<td align="center">778.88</td>
+<td align="center">884.58</td>
+<td align="center">5</td>
+<td align="center">0.38</td>
+<td align="center">18</td>
+<td align="center">7425</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>COST</strong></td>
+<td align="center">1226</td>
+<td align="center">4162.11</td>
+<td align="center">1179.28</td>
+<td align="center">76</td>
+<td align="center">5.84</td>
+<td align="center">1260</td>
+<td align="center">8700</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>GR</strong></td>
+<td align="center">1204</td>
+<td align="center">60.41</td>
+<td align="center">18.89</td>
+<td align="center">98</td>
+<td align="center">7.53</td>
+<td align="center">8</td>
+<td align="center">118</td>
+</tr>
+</tbody>
+</table>
+<p>Asimismo, en la <strong>Tabla 1.20</strong> se observa que la
+variable ‘proporción de graduados’ presenta valores superiores a 100, es
+decir, valores fuera del rango permitido, que debería estar entre 0% y
+100%. Como resultado, se clasificó esta observación como un dato
+faltante y se aplicaron diversas técnicas de imputación para reemplazar
+el valor por uno dentro del rango establecido.</p>
+<center>
+<img src="img/fig1_caso2.png" width="100%" style="display: block; margin: auto;" />
+<strong>Figura 1.55</strong> Proporción y patrón de datos faltantes.
+</center>
+<p>La gráfica de la derecha de la <strong>Figura 1.55</strong> muestra
+el porcentaje de datos faltantes en cada variable. También, se presenta
+en la misma figura los 21 patrones de datos faltantes presentes en la
+base de datos. El color azul indica los datos observados, mientras que
+el rojo señala los datos faltantes.</p>
+<p>En la <strong>Figura 1.55</strong>, en el primer gráfico, se observa
+que el porcentaje de universidades con observaciones faltantes es
+significativamente mayor en las variables ACT y SAT en comparación con
+las demás. En el segundo gráfico, se muestran las combinaciones de
+observaciones faltantes y no faltantes. Se puede notar que el patrón de
+datos faltantes es aleatorio y multivariado, no siendo monótono ni
+univariado.</p>
+<p>Antes de proceder al análisis, es necesario discernir los mecanismos
+de generación de datos faltantes, siendo MCAR, MAR o MNAR. Porter S.
+(1999) analiza datos reportados por S. News and World Report 2 menciona
+que “la falta de datos probablemente se deba a que las universidades no
+pudieron recoger los datos”, sin embargo, también dice que “las razones
+son un misterio”.</p>
+<p><br/></p>
+</div>
+<div id="respecto-al-objetivo-2" class="section level2">
+<h2><span style="color:#034a94"><strong>Respecto al objetivo
+2</strong></span></h2>
+<p>Al aplicar el test de Little para MCAR en <strong>R</strong>, se
+obtuvo un <span class="math inline">\(valor-p\)</span> menor a 0.05, lo
+que sugiere que los datos faltantes no cumplen con el supuesto de MCAR.
+Por lo tanto, la estimación utilizando solo la submuestra completa no
+parece ser la opción más adecuada en esta situación. Se puede trabajar
+bajo el supuesto de MAR, aunque esto no implica que el mecanismo de
+datos faltantes no sea MNAR, ya que las universidades con bajas tasas de
+graduación podrían estar inclinadas a omitir estas tasas para evitar
+publicidad adversa o un posible desprestigio institucional.</p>
+<p><br/></p>
+</div>
+<div id="respecto-al-objetivo-3" class="section level2">
+<h2><span style="color:#034a94"><strong>Respecto al objetivo
+3</strong></span></h2>
+<p>Consideraciones para los análisis posteriores:</p>
+<ul>
+<li><p>Se puede asumir el supuesto de MAR, dado que no se conocen las
+razones detrás de los datos faltantes y el test rechaza la hipótesis de
+que el mecanismo de generación de los datos faltantes sea MCAR.</p></li>
+<li><p>Bajo el supuesto de MAR y el patrón observado en los datos
+faltantes, se sugiere utilizar la imputación múltiple como método de
+imputación. Consulta alternativas para imputar
+condicionalmente.</p></li>
+<li><p>Una vez realizada la imputación de los datos faltantes, se podrá
+proceder con la selección del modelo adecuado para explicar la tasa de
+graduación. Para ello, se pueden evaluar dos técnicas iniciales de
+modelización para construir modelos predictivos e inferenciales, tales
+como regresión beta y random forest.</p></li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
