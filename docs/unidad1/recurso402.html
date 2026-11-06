@@ -517,9 +517,10 @@ library(naniar)</code></pre>
 graficar datos faltantes</strong>. Sus gráficos se construyen con
 <code>ggplot2</code>, así que se pueden modificar con las mismas
 funciones, como <code>labs()</code> o <code>theme_minimal()</code>. Lo
-crearon Nicholas Tierney y Dianne Cook (<a
-href="https://doi.org/10.18637/jss.v105.i07">Tierney y Cook, 2023</a>).
-Se instala una sola vez con <code>install.packages("naniar")</code>.</p>
+desarrollan Nicholas Tierney, Dianne Cook y otros colaboradores, y se
+presenta en <a href="https://doi.org/10.18637/jss.v105.i07">Tierney y
+Cook (2023)</a>. Se instala una sola vez con
+<code>install.packages("naniar")</code>.</p>
 <p><br/></p>
 <div id="cómo-se-representan-en-r" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Cómo se representan en
@@ -699,11 +700,13 @@ vis_miss(viviendas) +
 Mapa de datos faltantes en las viviendas
 </p>
 </div>
-<p>En el mapa se ve algo que la tabla no muestra: los faltantes de
-<code>piso</code> y <code>parquea</code> se concentran en algunos tramos
-de la base. Como las filas no tienen un orden aleatorio, esto puede
-indicar que los datos se recogieron por partes. Esa pista se estudia en
-<a href="#por-qué-faltan-los-datos">¿Por qué faltan los datos?</a>.</p>
+<p>En el mapa se ve algo que la tabla no muestra: los faltantes no están
+repartidos igual a lo largo de la base. Por ejemplo, <code>piso</code>
+falta en el 48.3 % de la primera cuarta parte de las filas y en cerca
+del 25 % de la última. Si la base tiene un orden, como la fecha de
+registro o quien recogió los datos, vale la pena preguntar por qué. Esa
+pregunta se estudia en <a href="#por-qué-faltan-los-datos">¿Por qué
+faltan los datos?</a>.</p>
 <p><br/></p>
 </div>
 </div>
@@ -922,11 +925,14 @@ sean MCAR. Para leer bien la prueba:</p>
 <li>Si <strong>rechaza</strong>, hay evidencia contra MCAR. No dice si
 los datos son MAR o MNAR.</li>
 <li>Si <strong>no rechaza</strong>, no demuestra MCAR. Con pocos
-faltantes o pocos datos, la prueba tiene poca potencia y casi nunca
-rechaza.</li>
-<li>Solo usa variables numéricas, y supone que se comportan
-aproximadamente como una normal multivariada. Por eso complementa la
-comparación del paso 2, pero no la reemplaza.</li>
+faltantes o pocos datos, la prueba tiene poca potencia y puede no
+detectar diferencias reales.</li>
+<li>Supone que las variables se comportan aproximadamente como una
+normal multivariada. Por eso complementa la comparación del paso 2, pero
+no la reemplaza.</li>
+<li>Se le pasan solo variables numéricas. Si recibe una variable de
+texto, <code>mcar_test()</code> la convierte en códigos numéricos sin
+avisar, y la trata como si fuera una cantidad.</li>
 </ul>
 <p><strong>Paso 4. Declarar el supuesto y sus consecuencias.</strong>
 Con la evidencia anterior se elige un supuesto, se dice por qué y se
@@ -1308,9 +1314,11 @@ frecuentes</strong></span></h2>
 <td align="left">Rechazar MCAR no distingue entre MAR y MNAR</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>mcar_test()</code> da error</td>
-<td align="left">La base tiene variables de texto</td>
-<td align="left">Usar solo las variables numéricas</td>
+<td align="left"><code>mcar_test()</code> incluye una variable de texto
+como si fuera número</td>
+<td align="left">La función convierte el texto en códigos sin
+avisar</td>
+<td align="left">Pasarle solo las variables numéricas</td>
 </tr>
 <tr class="even">
 <td align="left">El conteo de faltantes sale en cero, pero hay celdas
@@ -1468,9 +1476,10 @@ mcar_test(numericas)
 Zona Sur al 44.4 % en la Zona Centro. El precio mediano es parecido en
 los dos grupos, pero la prueba de Little rechaza MCAR, así que hay
 evidencia contra MCAR. Se puede asumir MAR si se incluyen en la
-imputación la zona, el tipo y el precio. Sin embargo, <code>piso</code>
-puede no aplicar en una casa de un solo nivel. Si es así, el faltante no
-se imputa: se recodifica, como se explicó en <a
+imputación la zona y el tipo, que también se relaciona con la falta,
+como se vio en el reto 2. Sin embargo, <code>piso</code> puede no
+aplicar en una casa de un solo nivel. Si es así, el faltante no se
+imputa: se recodifica, como se explicó en <a
 href="#todo-faltante-se-debe-llenar">¿Todo faltante se debe
 llenar?</a>.</p>
 </details>

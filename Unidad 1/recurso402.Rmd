@@ -35,7 +35,7 @@ library(mice)
 library(naniar)
 ```
 
-El paquete `naniar` sirve para **explorar, resumir y graficar datos faltantes**. Sus gráficos se construyen con `ggplot2`, así que se pueden modificar con las mismas funciones, como `labs()` o `theme_minimal()`. Lo crearon Nicholas Tierney y Dianne Cook ([Tierney y Cook, 2023](https://doi.org/10.18637/jss.v105.i07)). Se instala una sola vez con `install.packages("naniar")`.
+El paquete `naniar` sirve para **explorar, resumir y graficar datos faltantes**. Sus gráficos se construyen con `ggplot2`, así que se pueden modificar con las mismas funciones, como `labs()` o `theme_minimal()`. Lo desarrollan Nicholas Tierney, Dianne Cook y otros colaboradores, y se presenta en [Tierney y Cook (2023)](https://doi.org/10.18637/jss.v105.i07). Se instala una sola vez con `install.packages("naniar")`.
 
 <br/>
 
@@ -145,7 +145,7 @@ vis_miss(viviendas) +
   labs(y = "Vivienda (fila de la base)")
 ```
 
-En el mapa se ve algo que la tabla no muestra: los faltantes de `piso` y `parquea` se concentran en algunos tramos de la base. Como las filas no tienen un orden aleatorio, esto puede indicar que los datos se recogieron por partes. Esa pista se estudia en [¿Por qué faltan los datos?](#por-qué-faltan-los-datos).
+En el mapa se ve algo que la tabla no muestra: los faltantes no están repartidos igual a lo largo de la base. Por ejemplo, `piso` falta en el 48.3 % de la primera cuarta parte de las filas y en cerca del 25 % de la última. Si la base tiene un orden, como la fecha de registro o quien recogió los datos, vale la pena preguntar por qué. Esa pregunta se estudia en [¿Por qué faltan los datos?](#por-qué-faltan-los-datos).
 
 <br/>
 
@@ -280,8 +280,9 @@ mcar_test(numericas)
 El valor *p* es casi cero, así que se rechaza que los datos sean MCAR. Para leer bien la prueba:
 
 - Si **rechaza**, hay evidencia contra MCAR. No dice si los datos son MAR o MNAR.
-- Si **no rechaza**, no demuestra MCAR. Con pocos faltantes o pocos datos, la prueba tiene poca potencia y casi nunca rechaza.
-- Solo usa variables numéricas, y supone que se comportan aproximadamente como una normal multivariada. Por eso complementa la comparación del paso 2, pero no la reemplaza.
+- Si **no rechaza**, no demuestra MCAR. Con pocos faltantes o pocos datos, la prueba tiene poca potencia y puede no detectar diferencias reales.
+- Supone que las variables se comportan aproximadamente como una normal multivariada. Por eso complementa la comparación del paso 2, pero no la reemplaza.
+- Se le pasan solo variables numéricas. Si recibe una variable de texto, `mcar_test()` la convierte en códigos numéricos sin avisar, y la trata como si fuera una cantidad.
 
 **Paso 4. Declarar el supuesto y sus consecuencias.** Con la evidencia anterior se elige un supuesto, se dice por qué y se indica qué implica para el análisis. Por ejemplo:
 
@@ -514,7 +515,7 @@ Sterne et al. (2009) recomiendan incluir en un informe:
 | Se imputa un dato que no existe                           | El faltante significa "no aplica" o "no tiene"         | Confirmar con la fuente y recodificar                        |
 | Se concluye que los datos son MCAR                        | La prueba no rechazó                                   | No rechazar no demuestra MCAR                                |
 | Se concluye que los datos son MAR                         | La prueba de Little rechazó MCAR                       | Rechazar MCAR no distingue entre MAR y MNAR                  |
-| `mcar_test()` da error                                    | La base tiene variables de texto                       | Usar solo las variables numéricas                            |
+| `mcar_test()` incluye una variable de texto como si fuera número | La función convierte el texto en códigos sin avisar | Pasarle solo las variables numéricas                         |
 | El conteo de faltantes sale en cero, pero hay celdas vacías | Los faltantes están como `-99` o `""`               | Convertirlos en `NA` antes de contar                         |
 | `could not find function "gg_miss_var"`                   | No se cargó el paquete                                 | Ejecutar `library(naniar)`                                   |
 | La varianza baja después de imputar                       | Se usó una imputación con la media                     | Usar imputación múltiple                                     |
@@ -617,7 +618,7 @@ tapply(viviendas$preciom, falta_piso, median)
 mcar_test(numericas)
 ```
 
-El porcentaje de faltantes cambia según la zona: va del 26.7 % en la Zona Sur al 44.4 % en la Zona Centro. El precio mediano es parecido en los dos grupos, pero la prueba de Little rechaza MCAR, así que hay evidencia contra MCAR. Se puede asumir MAR si se incluyen en la imputación la zona, el tipo y el precio. Sin embargo, `piso` puede no aplicar en una casa de un solo nivel. Si es así, el faltante no se imputa: se recodifica, como se explicó en [¿Todo faltante se debe llenar?](#todo-faltante-se-debe-llenar).
+El porcentaje de faltantes cambia según la zona: va del 26.7 % en la Zona Sur al 44.4 % en la Zona Centro. El precio mediano es parecido en los dos grupos, pero la prueba de Little rechaza MCAR, así que hay evidencia contra MCAR. Se puede asumir MAR si se incluyen en la imputación la zona y el tipo, que también se relaciona con la falta, como se vio en el reto 2. Sin embargo, `piso` puede no aplicar en una casa de un solo nivel. Si es así, el faltante no se imputa: se recodifica, como se explicó en [¿Todo faltante se debe llenar?](#todo-faltante-se-debe-llenar).
 
 </details>
 </div>

@@ -391,7 +391,7 @@ Si una fila tiene dos unos, o solo ceros, hay un empate, y `max.col()` elige una
 <div class="content-box-gray">
 ### <span style="color:#686868">**¿Cuántas indicadoras se necesitan?**</span>
 
-Con $k$ categorías bastan $k - 1$ indicadoras, porque la que falta se deduce de las demás: si un cliente tiene 0 en cuatro columnas de estado civil, pertenece a la quinta. Los modelos de regresión, que se estudian en la Unidad 3, usan $k - 1$ indicadoras y dejan una **categoría de referencia** ([Çetinkaya-Rundel y Hardin, 2021](https://openintro-ims.netlify.app/)). **R** lo hace solo cuando la variable es un factor.
+Con $k$ categorías bastan $k - 1$ indicadoras, porque la que falta se deduce de las demás: si un cliente tiene 0 en cuatro columnas de estado civil, pertenece a la quinta. Los modelos de regresión, que se estudian en la Unidad 3, usan $k - 1$ indicadoras y dejan una **categoría de referencia** ([Çetinkaya-Rundel y Hardin, 2021](https://openintro-ims1.netlify.app/)). **R** lo hace solo cuando la variable es un factor o texto.
 </div>
 
 <br/>
@@ -851,7 +851,7 @@ El cliente C104 tiene un 1 en pregrado y otro en maestría. No se puede saber cu
 ### <span style="color:#034a94">**Libros en inglés**</span>
 
 - Agresti, A., Franklin, C. A. y Klingenberg, B. (2022). [*Statistics: The Art and Science of Learning from Data*](https://www.pearson.com/store/p/statistics-the-art-and-science-of-learning-from-data/P200000006061) (5.ª ed.). Pearson.
-- Çetinkaya-Rundel, M. y Hardin, J. (2021). [*Introduction to Modern Statistics*](https://openintro-ims.netlify.app/). OpenIntro. Libro gratuito, publicado por sus autoras en línea. La sección 8.1, *Indicator and categorical predictors*, trata las variables indicadoras.
+- Çetinkaya-Rundel, M. y Hardin, J. (2021). [*Introduction to Modern Statistics*](https://openintro-ims1.netlify.app/) (1.ª ed.). OpenIntro. Libro gratuito, publicado por sus autoras en línea. La sección 8.1, *Indicator and categorical predictors*, trata las variables indicadoras. La [2.ª edición](https://openintro-ims.netlify.app/) (2024) también está en línea.
 - Freedman, D., Pisani, R. y Purves, R. (2007). [*Statistics*](https://wwnorton.com/books/Statistics) (4.ª ed.). W. W. Norton.
 - Lohr, S. L. (2021). [*Sampling: Design and Analysis*](https://www.routledge.com/Sampling-Design-and-Analysis/Lohr/p/book/9780367279509) (3.ª ed.). Chapman & Hall/CRC.
 - Moore, D. S., McCabe, G. P. y Craig, B. A. (2021). [*Introduction to the Practice of Statistics*](https://store.macmillanlearning.com/us/p/9781319244446) (10.ª ed.). Macmillan Learning.
@@ -865,7 +865,7 @@ El cliente C104 tiene un 1 en pregrado y otro en maestría. No se puede saber cu
 
 - Hill, A. B. (1965). [The environment and disease: association or causation?](https://pmc.ncbi.nlm.nih.gov/articles/PMC1898525/) *Proceedings of the Royal Society of Medicine*, 58(5), 295-300.
 - Baron, R. M. y Kenny, D. A. (1986). [The moderator-mediator variable distinction in social psychological research: Conceptual, strategic, and statistical considerations](https://pubmed.ncbi.nlm.nih.gov/3806354/). *Journal of Personality and Social Psychology*, 51(6), 1173-1182.
-- Çetinkaya-Rundel, M. y Hardin, J. (2021). [*Introduction to Modern Statistics*](https://openintro-ims.netlify.app/). OpenIntro.
+- Çetinkaya-Rundel, M. y Hardin, J. (2021). [*Introduction to Modern Statistics*](https://openintro-ims1.netlify.app/) (1.ª ed.). OpenIntro.
 - Encyclopedia.com. [Probability: History, Interpretation, and Application](https://www.encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/probability-history-interpretation-and-application).
 - O'Connor, J. J. y Robertson, E. F. (2003). [Sir Ronald Aylmer Fisher](https://mathshistory.st-andrews.ac.uk/Biographies/Fisher/). MacTutor, University of St Andrews.
 - Shadish, W. R., Cook, T. D. y Campbell, D. T. (2002). *Experimental and Quasi-Experimental Designs for Generalized Causal Inference*. Houghton Mifflin.

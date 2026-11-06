@@ -240,7 +240,7 @@ ggplot(largo, aes(x = valor)) +
 
 - El panel sirve para explorar. En un informe se presentan solo los gráficos de las variables que se discuten, con un ancho de intervalo elegido para cada una.
 - `na.rm = TRUE` evita la advertencia por los faltantes, pero estos se deben reportar, como en la columna `faltantes` de la tabla.
-- Con más de 12 paneles el gráfico se vuelve difícil de leer: conviene dividir las variables en grupos.
+- Con muchos paneles, cada uno queda pequeño y el gráfico se vuelve difícil de leer: conviene dividir las variables en grupos.
 
 <br/>
 
