@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Actividad 1. Informe estadístico de un caso de estudio</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Actividad 1
+  </a>
+</li>
+<li>
+  <a href="../unidad1/index.html">Unidad 1</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Actividad 1. Informe estadístico de un caso de
+estudio</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Antes de ajustar un modelo hay que conocer los datos: revisar los
+registros repetidos, encontrar los valores atípicos y las
+inconsistencias, tratar los datos faltantes y describir las variables
+con tablas y gráficos. Estas etapas garantizan la calidad de la base y
+muestran cómo se relacionan las variables. Esta actividad recorre esas
+etapas con un caso real y las presenta en un informe estadístico.</p>
+<p><br/></p>
+<div id="cuál-es-el-caso" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál es el
+caso?</strong></span></h2>
+<p>Una empresa quiere desarrollar un modelo predictivo que maximice la
+rentabilidad de su próxima campaña de mercadeo directo, programada para
+el mes siguiente. Esta sexta campaña ofrecerá un nuevo dispositivo a los
+clientes actuales.</p>
+<p>Para construir el modelo, la empresa hizo una <strong>campaña
+piloto</strong>: seleccionó al azar un grupo de clientes, los contactó
+por teléfono para ofrecerles el dispositivo y registró quiénes lo
+aceptaron.</p>
+<p>Antes de modelar, la empresa necesita describir a sus clientes y
+comparar a quienes aceptaron la oferta con quienes no la aceptaron.</p>
+<p><strong>Objetivo general.</strong> Describir las características de
+los clientes de la campaña piloto y su relación con la aceptación del
+dispositivo, como base para el modelo predictivo.</p>
+<p><br/></p>
+</div>
+<div id="qué-datos-se-usan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué datos se
+usan?</strong></span></h2>
+<p>La base de la campaña piloto está en el archivo <a
+href="data/datos_actividad1.xlsx">datos_actividad1.xlsx</a>. Tiene 2,220
+filas y 38 variables. <strong>Cada fila corresponde a un registro de un
+cliente contactado en la campaña piloto</strong>, y
+<code>id_cliente</code> identifica a cada cliente.</p>
+<p>Los valores en dinero están en <strong>pesos colombianos</strong>. El
+ingreso es mensual, y los gastos corresponden a los últimos 2 años.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="21%" />
+<col width="60%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Descripción</th>
+<th align="left">Unidad o valores</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>id_cliente</code></td>
+<td align="left">Identificador del cliente</td>
+<td align="left">Texto, como <code>C0001</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>edad</code></td>
+<td align="left">Edad del cliente</td>
+<td align="left">Años</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>ingreso</code></td>
+<td align="left">Ingreso mensual del hogar</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>ninos_hogar</code></td>
+<td align="left">Número de niños en el hogar</td>
+<td align="left">Personas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>adolescentes_hogar</code></td>
+<td align="left">Número de adolescentes en el hogar</td>
+<td align="left">Personas</td>
+</tr>
+<tr class="even">
+<td align="left"><code>dias_cliente</code></td>
+<td align="left">Días desde que el cliente se registró en la
+empresa</td>
+<td align="left">Días</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>dias_ultima_compra</code></td>
+<td align="left">Días desde la última compra</td>
+<td align="left">Días</td>
+</tr>
+<tr class="even">
+<td align="left"><code>ec_casado</code></td>
+<td align="left">El cliente es casado</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>ec_union_libre</code></td>
+<td align="left">El cliente vive en unión libre</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>ec_soltero</code></td>
+<td align="left">El cliente es soltero</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>ec_divorciado</code></td>
+<td align="left">El cliente es divorciado</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>ec_viudo</code></td>
+<td align="left">El cliente es viudo</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>educ_basica</code></td>
+<td align="left">El nivel educativo del cliente es básica</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>educ_segundo_ciclo</code></td>
+<td align="left">El nivel educativo del cliente es segundo ciclo</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>educ_pregrado</code></td>
+<td align="left">El nivel educativo del cliente es pregrado</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>educ_maestria</code></td>
+<td align="left">El nivel educativo del cliente es maestría</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>educ_doctorado</code></td>
+<td align="left">El nivel educativo del cliente es doctorado</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>gasto_vino</code></td>
+<td align="left">Gasto en vino en los últimos 2 años</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>gasto_frutas</code></td>
+<td align="left">Gasto en frutas en los últimos 2 años</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>gasto_carne</code></td>
+<td align="left">Gasto en carne en los últimos 2 años</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>gasto_pescado</code></td>
+<td align="left">Gasto en pescado en los últimos 2 años</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>gasto_dulces</code></td>
+<td align="left">Gasto en dulces en los últimos 2 años</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>gasto_oro</code></td>
+<td align="left">Gasto en productos de oro en los últimos 2 años</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>gasto_total</code></td>
+<td align="left">Suma del gasto en vino, frutas, carne, pescado y
+dulces. No incluye el oro</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>gasto_regular</code></td>
+<td align="left">Gasto total menos el gasto en productos de oro</td>
+<td align="left">Pesos colombianos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>compras_descuento</code></td>
+<td align="left">Número de compras con descuento</td>
+<td align="left">Compras</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>compras_web</code></td>
+<td align="left">Número de compras por la página web</td>
+<td align="left">Compras</td>
+</tr>
+<tr class="even">
+<td align="left"><code>compras_catalogo</code></td>
+<td align="left">Número de compras por catálogo</td>
+<td align="left">Compras</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>compras_tienda</code></td>
+<td align="left">Número de compras en tienda</td>
+<td align="left">Compras</td>
+</tr>
+<tr class="even">
+<td align="left"><code>visitas_web_mes</code></td>
+<td align="left">Visitas a la página web en el último mes</td>
+<td align="left">Visitas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>acepto_campana1</code> a
+<code>acepto_campana5</code></td>
+<td align="left">El cliente aceptó la oferta de la campaña 1, 2, 3, 4 o
+5</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>total_campanas_aceptadas</code></td>
+<td align="left">Número de campañas aceptadas, de la 1 a la 5</td>
+<td align="left">Campañas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>queja</code></td>
+<td align="left">El cliente presentó una queja en los últimos 2
+años</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+<tr class="even">
+<td align="left"><code>acepto_piloto</code></td>
+<td align="left">El cliente aceptó el dispositivo en la campaña piloto.
+Es la variable de interés</td>
+<td align="left">1 = sí, 0 = no</td>
+</tr>
+</tbody>
+</table>
+<p>Cada cliente tiene un solo estado civil y un solo nivel educativo,
+guardados como <a
+href="../unidad1/recurso200.html#qué-es-una-variable-indicadora">variables
+indicadoras</a>.</p>
+<p><br/></p>
+</div>
+<div id="qué-se-debe-hacer" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se debe
+hacer?</strong></span></h2>
+<p>Se requiere un informe estadístico que cumpla el objetivo general.
+Cada afirmación debe estar sustentada con resultados numéricos
+concretos. Por ejemplo, en lugar de “la mayoría de los clientes…”, se
+escribe el porcentaje. Tampoco basta con listar estadísticas, como “la
+mediana es 300, la media es 290 y los cuartiles son 100, 300 y 500”:
+cada indicador se interpreta en el contexto del caso.</p>
+<p>El informe debe incluir lo siguiente:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Objetivos específicos.</strong> Proponga al menos 3
+objetivos específicos que permitan alcanzar el objetivo
+general.</p></li>
+<li><p><strong>Tabla descriptiva de las variables.</strong> Construya
+una tabla con el nombre de cada variable, una breve descripción y su
+clasificación según su naturaleza.</p></li>
+<li><p><strong>Registros duplicados.</strong> Busque los duplicados por
+identificador y por contenido. Indique cuántos registros repiten el
+<code>id_cliente</code>, cuántos repiten los valores con distinto
+<code>id_cliente</code>, qué decidió en cada caso y por qué.</p></li>
+<li><p><strong>Atípicos e inconsistencias.</strong> Para cada variable,
+identifique los valores atípicos y las inconsistencias, y distinga los
+<strong>errores</strong>, como valores imposibles, variables indicadoras
+que no suman 1 o totales que no coinciden con sus partes, de los
+<strong>valores extremos reales</strong>. Presente:</p>
+<ul>
+<li>Una tabla con el número de valores atípicos o inconsistentes por
+variable y los valores detectados.</li>
+<li>Gráficos adecuados.</li>
+<li>Una tabla con indicadores de centro, posición y dispersión.</li>
+</ul></li>
+<li><p><strong>Tratamiento de atípicos e inconsistencias.</strong>
+Decida qué hacer con cada caso y justifique la decisión. Presente una
+tabla que compare los datos antes y después del tratamiento, con
+gráficos e indicadores actualizados.</p></li>
+<li><p><strong>Datos faltantes.</strong> Calcule el número y el
+porcentaje de faltantes por variable, y muestre dónde están. Presente al
+menos dos gráficos que destaquen las variables afectadas y sus
+porcentajes.</p></li>
+<li><p><strong>Exploración del mecanismo de los datos
+faltantes.</strong> Para cada variable con faltantes, compare a los
+clientes con y sin el dato en las demás variables, con tablas y
+gráficos. Puede complementar con la prueba de Little. Indique si hay
+evidencia contra MCAR, qué supuesto adopta (MCAR, MAR o MNAR) y por qué,
+y cómo ese supuesto orienta la imputación del punto 8.</p></li>
+<li><p><strong>Imputación.</strong> Aplique técnicas de imputación y
+justifique cada decisión, incluida la de eliminar registros si la toma.
+Muestre con gráficos el resultado de la imputación.</p></li>
+<li><p><strong>Análisis descriptivo después del procesamiento.</strong>
+Con la base limpia e imputada, presente:</p>
+<ul>
+<li>Una tabla de indicadores para todas las variables cuantitativas y
+una tabla de frecuencias para las cualitativas.</li>
+<li>Gráficos de las variables que use en la discusión.</li>
+<li>Un análisis bivariado, sobre todo frente a
+<code>acepto_piloto</code>: el porcentaje de aceptación por grupo y los
+indicadores de las variables cuantitativas por grupo.</li>
+<li>La correlación es opcional. Si la usa, preséntela con su gráfico de
+dispersión.</li>
+</ul></li>
+<li><p><strong>Selección de resultados.</strong> Elija los gráficos e
+indicadores que mejor resumen los hallazgos. Son los que se usan en la
+discusión.</p></li>
+<li><p><strong>Discusión.</strong> Analice los resultados frente a cada
+objetivo específico y frente al objetivo general.</p></li>
+<li><p><strong>Estructura del informe.</strong> El informe debe tener
+estas secciones:</p>
+<ul>
+<li>Descripción</li>
+<li>Objetivos: general y específicos</li>
+<li>Datos</li>
+<li>Procesamiento: duplicados, atípicos e inconsistencias, datos
+faltantes e imputación</li>
+<li>Resultados y discusión</li>
+<li>Conclusiones</li>
+<li>Referencias</li>
+<li>Anexos</li>
+</ul></li>
+</ol>
+<p><br/></p>
+</div>
+<div id="qué-páginas-del-curso-sirven" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué páginas del curso
+sirven?</strong></span></h2>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="77%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Punto</th>
+<th align="left">Páginas de la Unidad 1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left"><a href="../unidad1/recurso200.html">Conceptos
+básicos</a>, incluidas las variables indicadoras</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left"><a
+href="../unidad1/recurso401.html#cómo-tratar-los-registros-duplicados">¿Cómo
+organizar los datos?</a></td>
+</tr>
+<tr class="odd">
+<td align="left">4 y 5</td>
+<td align="left"><a href="../unidad1/recurso204.html">Indicadores de
+posición</a>, <a
+href="../unidad1/recurso401.html#qué-hacer-con-los-valores-atípicos">¿Cómo
+organizar los datos?</a> y <a
+href="../unidad1/recurso200.html#cómo-volver-a-una-sola-variable">Conceptos
+básicos</a></td>
+</tr>
+<tr class="even">
+<td align="left">6 a 8</td>
+<td align="left"><a href="../unidad1/recurso402.html">¿Cómo tratar los
+datos faltantes?</a></td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left"><a href="../unidad1/recurso202.html">Indicadores
+estadísticos</a>, <a
+href="../unidad1/recurso301.html#cómo-analizar-dos-variables">¿Cómo
+analizar dos variables?</a>, <a
+href="../unidad1/recurso302.html">Variables categóricas</a>, <a
+href="../unidad1/recurso303.html">Variable numérica</a> y <a
+href="../unidad1/recurso304.html">Relaciones</a></td>
+</tr>
+<tr class="even">
+<td align="left">9 y 10</td>
+<td align="left"><a href="../unidad1/recurso306.html">¿Qué hace bueno a
+un gráfico?</a></td>
+</tr>
+<tr class="odd">
+<td align="left">12</td>
+<td align="left"><a href="../unidad1/recurso50a.html">Caso 1</a> e <a
+href="../unidad1/recurso52a.html">Informe</a></td>
+</tr>
+<tr class="even">
+<td align="left">Entrega</td>
+<td align="left"><a href="../unidad1/recurso103.html">Proyecto en
+RStudio</a> y <a href="../unidad1/recurso102.html">RMarkdown</a></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cómo-se-entrega" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se
+entrega?</strong></span></h2>
+<ol style="list-style-type: decimal">
+<li><p>La actividad es <strong>individual</strong>.</p></li>
+<li><p><strong>Fecha de entrega:</strong> por definir. <strong>Peso en
+la nota del curso:</strong> por definir.</p></li>
+<li><p>Se entrega por la plataforma <strong>Bspace</strong>, antes de la
+fecha límite.</p></li>
+<li><p>Se entrega un proyecto de <strong>R</strong> en un archivo
+comprimido <strong>.zip</strong>, que contenga:</p>
+<ul>
+<li>El archivo de datos.</li>
+<li>El archivo <strong>.Rproj</strong> del proyecto.</li>
+<li>Los archivos <strong>.Rmd</strong> con cada paso del análisis.</li>
+<li>Los archivos <strong>HTML</strong> generados a partir de los
+<strong>.Rmd</strong>.</li>
+</ul></li>
+<li><p>Antes de entregar, compruebe que el proyecto cumple los
+requisitos de <a href="../unidad1/recurso103.html">Proyecto en
+RStudio</a>: abre con doble clic en el <strong>.Rproj</strong>, no usa
+rutas absolutas ni <code>setwd()</code>, y cada <strong>.Rmd</strong> se
+genera con <strong>Knit</strong> después de reiniciar
+<strong>R</strong>.</p></li>
+<li><p><strong>Tablas y gráficos:</strong></p>
+<ul>
+<li>Todos se numeran (Tabla 1, Figura 1…) en su título, con
+<code>caption</code> en <code>kable()</code> o con <code>fig.cap</code>
+en el bloque de código.</li>
+<li>Cada uno se cita en el texto con su número y se interpreta.</li>
+<li>Los ejes tienen títulos claros, con unidades, y las leyendas son
+legibles.</li>
+</ul></li>
+<li><p><strong>Extensión:</strong> el cuerpo del informe tiene como
+máximo 5,000 palabras. Los Anexos, con el código comentado de todo el
+procesamiento, y las Referencias no se cuentan.</p></li>
+<li><p><strong>Uso de inteligencia artificial:</strong> se sigue lo
+indicado en <a
+href="../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso">IA en
+RStudio</a>. Si la usó, indique en los Anexos qué herramienta usó y para
+qué. Cada cifra del informe debe salir de su propio código.</p></li>
+<li><p><strong>Paquetes:</strong> puede usar los paquetes vistos en el
+curso y otros de CRAN, si explica en el informe para qué usa cada
+uno.</p></li>
+</ol>
+<p><br/></p>
+</div>
+<div id="cómo-se-evalúa" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se
+evalúa?</strong></span></h2>
+<p>Se evalúa el cumplimiento de los requisitos, la aplicación correcta
+de los métodos estadísticos, la claridad de las explicaciones, la
+precisión de las interpretaciones, la calidad de las tablas y gráficos,
+y el formato de entrega.</p>
+<p>Cada criterio recibe entre 0 y 30 puntos, para un máximo de 360. La
+nota es <span class="math inline">\(5 \times \text{puntos} /
+360\)</span>.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="10%" />
+<col width="15%" />
+<col width="11%" />
+<col width="12%" />
+<col width="11%" />
+<col width="15%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Criterio</th>
+<th align="left">Muy alto (30)</th>
+<th align="left">Alto (25)</th>
+<th align="left">Medio (20)</th>
+<th align="left">Bajo (15)</th>
+<th align="left">Muy bajo (10)</th>
+<th align="left">No se presenta (0)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>1. Objetivos específicos</strong></td>
+<td align="left">Tres o más objetivos claros, medibles y coherentes con
+el objetivo general</td>
+<td align="left">Objetivos coherentes, con alguno poco preciso</td>
+<td align="left">Objetivos generales o difíciles de medir</td>
+<td align="left">Objetivos que no se relacionan con el objetivo
+general</td>
+<td align="left">Un solo objetivo o redacción confusa</td>
+<td align="left">No hay objetivos específicos</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>2. Tabla descriptiva</strong></td>
+<td align="left">Todas las variables están descritas y bien
+clasificadas, incluidas las indicadoras</td>
+<td align="left">Algún error menor en descripciones o
+clasificaciones</td>
+<td align="left">Varias clasificaciones inexactas</td>
+<td align="left">Errores importantes en la clasificación</td>
+<td align="left">Tabla muy incompleta</td>
+<td align="left">No hay tabla</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>3. Registros duplicados</strong></td>
+<td align="left">Busca por identificador y por contenido, reporta
+cuántos hay de cada tipo y justifica cada decisión</td>
+<td align="left">Usa los dos criterios, pero el reporte o la
+justificación es incompleto</td>
+<td align="left">Usa un solo criterio</td>
+<td align="left">Elimina registros sin justificar</td>
+<td align="left">Análisis con errores</td>
+<td align="left">No se analizan</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>4. Detección de atípicos e
+inconsistencias</strong></td>
+<td align="left">Detecta los atípicos y las inconsistencias, distingue
+errores de valores reales y presenta tablas y gráficos bien
+interpretados</td>
+<td align="left">Detección casi completa, con análisis parcial</td>
+<td align="left">Detecta solo atípicos o solo algunas
+inconsistencias</td>
+<td align="left">Detección incompleta o gráficos inadecuados</td>
+<td align="left">Análisis incorrecto</td>
+<td align="left">No se analizan</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>5. Tratamiento de atípicos e
+inconsistencias</strong></td>
+<td align="left">Cada decisión está justificada; conserva los valores
+reales y compara antes y después con tablas, gráficos e indicadores</td>
+<td align="left">Tratamiento adecuado, con alguna justificación
+incompleta</td>
+<td align="left">Tratamiento con poca justificación o sin
+comparación</td>
+<td align="left">Elimina o modifica valores reales sin revisar</td>
+<td align="left">Tratamiento incorrecto</td>
+<td align="left">No se tratan</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>6. Datos faltantes</strong></td>
+<td align="left">Cuenta y porcentaje por variable correctos, ubicación
+de los faltantes y al menos dos gráficos claros</td>
+<td align="left">Análisis adecuado, con algún gráfico poco claro</td>
+<td align="left">Análisis básico o un solo gráfico</td>
+<td align="left">Cálculos o gráficos con errores</td>
+<td align="left">Análisis muy incompleto</td>
+<td align="left">No se analizan</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>7. Mecanismo de los datos
+faltantes</strong></td>
+<td align="left">Compara grupos con tablas y gráficos, interpreta bien
+la prueba si la usa, declara un supuesto coherente con la evidencia y lo
+conecta con la imputación</td>
+<td align="left">Comparación adecuada, con un supuesto poco
+justificado</td>
+<td align="left">Comparación parcial, o conclusión basada solo en la
+prueba</td>
+<td align="left">Afirma que la prueba demuestra el mecanismo</td>
+<td align="left">Interpretación incorrecta</td>
+<td align="left">No se explora</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>8. Imputación</strong></td>
+<td align="left">Método coherente con el supuesto del punto 7, bien
+justificado y con gráficos del resultado</td>
+<td align="left">Imputación correcta, con justificación o gráficos
+incompletos</td>
+<td align="left">Imputación con poca justificación</td>
+<td align="left">Método inadecuado para el supuesto</td>
+<td align="left">Imputación incorrecta</td>
+<td align="left">No hay imputación ni justificación para no hacerla</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>9. Análisis descriptivo</strong></td>
+<td align="left">Indicadores y gráficos pertinentes, y comparación clara
+frente a <code>acepto_piloto</code></td>
+<td align="left">Análisis adecuado, con poca profundidad en lo
+bivariado</td>
+<td align="left">Análisis superficial o solo univariado</td>
+<td align="left">Gráficos o indicadores inadecuados</td>
+<td align="left">Análisis incorrecto</td>
+<td align="left">No se presenta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>10. Discusión y conclusiones</strong></td>
+<td align="left">Responde cada objetivo con cifras e interpretaciones
+precisas, y las conclusiones se apoyan en los resultados</td>
+<td align="left">Discusión clara, con algún objetivo poco
+desarrollado</td>
+<td align="left">Discusión básica o con cifras sin interpretar</td>
+<td align="left">Afirmaciones sin respaldo en los resultados</td>
+<td align="left">Discusión confusa</td>
+<td align="left">No hay discusión</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>11. Formato y requisitos de
+entrega</strong></td>
+<td align="left">Proyecto completo que se genera sin errores, con la
+estructura, la numeración y la extensión pedidas</td>
+<td align="left">Fallas menores de formato</td>
+<td align="left">Falta algún archivo o sección</td>
+<td align="left">Varios requisitos sin cumplir</td>
+<td align="left">El proyecto no se genera</td>
+<td align="left">No se entrega el proyecto</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>12. Claridad y presentación</strong></td>
+<td align="left">Informe bien organizado, en español, con redacción
+clara y tablas y gráficos legibles</td>
+<td align="left">Claro, pero mejorable en organización</td>
+<td align="left">Comprensible, con partes confusas</td>
+<td align="left">Difícil de seguir</td>
+<td align="left">Muy desorganizado</td>
+<td align="left">No se presenta informe</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

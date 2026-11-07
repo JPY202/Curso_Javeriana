@@ -81,5 +81,8 @@ navbar:
           href: recurso51a.html
         - text: "Informe"
           href: recurso52a.html
+        - text: "---------"
+        - text: "Actividad 1"
+          href: ../actividad1/index.html
     - text: "Referencias"
       href: recurso60a.html

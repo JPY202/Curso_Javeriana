@@ -74,6 +74,7 @@ Esta unidad se concentra en algunos conceptos básicos de estadística, el anál
     - [Caso 1](recurso50a.html)
     - [Caso 2](recurso51a.html)
     - [Informe](recurso52a.html)
+    - [Actividad 1. Informe estadístico de un caso de estudio](../actividad1/index.html)
 
     <br/>
 
