@@ -31,3 +31,15 @@ navbar:
           href: recurso203.html
         - text: "Modelos continuos"
           href: recurso204.html
+    - text: "Inferencia estadística"
+      menu:
+        - text: "Conceptos básicos"
+          href: recurso300.html
+        - text: "Distribución muestral"
+          href: recurso301.html
+        - text: "Teorema del límite central"
+          href: recurso302.html
+        - text: "Propiedades de los estimadores"
+          href: recurso303.html
+        - text: "Métodos de estimación"
+          href: recurso304.html

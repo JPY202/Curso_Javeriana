@@ -37,6 +37,11 @@ Las páginas siguen el nivel del sitio original de la Unidad 2 (metodosySIM2_V2)
 - `recurso202.Rmd`: Variables conjuntas (marginales, condicionales, independencia, covarianza y correlación).
 - `recurso203.Rmd`: Modelos discretos (Bernoulli, binomial, Poisson, hipergeométrico, geométrico y binomial negativo), con un gráfico interactivo.
 - `recurso204.Rmd`: Modelos continuos (uniforme, normal, exponencial, gamma y Weibull), con un gráfico interactivo.
+- `recurso300.Rmd`: Conceptos básicos de inferencia (población, muestra, parámetro, estimador y estimación).
+- `recurso301.Rmd`: Distribución muestral (media muestral, chi-cuadrado, t de Student y F).
+- `recurso302.Rmd`: Teorema del límite central, con un gráfico interactivo.
+- `recurso303.Rmd`: Propiedades de los estimadores (sesgo, eficiencia, error cuadrático medio, consistencia y robustez).
+- `recurso304.Rmd`: Métodos de estimación (momentos y máxima verosimilitud).
 - `img/`: imágenes.
 - `style.css`: estilos del sitio, copiados de la Unidad 1.
 - `_site.yml`: menú del sitio.

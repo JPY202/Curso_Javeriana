@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Distribución muestral</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia estadística
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Distribución muestral</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Teorema del límite central</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Propiedades de los estimadores</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Métodos de estimación</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Distribución muestral</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>En <a href="recurso300.html">Conceptos básicos</a> se vio que cada
+muestra produce una estimación distinta. Un estimador es, entonces, una
+<strong>variable aleatoria</strong>: su valor depende de la muestra que
+salga. Su distribución se llama <strong>distribución muestral</strong>,
+y dice qué valores puede tomar el estimador y con qué probabilidad.</p>
+<p>Conocer la distribución muestral permite responder preguntas como:
+¿qué tan lejos de la media de la población puede quedar la media de una
+muestra? Esta página presenta la distribución muestral de la media y
+tres distribuciones que aparecen al trabajar con poblaciones normales:
+chi-cuadrado, t de Student y F. Los bloques de código se ejecutan en
+orden.</p>
+<p><br/></p>
+<div id="cómo-se-comporta-la-media-muestral" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se comporta la media
+muestral?</strong></span></h2>
+<p>Si <span class="math inline">\(X_1, \ldots, X_n\)</span> son i.i.d.
+con media <span class="math inline">\(\mu\)</span> y desviación estándar
+<span class="math inline">\(\sigma\)</span>, la media muestral <span
+class="math inline">\(\bar{X}\)</span> cumple, para cualquier forma de
+la población:</p>
+<p><span class="math display">\[
+E(\bar{X}) = \mu, \qquad \text{Var}(\bar{X}) = \frac{\sigma^2}{n},
+\qquad \sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}}
+\]</span></p>
+<p>Estos resultados salen de las propiedades del valor esperado y de la
+varianza de <a href="recurso201.html">Valor esperado y varianza</a>.
+Significan dos cosas:</p>
+<ul>
+<li>La media muestral se ubica, en promedio, en la media de la
+población: no tiende a quedar ni por encima ni por debajo.</li>
+<li>Su dispersión, llamada <strong>error estándar</strong>, es <span
+class="math inline">\(\sigma/\sqrt{n}\)</span>. Al aumentar el tamaño de
+la muestra, el error estándar baja. Para reducirlo a la mitad hay que
+tomar una muestra <strong>cuatro veces</strong> más grande.</li>
+</ul>
+<p><br/></p>
+<div id="ejemplo-la-media-de-36-llamadas" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: la media de 36
+llamadas</strong></span></h3>
+<p>Con las llamadas de media <span class="math inline">\(\mu =
+5\)</span> minutos y <span class="math inline">\(\sigma = 5\)</span>
+minutos, la media de una muestra de <span class="math inline">\(n =
+36\)</span> llamadas tiene</p>
+<p><span class="math display">\[
+E(\bar{X}) = 5, \qquad \sigma_{\bar{X}} = \frac{5}{\sqrt{36}} = 0.833
+\text{ minutos}
+\]</span></p>
+<p>La simulación lo comprueba: se toman 5 000 muestras de 36 llamadas y
+se calcula la media de cada una. La distribución de esas 5 000 medias es
+una aproximación de la distribución muestral de <span
+class="math inline">\(\bar{X}\)</span>.</p>
+<pre class="r"><code>set.seed(2026)
+medias_36 &lt;- replicate(5000, mean(rexp(36, rate = 1/5)))
+mean(medias_36)   # cerca de 5</code></pre>
+<pre><code>[1] 4.997861</code></pre>
+<pre class="r"><code>sd(medias_36)     # cerca de 5 / 6 = 0.833</code></pre>
+<pre><code>[1] 0.8397673</code></pre>
+<pre class="r"><code>par(mfrow = c(1, 2), mar = c(4.5, 4.5, 2, 1))
+curve(dexp(x, rate = 1/5), 0, 25, col = &quot;#FF7F00&quot;, lwd = 2, main = &quot;Población&quot;,
+      xlab = &quot;Duración de una llamada (minutos)&quot;, ylab = &quot;Densidad&quot;)
+hist(medias_36, breaks = 40, freq = FALSE, col = &quot;#BDD7EE&quot;, border = &quot;white&quot;, main = &quot;Medias de 36 llamadas&quot;,
+     xlab = &quot;Media muestral (minutos)&quot;, ylab = &quot;Densidad&quot;, xlim = c(2, 9))
+curve(dnorm(x, mean = 5, sd = 5/6), add = TRUE, col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
+<div class="figure">
+<img src="recurso301_files/figure-html/unnamed-chunk-2-1.png" alt="A la izquierda, una curva exponencial que decrece desde 0.2. A la derecha, un histograma con forma de campana centrado en 5, entre 3 y 8, con una curva normal roja superpuesta" width="100%" />
+<p class="caption">
+Izquierda: la población de duraciones de llamadas, muy asimétrica.
+Derecha: la distribución de 5 000 medias de muestras de 36 llamadas,
+mucho más concentrada y casi simétrica.
+</p>
+</div>
+<p>Aunque la población es muy asimétrica, la distribución de la media de
+36 llamadas tiene forma de campana. Eso no es una casualidad: lo explica
+el <a href="recurso302.html">teorema del límite central</a>.</p>
+<p>Por ejemplo, ¿qué tan probable es que la media de 36 llamadas supere
+6 minutos? En la simulación ocurre en el 11.8 % de las muestras:</p>
+<pre class="r"><code>mean(medias_36 &gt; 6)</code></pre>
+<pre><code>[1] 0.118</code></pre>
+<p><br/></p>
+</div>
+<div id="y-si-la-población-es-normal" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Y si la población es
+normal?</strong></span></h3>
+<p>Si la población es normal, la media muestral es
+<strong>exactamente</strong> normal para cualquier <span
+class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[
+\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)
+\]</span></p>
+<p>Por ejemplo, si el peso de unas barras es <span
+class="math inline">\(N(200, 30^2)\)</span> gramos, la media de 9 barras
+es <span class="math inline">\(N(200, 10^2)\)</span>, porque <span
+class="math inline">\(\sigma_{\bar{X}} = 30/\sqrt{9} = 10\)</span>. La
+probabilidad de que la media de 9 barras pese menos de 190 g es</p>
+<pre class="r"><code>pnorm(190, mean = 200, sd = 30 / sqrt(9))</code></pre>
+<pre><code>[1] 0.1586553</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-es-la-distribución-chi-cuadrado" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es la distribución
+chi-cuadrado?</strong></span></h2>
+<p>La distribución <strong>chi-cuadrado</strong> (<span
+class="math inline">\(\chi^2\)</span>) aparece al estudiar la
+<strong>varianza muestral</strong>. Tiene un parámetro, sus
+<strong>grados de libertad</strong>, <span
+class="math inline">\(\nu\)</span>. Toma solo valores positivos, es
+asimétrica a la derecha y su media es <span
+class="math inline">\(\nu\)</span>. Al aumentar <span
+class="math inline">\(\nu\)</span>, se vuelve más simétrica.</p>
+<p><strong>Relación con la varianza muestral.</strong> Si la muestra
+viene de una población <strong>normal</strong> con varianza <span
+class="math inline">\(\sigma^2\)</span>, entonces</p>
+<p><span class="math display">\[
+\frac{(n - 1)\,S^2}{\sigma^2} \sim \chi^2_{n - 1}
+\]</span></p>
+<p>El resultado es <strong>exacto</strong> para poblaciones normales,
+cualquiera sea <span class="math inline">\(n\)</span>. Si la población
+no es normal, puede no cumplirse, aun con muestras grandes.</p>
+<pre class="r"><code>gl &lt;- c(2, 5, 10, 20)
+colores &lt;- c(&quot;#FF7F00&quot;, &quot;#034A94&quot;, &quot;#686868&quot;, &quot;#2E8B57&quot;)
+curve(dchisq(x, df = 2), 0, 40, col = colores[1], lwd = 2, ylim = c(0, 0.5), xlab = &quot;x&quot;, ylab = &quot;Densidad&quot;)
+for (i in 2:4) curve(dchisq(x, df = gl[i]), add = TRUE, col = colores[i], lwd = 2)
+legend(&quot;topright&quot;, paste(&quot;ν =&quot;, gl), col = colores, lwd = 2, bty = &quot;n&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso301_files/figure-html/unnamed-chunk-5-1.png" alt="Cuatro curvas. Con 2 grados de libertad baja desde el eje vertical; con 5, 10 y 20 suben y bajan, cada vez más a la derecha y más simétricas" width="85%" />
+<p class="caption">
+Densidades chi-cuadrado con distintos grados de libertad.
+</p>
+</div>
+<p><strong>Ejemplo.</strong> Una máquina llena bolsas cuyo peso es
+normal con desviación estándar <span class="math inline">\(\sigma =
+5\)</span> g. Se toma una muestra de <span class="math inline">\(n =
+50\)</span> bolsas. ¿Qué tan probable es que la varianza muestral supere
+32.5 g², es decir, que sea 30 % mayor que la verdadera, 25?</p>
+<p><span class="math display">\[
+P(S^2 &gt; 32.5) = P\left(\chi^2_{49} &gt; \frac{49 \times
+32.5}{25}\right) = P(\chi^2_{49} &gt; 63.7)
+\]</span></p>
+<pre class="r"><code>1 - pchisq(49 * 32.5 / 25, df = 49)</code></pre>
+<pre><code>[1] 0.07724279</code></pre>
+<pre class="r"><code>qchisq(0.95, df = 49)     # valor que solo supera el 5 % de las chi-cuadrado con 49 grados de libertad</code></pre>
+<pre><code>[1] 66.33865</code></pre>
+<p>La probabilidad es 0.077. Una simulación con 5 000 muestras confirma
+que el estadístico sigue la chi-cuadrado:</p>
+<pre class="r"><code>set.seed(2026)
+estadistico &lt;- replicate(5000, 49 * var(rnorm(50, mean = 20, sd = 5)) / 25)
+mean(estadistico)                  # cerca de 49, la media de la chi-cuadrado</code></pre>
+<pre><code>[1] 49.01446</code></pre>
+<pre class="r"><code>mean(estadistico &gt; 63.7)           # cerca de 0.077</code></pre>
+<pre><code>[1] 0.08</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-es-la-distribución-t-de-student" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es la distribución t de
+Student?</strong></span></h2>
+<p>Si la población es normal, la media muestral estandarizada con la
+desviación estándar <strong>de la población</strong> es normal estándar.
+Pero casi nunca se conoce <span class="math inline">\(\sigma\)</span>, y
+hay que usar la de la muestra, <span class="math inline">\(S\)</span>.
+Al hacerlo, el resultado sigue una distribución <strong>t de
+Student</strong> con <span class="math inline">\(n - 1\)</span> grados
+de libertad:</p>
+<p><span class="math display">\[
+T = \frac{\bar{X} - \mu}{S / \sqrt{n}} \sim t_{n - 1}
+\]</span></p>
+<p>El resultado es <strong>exacto</strong> para poblaciones normales,
+con cualquier tamaño de muestra. Lo propuso William Gosset en 1908, con
+el seudónimo <em>Student</em>, cuando trabajaba en la cervecería
+Guinness.</p>
+<p>La t se parece a la normal estándar: es simétrica alrededor de 0 y
+tiene forma de campana. Pero tiene <strong>colas más pesadas</strong>,
+porque usar <span class="math inline">\(S\)</span> en lugar de <span
+class="math inline">\(\sigma\)</span> agrega incertidumbre. Al aumentar
+los grados de libertad se acerca a la normal estándar.</p>
+<pre class="r"><code>curve(dnorm(x), -4, 4, lwd = 2, ylim = c(0, 0.42), xlab = &quot;x&quot;, ylab = &quot;Densidad&quot;)
+curve(dt(x, df = 2), add = TRUE, col = &quot;#FF7F00&quot;, lwd = 2)
+curve(dt(x, df = 10), add = TRUE, col = &quot;#034A94&quot;, lwd = 2)
+legend(&quot;topright&quot;, c(&quot;Normal estándar&quot;, &quot;t con 2 gl&quot;, &quot;t con 10 gl&quot;),
+       col = c(&quot;black&quot;, &quot;#FF7F00&quot;, &quot;#034A94&quot;), lwd = 2, bty = &quot;n&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso301_files/figure-html/unnamed-chunk-8-1.png" alt="Tres campanas centradas en 0. La normal estándar, en negro, es la más alta en el centro; la t con 2 grados de libertad, en naranja, es la más baja en el centro y la más alta en las colas" width="85%" />
+<p class="caption">
+Densidades t de Student con 2 y 10 grados de libertad, y la normal
+estándar.
+</p>
+</div>
+<p>Los cuantiles muestran las colas pesadas. El valor que deja 2.5 % en
+la cola derecha es mayor para la t que para la normal, y se acerca a
+1.96 cuando crecen los grados de libertad:</p>
+<pre class="r"><code>round(qt(0.975, df = c(5, 10, 30, 100)), 3)</code></pre>
+<pre><code>[1] 2.571 2.228 2.042 1.984</code></pre>
+<pre class="r"><code>round(qnorm(0.975), 3)</code></pre>
+<pre><code>[1] 1.96</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-es-la-distribución-f" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es la distribución
+F?</strong></span></h2>
+<p>La distribución <strong>F</strong>, propuesta por Ronald Fisher,
+sirve para <strong>comparar dos varianzas</strong>. Tiene dos parámetros
+de grados de libertad, <span class="math inline">\(\nu_1\)</span> y
+<span class="math inline">\(\nu_2\)</span>, y toma solo valores
+positivos.</p>
+<p>Si se toman muestras independientes de tamaños <span
+class="math inline">\(n_1\)</span> y <span
+class="math inline">\(n_2\)</span> de dos poblaciones normales
+<strong>con la misma varianza</strong>, el cociente de las varianzas
+muestrales sigue una F:</p>
+<p><span class="math display">\[
+F = \frac{S_1^2}{S_2^2} \sim F_{n_1 - 1,\; n_2 - 1}
+\]</span></p>
+<p>Si las varianzas de las poblaciones son iguales, el cociente debería
+estar cerca de 1. Al aumentar los grados de libertad, la F se concentra
+alrededor de 1. Un cociente muy grande o muy pequeño indica que las
+varianzas son distintas, idea que se usa en las pruebas de
+hipótesis.</p>
+<p><strong>Ejemplo.</strong> Con muestras de 20 y 30 piezas de dos
+máquinas con la misma varianza, ¿qué tan grande tendría que ser <span
+class="math inline">\(S_1^2 / S_2^2\)</span> para que solo ocurra en el
+5 % de los casos?</p>
+<pre class="r"><code>qf(0.95, df1 = 19, df2 = 29)</code></pre>
+<pre><code>[1] 1.958146</code></pre>
+<p>Un cociente mayor que 1.94 sería poco común si las dos máquinas
+tuvieran la misma variabilidad.</p>
+<p><br/></p>
+</div>
+<div id="qué-funciones-de-r-se-usan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué funciones de R se
+usan?</strong></span></h2>
+<table>
+<colgroup>
+<col width="35%" />
+<col width="37%" />
+<col width="27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Distribución</th>
+<th align="left">Uso principal</th>
+<th align="left">Funciones</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Normal</td>
+<td align="left">Media muestral</td>
+<td align="left"><code>pnorm()</code>, <code>qnorm()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Chi-cuadrado</td>
+<td align="left">Varianza de una población normal</td>
+<td align="left"><code>pchisq()</code>, <code>qchisq()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">t de Student</td>
+<td align="left">Media cuando no se conoce <span
+class="math inline">\(\sigma\)</span></td>
+<td align="left"><code>pt()</code>, <code>qt()</code></td>
+</tr>
+<tr class="even">
+<td align="left">F</td>
+<td align="left">Comparación de dos varianzas</td>
+<td align="left"><code>pf()</code>, <code>qf()</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Usar <span class="math inline">\(\sigma\)</span> en
+lugar de <span class="math inline">\(\sigma/\sqrt{n}\)</span> para la
+media muestral</td>
+<td align="left">Se confunde la dispersión de los datos con la de la
+media</td>
+<td align="left">El error estándar de <span
+class="math inline">\(\bar{X}\)</span> es <span
+class="math inline">\(\sigma/\sqrt{n}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Creer que la t solo sirve para muestras pequeñas</td>
+<td align="left">Es un mito frecuente</td>
+<td align="left">Con población normal, la t es exacta para cualquier
+<span class="math inline">\(n\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Usar la chi-cuadrado para la varianza de una población
+muy asimétrica</td>
+<td align="left">Se olvidó el supuesto de normalidad</td>
+<td align="left">Revisar la forma de los datos antes de usarla</td>
+</tr>
+<tr class="even">
+<td align="left">Comparar varianzas con la F sin revisar los
+supuestos</td>
+<td align="left">La F supone poblaciones normales</td>
+<td align="left">Revisar la normalidad de las dos muestras</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-error-estándar"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Error
+estándar</strong></span></h3>
+<p>El tiempo de espera en un banco tiene desviación estándar de 6
+minutos. ¿Cuál es el error estándar de la media de 9 clientes? ¿Y de 36?
+¿Cuántos clientes hacen falta para que el error estándar sea de 0.5
+minutos?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(6/\sqrt{9} = 2\)</span> minutos y <span
+class="math inline">\(6/\sqrt{36} = 1\)</span> minuto. Para <span
+class="math inline">\(6/\sqrt{n} = 0.5\)</span> se necesita <span
+class="math inline">\(\sqrt{n} = 12\)</span>, es decir, <span
+class="math inline">\(n = 144\)</span> clientes.</p>
+<pre class="r"><code>6 / sqrt(c(9, 36, 144))</code></pre>
+<pre><code>[1] 2.0 1.0 0.5</code></pre>
+</details>
+</div>
+<div id="reto-2.-media-de-una-población-normal"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Media de una población
+normal</strong></span></h3>
+<p>La estatura de los hombres de una ciudad es <span
+class="math inline">\(N(172, 7^2)\)</span> cm. ¿Qué tan probable es que
+una persona mida más de 175 cm? ¿Y que la media de 25 personas supere
+175 cm?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>1 - pnorm(175, mean = 172, sd = 7)              # una persona</code></pre>
+<pre><code>[1] 0.3341176</code></pre>
+<pre class="r"><code>1 - pnorm(175, mean = 172, sd = 7 / sqrt(25))   # media de 25 personas</code></pre>
+<pre><code>[1] 0.01606229</code></pre>
+<p>Para una persona la probabilidad es 0.334; para la media de 25, solo
+0.016. Las medias varían mucho menos que los datos individuales.</p>
+</details>
+</div>
+<div id="reto-3.-simule-la-t" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Simule la
+t</strong></span></h3>
+<p>Simule 5 000 muestras de tamaño 5 de una población <span
+class="math inline">\(N(10, 2^2)\)</span> y calcule <span
+class="math inline">\(T = (\bar{X} - 10)/(S/\sqrt{5})\)</span> en cada
+una. ¿Qué proporción de los valores supera 2.776? ¿Y 1.96?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+t_sim &lt;- replicate(5000, { x &lt;- rnorm(5, 10, 2); (mean(x) - 10) / (sd(x) / sqrt(5)) })
+mean(abs(t_sim) &gt; qt(0.975, df = 4))   # 2.776: cerca de 0.05</code></pre>
+<pre><code>[1] 0.055</code></pre>
+<pre class="r"><code>mean(abs(t_sim) &gt; 1.96)                # bastante más que 0.05</code></pre>
+<pre><code>[1] 0.1306</code></pre>
+<p>Con <span class="math inline">\(n = 5\)</span>, usar 1.96 de la
+normal en lugar de 2.776 de la t subestima las colas: la proporción
+fuera de ±1.96 está entre 0.12 y 0.13, no cerca de 0.05.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/7-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 7 trata la
+distribución de la media muestral.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial. El capítulo 5 trata la variabilidad muestral y el
+capítulo 7, la distribución t.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 8 trata las distribuciones muestrales,
+incluidas la chi-cuadrado, la t y la F.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <em>OpenIntro
+Statistics</em> (4.ª ed.). OpenIntro.</li>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

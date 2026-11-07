@@ -1,0 +1,363 @@
+---
+title: <span style="color:#034a94"> **Teorema del límite central**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+En [Distribución muestral](recurso301.html) se vio que la media de 36 llamadas tiene forma de campana, aunque la duración de cada llamada sigue un modelo exponencial muy asimétrico. Esto no es una casualidad del ejemplo: ocurre con casi cualquier población. Lo explica el **teorema del límite central**, uno de los resultados más importantes de la estadística.
+
+Gracias a este teorema, la distribución normal sirve para construir intervalos de confianza y pruebas de hipótesis sobre medias y proporciones, aunque los datos no sean normales. Esta página presenta el teorema, muestra con simulación cómo funciona y explica cuándo la aproximación es buena. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué dice el teorema del límite central?**</span>
+
+Si $X_1, X_2, \ldots, X_n$ son i.i.d. de una población con media $\mu$ y desviación estándar $\sigma$ finita, entonces, cuando $n$ es grande, la media muestral tiene **aproximadamente** una distribución normal:
+
+$$
+\bar{X} \;\approx\; N\left(\mu,\ \frac{\sigma^2}{n}\right)
+$$
+
+En forma precisa, el teorema dice que la media **estandarizada**
+
+$$
+Z = \frac{\bar{X} - \mu}{\sigma / \sqrt{n}}
+$$
+
+se acerca cada vez más a una normal estándar, $N(0, 1)$, a medida que $n$ crece. La primera expresión es la forma práctica de usarlo con un $n$ dado.
+
+Lo notable es que **no importa la forma de la población**: puede ser asimétrica, discreta o con varios picos. Solo se necesita que las observaciones sean independientes, que vengan de la misma población y que la varianza sea finita.
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Un poco de historia**</span>
+
+Abraham de Moivre mostró en 1733 que el número de caras en muchos lanzamientos de una moneda se aproxima a una curva normal. Pierre-Simon Laplace extendió el resultado en 1810 a sumas de otras variables. El nombre de "teorema central del límite" se lo dio George Pólya en 1920, por su papel central en la probabilidad.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se ve el teorema en una simulación?**</span>
+
+Se toman 5 000 muestras de la población exponencial de las llamadas (media 5 y desviación estándar 5), con tamaños $n = 1$, $n = 5$ y $n = 30$, y se grafica la distribución de las medias. La curva roja es la normal que predice el teorema, $N(5, 5^2/n)$.
+
+```{r, fig.width=10, fig.height=3.6, fig.cap="Distribución de 5 000 medias muestrales de una población exponencial con media 5, para tres tamaños de muestra. La curva roja es la normal que predice el teorema.", fig.alt="Tres histogramas. Con n = 1 el histograma es exponencial y no se parece a la curva roja; con n = 5 ya tiene un pico pero con cola larga a la derecha; con n = 30 es casi simétrico y sigue de cerca la curva roja", out.width="100%"}
+set.seed(2026)
+par(mfrow = c(1, 3), mar = c(4.5, 4.5, 2.5, 1))
+for (n in c(1, 5, 30)) {
+  medias <- replicate(5000, mean(rexp(n, rate = 1/5)))
+  hist(medias, breaks = 40, freq = FALSE, col = "#BDD7EE", border = "white",
+       main = paste("n =", n), xlab = "Media muestral", ylab = "Densidad")
+  curve(dnorm(x, mean = 5, sd = 5 / sqrt(n)), add = TRUE, col = "#C0392B", lwd = 2)
+}
+```
+
+- Con $n = 1$, la "media" es una sola llamada: el histograma es la población misma, y la normal no la describe bien. Incluso le asigna probabilidad a duraciones negativas.
+- Con $n = 5$, la distribución ya tiene un pico, pero todavía conserva una cola larga a la derecha.
+- Con $n = 30$, la distribución es casi simétrica y la normal la describe bien.
+
+En los tres casos, el centro está en 5 y la dispersión es cercana a $5/\sqrt{n}$, como se vio en la página anterior. Lo que cambia con $n$ es la **forma**.
+
+<br/>
+
+## <span style="color:#034a94">**Explore el teorema**</span>
+
+En el gráfico interactivo puede elegir la población y el tamaño de muestra $n$. Cada vez que cambia una opción o presiona el botón, se toman 2 000 muestras nuevas. Compruebe que:
+
+- Con una población simétrica, como la uniforme o el dado, la forma de campana aparece con $n$ muy pequeño, desde 3 o 4.
+- Con una población muy asimétrica, como la exponencial o la Bernoulli con $p = 0.2$, se necesita un $n$ mayor.
+- La desviación estándar de las medias siempre se acerca a $\sigma/\sqrt{n}$.
+
+```{=html}
+<div id="tlc-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;">
+<div style="flex:1 1 250px;min-width:230px;font-size:0.95em;">
+<label><b>Población:</b>
+<select id="tlc-pob" style="margin-left:6px;">
+<option value="exp">Exponencial, media 5 (muy asimétrica)</option>
+<option value="unif">Uniforme entre 0 y 10 (simétrica)</option>
+<option value="bern">Bernoulli, p = 0.2 (proporción)</option>
+<option value="dado">Un dado</option>
+</select></label>
+<div style="margin-top:10px;">Tamaño de cada muestra, n = <b><span id="tlc-n-v">5</span></b></div>
+<input type="range" id="tlc-n" min="1" max="100" value="5" style="width:100%;">
+<div style="margin-top:8px;">
+<button class="tlc-btn" id="tlc-sim">Tomar 2 000 muestras</button>
+</div>
+<div id="tlc-res" style="margin-top:10px;line-height:1.6;"></div>
+</div>
+<div style="flex:2 1 380px;min-width:300px;">
+<canvas id="tlc-graf" width="560" height="300" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Barras: medias de 2 000 muestras de tamaño n. Curva roja: la normal que predice el teorema, con media μ y desviación estándar σ/√n.</div>
+</div>
+</div>
+</div>
+<style>
+.tlc-btn{background:#034A94;color:#fff;border:none;border-radius:4px;padding:5px 12px;cursor:pointer;font-size:0.9em;}
+.tlc-btn:hover{background:#02386f;}
+</style>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var pobs = {
+    exp:  { mu: 5,   sd: 5,              r: function(){ return -5 * Math.log(1 - Math.random()); } },
+    unif: { mu: 5,   sd: 10 / Math.sqrt(12), r: function(){ return 10 * Math.random(); } },
+    bern: { mu: 0.2, sd: 0.4,            r: function(){ return Math.random() < 0.2 ? 1 : 0; } },
+    dado: { mu: 3.5, sd: Math.sqrt(35 / 12), r: function(){ return 1 + Math.floor(6 * Math.random()); } }
+  };
+  function simular(){
+    var p = pobs[$("tlc-pob").value], n = +$("tlc-n").value, B = 2000, medias = [];
+    $("tlc-n-v").textContent = n;
+    for (var b = 0; b < B; b++) { var s = 0; for (var i = 0; i < n; i++) s += p.r(); medias.push(s / n); }
+    var m = medias.reduce(function(a, c){ return a + c; }, 0) / B;
+    var v = medias.reduce(function(a, c){ return a + (c - m) * (c - m); }, 0) / (B - 1);
+    var se = p.sd / Math.sqrt(n);
+    $("tlc-res").innerHTML = "Media de las 2 000 medias: <b>" + m.toFixed(3) + "</b> (teórica μ = " + p.mu.toFixed(3) + ")<br>" +
+      "Desviación estándar de las medias: <b>" + Math.sqrt(v).toFixed(3) + "</b> (teórica σ/√n = " + se.toFixed(3) + ")";
+    dibujar(medias, p, n, se);
+  }
+  function dibujar(medias, p, n, se){
+    var c = $("tlc-graf"), g = c.getContext("2d"), W = c.width, H = c.height, izq = 46, der = 12, arr = 12, abj = 34;
+    g.clearRect(0, 0, W, H); g.font = "11px sans-serif";
+    var lo = Math.min.apply(null, medias), hi = Math.max.apply(null, medias);
+    var a = Math.min(lo, p.mu - 4 * se), b = Math.max(hi, p.mu + 4 * se);
+    var k = 30, ancho = (b - a) / k, cuenta = new Array(k).fill(0);
+    if ($("tlc-pob").value === "dado" || $("tlc-pob").value === "bern") {
+      ancho = 1 / n;   // las medias posibles son múltiplos de 1/n
+      a = Math.floor(Math.min(lo, p.mu - 4 * se) * n) / n - ancho / 2;
+      b = Math.ceil(Math.max(hi, p.mu + 4 * se) * n) / n + ancho / 2;
+      k = Math.round((b - a) / ancho); cuenta = new Array(k).fill(0);
+    }
+    medias.forEach(function(x){ var j = Math.floor((x - a) / ancho); if (j >= k) j = k - 1; if (j < 0) j = 0; cuenta[j]++; });
+    var dens = cuenta.map(function(q){ return q / (medias.length * ancho); });
+    var pico = 1 / (se * Math.sqrt(2 * Math.PI));
+    var ymax = Math.max(Math.max.apply(null, dens), pico) * 1.1;
+    function X(v){ return izq + (W - izq - der) * (v - a) / (b - a); } function Y(v){ return arr + (H - arr - abj) * (1 - v / ymax); }
+    g.strokeStyle = "#e5e5e5"; g.fillStyle = "#333";
+    for (var t = 0; t <= 4; t++) { var vv = ymax * t / 4; g.beginPath(); g.moveTo(izq, Y(vv)); g.lineTo(W - der, Y(vv)); g.stroke(); g.fillText(vv.toFixed(vv < 1 ? 2 : 1), 4, Y(vv) + 4); }
+    for (var t2 = 0; t2 <= 5; t2++) { var xv = a + (b - a) * t2 / 5; g.fillText(xv.toFixed(2), X(xv) - 12, H - abj + 15); }
+    g.fillText("Media muestral", W / 2 - 35, H - 4);
+    g.fillStyle = "#BDD7EE"; g.strokeStyle = "#ffffff";
+    for (var j = 0; j < k; j++) { var x0 = X(a + j * ancho), x1 = X(a + (j + 1) * ancho); g.fillRect(x0, Y(dens[j]), x1 - x0, Y(0) - Y(dens[j])); g.strokeRect(x0, Y(dens[j]), x1 - x0, Y(0) - Y(dens[j])); }
+    g.beginPath(); g.strokeStyle = "#C0392B"; g.lineWidth = 2;
+    for (var s = 0; s <= 300; s++) { var xx = a + (b - a) * s / 300, yy = Math.exp(-0.5 * Math.pow((xx - p.mu) / se, 2)) * pico; if (s === 0) g.moveTo(X(xx), Y(yy)); else g.lineTo(X(xx), Y(yy)); }
+    g.stroke(); g.lineWidth = 1;
+  }
+  $("tlc-sim").addEventListener("click", simular);
+  $("tlc-n").addEventListener("input", function(){ $("tlc-n-v").textContent = this.value; });
+  $("tlc-n").addEventListener("change", simular);
+  $("tlc-pob").addEventListener("change", simular);
+  simular();
+})();
+</script>
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tan grande debe ser n?**</span>
+
+No hay un número que sirva para todos los casos. Depende de la población:
+
+| Población | Tamaño con el que la aproximación suele ser buena |
+|:----------|:--------------------------------------------------|
+| Normal | Cualquier $n$: la media es exactamente normal |
+| Simétrica, sin valores extremos | Muestras pequeñas, desde 5 o 10 |
+| Moderadamente asimétrica | Alrededor de 30 |
+| Muy asimétrica o con valores extremos | Más de 30; a veces más de 100 |
+
+La regla de "$n \geq 30$" que aparece en muchos textos es una guía práctica para poblaciones moderadamente asimétricas, no una ley. Antes de usar el teorema conviene graficar los datos: si son muy asimétricos o tienen valores extremos, se necesita una muestra más grande.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: la media de 36 llamadas**</span>
+
+¿Qué tan probable es que la media de 36 llamadas supere 6 minutos? Por el teorema, $\bar{X} \approx N(5, (5/6)^2)$:
+
+$$
+P(\bar{X} > 6) \approx P\left(Z > \frac{6 - 5}{5/6}\right) = P(Z > 1.2) = 0.115
+$$
+
+```{r}
+1 - pnorm(6, mean = 5, sd = 5 / sqrt(36))   # aproximación normal
+```
+
+En este caso se conoce el valor exacto, porque la suma de exponenciales sigue un modelo gamma: da 0.118. La aproximación normal es buena, aunque la población sea muy asimétrica.
+
+```{r}
+1 - pgamma(36 * 6, shape = 36, rate = 1/5)  # valor exacto
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿A qué otros estadísticos se aplica?**</span>
+
+El mismo teorema se aplica a otros estadísticos que son sumas o promedios. Para muestras grandes e independientes:
+
+| Estadístico | Distribución aproximada |
+|:------------|:------------------------|
+| Media muestral, $\bar{X}$ | $N\left(\mu,\ \dfrac{\sigma^2}{n}\right)$ |
+| Suma, $\sum X_i$ | $N\left(n\mu,\ n\sigma^2\right)$ |
+| Proporción muestral, $\hat{p}$ | $N\left(p,\ \dfrac{p(1 - p)}{n}\right)$ |
+| Diferencia de medias de dos muestras independientes, $\bar{X}_1 - \bar{X}_2$ | $N\left(\mu_1 - \mu_2,\ \dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}\right)$ |
+| Diferencia de proporciones, $\hat{p}_1 - \hat{p}_2$ | $N\left(p_1 - p_2,\ \dfrac{p_1(1 - p_1)}{n_1} + \dfrac{p_2(1 - p_2)}{n_2}\right)$ |
+
+La proporción muestral es un caso particular de la media: es el promedio de datos que valen 1 (éxito) o 0 (fracaso). Para la proporción, la aproximación suele ser buena si se esperan al menos 10 éxitos y 10 fracasos, es decir, si $np \geq 10$ y $n(1 - p) \geq 10$.
+
+Estas fórmulas suponen una población muy grande o un muestreo con reemplazo. Si la muestra es una parte importante de una población finita y se toma sin reemplazo, la varianza es menor y se corrige con un factor que se verá en la unidad de intervalos de confianza.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: una proporción**</span>
+
+El 25 % de los clientes de una tienda en línea compra en su primera visita. En una muestra de 200 visitantes nuevos, ¿qué tan probable es que la proporción que compra sea de 30 % o menos?
+
+Como $np = 50$ y $n(1 - p) = 150$, la aproximación normal es adecuada. El error estándar es $\sqrt{0.25 \times 0.75 / 200} = 0.031$:
+
+```{r}
+ee <- sqrt(0.25 * 0.75 / 200)
+ee
+pnorm(0.30, mean = 0.25, sd = ee)     # aproximación normal
+pbinom(60, size = 200, prob = 0.25)   # valor exacto con la binomial: 60 compras = 30 %
+```
+
+La aproximación da 0.949 y el valor exacto, 0.955. La diferencia se debe a que la binomial es discreta; se puede reducir con la corrección por continuidad del Reto 3.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Creer que el teorema hace normales a los **datos** | El teorema habla de la media, no de cada observación | Con muestras grandes, los datos siguen teniendo la forma de la población |
+| Aplicar "$n \geq 30$" como una ley | Es solo una guía práctica | Revisar la asimetría de los datos; con poblaciones muy asimétricas se necesita más |
+| Usar $\sigma$ en lugar de $\sigma/\sqrt{n}$ | Se confunde la dispersión de los datos con la de la media | La desviación estándar de $\bar{X}$ es $\sigma/\sqrt{n}$ |
+| Aplicar el teorema con observaciones dependientes | No se revisó la independencia | Por ejemplo, datos medidos en el tiempo pueden estar correlacionados |
+| Concluir que los datos "son normales" porque una prueba no rechazó la normalidad | No rechazar no confirma | Una prueba que no rechaza solo indica que no hay evidencia en contra |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Tiempo total**</span>
+
+Un técnico atiende 40 llamadas en un turno. Cada llamada dura en promedio 5 minutos, con desviación estándar de 5 minutos, de forma independiente. ¿Qué tan probable es que el tiempo total de las 40 llamadas supere 4 horas?
+
+<details>
+<summary>Ver solución</summary>
+
+La suma tiene media $40 \times 5 = 200$ minutos y desviación estándar $\sqrt{40} \times 5 = 31.6$ minutos. Cuatro horas son 240 minutos:
+
+```{r}
+1 - pnorm(240, mean = 200, sd = sqrt(40) * 5)
+```
+
+La probabilidad es 0.103.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Dos turnos**</span>
+
+La duración media de las llamadas es de 5 minutos en el turno de la mañana y de 6 minutos en el de la tarde, con desviación estándar de 5 y 6 minutos. Se toman 50 llamadas de cada turno. ¿Qué tan probable es que la media de la mañana resulte mayor que la de la tarde?
+
+<details>
+<summary>Ver solución</summary>
+
+$\bar{X}_M - \bar{X}_T \approx N\left(5 - 6,\ \frac{25}{50} + \frac{36}{50}\right) = N(-1,\ 1.22)$.
+
+```{r}
+1 - pnorm(0, mean = -1, sd = sqrt(25/50 + 36/50))
+```
+
+Aunque las llamadas de la tarde son en promedio más largas, en el 18.2 % de los casos la muestra de la mañana tendría una media mayor.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Corrección por continuidad**</span>
+
+Se lanza una moneda 100 veces. Calcule la probabilidad de obtener al menos 55 caras con la binomial y con la aproximación normal, primero usando 55 y luego 54.5 como límite. ¿Cuál aproximación se acerca más al valor exacto?
+
+<details>
+<summary>Ver solución</summary>
+
+El número de caras tiene media 50 y desviación estándar 5.
+
+```{r}
+1 - pbinom(54, size = 100, prob = 0.5)   # exacto
+1 - pnorm(55, mean = 50, sd = 5)         # aproximación sin corrección
+1 - pnorm(54.5, mean = 50, sd = 5)       # aproximación con corrección
+```
+
+El valor exacto es 0.184. Sin corrección la aproximación da 0.159; con 54.5 da 0.184. La **corrección por continuidad** resta o suma media unidad porque la normal es continua y la binomial solo toma valores enteros.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. ¿Cuándo funciona?**</span>
+
+Simule 5 000 medias de muestras de tamaño 10 de una población uniforme entre 0 y 10, y 5 000 de una exponencial con media 5. En cada caso calcule qué proporción de las medias queda **por debajo** de $\mu - 1.96\,\sigma/\sqrt{n}$ y qué proporción queda **por encima** de $\mu + 1.96\,\sigma/\sqrt{n}$. Si la aproximación normal fuera perfecta, las dos serían 0.025.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+med_unif <- replicate(5000, mean(runif(10, 0, 10)))
+med_exp  <- replicate(5000, mean(rexp(10, rate = 1/5)))
+ee_unif <- (10 / sqrt(12)) / sqrt(10)
+ee_exp  <- 5 / sqrt(10)
+c(abajo = mean(med_unif < 5 - 1.96 * ee_unif), arriba = mean(med_unif > 5 + 1.96 * ee_unif))   # uniforme
+c(abajo = mean(med_exp < 5 - 1.96 * ee_exp), arriba = mean(med_exp > 5 + 1.96 * ee_exp))       # exponencial
+```
+
+Con la uniforme, las dos colas quedan muy cerca de 0.025. Con la exponencial, la cola de abajo tiene menos de 0.01 y la de arriba, cerca de 0.04: con $n = 10$, las medias todavía conservan la asimetría de la población. La aproximación normal funciona bien para la uniforme, pero para la exponencial hace falta una muestra más grande.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/7-introduccion). En español. El capítulo 7 trata el teorema del límite central para medias y para sumas.
+- Grinstead, C. M. y Snell, J. L. (1997). [*Introduction to Probability*](https://chance.dartmouth.edu/book.html) (2.ª ed.). American Mathematical Society. Se descarga en PDF. El capítulo 9 trata el teorema del límite central.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial. El capítulo 5 trata el teorema para proporciones y sus condiciones.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 8 trata el teorema del límite central.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). *OpenIntro Statistics* (4.ª ed.). OpenIntro.
+- Grinstead, C. M. y Snell, J. L. (1997). *Introduction to Probability* (2.ª ed.). American Mathematical Society.
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

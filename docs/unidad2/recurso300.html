@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Conceptos básicos</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia estadística
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Distribución muestral</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Teorema del límite central</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Propiedades de los estimadores</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Métodos de estimación</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Conceptos básicos</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un centro de atención quiere saber cuánto duran en promedio las
+llamadas de sus clientes. No puede medir todas las llamadas del año,
+pero sí puede revisar una parte de ellas. ¿Qué tanto se puede decir del
+total a partir de esa parte? Esa es la pregunta de la <strong>inferencia
+estadística</strong>: sacar conclusiones sobre una población a partir de
+una muestra, y medir qué tan confiables son esas conclusiones.</p>
+<p>Esta página presenta los conceptos con los que se trabaja en el resto
+de la unidad: población, muestra, parámetro, estimador y estimación. Los
+bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-una-población" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una
+población?</strong></span></h2>
+<p>La palabra <strong>población</strong> se usa de dos formas, y
+conviene distinguirlas:</p>
+<ul>
+<li>En el lenguaje común de las ciencias sociales, la biología o la
+ingeniería, la población es el <strong>conjunto de unidades</strong> que
+se quiere estudiar: personas, baterías, días, muestras de agua.</li>
+<li>En estadística, la población es el <strong>conjunto de
+valores</strong> que toma una variable en esas unidades. Si se estudian
+dos variables en las mismas unidades, hay dos poblaciones.</li>
+</ul>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="26%" />
+<col width="48%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Población</th>
+<th align="left">Unidad de análisis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Duración de la batería</td>
+<td align="left">Duración de todas las baterías de teléfonos vendidas en
+Colombia en 2024</td>
+<td align="left">Una batería vendida en Colombia en 2024</td>
+</tr>
+<tr class="even">
+<td align="left">Temperatura promedio diaria</td>
+<td align="left">Temperaturas promedio diarias de Bogotá en 2023</td>
+<td align="left">Un día de 2023 en Bogotá</td>
+</tr>
+<tr class="odd">
+<td align="left">pH del agua</td>
+<td align="left">Mediciones de pH del río Magdalena en 2024</td>
+<td align="left">Una muestra de agua tomada en 2024</td>
+</tr>
+</tbody>
+</table>
+<p>La población puede ser <strong>finita</strong>, como las estaturas de
+los estudiantes de una universidad, o <strong>infinita</strong>, como
+los valores que puede producir un proceso que se repite indefinidamente.
+En el segundo caso, la población se describe con un <strong>modelo de
+probabilidad</strong>, como los de <a href="recurso204.html">Modelos
+continuos</a>.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-una-muestra" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una
+muestra?</strong></span></h2>
+<p>Una <strong>muestra</strong> es una parte de la población, de tamaño
+<span class="math inline">\(n\)</span>, que sí se observa. Para que
+permita sacar conclusiones sobre la población, debe elegirse <strong>al
+azar</strong>. Hay dos formas de entender esto:</p>
+<ul>
+<li><strong>Muestreo de una población finita.</strong> En un
+<strong>muestreo aleatorio simple</strong>, cada grupo posible de <span
+class="math inline">\(n\)</span> unidades tiene la misma probabilidad de
+ser elegido. Es lo que se hace, por ejemplo, al sortear 100 llamadas
+entre todas las del año.</li>
+<li><strong>Modelo para la inferencia.</strong> En la mayor parte de
+este curso se supone que los datos <span class="math inline">\(X_1, X_2,
+\ldots, X_n\)</span> son <strong>independientes</strong> (el valor de
+uno no da información sobre otro) e <strong>idénticamente
+distribuidos</strong> (todos vienen del mismo modelo de probabilidad).
+Se abrevia <strong>i.i.d.</strong></li>
+</ul>
+<p>Los dos enfoques coinciden cuando la población es muy grande
+comparada con la muestra. Si la población es pequeña y el muestreo es
+sin reemplazo, las observaciones no son del todo independientes, como en
+el modelo hipergeométrico de <a href="recurso203.html">Modelos
+discretos</a>, y algunas fórmulas necesitan un ajuste que se verá en la
+unidad de intervalos de confianza.</p>
+<div id="una-muestra-aleatoria-no-garantiza-un-buen-resultado"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Una muestra aleatoria no
+garantiza un buen resultado</strong></span></h3>
+<p>Elegir al azar evita que la muestra favorezca sistemáticamente a
+algún grupo, pero cada muestra es distinta y ninguna reproduce
+exactamente a la población. Lo que el azar sí permite es
+<strong>medir</strong> qué tanto se puede equivocar una estimación. Eso
+es lo que hacen los intervalos de confianza y las pruebas de
+hipótesis.</p>
+</div>
+<p><br/></p>
+<div id="ejemplo-duración-de-las-llamadas" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: duración de las
+llamadas</strong></span></h3>
+<p>La duración de las llamadas de un centro de atención en Bogotá sigue
+un modelo exponencial con media de 5 minutos. Como en la exponencial la
+media es <span class="math inline">\(1/\lambda\)</span>, la tasa es
+<span class="math inline">\(\lambda = 1/5\)</span>, y la varianza es
+<span class="math inline">\(1/\lambda^2 = 25\)</span> minutos².</p>
+<ul>
+<li><strong>Población:</strong> la duración de todas las llamadas del
+año, descrita por el modelo <span class="math inline">\(X \sim
+\text{Exp}(\lambda = 1/5)\)</span>.</li>
+<li><strong>Muestra:</strong> la duración de 100 llamadas elegidas al
+azar, <span class="math inline">\(X_1, \ldots, X_{100}\)</span>.</li>
+</ul>
+<p>En la práctica la población es desconocida; aquí se conoce porque se
+va a simular. La función <code>rexp()</code> genera una muestra de 100
+duraciones:</p>
+<pre class="r"><code>set.seed(2026)
+llamadas &lt;- rexp(100, rate = 1/5)
+round(head(llamadas, 10), 2)   # las primeras 10 duraciones, en minutos</code></pre>
+<pre><code> [1]  1.99  0.57  7.54  4.18  0.55 20.37  4.34  0.81 26.85  1.92</code></pre>
+<pre class="r"><code>hist(llamadas, breaks = 20, freq = FALSE, col = &quot;#BDD7EE&quot;, border = &quot;white&quot;,
+     main = &quot;&quot;, xlab = &quot;Duración de la llamada (minutos)&quot;, ylab = &quot;Densidad&quot;, ylim = c(0, 0.2))
+curve(dexp(x, rate = 1/5), add = TRUE, col = &quot;#FF7F00&quot;, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso300_files/figure-html/unnamed-chunk-2-1.png" alt="Histograma azul con muchas llamadas cortas y pocas largas, que sigue de cerca una curva naranja que decrece desde 0.2" width="90%" />
+<p class="caption">
+Histograma de la muestra de 100 llamadas. La curva naranja es la
+densidad de la población, Exp(1/5).
+</p>
+</div>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-son-un-parámetro-un-estimador-y-una-estimación"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son un parámetro, un
+estimador y una estimación?</strong></span></h2>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="18%" />
+<col width="59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Concepto</th>
+<th align="left">Qué es</th>
+<th align="left">Ejemplo con las llamadas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Parámetro</strong>, <span
+class="math inline">\(\theta\)</span></td>
+<td align="left">Un número fijo que describe a la población. Casi
+siempre es desconocido</td>
+<td align="left">La media poblacional, <span class="math inline">\(\mu =
+5\)</span> minutos</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Estimador</strong>, <span
+class="math inline">\(\hat{\theta}\)</span></td>
+<td align="left">Una <strong>fórmula</strong> que se aplica a la muestra
+para aproximar el parámetro</td>
+<td align="left">La media muestral, <span class="math inline">\(\bar{X}
+= \frac{1}{n}\sum X_i\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Estimación</strong></td>
+<td align="left">El <strong>número</strong> que resulta de aplicar el
+estimador a una muestra concreta</td>
+<td align="left"><span class="math inline">\(\bar{x} = 5.65\)</span>
+minutos</td>
+</tr>
+</tbody>
+</table>
+<p>Los estimadores más usados son:</p>
+<table>
+<colgroup>
+<col width="29%" />
+<col width="29%" />
+<col width="24%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Parámetro</th>
+<th align="left">Estimador</th>
+<th align="left">Fórmula</th>
+<th align="left">En R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Media, <span class="math inline">\(\mu\)</span></td>
+<td align="left">Media muestral</td>
+<td align="left"><span class="math inline">\(\bar{X} =
+\dfrac{1}{n}\sum_{i=1}^n X_i\)</span></td>
+<td align="left"><code>mean()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Varianza, <span
+class="math inline">\(\sigma^2\)</span></td>
+<td align="left">Varianza muestral</td>
+<td align="left"><span class="math inline">\(S^2 = \dfrac{1}{n -
+1}\sum_{i=1}^n (X_i - \bar{X})^2\)</span></td>
+<td align="left"><code>var()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Desviación estándar, <span
+class="math inline">\(\sigma\)</span></td>
+<td align="left">Desviación estándar muestral</td>
+<td align="left"><span class="math inline">\(S =
+\sqrt{S^2}\)</span></td>
+<td align="left"><code>sd()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Proporción, <span class="math inline">\(p\)</span></td>
+<td align="left">Proporción muestral</td>
+<td align="left"><span class="math inline">\(\hat{p} =
+\dfrac{\text{número de éxitos}}{n}\)</span></td>
+<td align="left"><code>mean()</code> de una condición</td>
+</tr>
+</tbody>
+</table>
+<p>Con la muestra de llamadas:</p>
+<pre class="r"><code>mean(llamadas)          # estimación de la media, que es 5</code></pre>
+<pre><code>[1] 5.649233</code></pre>
+<pre class="r"><code>var(llamadas)           # estimación de la varianza, que es 25</code></pre>
+<pre><code>[1] 38.45063</code></pre>
+<pre class="r"><code>mean(llamadas &gt; 10)     # estimación de P(X &gt; 10), que es exp(-2) = 0.135</code></pre>
+<pre><code>[1] 0.16</code></pre>
+<p>Las estimaciones no coinciden exactamente con los parámetros. La
+media muestral, 5.65, está cerca de 5. La varianza muestral, 38.5, se
+aleja más de 25, porque la muestra tiene algunas llamadas muy
+largas.</p>
+<p><br/></p>
+</div>
+<div id="por-qué-cada-muestra-da-una-estimación-distinta"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Por qué cada muestra da una
+estimación distinta?</strong></span></h2>
+<p>Si el centro de atención tomara otra muestra de 100 llamadas,
+obtendría otros valores y, por tanto, otras estimaciones. Esta variación
+se llama <strong>variabilidad muestral</strong>. La simulación permite
+verla: <code>replicate()</code> toma 12 muestras de 100 llamadas de la
+misma población, y <code>apply()</code> calcula la media y la varianza
+de cada una.</p>
+<pre class="r"><code>set.seed(2026)
+muestras &lt;- replicate(12, rexp(100, rate = 1/5))   # cada columna es una muestra
+medias &lt;- apply(muestras, 2, mean)
+varianzas &lt;- apply(muestras, 2, var)
+round(medias, 2)</code></pre>
+<pre><code> [1] 5.65 5.31 5.11 4.61 5.29 5.47 4.75 5.60 5.42 4.82 5.41 5.03</code></pre>
+<pre class="r"><code>round(varianzas, 1)</code></pre>
+<pre><code> [1] 38.5 23.7 27.2 23.0 24.7 36.9 23.4 28.0 24.3 17.0 32.5 22.4</code></pre>
+<pre class="r"><code>par(mfrow = c(3, 4), mar = c(4, 4, 2.5, 1))
+for (j in 1:12) {
+  hist(muestras[, j], breaks = 15, freq = FALSE, col = &quot;#BDD7EE&quot;, border = &quot;white&quot;,
+       xlim = c(0, 35), ylim = c(0, 0.25), xlab = &quot;Minutos&quot;, ylab = &quot;Densidad&quot;,
+       main = paste0(&quot;x̄ = &quot;, round(medias[j], 2), &quot;,  s² = &quot;, round(varianzas[j], 1)), cex.main = 0.9)
+  abline(v = medias[j], col = &quot;#C0392B&quot;, lwd = 2)
+}</code></pre>
+<div class="figure">
+<img src="recurso300_files/figure-html/unnamed-chunk-5-1.png" alt="Doce histogramas pequeños con formas parecidas pero no iguales; la línea roja vertical de cada uno está entre 4.6 y 5.7" width="100%" />
+<p class="caption">
+Histogramas de 12 muestras de 100 llamadas de la misma población. La
+línea roja es la media muestral de cada una.
+</p>
+</div>
+<p>Todas las muestras vienen de la misma población, pero sus histogramas
+y sus estimaciones cambian. Las medias muestrales están entre 4.61 y
+5.65, alrededor de 5. Las varianzas muestrales varían mucho más, entre
+17.0 y 38.5, alrededor de 25. Cuánto varía un estimador de una muestra a
+otra es lo que estudia la <a href="recurso301.html">distribución
+muestral</a>.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Confundir el parámetro con la estimación</td>
+<td align="left">Se usa la misma palabra para el valor de la población y
+el de la muestra</td>
+<td align="left">El parámetro es fijo y desconocido; la estimación
+cambia con cada muestra</td>
+</tr>
+<tr class="even">
+<td align="left">Calcular la varianza muestral dividiendo por <span
+class="math inline">\(n\)</span></td>
+<td align="left">Se usó la fórmula de la población</td>
+<td align="left"><code>var()</code> divide por <span
+class="math inline">\(n - 1\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Creer que una muestra aleatoria reproduce exactamente a
+la población</td>
+<td align="left">Se confunde “al azar” con “representativa en todo”</td>
+<td align="left">Toda muestra tiene error; el azar permite medirlo</td>
+</tr>
+<tr class="even">
+<td align="left">Sacar conclusiones de una muestra que no fue elegida al
+azar</td>
+<td align="left">Por ejemplo, encuestar solo a quienes responden
+voluntariamente</td>
+<td align="left">Elegir la muestra con un mecanismo aleatorio</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-identifique-los-conceptos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Identifique los
+conceptos</strong></span></h3>
+<p>Una empresa quiere conocer el porcentaje de sus 5 000 clientes que
+está satisfecho con el servicio. Encuesta a 200 clientes elegidos al
+azar y 152 dicen estar satisfechos. Identifique la población, la
+muestra, el parámetro, el estimador y la estimación.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<ul>
+<li><strong>Población:</strong> la satisfacción (sí o no) de los 5 000
+clientes.</li>
+<li><strong>Muestra:</strong> la satisfacción de los 200 clientes
+encuestados.</li>
+<li><strong>Parámetro:</strong> la proporción <span
+class="math inline">\(p\)</span> de clientes satisfechos entre los 5
+000.</li>
+<li><strong>Estimador:</strong> la proporción muestral, <span
+class="math inline">\(\hat{p}\)</span> = número de satisfechos en la
+muestra / 200.</li>
+<li><strong>Estimación:</strong> <span class="math inline">\(\hat{p} =
+152/200 = 0.76\)</span>.</li>
+</ul>
+</details>
+</div>
+<div id="reto-2.-muestras-más-grandes"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Muestras más
+grandes</strong></span></h3>
+<p>Repita la simulación de las 12 muestras, pero con muestras de 1 000
+llamadas. ¿Las medias muestrales varían más o menos que con 100
+llamadas?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+medias_1000 &lt;- apply(replicate(12, rexp(1000, rate = 1/5)), 2, mean)
+round(medias_1000, 2)</code></pre>
+<pre><code> [1] 5.20 5.11 5.26 5.26 4.73 5.30 5.26 5.04 5.10 5.24 4.97 4.84</code></pre>
+<pre class="r"><code>round(range(medias_1000), 2)</code></pre>
+<pre><code>[1] 4.73 5.30</code></pre>
+<p>Con 1 000 llamadas, las medias quedan mucho más cerca de 5. Con
+muestras más grandes, la variabilidad muestral disminuye.</p>
+</details>
+</div>
+<div id="reto-3.-estime-una-proporción"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Estime una
+proporción</strong></span></h3>
+<p>Con la muestra <code>llamadas</code> del ejemplo, estime la
+proporción de llamadas que duran menos de 2 minutos. Compárela con el
+valor de la población, <code>pexp(2, rate = 1/5)</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>mean(llamadas &lt; 2)</code></pre>
+<pre><code>[1] 0.38</code></pre>
+<pre class="r"><code>pexp(2, rate = 1/5)</code></pre>
+<pre><code>[1] 0.32968</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/1-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 1 trata la población,
+la muestra, los parámetros y los estadísticos, y los métodos de
+muestreo.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial. El capítulo 1 trata el muestreo y el capítulo 5,
+las estimaciones puntuales y la variabilidad muestral.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 8 trata el muestreo aleatorio y los
+estadísticos.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <em>OpenIntro
+Statistics</em> (4.ª ed.). OpenIntro.</li>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

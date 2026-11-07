@@ -1,0 +1,277 @@
+---
+title: <span style="color:#034a94"> **Propiedades de los estimadores**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+Para estimar un mismo parámetro se pueden usar fórmulas distintas. La media de una población se puede estimar con la media muestral, con la mediana o, en un extremo absurdo, con el primer dato de la muestra. La varianza se puede estimar dividiendo por $n - 1$ o por $n$. ¿Cómo decidir cuál es mejor?
+
+Como cada estimador es una variable aleatoria, se juzga por su **distribución muestral**: dónde se ubica y qué tanto varía de una muestra a otra. Esta página presenta las propiedades que se usan para comparar estimadores: insesgadez, varianza, error cuadrático medio, consistencia y robustez. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se ve un buen estimador?**</span>
+
+Una forma de pensarlo es como tiros a un blanco. El centro del blanco es el parámetro $\theta$ y cada tiro es la estimación que da una muestra distinta.
+
+| | Poca dispersión | Mucha dispersión |
+|:--|:--|:--|
+| **Centrado en $\theta$** | Insesgado y preciso: el ideal | Insesgado pero impreciso |
+| **Desviado de $\theta$** | Sesgado pero preciso | Sesgado e impreciso |
+
+```{r, fig.width=9, fig.height=2.6, fig.cap="Cuatro estimadores representados como tiros a un blanco. El centro es el parámetro.", fig.alt="Cuatro blancos con círculos concéntricos. En el primero, los puntos están juntos en el centro; en el segundo, dispersos alrededor del centro; en el tercero, juntos pero lejos del centro; en el cuarto, dispersos y lejos del centro", out.width="100%"}
+set.seed(2026)
+par(mfrow = c(1, 4), mar = c(0.5, 0.5, 2, 0.5))
+casos <- list(c(0, 0, 0.15), c(0, 0, 0.5), c(0.55, 0.4, 0.15), c(0.55, 0.4, 0.5))
+titulos <- c("Insesgado y preciso", "Insesgado e impreciso", "Sesgado y preciso", "Sesgado e impreciso")
+for (k in 1:4) {
+  plot(0, 0, type = "n", xlim = c(-1.3, 1.3), ylim = c(-1.3, 1.3), asp = 1, axes = FALSE,
+       xlab = "", ylab = "", main = titulos[k], cex.main = 1)
+  symbols(rep(0, 4), rep(0, 4), circles = c(1.2, 0.85, 0.5, 0.15), inches = FALSE, add = TRUE,
+          bg = c("#F2F2F2", "#E0E0E0", "#C8C8C8", "#C0392B"), fg = "gray50")
+  points(casos[[k]][1] + rnorm(15, 0, casos[[k]][3]), casos[[k]][2] + rnorm(15, 0, casos[[k]][3]),
+         pch = 19, col = "#034A94")
+}
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un estimador insesgado?**</span>
+
+El **sesgo** de un estimador es la diferencia entre su valor esperado y el parámetro:
+
+$$
+\text{Sesgo}(\hat{\theta}) = E(\hat{\theta}) - \theta
+$$
+
+Un estimador es **insesgado** si su sesgo es cero, es decir, si en promedio, sobre todas las muestras posibles, acierta: $E(\hat{\theta}) = \theta$. No significa que acierte en cada muestra.
+
+Algunos ejemplos:
+
+- La **media muestral** es insesgada para la media de la población: $E(\bar{X}) = \mu$.
+- La **proporción muestral** es insesgada para la proporción de la población: $E(\hat{p}) = p$.
+- La **varianza muestral** $S^2$, que divide por $n - 1$, es insesgada para $\sigma^2$.
+- La varianza que divide por $n$, $\hat{\sigma}^2 = \frac{1}{n}\sum (X_i - \bar{X})^2$, es **sesgada**: $E(\hat{\sigma}^2) = \frac{n - 1}{n}\,\sigma^2$. En promedio subestima la varianza, y por eso $S^2$ divide por $n - 1$.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la eficiencia?**</span>
+
+Dos estimadores pueden ser insesgados y tener dispersiones muy distintas. Entre dos estimadores **insesgados**, se prefiere el de **menor varianza**, y se dice que es más **eficiente**: sus estimaciones quedan, en general, más cerca del parámetro.
+
+Por ejemplo, para la media de la población, tanto la media muestral $\bar{X}$ como el primer dato de la muestra, $X_1$, son insesgados: $E(X_1) = \mu$. Pero sus varianzas son muy distintas:
+
+$$
+\text{Var}(\bar{X}) = \frac{\sigma^2}{n}, \qquad \text{Var}(X_1) = \sigma^2
+$$
+
+La media muestral usa la información de todos los datos y por eso es mucho más eficiente.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el error cuadrático medio?**</span>
+
+Para comparar estimadores que pueden ser sesgados, se usa el **error cuadrático medio** (ECM): el promedio del cuadrado de la distancia entre el estimador y el parámetro. Se puede escribir como la suma de la varianza y el sesgo al cuadrado:
+
+$$
+\text{ECM}(\hat{\theta}) = E\big[(\hat{\theta} - \theta)^2\big] = \text{Var}(\hat{\theta}) + \text{Sesgo}(\hat{\theta})^2
+$$
+
+Un estimador con un sesgo pequeño y una varianza mucho menor puede tener menor ECM que uno insesgado. Si el estimador es insesgado, su ECM es igual a su varianza.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la consistencia?**</span>
+
+Un estimador es **consistente** si, al aumentar el tamaño de la muestra, sus estimaciones se concentran cada vez más alrededor del parámetro. Una forma práctica de comprobarlo es ver que su ECM se acerca a cero cuando $n$ crece: eso ocurre si el sesgo y la varianza se acercan a cero.
+
+- $\bar{X}$ es consistente: es insesgada y su varianza, $\sigma^2/n$, se acerca a cero.
+- $X_1$ no es consistente: su varianza es $\sigma^2$ para cualquier $n$, porque nunca usa los demás datos.
+- $\hat{\sigma}^2$ es consistente aunque sea sesgada: su sesgo, $-\sigma^2/n$, se acerca a cero.
+
+<br/>
+
+## <span style="color:#034a94">**Ejemplo: comparación por simulación**</span>
+
+Con la población de las llamadas, exponencial con media $\mu = 5$ y varianza $\sigma^2 = 25$, se comparan cuatro estimadores:
+
+- Para la media: $\bar{X}$ y $X_1$.
+- Para la varianza: $S^2$ (divide por $n - 1$) y $\hat{\sigma}^2$ (divide por $n$).
+
+Se toman 10 000 muestras de cada tamaño, se aplica cada estimador y se calculan el promedio de las estimaciones, su varianza y su ECM. La función `comparar()` hace todo para un tamaño $n$:
+
+```{r}
+comparar <- function(n, B = 10000) {
+  est <- replicate(B, {
+    x <- rexp(n, rate = 1/5)
+    c(media = mean(x), primero = x[1], S2 = var(x), sigma2_n = var(x) * (n - 1) / n)
+  })
+  verdadero <- c(5, 5, 25, 25)
+  promedio <- rowMeans(est)
+  varianza <- apply(est, 1, var)
+  round(rbind(promedio = promedio, sesgo = promedio - verdadero,
+              varianza = varianza, ECM = varianza + (promedio - verdadero)^2), 3)
+}
+set.seed(2026)
+comparar(5)
+comparar(100)
+```
+
+Los resultados muestran las cuatro propiedades:
+
+- **Insesgadez:** $\bar{X}$, $X_1$ y $S^2$ tienen promedios muy cercanos a sus parámetros. $\hat{\sigma}^2$ subestima la varianza: con $n = 5$, su promedio es cercano a $\frac{4}{5} \times 25 = 20$.
+- **Eficiencia:** $\bar{X}$ y $X_1$ son insesgados, pero la varianza de $X_1$ es cercana a 25 y la de $\bar{X}$, a $25/n$.
+- **Error cuadrático medio:** con $n = 5$, $\hat{\sigma}^2$ tiene **menor** ECM que $S^2$, aunque sea sesgada. Su varianza es tan menor que compensa el sesgo.
+- **Consistencia:** al pasar de $n = 5$ a $n = 100$, el ECM de $\bar{X}$, $S^2$ y $\hat{\sigma}^2$ baja mucho. El de $X_1$ sigue cerca de 25.
+
+```{r, fig.width=9, fig.height=3.6, fig.cap="Distribución de 10 000 estimaciones de la media con la media muestral y con el primer dato, para muestras de 30 llamadas. La línea roja es la media de la población, 5.", fig.alt="Dos histogramas con la misma escala. El de la media muestral es angosto y centrado en 5. El del primer dato es exponencial, con valores desde 0 hasta más de 30", out.width="100%"}
+set.seed(2026)
+est_30 <- replicate(10000, { x <- rexp(30, rate = 1/5); c(mean(x), x[1]) })
+cortes <- seq(0, ceiling(max(est_30)) + 1, by = 0.5)   # las mismas barras para los dos histogramas
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 2.5, 1))
+hist(est_30[1, ], breaks = cortes, freq = FALSE, col = "#5B9BD5", border = "white", xlim = range(cortes), ylim = c(0, 0.5),
+     main = "Media muestral", xlab = "Estimación de la media", ylab = "Densidad")
+abline(v = 5, col = "#C0392B", lwd = 2)
+hist(est_30[2, ], breaks = cortes, freq = FALSE, col = "#FF7F00", border = "white", xlim = range(cortes), ylim = c(0, 0.5),
+     main = "Primer dato", xlab = "Estimación de la media", ylab = "Densidad")
+abline(v = 5, col = "#C0392B", lwd = 2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un estimador robusto?**</span>
+
+Un estimador es **robusto** si no cambia mucho cuando la muestra tiene unos pocos valores extremos o errores de digitación.
+
+Por ejemplo, se registran los tiempos de entrega (en minutos) de 10 domicilios. El último dato se digitó mal: debía ser 12 y quedó como 120.
+
+```{r}
+tiempos <- c(12, 15, 14, 13, 16, 15, 14, 13, 15, 120)
+mean(tiempos)
+median(tiempos)
+```
+
+Un solo dato erróneo lleva la media de alrededor de 14 a 24.7 minutos, mientras que la mediana queda en 14.5. La mediana es robusta y la media no. Por eso, antes de estimar, conviene graficar los datos y revisar los valores extremos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué propiedad importa más?**</span>
+
+| Propiedad | Pregunta que responde | Cómo se revisa |
+|:----------|:----------------------|:---------------|
+| Insesgadez | ¿Acierta en promedio? | $E(\hat{\theta}) = \theta$ |
+| Eficiencia | Entre los insesgados, ¿cuál varía menos? | Comparar varianzas |
+| Error cuadrático medio | ¿Qué tan lejos queda, en promedio, del parámetro? | Varianza + sesgo² |
+| Consistencia | ¿Mejora al aumentar la muestra? | El ECM se acerca a 0 cuando $n$ crece |
+| Robustez | ¿Resiste valores extremos? | Ver cuánto cambia con un dato atípico |
+
+Ninguna propiedad basta por sí sola: $X_1$ es insesgado pero inútil, y un estimador con un sesgo pequeño puede ser mejor que uno insesgado. El ECM resume el sesgo y la varianza en un solo número, y por eso es el criterio más usado para comparar.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Creer que un estimador insesgado acierta en cada muestra | Se confunde "en promedio" con "siempre" | El sesgo cero habla del promedio sobre muchas muestras |
+| Elegir siempre el estimador insesgado | Se ignoró la varianza | Comparar con el error cuadrático medio |
+| Llamar "eficiente" a cualquier estimador de menor varianza | La eficiencia compara estimadores insesgados | Para estimadores sesgados, usar el ECM |
+| Juzgar la consistencia con el coeficiente de variación | El CV no mide la distancia al parámetro | Revisar que el sesgo y la varianza se acerquen a cero |
+| Confundir un estimador sesgado con una distribución asimétrica | Son ideas distintas | El sesgo compara el centro del estimador con el parámetro |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Sesgo de la varianza con n**</span>
+
+Si una población tiene varianza $\sigma^2 = 36$, ¿cuál es el valor esperado de $\hat{\sigma}^2$ con $n = 4$? ¿Y con $n = 100$? ¿Qué pasa con el sesgo cuando $n$ crece?
+
+<details>
+<summary>Ver solución</summary>
+
+$E(\hat{\sigma}^2) = \frac{n - 1}{n}\,\sigma^2$: con $n = 4$ es $\frac{3}{4} \times 36 = 27$ (sesgo de −9), y con $n = 100$ es $0.99 \times 36 = 35.64$ (sesgo de −0.36). El sesgo se acerca a cero cuando $n$ crece.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Promedio de los extremos**</span>
+
+Un estudiante propone estimar la media con el promedio del valor más pequeño y el más grande de la muestra, $(\min + \max)/2$. Compárelo con $\bar{X}$ en muestras de 20 llamadas (población exponencial con media 5). ¿Es insesgado? ¿Cuál tiene menor ECM?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+est_r2 <- replicate(10000, { x <- rexp(20, rate = 1/5); c(media = mean(x), extremos = (min(x) + max(x)) / 2) })
+rowMeans(est_r2)                                    # promedio de las estimaciones
+apply(est_r2, 1, var) + (rowMeans(est_r2) - 5)^2    # ECM
+```
+
+El promedio de los extremos está sesgado hacia arriba, porque en la exponencial el máximo puede ser muy grande, y su ECM es mucho mayor que el de $\bar{X}$.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Media o mediana?**</span>
+
+Simule 10 000 muestras de tamaño 25 de una población normal con media 10 y desviación estándar 2. Compare la varianza de la media muestral y la de la mediana muestral. ¿Cuál es más eficiente cuando no hay valores extremos?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+est_r3 <- replicate(10000, { x <- rnorm(25, 10, 2); c(media = mean(x), mediana = median(x)) })
+rowMeans(est_r3)
+apply(est_r3, 1, var)
+```
+
+Las dos son insesgadas para la media, porque la normal es simétrica, pero la varianza de la mediana es cerca de 1.5 veces la de la media. Sin valores extremos, la media es más eficiente; con valores extremos, la mediana es más robusta.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial. El capítulo 5 trata las estimaciones puntuales, el sesgo y el error estándar.
+- Pishro-Nik, H. (2014). [*Introduction to Probability, Statistics, and Random Processes*](https://www.probabilitycourse.com/). Kappa Research. Versión gratuita en línea del autor. El capítulo 8 trata el sesgo, el error cuadrático medio y la consistencia de los estimadores.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 9 trata los estimadores insesgados y su eficiencia.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). *OpenIntro Statistics* (4.ª ed.). OpenIntro.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

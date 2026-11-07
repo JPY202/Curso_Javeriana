@@ -43,11 +43,17 @@ Esta unidad presenta las bases de la inferencia estadística: la probabilidad, l
 
     <br/>
 
-3.  **Distribuciones muestrales** (en preparación)
+3.  **Inferencia estadística**
+
+    - [Conceptos básicos](recurso300.html)
+    - [Distribución muestral](recurso301.html)
+    - [Teorema del límite central](recurso302.html)
+    - [Propiedades de los estimadores](recurso303.html)
+    - [Métodos de estimación](recurso304.html)
 
     <br/>
 
-4.  **Estimación** (en preparación)
+4.  **Intervalos de confianza** (en preparación)
 
     <br/>
 

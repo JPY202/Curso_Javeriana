@@ -1,0 +1,231 @@
+---
+title: <span style="color:#034a94"> **Conceptos básicos**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+Un centro de atención quiere saber cuánto duran en promedio las llamadas de sus clientes. No puede medir todas las llamadas del año, pero sí puede revisar una parte de ellas. ¿Qué tanto se puede decir del total a partir de esa parte? Esa es la pregunta de la **inferencia estadística**: sacar conclusiones sobre una población a partir de una muestra, y medir qué tan confiables son esas conclusiones.
+
+Esta página presenta los conceptos con los que se trabaja en el resto de la unidad: población, muestra, parámetro, estimador y estimación. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una población?**</span>
+
+La palabra **población** se usa de dos formas, y conviene distinguirlas:
+
+- En el lenguaje común de las ciencias sociales, la biología o la ingeniería, la población es el **conjunto de unidades** que se quiere estudiar: personas, baterías, días, muestras de agua.
+- En estadística, la población es el **conjunto de valores** que toma una variable en esas unidades. Si se estudian dos variables en las mismas unidades, hay dos poblaciones.
+
+| Variable | Población | Unidad de análisis |
+|:---------|:----------|:-------------------|
+| Duración de la batería | Duración de todas las baterías de teléfonos vendidas en Colombia en 2024 | Una batería vendida en Colombia en 2024 |
+| Temperatura promedio diaria | Temperaturas promedio diarias de Bogotá en 2023 | Un día de 2023 en Bogotá |
+| pH del agua | Mediciones de pH del río Magdalena en 2024 | Una muestra de agua tomada en 2024 |
+
+La población puede ser **finita**, como las estaturas de los estudiantes de una universidad, o **infinita**, como los valores que puede producir un proceso que se repite indefinidamente. En el segundo caso, la población se describe con un **modelo de probabilidad**, como los de [Modelos continuos](recurso204.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una muestra?**</span>
+
+Una **muestra** es una parte de la población, de tamaño $n$, que sí se observa. Para que permita sacar conclusiones sobre la población, debe elegirse **al azar**. Hay dos formas de entender esto:
+
+- **Muestreo de una población finita.** En un **muestreo aleatorio simple**, cada grupo posible de $n$ unidades tiene la misma probabilidad de ser elegido. Es lo que se hace, por ejemplo, al sortear 100 llamadas entre todas las del año.
+- **Modelo para la inferencia.** En la mayor parte de este curso se supone que los datos $X_1, X_2, \ldots, X_n$ son **independientes** (el valor de uno no da información sobre otro) e **idénticamente distribuidos** (todos vienen del mismo modelo de probabilidad). Se abrevia **i.i.d.**
+
+Los dos enfoques coinciden cuando la población es muy grande comparada con la muestra. Si la población es pequeña y el muestreo es sin reemplazo, las observaciones no son del todo independientes, como en el modelo hipergeométrico de [Modelos discretos](recurso203.html), y algunas fórmulas necesitan un ajuste que se verá en la unidad de intervalos de confianza.
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Una muestra aleatoria no garantiza un buen resultado**</span>
+
+Elegir al azar evita que la muestra favorezca sistemáticamente a algún grupo, pero cada muestra es distinta y ninguna reproduce exactamente a la población. Lo que el azar sí permite es **medir** qué tanto se puede equivocar una estimación. Eso es lo que hacen los intervalos de confianza y las pruebas de hipótesis.
+</div>
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: duración de las llamadas**</span>
+
+La duración de las llamadas de un centro de atención en Bogotá sigue un modelo exponencial con media de 5 minutos. Como en la exponencial la media es $1/\lambda$, la tasa es $\lambda = 1/5$, y la varianza es $1/\lambda^2 = 25$ minutos².
+
+- **Población:** la duración de todas las llamadas del año, descrita por el modelo $X \sim \text{Exp}(\lambda = 1/5)$.
+- **Muestra:** la duración de 100 llamadas elegidas al azar, $X_1, \ldots, X_{100}$.
+
+En la práctica la población es desconocida; aquí se conoce porque se va a simular. La función `rexp()` genera una muestra de 100 duraciones:
+
+```{r}
+set.seed(2026)
+llamadas <- rexp(100, rate = 1/5)
+round(head(llamadas, 10), 2)   # las primeras 10 duraciones, en minutos
+```
+
+```{r, fig.width=8, fig.height=3.8, fig.cap="Histograma de la muestra de 100 llamadas. La curva naranja es la densidad de la población, Exp(1/5).", fig.alt="Histograma azul con muchas llamadas cortas y pocas largas, que sigue de cerca una curva naranja que decrece desde 0.2", out.width="90%", fig.align="center"}
+hist(llamadas, breaks = 20, freq = FALSE, col = "#BDD7EE", border = "white",
+     main = "", xlab = "Duración de la llamada (minutos)", ylab = "Densidad", ylim = c(0, 0.2))
+curve(dexp(x, rate = 1/5), add = TRUE, col = "#FF7F00", lwd = 2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué son un parámetro, un estimador y una estimación?**</span>
+
+| Concepto | Qué es | Ejemplo con las llamadas |
+|:---------|:-------|:-------------------------|
+| **Parámetro**, $\theta$ | Un número fijo que describe a la población. Casi siempre es desconocido | La media poblacional, $\mu = 5$ minutos |
+| **Estimador**, $\hat{\theta}$ | Una **fórmula** que se aplica a la muestra para aproximar el parámetro | La media muestral, $\bar{X} = \frac{1}{n}\sum X_i$ |
+| **Estimación** | El **número** que resulta de aplicar el estimador a una muestra concreta | $\bar{x} = 5.65$ minutos |
+
+Los estimadores más usados son:
+
+| Parámetro | Estimador | Fórmula | En R |
+|:----------|:----------|:--------|:-----|
+| Media, $\mu$ | Media muestral | $\bar{X} = \dfrac{1}{n}\sum_{i=1}^n X_i$ | `mean()` |
+| Varianza, $\sigma^2$ | Varianza muestral | $S^2 = \dfrac{1}{n - 1}\sum_{i=1}^n (X_i - \bar{X})^2$ | `var()` |
+| Desviación estándar, $\sigma$ | Desviación estándar muestral | $S = \sqrt{S^2}$ | `sd()` |
+| Proporción, $p$ | Proporción muestral | $\hat{p} = \dfrac{\text{número de éxitos}}{n}$ | `mean()` de una condición |
+
+Con la muestra de llamadas:
+
+```{r}
+mean(llamadas)          # estimación de la media, que es 5
+var(llamadas)           # estimación de la varianza, que es 25
+mean(llamadas > 10)     # estimación de P(X > 10), que es exp(-2) = 0.135
+```
+
+Las estimaciones no coinciden exactamente con los parámetros. La media muestral, 5.65, está cerca de 5. La varianza muestral, 38.5, se aleja más de 25, porque la muestra tiene algunas llamadas muy largas.
+
+<br/>
+
+## <span style="color:#034a94">**¿Por qué cada muestra da una estimación distinta?**</span>
+
+Si el centro de atención tomara otra muestra de 100 llamadas, obtendría otros valores y, por tanto, otras estimaciones. Esta variación se llama **variabilidad muestral**. La simulación permite verla: `replicate()` toma 12 muestras de 100 llamadas de la misma población, y `apply()` calcula la media y la varianza de cada una.
+
+```{r}
+set.seed(2026)
+muestras <- replicate(12, rexp(100, rate = 1/5))   # cada columna es una muestra
+medias <- apply(muestras, 2, mean)
+varianzas <- apply(muestras, 2, var)
+round(medias, 2)
+round(varianzas, 1)
+```
+
+```{r, fig.width=10, fig.height=6, fig.cap="Histogramas de 12 muestras de 100 llamadas de la misma población. La línea roja es la media muestral de cada una.", fig.alt="Doce histogramas pequeños con formas parecidas pero no iguales; la línea roja vertical de cada uno está entre 4.6 y 5.7", out.width="100%"}
+par(mfrow = c(3, 4), mar = c(4, 4, 2.5, 1))
+for (j in 1:12) {
+  hist(muestras[, j], breaks = 15, freq = FALSE, col = "#BDD7EE", border = "white",
+       xlim = c(0, 35), ylim = c(0, 0.25), xlab = "Minutos", ylab = "Densidad",
+       main = paste0("x̄ = ", round(medias[j], 2), ",  s² = ", round(varianzas[j], 1)), cex.main = 0.9)
+  abline(v = medias[j], col = "#C0392B", lwd = 2)
+}
+```
+
+Todas las muestras vienen de la misma población, pero sus histogramas y sus estimaciones cambian. Las medias muestrales están entre 4.61 y 5.65, alrededor de 5. Las varianzas muestrales varían mucho más, entre 17.0 y 38.5, alrededor de 25. Cuánto varía un estimador de una muestra a otra es lo que estudia la [distribución muestral](recurso301.html).
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Confundir el parámetro con la estimación | Se usa la misma palabra para el valor de la población y el de la muestra | El parámetro es fijo y desconocido; la estimación cambia con cada muestra |
+| Calcular la varianza muestral dividiendo por $n$ | Se usó la fórmula de la población | `var()` divide por $n - 1$ |
+| Creer que una muestra aleatoria reproduce exactamente a la población | Se confunde "al azar" con "representativa en todo" | Toda muestra tiene error; el azar permite medirlo |
+| Sacar conclusiones de una muestra que no fue elegida al azar | Por ejemplo, encuestar solo a quienes responden voluntariamente | Elegir la muestra con un mecanismo aleatorio |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Identifique los conceptos**</span>
+
+Una empresa quiere conocer el porcentaje de sus 5 000 clientes que está satisfecho con el servicio. Encuesta a 200 clientes elegidos al azar y 152 dicen estar satisfechos. Identifique la población, la muestra, el parámetro, el estimador y la estimación.
+
+<details>
+<summary>Ver solución</summary>
+
+- **Población:** la satisfacción (sí o no) de los 5 000 clientes.
+- **Muestra:** la satisfacción de los 200 clientes encuestados.
+- **Parámetro:** la proporción $p$ de clientes satisfechos entre los 5 000.
+- **Estimador:** la proporción muestral, $\hat{p}$ = número de satisfechos en la muestra / 200.
+- **Estimación:** $\hat{p} = 152/200 = 0.76$.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Muestras más grandes**</span>
+
+Repita la simulación de las 12 muestras, pero con muestras de 1 000 llamadas. ¿Las medias muestrales varían más o menos que con 100 llamadas?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+medias_1000 <- apply(replicate(12, rexp(1000, rate = 1/5)), 2, mean)
+round(medias_1000, 2)
+round(range(medias_1000), 2)
+```
+
+Con 1 000 llamadas, las medias quedan mucho más cerca de 5. Con muestras más grandes, la variabilidad muestral disminuye.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Estime una proporción**</span>
+
+Con la muestra `llamadas` del ejemplo, estime la proporción de llamadas que duran menos de 2 minutos. Compárela con el valor de la población, `pexp(2, rate = 1/5)`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+mean(llamadas < 2)
+pexp(2, rate = 1/5)
+```
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/1-introduccion). En español. El capítulo 1 trata la población, la muestra, los parámetros y los estadísticos, y los métodos de muestreo.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial. El capítulo 1 trata el muestreo y el capítulo 5, las estimaciones puntuales y la variabilidad muestral.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 8 trata el muestreo aleatorio y los estadísticos.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). *OpenIntro Statistics* (4.ª ed.). OpenIntro.
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>
