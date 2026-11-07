@@ -1,0 +1,258 @@
+---
+title: <span style="color:#034a94"> **Pruebas para medias y proporciones**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+Con las ideas de [Conceptos de las pruebas de hipótesis](recurso500.html), esta página presenta las pruebas más usadas: para la media y la proporción de una población, y para comparar dos grupos, independientes o pareados. Todas siguen los mismos pasos, y en **R** casi todas se hacen con dos funciones: `t.test()` y `prop.test()`.
+
+Se usan los mismos ejemplos de [Intervalos para una población](recurso400.html) y [Intervalos para dos poblaciones](recurso401.html), para que se vea la relación entre las pruebas y los intervalos. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué pasos sigue una prueba?**</span>
+
+1. Plantear $H_0$ y $H_1$ sobre el parámetro, y decidir si la prueba es bilateral o unilateral.
+2. Fijar el nivel de significación, $\alpha$, casi siempre 0.05.
+3. Revisar los supuestos: muestra aleatoria, independencia y, con muestras pequeñas, la forma de los datos.
+4. Calcular el estadístico y el valor p.
+5. Decidir y redactar la conclusión en el contexto del problema, acompañada de la estimación y su intervalo.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba una media?**</span>
+
+**Ejemplo.** Un restaurante promete entregar sus domicilios en 8 minutos en promedio. Un cliente sospecha que tarda más. Se registró el tiempo de 10 entregas:
+
+$$
+H_0: \mu = 8 \qquad\qquad H_1: \mu > 8
+$$
+
+```{r}
+tiempos <- c(11.1, 15.6, 11.1, 7.5, 7.9, 14.7, 6.3, 8.5, 8.0, 7.6)
+t.test(tiempos, mu = 8, alternative = "greater")
+```
+
+El argumento `mu` es el valor de $H_0$ y `alternative` indica la dirección de $H_1$: `"two.sided"` (bilateral, por defecto), `"greater"` o `"less"`.
+
+**Conclusión:** $t = 1.81$ y el valor p es 0.052. Con $\alpha = 0.05$ no se rechaza $H_0$: la muestra de 10 entregas no da evidencia suficiente de que el promedio supere los 8 minutos. La media de la muestra es 9.8 minutos, pero con tan pocos datos y tanta variabilidad, la prueba tiene poca potencia. Un valor p tan cercano a 0.05 sugiere recoger más datos antes de concluir.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba una proporción?**</span>
+
+**Ejemplo.** El año pasado, el 70 % de los clientes estaba satisfecho. Este año, 152 de 200 clientes encuestados dicen estarlo. ¿Aumentó la satisfacción?
+
+$$
+H_0: p = 0.70 \qquad\qquad H_1: p > 0.70
+$$
+
+El estadístico usa el error estándar calculado con el valor de $H_0$:
+
+$$
+z = \frac{\hat{p} - p_0}{\sqrt{p_0(1 - p_0)/n}} = \frac{0.76 - 0.70}{\sqrt{0.70 \times 0.30 / 200}} = 1.85
+$$
+
+```{r}
+z <- (0.76 - 0.70) / sqrt(0.70 * 0.30 / 200)
+c(z = z, valor_p = 1 - pnorm(z))
+prop.test(152, 200, p = 0.70, alternative = "greater")$p.value   # con corrección por continuidad
+binom.test(152, 200, p = 0.70, alternative = "greater")$p.value  # prueba exacta con la binomial
+```
+
+**Conclusión:** el valor p está entre 0.032 y 0.038, según el método. Con $\alpha = 0.05$ se rechaza $H_0$: hay evidencia de que la proporción de clientes satisfechos aumentó respecto al 70 %. La estimación es 76 %.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se comparan dos medias independientes?**</span>
+
+**Ejemplo.** ¿Tarda más el restaurante A que el restaurante B? Con $\mu_A$ y $\mu_B$ los tiempos medios de entrega:
+
+$$
+H_0: \mu_A = \mu_B \qquad\qquad H_1: \mu_A \neq \mu_B
+$$
+
+```{r}
+rest_A <- c(35, 28, 41, 32, 30, 38, 27, 36, 33, 40, 29, 34, 37, 31, 39)
+rest_B <- c(27, 31, 24, 29, 26, 30, 22, 28, 25, 33, 27, 29)
+t.test(rest_A, rest_B)
+```
+
+**Conclusión:** $t = 4.40$ y el valor p es 0.0002: se rechaza $H_0$. El restaurante A tarda en promedio 6.4 minutos más que el B (intervalo del 95 %: de 3.4 a 9.4 minutos). La salida dice "Welch Two Sample t-test": **R** usa por defecto la versión que no supone varianzas iguales.
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué tan grande es la diferencia?**</span>
+
+El valor p dice si hay evidencia de una diferencia, pero no si es grande. Una medida del **tamaño del efecto** es la **d de Cohen**: la diferencia de medias dividida por la desviación estándar combinada de los dos grupos.
+
+```{r}
+s_comb <- sqrt(((15 - 1) * var(rest_A) + (12 - 1) * var(rest_B)) / (15 + 12 - 2))
+(mean(rest_A) - mean(rest_B)) / s_comb
+```
+
+Cohen propuso como referencia aproximada 0.2 para un efecto pequeño, 0.5 para uno mediano y 0.8 para uno grande. Aquí $d = 1.64$: la diferencia entre los restaurantes es grande. Lo que importa en la práctica, de todas formas, es si 6 minutos de diferencia importan para el negocio.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se comparan muestras pareadas?**</span>
+
+**Ejemplo.** ¿Reduce el peso el programa del gimnasio? Con $d$ = antes − después y $\mu_d$ la reducción media:
+
+$$
+H_0: \mu_d = 0 \qquad\qquad H_1: \mu_d > 0
+$$
+
+```{r}
+antes   <- c(104.5, 89, 84.5, 106, 90, 96, 79, 90, 85, 76.5, 91.5, 82.5, 100.5, 89.5, 121.5, 72)
+despues <- c(98, 85.5, 85, 103.5, 88.5, 95, 79.5, 90, 82, 76, 89.5, 81, 99.5, 86.5, 115.5, 70)
+t.test(antes, despues, paired = TRUE, alternative = "greater")
+```
+
+**Conclusión:** $t = 4.06$ y el valor p es 0.0005: se rechaza $H_0$. Hay evidencia de que los participantes bajaron de peso, en promedio 2.06 kg. Sin un grupo de personas que no hayan hecho el programa, no se puede afirmar que la reducción se deba al programa: pudo influir, por ejemplo, la época del año.
+
+En una prueba pareada, el orden importa: `t.test(antes, despues, paired = TRUE)` trabaja con antes − después. Si se escribe al revés, cambia el signo y hay que cambiar también la dirección de $H_1$.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se comparan dos proporciones?**</span>
+
+**Ejemplo.** ¿Es distinta la satisfacción en las sedes de Cali (152 de 200) y Bogotá (126 de 200)?
+
+$$
+H_0: p_{\text{Cali}} = p_{\text{Bogotá}} \qquad\qquad H_1: p_{\text{Cali}} \neq p_{\text{Bogotá}}
+$$
+
+```{r}
+prop.test(c(152, 126), c(200, 200), correct = FALSE)
+```
+
+**Conclusión:** el valor p es 0.005: se rechaza $H_0$. La satisfacción es mayor en Cali, por una diferencia estimada de 13 puntos porcentuales (intervalo del 95 %: de 4.1 a 21.9 puntos). La salida reporta un estadístico chi-cuadrado, que en este caso es el cuadrado del estadístico $z$ de la diferencia de proporciones.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué prueba usar?**</span>
+
+| Pregunta | Prueba | Función de R |
+|:---------|:-------|:-------------|
+| ¿La media es igual a un valor? | t para una media | `t.test(x, mu = valor)` |
+| ¿La proporción es igual a un valor? | Proporción | `prop.test(éxitos, n, p = valor)` o `binom.test()` |
+| ¿Dos grupos independientes tienen la misma media? | t de Welch | `t.test(x, y)` |
+| ¿Cambió la media en las mismas unidades? | t pareada | `t.test(x, y, paired = TRUE)` |
+| ¿Dos grupos tienen la misma proporción? | Diferencia de proporciones | `prop.test(c(x1, x2), c(n1, n2))` |
+| ¿Dos grupos tienen la misma varianza? | F | `var.test(x, y)` |
+
+Las pruebas t son bastante tolerantes a la falta de normalidad cuando las muestras son moderadas, gracias al teorema del límite central. Con muestras pequeñas y datos muy asimétricos o con valores extremos, conviene usar las pruebas de [Pruebas no paramétricas y para tablas](recurso502.html).
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Usar una prueba para muestras independientes con datos de antes y después | No se identificó el diseño | Usar `paired = TRUE` |
+| La conclusión dice lo contrario de lo que muestran los datos | Se invirtió el orden de la resta o la dirección de $H_1$ | Escribir qué se resta de qué y revisar el signo de la estimación |
+| Reportar solo "p < 0.05" | Se omite el tamaño del efecto | Reportar la estimación, su intervalo y el valor p |
+| Concluir que un tratamiento causó el cambio sin grupo de comparación | Otros factores pueden explicar el cambio | Usar un grupo control y asignación aleatoria |
+| Hacer muchas pruebas y reportar solo las significativas | Con muchas pruebas, algunas salen significativas por azar | Reportar todas las pruebas realizadas |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Llenado de bolsas**</span>
+
+Una máquina debe llenar bolsas de 500 g. Los pesos de una muestra fueron 498, 502, 497, 499, 496, 501, 498, 497, 500 y 496 g. ¿Hay evidencia de que la máquina llene, en promedio, menos de 500 g?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+bolsas <- c(498, 502, 497, 499, 496, 501, 498, 497, 500, 496)
+t.test(bolsas, mu = 500, alternative = "less")
+```
+
+$t = -2.45$ y el valor p es 0.018: hay evidencia de que la máquina llena en promedio menos de 500 g. La media de la muestra es 498.4 g.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Curso de nivelación**</span>
+
+Con los datos del Reto 2 de [Intervalos para dos poblaciones](recurso401.html) (antes: 52, 61, 48, 70, 55, 63, 58, 66; después: 58, 65, 50, 74, 60, 64, 63, 70), pruebe si el puntaje aumentó después del curso.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+antes_r2 <- c(52, 61, 48, 70, 55, 63, 58, 66)
+despues_r2 <- c(58, 65, 50, 74, 60, 64, 63, 70)
+t.test(despues_r2, antes_r2, paired = TRUE, alternative = "greater")$p.value
+```
+
+El valor p es muy pequeño: hay evidencia de que el puntaje aumentó. Como no hay grupo de comparación, no se puede atribuir el aumento solo al curso.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Muestra enorme**</span>
+
+En una muestra de 50 000 personas, la estatura media es 170.1 cm con desviación estándar 7 cm. Pruebe $H_0: \mu = 170$ frente a $H_1: \mu \neq 170$. ¿Es importante la diferencia encontrada?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+t_r3 <- (170.1 - 170) / (7 / sqrt(50000))
+c(t = t_r3, valor_p = 2 * (1 - pnorm(t_r3)))
+```
+
+El valor p es 0.001: la diferencia es estadísticamente significativa. Pero es de 1 milímetro, sin ninguna importancia práctica. Con muestras enormes, casi cualquier diferencia resulta significativa.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/9-introduccion). En español. El capítulo 9 trata las pruebas con una muestra y el capítulo 10, las pruebas con dos muestras.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial. Los capítulos 6 y 7 tratan las pruebas para proporciones y medias.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 10 trata las pruebas para una y dos muestras.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences* (2.ª ed.). Lawrence Erlbaum Associates.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). *OpenIntro Statistics* (4.ª ed.). OpenIntro.
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

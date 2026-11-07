@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Caso integrador</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia estadística
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Distribución muestral</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Teorema del límite central</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Propiedades de los estimadores</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Métodos de estimación</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Intervalos de confianza
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Intervalos para una población</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Intervalos para dos poblaciones</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Pruebas de hipótesis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Conceptos</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Medias y proporciones</a>
+    </li>
+    <li>
+      <a href="recurso502.html">No paramétricas y tablas</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>Caso
+integrador</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Este caso reúne en un solo análisis lo visto en la unidad: describir
+los datos, elegir un modelo, estimar con intervalos de confianza,
+comparar dos grupos con pruebas paramétricas, no paramétricas y
+bootstrap, y, sobre todo, interpretar los resultados con cuidado. Se
+trabaja con datos reales que vienen con <strong>R</strong>.</p>
+<p>La pregunta es: <strong>¿consumen menos combustible los carros con
+transmisión manual que los de transmisión automática?</strong> Los
+bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="cuáles-son-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuáles son los
+datos?</strong></span></h2>
+<p>La tabla <code>mtcars</code> tiene 11 características de 32 modelos
+de carros, publicadas por la revista <em>Motor Trend</em> en 1974. Se
+usan tres:</p>
+<table>
+<colgroup>
+<col width="45%" />
+<col width="20%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable en <code>mtcars</code></th>
+<th align="left">Qué mide</th>
+<th align="left">Transformación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>mpg</code></td>
+<td align="left">Rendimiento, en millas por galón</td>
+<td align="left">Se pasa a kilómetros por litro (km/L), multiplicando
+por 0.4251</td>
+</tr>
+<tr class="even">
+<td align="left"><code>am</code></td>
+<td align="left">Transmisión: 0 automática, 1 manual</td>
+<td align="left">Se pasa a texto</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>wt</code></td>
+<td align="left">Peso, en miles de libras</td>
+<td align="left">Se pasa a toneladas, multiplicando por 0.4536</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>carros &lt;- data.frame(
+  rendimiento = mtcars$mpg * 0.4251,
+  transmision = ifelse(mtcars$am == 1, &quot;Manual&quot;, &quot;Automática&quot;),
+  peso = mtcars$wt * 0.4536
+)
+head(carros)</code></pre>
+<pre><code>  rendimiento transmision     peso
+1     8.92710      Manual 1.188432
+2     8.92710      Manual 1.304100
+3     9.69228      Manual 1.052352
+4     9.09714  Automática 1.458324
+5     7.94937  Automática 1.560384
+6     7.69431  Automática 1.569456</code></pre>
+<pre class="r"><code>table(carros$transmision)</code></pre>
+<pre><code>
+Automática     Manual 
+        19         13 </code></pre>
+<p><br/></p>
+</div>
+<div id="paso-1.-qué-muestran-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 1. ¿Qué muestran los
+datos?</strong></span></h2>
+<pre class="r"><code>aggregate(rendimiento ~ transmision, data = carros,
+          FUN = function(x) round(c(media = mean(x), mediana = median(x), desv_est = sd(x)), 2))</code></pre>
+<pre><code>  transmision rendimiento.media rendimiento.mediana rendimiento.desv_est
+1  Automática              7.29                7.35                 1.63
+2      Manual             10.37                9.69                 2.62</code></pre>
+<pre class="r"><code>par(mar = c(5, 7, 1, 1))
+boxplot(rendimiento ~ transmision, data = carros, horizontal = TRUE, las = 1,
+        col = c(&quot;#FFD8A8&quot;, &quot;#BDD7EE&quot;), xlab = &quot;Rendimiento (km/L)&quot;, ylab = &quot;&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso600_files/figure-html/unnamed-chunk-3-1.png" alt="Dos diagramas de caja horizontales; el de transmisión manual está más a la derecha, entre 6.5 y 14.4 km/L, y el de automática entre 4.4 y 10.4 km/L" width="75%" />
+<p class="caption">
+Rendimiento de combustible según el tipo de transmisión.
+</p>
+</div>
+<p>Los carros manuales rinden en promedio 10.4 km/L y los automáticos,
+7.3 km/L. Los manuales también varían más.</p>
+<p><br/></p>
+</div>
+<div id="paso-2.-se-pueden-usar-las-pruebas-t" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 2. ¿Se pueden usar las
+pruebas t?</strong></span></h2>
+<p>Las muestras son pequeñas (13 y 19 carros), así que conviene revisar
+la forma de los datos con gráficos Q-Q, como en <a
+href="recurso301.html">Distribución muestral</a>:</p>
+<pre class="r"><code>par(mfrow = c(1, 2), mar = c(4.5, 4.5, 2.5, 1))
+for (g in c(&quot;Automática&quot;, &quot;Manual&quot;)) {
+  x &lt;- carros$rendimiento[carros$transmision == g]
+  qqnorm(x, main = g, pch = 19, col = &quot;#034A94&quot;,
+         xlab = &quot;Cuantiles teóricos de la normal&quot;, ylab = &quot;Rendimiento (km/L)&quot;)
+  qqline(x, col = &quot;#C0392B&quot;, lwd = 2)
+}</code></pre>
+<div class="figure">
+<img src="recurso600_files/figure-html/unnamed-chunk-4-1.png" alt="Dos gráficos Q-Q; en ambos los puntos quedan cerca de la línea roja, sin curvas marcadas ni valores muy alejados" width="100%" />
+<p class="caption">
+Gráficos cuantil-cuantil del rendimiento en cada grupo.
+</p>
+</div>
+<p>En los dos grupos los puntos siguen bastante bien la línea, sin
+asimetrías fuertes ni valores extremos. Las pruebas t son razonables. De
+todas formas, se comprobará el resultado con una prueba no paramétrica y
+con bootstrap.</p>
+<p><br/></p>
+</div>
+<div id="paso-3.-cuánto-rinden-en-promedio" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 3. ¿Cuánto rinden en
+promedio?</strong></span></h2>
+<p>Antes de comparar, un intervalo de confianza para el rendimiento
+medio de todos los modelos, como en <a href="recurso400.html">Intervalos
+para una población</a>:</p>
+<pre class="r"><code>t.test(carros$rendimiento)$conf.int</code></pre>
+<pre><code>[1] 7.616805 9.464244
+attr(,&quot;conf.level&quot;)
+[1] 0.95</code></pre>
+<p>Con 95 % de confianza, el rendimiento medio de este tipo de carros
+está entre 7.6 y 9.5 km/L.</p>
+<p><br/></p>
+</div>
+<div id="paso-4.-hay-diferencia-entre-transmisiones"
+class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 4. ¿Hay diferencia entre
+transmisiones?</strong></span></h2>
+<p>Con <span class="math inline">\(\mu_M\)</span> y <span
+class="math inline">\(\mu_A\)</span> el rendimiento medio de los carros
+manuales y automáticos:</p>
+<p><span class="math display">\[
+H_0: \mu_M = \mu_A \qquad\qquad H_1: \mu_M \neq \mu_A
+\]</span></p>
+<pre class="r"><code>manual &lt;- carros$rendimiento[carros$transmision == &quot;Manual&quot;]
+automatica &lt;- carros$rendimiento[carros$transmision == &quot;Automática&quot;]
+t.test(manual, automatica)</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  manual and automatica
+t = 3.7671, df = 18.332, p-value = 0.001374
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 1.364437 4.795211
+sample estimates:
+mean of x mean of y 
+10.369170  7.289346 </code></pre>
+<p>Se rechaza <span class="math inline">\(H_0\)</span> (valor p de
+0.001). Con 95 % de confianza, los carros manuales rinden en promedio
+entre 1.4 y 4.8 km/L más que los automáticos.</p>
+<p><strong>Comprobación con otros métodos:</strong></p>
+<pre class="r"><code>wilcox.test(manual, automatica, exact = FALSE)$p.value     # Mann-Whitney</code></pre>
+<pre><code>[1] 0.001871391</code></pre>
+<pre class="r"><code>set.seed(2026)
+dif_medianas &lt;- replicate(5000, median(sample(manual, replace = TRUE)) - median(sample(automatica, replace = TRUE)))
+quantile(dif_medianas, c(0.025, 0.975))                     # intervalo bootstrap para la diferencia de medianas</code></pre>
+<pre><code>   2.5%   97.5% 
+0.93522 5.95140 </code></pre>
+<p>La prueba de Mann-Whitney también rechaza <span
+class="math inline">\(H_0\)</span>, y el intervalo bootstrap para la
+diferencia de medianas, de 0.9 a 6.0 km/L, no contiene el 0. Los tres
+métodos coinciden: los carros manuales de estos datos rinden más.</p>
+<p><br/></p>
+</div>
+<div id="paso-5.-es-la-transmisión-la-causa" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 5. ¿Es la transmisión la
+causa?</strong></span></h2>
+<p>Que los manuales rindan más <strong>no significa</strong> que la
+transmisión manual <strong>cause</strong> el mejor rendimiento. Estos
+datos son <strong>observacionales</strong>: nadie asignó al azar el tipo
+de transmisión a cada carro. Puede haber otra variable relacionada con
+las dos, una <strong>variable de confusión</strong>. Una candidata es el
+peso:</p>
+<pre class="r"><code>aggregate(peso ~ transmision, data = carros, FUN = mean)</code></pre>
+<pre><code>  transmision     peso
+1  Automática 1.709571
+2      Manual 1.093630</code></pre>
+<pre class="r"><code>cor(carros$peso, carros$rendimiento)</code></pre>
+<pre><code>[1] -0.8676594</code></pre>
+<pre class="r"><code>colores &lt;- ifelse(carros$transmision == &quot;Manual&quot;, &quot;#034A94&quot;, &quot;#FF7F00&quot;)
+plot(carros$peso, carros$rendimiento, pch = 19, col = colores,
+     xlab = &quot;Peso (toneladas)&quot;, ylab = &quot;Rendimiento (km/L)&quot;)
+legend(&quot;topright&quot;, c(&quot;Manual&quot;, &quot;Automática&quot;), col = c(&quot;#034A94&quot;, &quot;#FF7F00&quot;), pch = 19, bty = &quot;n&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso600_files/figure-html/unnamed-chunk-9-1.png" alt="Diagrama de dispersión con tendencia que baja: los carros más pesados rinden menos. Los puntos naranjas, automáticos, están sobre todo a la derecha, con más peso; los azules, manuales, a la izquierda" width="75%" />
+<p class="caption">
+Rendimiento según el peso del carro. Los colores indican el tipo de
+transmisión.
+</p>
+</div>
+<p>Los carros automáticos de estos datos pesan en promedio 1.7 toneladas
+y los manuales, 1.1. Además, a más peso, menos rendimiento (correlación
+de −0.87). Parte de la diferencia, o toda, podría deberse a que los
+automáticos son más pesados. Para separar el efecto de la transmisión
+del efecto del peso se necesitan modelos de regresión, que se estudian
+más adelante.</p>
+<p><br/></p>
+</div>
+<div id="conclusión-del-caso" class="section level2">
+<h2><span style="color:#034a94"><strong>Conclusión del
+caso</strong></span></h2>
+<p>En estos 32 modelos de 1974, los carros con transmisión manual rinden
+en promedio entre 1.4 y 4.8 km/L más que los automáticos, y tres métodos
+distintos llevan a la misma conclusión. Pero los datos no permiten
+afirmar que la transmisión <strong>cause</strong> la diferencia, porque
+los carros manuales también son más livianos. Además, los modelos son de
+hace 50 años y no representan a los carros actuales.</p>
+<p>Un buen informe estadístico reporta las tres cosas: <strong>la
+estimación con su intervalo</strong>, <strong>la evidencia de la
+prueba</strong> y <strong>los límites de la conclusión</strong>.</p>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-una-proporción"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Una
+proporción</strong></span></h3>
+<p>Estime la proporción de modelos que rinden 8.5 km/L o más, con un
+intervalo del 95 %.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>sum(carros$rendimiento &gt;= 8.5)</code></pre>
+<pre><code>[1] 14</code></pre>
+<pre class="r"><code>prop.test(sum(carros$rendimiento &gt;= 8.5), 32)$conf.int</code></pre>
+<pre><code>[1] 0.2683511 0.6211967
+attr(,&quot;conf.level&quot;)
+[1] 0.95</code></pre>
+<p>14 de los 32 modelos (43.8 %) rinden 8.5 km/L o más. El intervalo de
+Wilson va de 26.8 % a 62.1 %: es muy ancho, porque solo hay 32
+carros.</p>
+</details>
+</div>
+<div id="reto-2.-carros-livianos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Carros
+livianos</strong></span></h3>
+<p>Repita la comparación entre transmisiones solo con los carros de
+menos de 1.5 toneladas. ¿Se mantiene la diferencia?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>livianos &lt;- carros[carros$peso &lt; 1.5, ]
+table(livianos$transmision)</code></pre>
+<pre><code>
+Automática     Manual 
+         4         12 </code></pre>
+<pre class="r"><code>t.test(rendimiento ~ transmision, data = livianos)$conf.int</code></pre>
+<pre><code>[1] -2.7673816  0.5143516
+attr(,&quot;conf.level&quot;)
+[1] 0.95</code></pre>
+<p>Entre los carros livianos quedan 4 automáticos y 12 manuales. Con la
+fórmula <code>rendimiento ~ transmision</code>, <strong>R</strong> resta
+en orden alfabético: automática − manual. El intervalo va de −2.8 a 0.5
+km/L y contiene el 0: entre carros de peso parecido, la diferencia ya no
+es clara. Con tan pocos automáticos la comparación tiene poca
+información, pero el resultado refuerza la sospecha de que el peso
+explica buena parte de la diferencia.</p>
+</details>
+</div>
+<div id="reto-3.-escriba-la-conclusión"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Escriba la
+conclusión</strong></span></h3>
+<p>Redacte en tres frases, para un gerente sin formación estadística, la
+conclusión del caso.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Una posible redacción: “En los 32 modelos analizados, los carros con
+transmisión manual recorren en promedio entre 1.4 y 4.8 km más por litro
+que los automáticos. Sin embargo, los manuales de estos datos también
+son más livianos, y el peso por sí solo explica buena parte del
+rendimiento, así que no podemos atribuir la diferencia a la transmisión.
+Además, son modelos de 1974, por lo que el resultado no se debe
+trasladar a los carros actuales.”</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial. El capítulo 1 trata los estudios observacionales,
+los experimentos y las variables de confusión.</li>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/1-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 1 trata el diseño
+experimental y la diferencia entre estudios observacionales y
+experimentos.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Henderson, H. V. y Velleman, P. F. (1981). Building multiple
+regression models interactively. <em>Biometrics</em>, 37, 391-411.
+Fuente de la tabla <code>mtcars</code>.</li>
+<li>R Core Team. Documentación de la tabla <code>mtcars</code>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

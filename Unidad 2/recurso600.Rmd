@@ -1,0 +1,225 @@
+---
+title: <span style="color:#034a94"> **Caso integrador**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+Este caso reúne en un solo análisis lo visto en la unidad: describir los datos, elegir un modelo, estimar con intervalos de confianza, comparar dos grupos con pruebas paramétricas, no paramétricas y bootstrap, y, sobre todo, interpretar los resultados con cuidado. Se trabaja con datos reales que vienen con **R**.
+
+La pregunta es: **¿consumen menos combustible los carros con transmisión manual que los de transmisión automática?** Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuáles son los datos?**</span>
+
+La tabla `mtcars` tiene 11 características de 32 modelos de carros, publicadas por la revista *Motor Trend* en 1974. Se usan tres:
+
+| Variable en `mtcars` | Qué mide | Transformación |
+|:---------------------|:---------|:---------------|
+| `mpg` | Rendimiento, en millas por galón | Se pasa a kilómetros por litro (km/L), multiplicando por 0.4251 |
+| `am` | Transmisión: 0 automática, 1 manual | Se pasa a texto |
+| `wt` | Peso, en miles de libras | Se pasa a toneladas, multiplicando por 0.4536 |
+
+```{r}
+carros <- data.frame(
+  rendimiento = mtcars$mpg * 0.4251,
+  transmision = ifelse(mtcars$am == 1, "Manual", "Automática"),
+  peso = mtcars$wt * 0.4536
+)
+head(carros)
+table(carros$transmision)
+```
+
+<br/>
+
+## <span style="color:#034a94">**Paso 1. ¿Qué muestran los datos?**</span>
+
+```{r}
+aggregate(rendimiento ~ transmision, data = carros,
+          FUN = function(x) round(c(media = mean(x), mediana = median(x), desv_est = sd(x)), 2))
+```
+
+```{r, fig.width=7, fig.height=3.6, fig.cap="Rendimiento de combustible según el tipo de transmisión.", fig.alt="Dos diagramas de caja horizontales; el de transmisión manual está más a la derecha, entre 6.5 y 14.4 km/L, y el de automática entre 4.4 y 10.4 km/L", out.width="75%", fig.align="center"}
+par(mar = c(5, 7, 1, 1))
+boxplot(rendimiento ~ transmision, data = carros, horizontal = TRUE, las = 1,
+        col = c("#FFD8A8", "#BDD7EE"), xlab = "Rendimiento (km/L)", ylab = "")
+```
+
+Los carros manuales rinden en promedio 10.4 km/L y los automáticos, 7.3 km/L. Los manuales también varían más.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 2. ¿Se pueden usar las pruebas t?**</span>
+
+Las muestras son pequeñas (13 y 19 carros), así que conviene revisar la forma de los datos con gráficos Q-Q, como en [Distribución muestral](recurso301.html):
+
+```{r, fig.width=9, fig.height=3.8, fig.cap="Gráficos cuantil-cuantil del rendimiento en cada grupo.", fig.alt="Dos gráficos Q-Q; en ambos los puntos quedan cerca de la línea roja, sin curvas marcadas ni valores muy alejados", out.width="100%"}
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 2.5, 1))
+for (g in c("Automática", "Manual")) {
+  x <- carros$rendimiento[carros$transmision == g]
+  qqnorm(x, main = g, pch = 19, col = "#034A94",
+         xlab = "Cuantiles teóricos de la normal", ylab = "Rendimiento (km/L)")
+  qqline(x, col = "#C0392B", lwd = 2)
+}
+```
+
+En los dos grupos los puntos siguen bastante bien la línea, sin asimetrías fuertes ni valores extremos. Las pruebas t son razonables. De todas formas, se comprobará el resultado con una prueba no paramétrica y con bootstrap.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 3. ¿Cuánto rinden en promedio?**</span>
+
+Antes de comparar, un intervalo de confianza para el rendimiento medio de todos los modelos, como en [Intervalos para una población](recurso400.html):
+
+```{r}
+t.test(carros$rendimiento)$conf.int
+```
+
+Con 95 % de confianza, el rendimiento medio de este tipo de carros está entre 7.6 y 9.5 km/L.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 4. ¿Hay diferencia entre transmisiones?**</span>
+
+Con $\mu_M$ y $\mu_A$ el rendimiento medio de los carros manuales y automáticos:
+
+$$
+H_0: \mu_M = \mu_A \qquad\qquad H_1: \mu_M \neq \mu_A
+$$
+
+```{r}
+manual <- carros$rendimiento[carros$transmision == "Manual"]
+automatica <- carros$rendimiento[carros$transmision == "Automática"]
+t.test(manual, automatica)
+```
+
+Se rechaza $H_0$ (valor p de 0.001). Con 95 % de confianza, los carros manuales rinden en promedio entre 1.4 y 4.8 km/L más que los automáticos.
+
+**Comprobación con otros métodos:**
+
+```{r}
+wilcox.test(manual, automatica, exact = FALSE)$p.value     # Mann-Whitney
+set.seed(2026)
+dif_medianas <- replicate(5000, median(sample(manual, replace = TRUE)) - median(sample(automatica, replace = TRUE)))
+quantile(dif_medianas, c(0.025, 0.975))                     # intervalo bootstrap para la diferencia de medianas
+```
+
+La prueba de Mann-Whitney también rechaza $H_0$, y el intervalo bootstrap para la diferencia de medianas, de 0.9 a 6.0 km/L, no contiene el 0. Los tres métodos coinciden: los carros manuales de estos datos rinden más.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 5. ¿Es la transmisión la causa?**</span>
+
+Que los manuales rindan más **no significa** que la transmisión manual **cause** el mejor rendimiento. Estos datos son **observacionales**: nadie asignó al azar el tipo de transmisión a cada carro. Puede haber otra variable relacionada con las dos, una **variable de confusión**. Una candidata es el peso:
+
+```{r}
+aggregate(peso ~ transmision, data = carros, FUN = mean)
+cor(carros$peso, carros$rendimiento)
+```
+
+```{r, fig.width=7, fig.height=4.2, fig.cap="Rendimiento según el peso del carro. Los colores indican el tipo de transmisión.", fig.alt="Diagrama de dispersión con tendencia que baja: los carros más pesados rinden menos. Los puntos naranjas, automáticos, están sobre todo a la derecha, con más peso; los azules, manuales, a la izquierda", out.width="75%", fig.align="center"}
+colores <- ifelse(carros$transmision == "Manual", "#034A94", "#FF7F00")
+plot(carros$peso, carros$rendimiento, pch = 19, col = colores,
+     xlab = "Peso (toneladas)", ylab = "Rendimiento (km/L)")
+legend("topright", c("Manual", "Automática"), col = c("#034A94", "#FF7F00"), pch = 19, bty = "n")
+```
+
+Los carros automáticos de estos datos pesan en promedio 1.7 toneladas y los manuales, 1.1. Además, a más peso, menos rendimiento (correlación de −0.87). Parte de la diferencia, o toda, podría deberse a que los automáticos son más pesados. Para separar el efecto de la transmisión del efecto del peso se necesitan modelos de regresión, que se estudian más adelante.
+
+<br/>
+
+## <span style="color:#034a94">**Conclusión del caso**</span>
+
+En estos 32 modelos de 1974, los carros con transmisión manual rinden en promedio entre 1.4 y 4.8 km/L más que los automáticos, y tres métodos distintos llevan a la misma conclusión. Pero los datos no permiten afirmar que la transmisión **cause** la diferencia, porque los carros manuales también son más livianos. Además, los modelos son de hace 50 años y no representan a los carros actuales.
+
+Un buen informe estadístico reporta las tres cosas: **la estimación con su intervalo**, **la evidencia de la prueba** y **los límites de la conclusión**.
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Una proporción**</span>
+
+Estime la proporción de modelos que rinden 8.5 km/L o más, con un intervalo del 95 %.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+sum(carros$rendimiento >= 8.5)
+prop.test(sum(carros$rendimiento >= 8.5), 32)$conf.int
+```
+
+14 de los 32 modelos (43.8 %) rinden 8.5 km/L o más. El intervalo de Wilson va de 26.8 % a 62.1 %: es muy ancho, porque solo hay 32 carros.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Carros livianos**</span>
+
+Repita la comparación entre transmisiones solo con los carros de menos de 1.5 toneladas. ¿Se mantiene la diferencia?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+livianos <- carros[carros$peso < 1.5, ]
+table(livianos$transmision)
+t.test(rendimiento ~ transmision, data = livianos)$conf.int
+```
+
+Entre los carros livianos quedan 4 automáticos y 12 manuales. Con la fórmula `rendimiento ~ transmision`, **R** resta en orden alfabético: automática − manual. El intervalo va de −2.8 a 0.5 km/L y contiene el 0: entre carros de peso parecido, la diferencia ya no es clara. Con tan pocos automáticos la comparación tiene poca información, pero el resultado refuerza la sospecha de que el peso explica buena parte de la diferencia.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Escriba la conclusión**</span>
+
+Redacte en tres frases, para un gerente sin formación estadística, la conclusión del caso.
+
+<details>
+<summary>Ver solución</summary>
+
+Una posible redacción: "En los 32 modelos analizados, los carros con transmisión manual recorren en promedio entre 1.4 y 4.8 km más por litro que los automáticos. Sin embargo, los manuales de estos datos también son más livianos, y el peso por sí solo explica buena parte del rendimiento, así que no podemos atribuir la diferencia a la transmisión. Además, son modelos de 1974, por lo que el resultado no se debe trasladar a los carros actuales."
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial. El capítulo 1 trata los estudios observacionales, los experimentos y las variables de confusión.
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/1-introduccion). En español. El capítulo 1 trata el diseño experimental y la diferencia entre estudios observacionales y experimentos.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Henderson, H. V. y Velleman, P. F. (1981). Building multiple regression models interactively. *Biometrics*, 37, 391-411. Fuente de la tabla `mtcars`.
+- R Core Team. Documentación de la tabla `mtcars`.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

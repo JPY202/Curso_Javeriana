@@ -45,3 +45,19 @@ navbar:
           href: recurso304.html
         - text: "Bootstrap"
           href: recurso305.html
+    - text: "Intervalos de confianza"
+      menu:
+        - text: "Intervalos para una población"
+          href: recurso400.html
+        - text: "Intervalos para dos poblaciones"
+          href: recurso401.html
+    - text: "Pruebas de hipótesis"
+      menu:
+        - text: "Conceptos"
+          href: recurso500.html
+        - text: "Medias y proporciones"
+          href: recurso501.html
+        - text: "No paramétricas y tablas"
+          href: recurso502.html
+    - text: "Caso integrador"
+      href: recurso600.html

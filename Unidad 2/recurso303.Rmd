@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = N
 
 Para estimar un mismo parámetro se pueden usar fórmulas distintas. La media de una población se puede estimar con la media muestral, con la mediana o, en un extremo absurdo, con el primer dato de la muestra. La varianza se puede estimar dividiendo por $n - 1$ o por $n$. ¿Cómo decidir cuál es mejor?
 
-Como cada estimador es una variable aleatoria, se juzga por su **distribución muestral**: dónde se ubica y qué tanto varía de una muestra a otra. Esta página presenta las propiedades que se usan para comparar estimadores: insesgadez, varianza, error cuadrático medio, consistencia y robustez. Los bloques de código se ejecutan en orden.
+Como cada estimador es una variable aleatoria, se juzga por su **distribución muestral**: dónde se ubica y qué tanto varía de una muestra a otra. Esta página presenta las propiedades que se usan para comparar estimadores: insesgadez, eficiencia, error cuadrático medio y consistencia. Los bloques de código se ejecutan en orden.
 
 <br/>
 
@@ -173,22 +173,6 @@ abline(v = 5, col = "#C0392B", lwd = 2)
 
 <br/>
 
-## <span style="color:#034a94">**¿Qué es un estimador robusto?**</span>
-
-Un estimador es **robusto** si no cambia mucho cuando la muestra tiene unos pocos valores extremos o errores de digitación.
-
-Por ejemplo, se registran los tiempos de entrega (en minutos) de 10 domicilios. El último dato se digitó mal: debía ser 12 y quedó como 120.
-
-```{r}
-tiempos <- c(12, 15, 14, 13, 16, 15, 14, 13, 15, 120)
-mean(tiempos)
-median(tiempos)
-```
-
-Un solo dato erróneo lleva la media de alrededor de 14 a 24.7 minutos, mientras que la mediana queda en 14.5. La mediana es robusta y la media no. Por eso, antes de estimar, conviene graficar los datos y revisar los valores extremos.
-
-<br/>
-
 ## <span style="color:#034a94">**¿Qué propiedad importa más?**</span>
 
 | Propiedad | Pregunta que responde | Cómo se revisa |
@@ -197,7 +181,6 @@ Un solo dato erróneo lleva la media de alrededor de 14 a 24.7 minutos, mientras
 | Eficiencia | Entre los insesgados, ¿cuál varía menos? | Comparar varianzas |
 | Error cuadrático medio | ¿Qué tan lejos queda, en promedio, del parámetro? | Varianza + sesgo² |
 | Consistencia | ¿Mejora al aumentar la muestra? | El ECM se acerca a 0 cuando $n$ crece |
-| Robustez | ¿Resiste valores extremos? | Ver cuánto cambia con un dato atípico |
 
 Ninguna propiedad basta por sí sola: $X_1$ es insesgado pero inútil, y un estimador con un sesgo pequeño puede ser mejor que uno insesgado. El ECM resume el sesgo y la varianza en un solo número, y por eso es el criterio más usado para comparar.
 
@@ -253,7 +236,7 @@ El promedio de los extremos está sesgado hacia arriba, porque en la exponencial
 <div class="content-box-yellow">
 ### <span style="color:#686868">**Reto 3. ¿Media o mediana?**</span>
 
-Simule 10 000 muestras de tamaño 25 de una población normal con media 10 y desviación estándar 2. Compare la varianza de la media muestral y la de la mediana muestral. ¿Cuál es más eficiente cuando no hay valores extremos?
+Simule 10 000 muestras de tamaño 25 de una población normal con media 10 y desviación estándar 2. Compare la varianza de la media muestral y la de la mediana muestral. ¿Cuál es más eficiente?
 
 <details>
 <summary>Ver solución</summary>
@@ -265,7 +248,7 @@ rowMeans(est_r3)
 apply(est_r3, 1, var)
 ```
 
-Las dos son insesgadas para la media, porque la normal es simétrica, pero la varianza de la mediana es cerca de 1.5 veces la de la media. Sin valores extremos, la media es más eficiente; con valores extremos, la mediana es más robusta.
+Las dos son insesgadas para la media, porque la normal es simétrica, pero la varianza de la mediana es cerca de 1.5 veces la de la media. Para una población normal, la media es más eficiente que la mediana.
 
 </details>
 </div>

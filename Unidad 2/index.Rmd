@@ -21,6 +21,19 @@ Esta unidad presenta las bases de la inferencia estadística: la probabilidad, l
 
 <br/>
 
+## <span style="color:#034a94">**¿Cómo se organiza el trabajo en 4 semanas?**</span>
+
+| Semana | Tema | Páginas |
+|:------:|:-----|:-------:|
+| 1 | Probabilidad | 5 |
+| 2 | Variables aleatorias | 5 |
+| 3 | Inferencia estadística | 6 |
+| 4 | Intervalos de confianza, pruebas de hipótesis y caso integrador | 6 |
+
+Cada página tiene ejemplos con código en **R**, errores frecuentes y retos con solución. Se recomienda leer las páginas en orden y resolver los retos antes de abrir la solución.
+
+<br/>
+
 ## <span style="color:#034a94">**Contenido de la unidad**</span>
 
 1.  **Probabilidad**
@@ -54,10 +67,21 @@ Esta unidad presenta las bases de la inferencia estadística: la probabilidad, l
 
     <br/>
 
-4.  **Intervalos de confianza** (en preparación)
+4.  **Intervalos de confianza**
+
+    - [Intervalos para una población](recurso400.html)
+    - [Intervalos para dos poblaciones](recurso401.html)
 
     <br/>
 
-5.  **Pruebas de hipótesis** (en preparación)
+5.  **Pruebas de hipótesis**
+
+    - [Conceptos de las pruebas de hipótesis](recurso500.html)
+    - [Pruebas para medias y proporciones](recurso501.html)
+    - [Pruebas no paramétricas y para tablas](recurso502.html)
+
+    <br/>
+
+6.  **[Caso integrador](recurso600.html)**
 
 <br/><br/>

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Pruebas para medias y proporciones</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia estadística
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Distribución muestral</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Teorema del límite central</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Propiedades de los estimadores</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Métodos de estimación</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Intervalos de confianza
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Intervalos para una población</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Intervalos para dos poblaciones</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Pruebas de hipótesis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Conceptos</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Medias y proporciones</a>
+    </li>
+    <li>
+      <a href="recurso502.html">No paramétricas y tablas</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Pruebas para medias y proporciones</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Con las ideas de <a href="recurso500.html">Conceptos de las pruebas
+de hipótesis</a>, esta página presenta las pruebas más usadas: para la
+media y la proporción de una población, y para comparar dos grupos,
+independientes o pareados. Todas siguen los mismos pasos, y en
+<strong>R</strong> casi todas se hacen con dos funciones:
+<code>t.test()</code> y <code>prop.test()</code>.</p>
+<p>Se usan los mismos ejemplos de <a href="recurso400.html">Intervalos
+para una población</a> y <a href="recurso401.html">Intervalos para dos
+poblaciones</a>, para que se vea la relación entre las pruebas y los
+intervalos. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-pasos-sigue-una-prueba" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasos sigue una
+prueba?</strong></span></h2>
+<ol style="list-style-type: decimal">
+<li>Plantear <span class="math inline">\(H_0\)</span> y <span
+class="math inline">\(H_1\)</span> sobre el parámetro, y decidir si la
+prueba es bilateral o unilateral.</li>
+<li>Fijar el nivel de significación, <span
+class="math inline">\(\alpha\)</span>, casi siempre 0.05.</li>
+<li>Revisar los supuestos: muestra aleatoria, independencia y, con
+muestras pequeñas, la forma de los datos.</li>
+<li>Calcular el estadístico y el valor p.</li>
+<li>Decidir y redactar la conclusión en el contexto del problema,
+acompañada de la estimación y su intervalo.</li>
+</ol>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-una-media" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba una
+media?</strong></span></h2>
+<p><strong>Ejemplo.</strong> Un restaurante promete entregar sus
+domicilios en 8 minutos en promedio. Un cliente sospecha que tarda más.
+Se registró el tiempo de 10 entregas:</p>
+<p><span class="math display">\[
+H_0: \mu = 8 \qquad\qquad H_1: \mu &gt; 8
+\]</span></p>
+<pre class="r"><code>tiempos &lt;- c(11.1, 15.6, 11.1, 7.5, 7.9, 14.7, 6.3, 8.5, 8.0, 7.6)
+t.test(tiempos, mu = 8, alternative = &quot;greater&quot;)</code></pre>
+<pre><code>
+    One Sample t-test
+
+data:  tiempos
+t = 1.8106, df = 9, p-value = 0.05182
+alternative hypothesis: true mean is greater than 8
+95 percent confidence interval:
+ 7.977225      Inf
+sample estimates:
+mean of x 
+     9.83 </code></pre>
+<p>El argumento <code>mu</code> es el valor de <span
+class="math inline">\(H_0\)</span> y <code>alternative</code> indica la
+dirección de <span class="math inline">\(H_1\)</span>:
+<code>"two.sided"</code> (bilateral, por defecto),
+<code>"greater"</code> o <code>"less"</code>.</p>
+<p><strong>Conclusión:</strong> <span class="math inline">\(t =
+1.81\)</span> y el valor p es 0.052. Con <span
+class="math inline">\(\alpha = 0.05\)</span> no se rechaza <span
+class="math inline">\(H_0\)</span>: la muestra de 10 entregas no da
+evidencia suficiente de que el promedio supere los 8 minutos. La media
+de la muestra es 9.8 minutos, pero con tan pocos datos y tanta
+variabilidad, la prueba tiene poca potencia. Un valor p tan cercano a
+0.05 sugiere recoger más datos antes de concluir.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-una-proporción" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba una
+proporción?</strong></span></h2>
+<p><strong>Ejemplo.</strong> El año pasado, el 70 % de los clientes
+estaba satisfecho. Este año, 152 de 200 clientes encuestados dicen
+estarlo. ¿Aumentó la satisfacción?</p>
+<p><span class="math display">\[
+H_0: p = 0.70 \qquad\qquad H_1: p &gt; 0.70
+\]</span></p>
+<p>El estadístico usa el error estándar calculado con el valor de <span
+class="math inline">\(H_0\)</span>:</p>
+<p><span class="math display">\[
+z = \frac{\hat{p} - p_0}{\sqrt{p_0(1 - p_0)/n}} = \frac{0.76 -
+0.70}{\sqrt{0.70 \times 0.30 / 200}} = 1.85
+\]</span></p>
+<pre class="r"><code>z &lt;- (0.76 - 0.70) / sqrt(0.70 * 0.30 / 200)
+c(z = z, valor_p = 1 - pnorm(z))</code></pre>
+<pre><code>         z    valor_p 
+1.85164020 0.03203875 </code></pre>
+<pre class="r"><code>prop.test(152, 200, p = 0.70, alternative = &quot;greater&quot;)$p.value   # con corrección por continuidad</code></pre>
+<pre><code>[1] 0.03799119</code></pre>
+<pre class="r"><code>binom.test(152, 200, p = 0.70, alternative = &quot;greater&quot;)$p.value  # prueba exacta con la binomial</code></pre>
+<pre><code>[1] 0.03594782</code></pre>
+<p><strong>Conclusión:</strong> el valor p está entre 0.032 y 0.038,
+según el método. Con <span class="math inline">\(\alpha = 0.05\)</span>
+se rechaza <span class="math inline">\(H_0\)</span>: hay evidencia de
+que la proporción de clientes satisfechos aumentó respecto al 70 %. La
+estimación es 76 %.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-comparan-dos-medias-independientes"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se comparan dos medias
+independientes?</strong></span></h2>
+<p><strong>Ejemplo.</strong> ¿Tarda más el restaurante A que el
+restaurante B? Con <span class="math inline">\(\mu_A\)</span> y <span
+class="math inline">\(\mu_B\)</span> los tiempos medios de entrega:</p>
+<p><span class="math display">\[
+H_0: \mu_A = \mu_B \qquad\qquad H_1: \mu_A \neq \mu_B
+\]</span></p>
+<pre class="r"><code>rest_A &lt;- c(35, 28, 41, 32, 30, 38, 27, 36, 33, 40, 29, 34, 37, 31, 39)
+rest_B &lt;- c(27, 31, 24, 29, 26, 30, 22, 28, 25, 33, 27, 29)
+t.test(rest_A, rest_B)</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  rest_A and rest_B
+t = 4.3985, df = 24.559, p-value = 0.0001833
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 3.409432 9.423901
+sample estimates:
+mean of x mean of y 
+ 34.00000  27.58333 </code></pre>
+<p><strong>Conclusión:</strong> <span class="math inline">\(t =
+4.40\)</span> y el valor p es 0.0002: se rechaza <span
+class="math inline">\(H_0\)</span>. El restaurante A tarda en promedio
+6.4 minutos más que el B (intervalo del 95 %: de 3.4 a 9.4 minutos). La
+salida dice “Welch Two Sample t-test”: <strong>R</strong> usa por
+defecto la versión que no supone varianzas iguales.</p>
+<p><br/></p>
+<div id="qué-tan-grande-es-la-diferencia" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué tan grande es la
+diferencia?</strong></span></h3>
+<p>El valor p dice si hay evidencia de una diferencia, pero no si es
+grande. Una medida del <strong>tamaño del efecto</strong> es la
+<strong>d de Cohen</strong>: la diferencia de medias dividida por la
+desviación estándar combinada de los dos grupos.</p>
+<pre class="r"><code>s_comb &lt;- sqrt(((15 - 1) * var(rest_A) + (12 - 1) * var(rest_B)) / (15 + 12 - 2))
+(mean(rest_A) - mean(rest_B)) / s_comb</code></pre>
+<pre><code>[1] 1.635295</code></pre>
+<p>Cohen propuso como referencia aproximada 0.2 para un efecto pequeño,
+0.5 para uno mediano y 0.8 para uno grande. Aquí <span
+class="math inline">\(d = 1.64\)</span>: la diferencia entre los
+restaurantes es grande. Lo que importa en la práctica, de todas formas,
+es si 6 minutos de diferencia importan para el negocio.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-se-comparan-muestras-pareadas" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se comparan muestras
+pareadas?</strong></span></h2>
+<p><strong>Ejemplo.</strong> ¿Reduce el peso el programa del gimnasio?
+Con <span class="math inline">\(d\)</span> = antes − después y <span
+class="math inline">\(\mu_d\)</span> la reducción media:</p>
+<p><span class="math display">\[
+H_0: \mu_d = 0 \qquad\qquad H_1: \mu_d &gt; 0
+\]</span></p>
+<pre class="r"><code>antes   &lt;- c(104.5, 89, 84.5, 106, 90, 96, 79, 90, 85, 76.5, 91.5, 82.5, 100.5, 89.5, 121.5, 72)
+despues &lt;- c(98, 85.5, 85, 103.5, 88.5, 95, 79.5, 90, 82, 76, 89.5, 81, 99.5, 86.5, 115.5, 70)
+t.test(antes, despues, paired = TRUE, alternative = &quot;greater&quot;)</code></pre>
+<pre><code>
+    Paired t-test
+
+data:  antes and despues
+t = 4.06, df = 15, p-value = 0.0005132
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ 1.171935      Inf
+sample estimates:
+mean difference 
+         2.0625 </code></pre>
+<p><strong>Conclusión:</strong> <span class="math inline">\(t =
+4.06\)</span> y el valor p es 0.0005: se rechaza <span
+class="math inline">\(H_0\)</span>. Hay evidencia de que los
+participantes bajaron de peso, en promedio 2.06 kg. Sin un grupo de
+personas que no hayan hecho el programa, no se puede afirmar que la
+reducción se deba al programa: pudo influir, por ejemplo, la época del
+año.</p>
+<p>En una prueba pareada, el orden importa:
+<code>t.test(antes, despues, paired = TRUE)</code> trabaja con antes −
+después. Si se escribe al revés, cambia el signo y hay que cambiar
+también la dirección de <span class="math inline">\(H_1\)</span>.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-comparan-dos-proporciones" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se comparan dos
+proporciones?</strong></span></h2>
+<p><strong>Ejemplo.</strong> ¿Es distinta la satisfacción en las sedes
+de Cali (152 de 200) y Bogotá (126 de 200)?</p>
+<p><span class="math display">\[
+H_0: p_{\text{Cali}} = p_{\text{Bogotá}} \qquad\qquad H_1:
+p_{\text{Cali}} \neq p_{\text{Bogotá}}
+\]</span></p>
+<pre class="r"><code>prop.test(c(152, 126), c(200, 200), correct = FALSE)</code></pre>
+<pre><code>
+    2-sample test for equality of proportions without continuity correction
+
+data:  c(152, 126) out of c(200, 200)
+X-squared = 7.9726, df = 1, p-value = 0.004749
+alternative hypothesis: two.sided
+95 percent confidence interval:
+ 0.04066562 0.21933438
+sample estimates:
+prop 1 prop 2 
+  0.76   0.63 </code></pre>
+<p><strong>Conclusión:</strong> el valor p es 0.005: se rechaza <span
+class="math inline">\(H_0\)</span>. La satisfacción es mayor en Cali,
+por una diferencia estimada de 13 puntos porcentuales (intervalo del 95
+%: de 4.1 a 21.9 puntos). La salida reporta un estadístico chi-cuadrado,
+que en este caso es el cuadrado del estadístico <span
+class="math inline">\(z\)</span> de la diferencia de proporciones.</p>
+<p><br/></p>
+</div>
+<div id="qué-prueba-usar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué prueba
+usar?</strong></span></h2>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="25%" />
+<col width="43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Pregunta</th>
+<th align="left">Prueba</th>
+<th align="left">Función de R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">¿La media es igual a un valor?</td>
+<td align="left">t para una media</td>
+<td align="left"><code>t.test(x, mu = valor)</code></td>
+</tr>
+<tr class="even">
+<td align="left">¿La proporción es igual a un valor?</td>
+<td align="left">Proporción</td>
+<td align="left"><code>prop.test(éxitos, n, p = valor)</code> o
+<code>binom.test()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">¿Dos grupos independientes tienen la misma media?</td>
+<td align="left">t de Welch</td>
+<td align="left"><code>t.test(x, y)</code></td>
+</tr>
+<tr class="even">
+<td align="left">¿Cambió la media en las mismas unidades?</td>
+<td align="left">t pareada</td>
+<td align="left"><code>t.test(x, y, paired = TRUE)</code></td>
+</tr>
+<tr class="odd">
+<td align="left">¿Dos grupos tienen la misma proporción?</td>
+<td align="left">Diferencia de proporciones</td>
+<td align="left"><code>prop.test(c(x1, x2), c(n1, n2))</code></td>
+</tr>
+<tr class="even">
+<td align="left">¿Dos grupos tienen la misma varianza?</td>
+<td align="left">F</td>
+<td align="left"><code>var.test(x, y)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Las pruebas t son bastante tolerantes a la falta de normalidad cuando
+las muestras son moderadas, gracias al teorema del límite central. Con
+muestras pequeñas y datos muy asimétricos o con valores extremos,
+conviene usar las pruebas de <a href="recurso502.html">Pruebas no
+paramétricas y para tablas</a>.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Usar una prueba para muestras independientes con datos
+de antes y después</td>
+<td align="left">No se identificó el diseño</td>
+<td align="left">Usar <code>paired = TRUE</code></td>
+</tr>
+<tr class="even">
+<td align="left">La conclusión dice lo contrario de lo que muestran los
+datos</td>
+<td align="left">Se invirtió el orden de la resta o la dirección de
+<span class="math inline">\(H_1\)</span></td>
+<td align="left">Escribir qué se resta de qué y revisar el signo de la
+estimación</td>
+</tr>
+<tr class="odd">
+<td align="left">Reportar solo “p &lt; 0.05”</td>
+<td align="left">Se omite el tamaño del efecto</td>
+<td align="left">Reportar la estimación, su intervalo y el valor p</td>
+</tr>
+<tr class="even">
+<td align="left">Concluir que un tratamiento causó el cambio sin grupo
+de comparación</td>
+<td align="left">Otros factores pueden explicar el cambio</td>
+<td align="left">Usar un grupo control y asignación aleatoria</td>
+</tr>
+<tr class="odd">
+<td align="left">Hacer muchas pruebas y reportar solo las
+significativas</td>
+<td align="left">Con muchas pruebas, algunas salen significativas por
+azar</td>
+<td align="left">Reportar todas las pruebas realizadas</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-llenado-de-bolsas"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Llenado de
+bolsas</strong></span></h3>
+<p>Una máquina debe llenar bolsas de 500 g. Los pesos de una muestra
+fueron 498, 502, 497, 499, 496, 501, 498, 497, 500 y 496 g. ¿Hay
+evidencia de que la máquina llene, en promedio, menos de 500 g?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>bolsas &lt;- c(498, 502, 497, 499, 496, 501, 498, 497, 500, 496)
+t.test(bolsas, mu = 500, alternative = &quot;less&quot;)</code></pre>
+<pre><code>
+    One Sample t-test
+
+data:  bolsas
+t = -2.4495, df = 9, p-value = 0.01839
+alternative hypothesis: true mean is less than 500
+95 percent confidence interval:
+     -Inf 499.5974
+sample estimates:
+mean of x 
+    498.4 </code></pre>
+<p><span class="math inline">\(t = -2.45\)</span> y el valor p es 0.018:
+hay evidencia de que la máquina llena en promedio menos de 500 g. La
+media de la muestra es 498.4 g.</p>
+</details>
+</div>
+<div id="reto-2.-curso-de-nivelación"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Curso de
+nivelación</strong></span></h3>
+<p>Con los datos del Reto 2 de <a href="recurso401.html">Intervalos para
+dos poblaciones</a> (antes: 52, 61, 48, 70, 55, 63, 58, 66; después: 58,
+65, 50, 74, 60, 64, 63, 70), pruebe si el puntaje aumentó después del
+curso.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>antes_r2 &lt;- c(52, 61, 48, 70, 55, 63, 58, 66)
+despues_r2 &lt;- c(58, 65, 50, 74, 60, 64, 63, 70)
+t.test(despues_r2, antes_r2, paired = TRUE, alternative = &quot;greater&quot;)$p.value</code></pre>
+<pre><code>[1] 0.0001420065</code></pre>
+<p>El valor p es muy pequeño: hay evidencia de que el puntaje aumentó.
+Como no hay grupo de comparación, no se puede atribuir el aumento solo
+al curso.</p>
+</details>
+</div>
+<div id="reto-3.-muestra-enorme"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Muestra
+enorme</strong></span></h3>
+<p>En una muestra de 50 000 personas, la estatura media es 170.1 cm con
+desviación estándar 7 cm. Pruebe <span class="math inline">\(H_0: \mu =
+170\)</span> frente a <span class="math inline">\(H_1: \mu \neq
+170\)</span>. ¿Es importante la diferencia encontrada?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>t_r3 &lt;- (170.1 - 170) / (7 / sqrt(50000))
+c(t = t_r3, valor_p = 2 * (1 - pnorm(t_r3)))</code></pre>
+<pre><code>          t     valor_p 
+3.194382825 0.001401302 </code></pre>
+<p>El valor p es 0.001: la diferencia es estadísticamente significativa.
+Pero es de 1 milímetro, sin ninguna importancia práctica. Con muestras
+enormes, casi cualquier diferencia resulta significativa.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/9-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 9 trata las pruebas
+con una muestra y el capítulo 10, las pruebas con dos muestras.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial. Los capítulos 6 y 7 tratan las pruebas para
+proporciones y medias.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 10 trata las pruebas para una y dos
+muestras.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Cohen, J. (1988). <em>Statistical Power Analysis for the Behavioral
+Sciences</em> (2.ª ed.). Lawrence Erlbaum Associates.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <em>OpenIntro
+Statistics</em> (4.ª ed.). OpenIntro.</li>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

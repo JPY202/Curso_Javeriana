@@ -5,7 +5,7 @@ Unidad 2 en R Markdown. Cada archivo `.Rmd` genera una página HTML en la carpet
 ## Cómo generar los HTML
 
 1. Abra `Unidad2.Rproj` en RStudio.
-2. Instale el paquete una sola vez: `install.packages("rmarkdown")`. Las páginas solo usan **R** base y la tabla `Titanic`, que viene con **R**.
+2. Instale el paquete una sola vez: `install.packages("rmarkdown")`. Las páginas solo usan **R** base y las tablas `Titanic` y `mtcars`, que vienen con **R**.
 3. Use **Build > Render Website** o ejecute `source("render.R")`.
 4. Abra `../docs/unidad2/index.html` en el navegador.
 
@@ -26,6 +26,9 @@ Las páginas siguen el nivel del sitio original de la Unidad 2 (metodosySIM2_V2)
 
 ## Contenido
 
+La unidad se trabaja en 4 semanas: Probabilidad (semana 1), Variables aleatorias (semana 2), Inferencia estadística (semana 3) e Intervalos, Pruebas y Caso integrador (semana 4).
+
+
 - `index.Rmd`: portada con el contenido de la unidad.
 - `recurso100.Rmd`: Espacio muestral y eventos.
 - `recurso101.Rmd`: Enfoques y axiomas.
@@ -40,9 +43,15 @@ Las páginas siguen el nivel del sitio original de la Unidad 2 (metodosySIM2_V2)
 - `recurso300.Rmd`: Conceptos básicos de inferencia (población, muestra, tipos de muestreo, sesgos, parámetro, estimador y estimación).
 - `recurso301.Rmd`: Distribución muestral (media muestral, error estándar estimado, chi-cuadrado, t de Student, gráfico Q-Q y F).
 - `recurso302.Rmd`: Teorema del límite central, con un gráfico interactivo.
-- `recurso303.Rmd`: Propiedades de los estimadores (sesgo, eficiencia, error cuadrático medio, ley de los grandes números, consistencia y robustez).
+- `recurso303.Rmd`: Propiedades de los estimadores (sesgo, eficiencia, error cuadrático medio, ley de los grandes números y consistencia).
 - `recurso304.Rmd`: Métodos de estimación (momentos y máxima verosimilitud).
 - `recurso305.Rmd`: Bootstrap (error estándar por remuestreo).
+- `recurso400.Rmd`: Intervalos para una población (media, proporción, varianza, tamaño de muestra y bootstrap).
+- `recurso401.Rmd`: Intervalos para dos poblaciones (muestras independientes y pareadas, dos proporciones y cociente de varianzas).
+- `recurso500.Rmd`: Conceptos de las pruebas de hipótesis (valor p, errores, potencia y relación con los intervalos).
+- `recurso501.Rmd`: Pruebas para medias y proporciones (una y dos muestras, pareadas y tamaño del efecto).
+- `recurso502.Rmd`: Pruebas no paramétricas y para tablas (chi-cuadrado, Wilcoxon y Mann-Whitney).
+- `recurso600.Rmd`: Caso integrador con la tabla `mtcars`.
 - `img/`: imágenes.
 - `style.css`: estilos del sitio, copiados de la Unidad 1.
 - `_site.yml`: menú del sitio.

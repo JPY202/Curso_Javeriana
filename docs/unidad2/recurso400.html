@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Intervalos para una población</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia estadística
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Distribución muestral</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Teorema del límite central</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Propiedades de los estimadores</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Métodos de estimación</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Intervalos de confianza
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Intervalos para una población</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Intervalos para dos poblaciones</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Pruebas de hipótesis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Conceptos</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Medias y proporciones</a>
+    </li>
+    <li>
+      <a href="recurso502.html">No paramétricas y tablas</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Intervalos para una población</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Decir que el tiempo promedio de entrega de un restaurante es de 9.8
+minutos da un solo número, una <strong>estimación puntual</strong>, pero
+no dice qué tan confiable es. Si se hubiera tomado otra muestra, el
+resultado habría sido distinto. Un <strong>intervalo de
+confianza</strong> acompaña la estimación con un margen de error: “entre
+7.5 y 12.1 minutos, con 95 % de confianza”.</p>
+<p>Esta página explica qué significa ese “95 %” y cómo construir
+intervalos para la media, la proporción y la varianza de una población,
+y cómo calcular el tamaño de muestra necesario. Los bloques de código se
+ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-un-intervalo-de-confianza" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un intervalo de
+confianza?</strong></span></h2>
+<p>La mayoría de los intervalos de confianza tienen la misma forma:</p>
+<p><span class="math display">\[
+\text{estimación} \;\pm\; \underbrace{\text{valor crítico} \times
+\text{error estándar}}_{\text{margen de error}}
+\]</span></p>
+<ul>
+<li>La <strong>estimación</strong> es el valor del estimador en la
+muestra, por ejemplo <span class="math inline">\(\bar{x}\)</span>.</li>
+<li>El <strong>error estándar</strong> mide cuánto varía el estimador de
+una muestra a otra, como se vio en <a
+href="recurso301.html">Distribución muestral</a>.</li>
+<li>El <strong>valor crítico</strong> depende del <strong>nivel de
+confianza</strong>: con más confianza, el valor crítico es mayor y el
+intervalo, más ancho.</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Nivel de confianza</th>
+<th align="center">Valor crítico de la normal, <span
+class="math inline">\(z\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">90 %</td>
+<td align="center">1.645</td>
+</tr>
+<tr class="even">
+<td align="center">95 %</td>
+<td align="center">1.960</td>
+</tr>
+<tr class="odd">
+<td align="center">99 %</td>
+<td align="center">2.576</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>round(qnorm(c(0.95, 0.975, 0.995)), 3)   # deja 5 %, 2.5 % y 0.5 % en cada cola</code></pre>
+<pre><code>[1] 1.645 1.960 2.576</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-significa-el-95" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué significa el 95
+%?</strong></span></h2>
+<p>El 95 % no es la probabilidad de que el parámetro esté en
+<strong>un</strong> intervalo ya calculado: el parámetro es fijo y el
+intervalo ya está calculado, así que lo contiene o no lo contiene. El 95
+% describe el <strong>método</strong>: si se tomaran muchas muestras y
+con cada una se construyera un intervalo, cerca del 95 % de esos
+intervalos contendría el verdadero valor del parámetro.</p>
+<p>La simulación lo muestra. Se toman 100 muestras de 20 datos de una
+población normal con media <span class="math inline">\(\mu =
+50\)</span>, y con cada una se construye un intervalo del 95 % para la
+media:</p>
+<pre class="r"><code>set.seed(2026)
+intervalos &lt;- t(replicate(100, t.test(rnorm(20, mean = 50, sd = 8))$conf.int))
+contiene &lt;- intervalos[, 1] &lt;= 50 &amp; intervalos[, 2] &gt;= 50
+sum(contiene)    # cuántos de los 100 intervalos contienen a 50</code></pre>
+<pre><code>[1] 96</code></pre>
+<pre class="r"><code>plot(NULL, xlim = range(intervalos), ylim = c(1, 100), yaxt = &quot;n&quot;,
+     xlab = &quot;Intervalo para la media&quot;, ylab = &quot;Muestra&quot;)
+segments(intervalos[, 1], 1:100, intervalos[, 2], 1:100, lwd = 1.5,
+         col = ifelse(contiene, &quot;#034A94&quot;, &quot;#C0392B&quot;))
+abline(v = 50, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso400_files/figure-html/unnamed-chunk-2-1.png" alt="Cien segmentos horizontales apilados; casi todos azules cruzan la línea vertical en 50, y unos pocos rojos quedan a un lado" width="85%" />
+<p class="caption">
+Intervalos del 95 % para la media, calculados con 100 muestras distintas
+de la misma población. La línea negra es la media verdadera, 50. Los
+intervalos rojos no la contienen.
+</p>
+</div>
+<p>En esta simulación, 96 de los 100 intervalos contienen la media
+verdadera. Con otra simulación podrían ser 94 o 97: el nivel de
+confianza se fija antes, y la proporción observada varía alrededor de
+él.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-construye-el-intervalo-para-la-media"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se construye el intervalo
+para la media?</strong></span></h2>
+<p>Cuando no se conoce <span class="math inline">\(\sigma\)</span>, que
+es lo habitual, se usa la desviación estándar de la muestra y el valor
+crítico de la t de Student con <span class="math inline">\(n -
+1\)</span> grados de libertad:</p>
+<p><span class="math display">\[
+\bar{x} \;\pm\; t_{n-1} \times \frac{s}{\sqrt{n}}
+\]</span></p>
+<p>El intervalo es exacto si la población es normal. Si no lo es, sigue
+siendo una buena aproximación cuando la muestra es grande, gracias al <a
+href="recurso302.html">teorema del límite central</a>. Con muestras
+pequeñas conviene revisar los datos con un gráfico Q-Q.</p>
+<p><br/></p>
+<div id="ejemplo-tiempo-de-entrega-de-domicilios"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: tiempo de entrega de
+domicilios</strong></span></h3>
+<p>Se registró el tiempo de entrega, en minutos, de 10 domicilios de un
+restaurante:</p>
+<pre class="r"><code>tiempos &lt;- c(11.1, 15.6, 11.1, 7.5, 7.9, 14.7, 6.3, 8.5, 8.0, 7.6)
+n &lt;- length(tiempos)
+media &lt;- mean(tiempos)
+ee &lt;- sd(tiempos) / sqrt(n)          # error estándar estimado
+t_crit &lt;- qt(0.975, df = n - 1)      # valor crítico para 95 %
+c(media = media, error_estandar = ee, t_critico = t_crit)</code></pre>
+<pre><code>         media error_estandar      t_critico 
+      9.830000       1.010726       2.262157 </code></pre>
+<pre class="r"><code>media + c(-1, 1) * t_crit * ee       # intervalo de confianza del 95 %</code></pre>
+<pre><code>[1]  7.543579 12.116421</code></pre>
+<p>La función <code>t.test()</code> hace el mismo cálculo. El argumento
+<code>conf.level</code> cambia el nivel de confianza:</p>
+<pre class="r"><code>t.test(tiempos)$conf.int                      # 95 %</code></pre>
+<pre><code>[1]  7.543579 12.116421
+attr(,&quot;conf.level&quot;)
+[1] 0.95</code></pre>
+<pre class="r"><code>t.test(tiempos, conf.level = 0.90)$conf.int   # 90 %: más angosto</code></pre>
+<pre><code>[1]  7.977225 11.682775
+attr(,&quot;conf.level&quot;)
+[1] 0.9</code></pre>
+<p><strong>Interpretación:</strong> con 95 % de confianza, el tiempo
+promedio de entrega del restaurante está entre 7.5 y 12.1 minutos. El
+intervalo es ancho porque la muestra es pequeña y los tiempos varían
+bastante.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-se-construye-el-intervalo-para-una-proporción"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se construye el intervalo
+para una proporción?</strong></span></h2>
+<p>Para una proporción, con <span class="math inline">\(\hat{p}\)</span>
+la proporción muestral, el intervalo más sencillo, llamado
+<strong>intervalo de Wald</strong>, es</p>
+<p><span class="math display">\[
+\hat{p} \;\pm\; z \times \sqrt{\frac{\hat{p}\,(1 - \hat{p})}{n}}
+\]</span></p>
+<p>Funciona bien si hay al menos 10 éxitos y 10 fracasos en la muestra:
+<span class="math inline">\(n\hat{p} \geq 10\)</span> y <span
+class="math inline">\(n(1 - \hat{p}) \geq 10\)</span>.</p>
+<p><strong>Ejemplo.</strong> En una encuesta a 200 clientes elegidos al
+azar, 152 dicen estar satisfechos:</p>
+<pre class="r"><code>p_hat &lt;- 152 / 200
+ee_p &lt;- sqrt(p_hat * (1 - p_hat) / 200)
+p_hat + c(-1, 1) * 1.96 * ee_p    # intervalo de Wald del 95 %</code></pre>
+<pre><code>[1] 0.7008093 0.8191907</code></pre>
+<p>Con 95 % de confianza, entre el 70.1 % y el 81.9 % de los clientes
+está satisfecho.</p>
+<p>La función <code>prop.test()</code> de <strong>R</strong> da un
+intervalo un poco distinto, porque usa otro método, el <strong>intervalo
+de Wilson</strong>, con una corrección por continuidad. Es más confiable
+que el de Wald cuando la muestra es pequeña o la proporción está cerca
+de 0 o de 1:</p>
+<pre class="r"><code>prop.test(152, 200)$conf.int</code></pre>
+<pre><code>[1] 0.6936108 0.8161811
+attr(,&quot;conf.level&quot;)
+[1] 0.95</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-construye-el-intervalo-para-la-varianza"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se construye el intervalo
+para la varianza?</strong></span></h2>
+<p>Si la población es <strong>normal</strong>, la distribución
+chi-cuadrado de <a href="recurso301.html">Distribución muestral</a> da
+el intervalo para la varianza:</p>
+<p><span class="math display">\[
+\left(\frac{(n - 1)\,s^2}{\chi^2_{0.975,\;n-1}},\; \frac{(n -
+1)\,s^2}{\chi^2_{0.025,\;n-1}}\right)
+\]</span></p>
+<p>donde <span class="math inline">\(\chi^2_{0.975,\,n-1}\)</span> es el
+cuantil que deja 97.5 % a la izquierda,
+<code>qchisq(0.975, n - 1)</code>. Como la chi-cuadrado no es simétrica,
+el intervalo no es “estimación ± margen”.</p>
+<p><strong>Ejemplo.</strong> Se midió la eficiencia de combustible, en
+millas por galón, de 7 camiones:</p>
+<pre class="r"><code>mpg &lt;- c(7.69, 4.97, 4.56, 6.49, 4.34, 6.24, 4.45)
+s2 &lt;- var(mpg)
+s2</code></pre>
+<pre><code>[1] 1.654695</code></pre>
+<pre class="r"><code>c(6 * s2 / qchisq(0.975, df = 6), 6 * s2 / qchisq(0.025, df = 6))</code></pre>
+<pre><code>[1] 0.6871004 8.0237747</code></pre>
+<p>Con 95 % de confianza, la varianza de la eficiencia está entre 0.69 y
+8.02. El intervalo es muy ancho porque solo hay 7 datos. Además, este
+intervalo depende mucho del supuesto de normalidad: si los datos son
+asimétricos, su nivel de confianza real puede ser bastante menor que 95
+%.</p>
+<p><br/></p>
+</div>
+<div id="qué-tamaño-de-muestra-se-necesita" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tamaño de muestra se
+necesita?</strong></span></h2>
+<p>Antes de recoger los datos se puede decidir cuál es el <strong>margen
+de error</strong> <span class="math inline">\(E\)</span> aceptable y
+despejar <span class="math inline">\(n\)</span>:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Parámetro</th>
+<th align="left">Tamaño de muestra</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Media</td>
+<td align="left"><span class="math inline">\(n =
+\left(\dfrac{z\,\sigma}{E}\right)^2\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Proporción</td>
+<td align="left"><span class="math inline">\(n = \dfrac{z^2\, p\,(1 -
+p)}{E^2}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Para la media hay que tener una idea de <span
+class="math inline">\(\sigma\)</span>, por ejemplo de un estudio
+anterior. Para la proporción, si no se tiene idea de <span
+class="math inline">\(p\)</span>, se usa <span class="math inline">\(p =
+0.5\)</span>, que da el <span class="math inline">\(n\)</span> más
+grande. El resultado se redondea hacia arriba.</p>
+<pre class="r"><code>ceiling((1.96 * 0.5 / 0.05)^2)   # proporción, margen de 5 puntos</code></pre>
+<pre><code>[1] 385</code></pre>
+<pre class="r"><code>ceiling((1.96 * 0.5 / 0.03)^2)   # proporción, margen de 3 puntos</code></pre>
+<pre><code>[1] 1068</code></pre>
+<pre class="r"><code>ceiling((1.96 * 3.5 / 1)^2)      # media, sigma cercana a 3.5 minutos y margen de 1 minuto</code></pre>
+<pre><code>[1] 48</code></pre>
+<p>Para estimar una proporción con un margen de 5 puntos porcentuales se
+necesitan 385 personas; para reducir el margen a 3 puntos, 1 068.
+Reducir el margen a la mitad exige cuatro veces más datos.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-construye-un-intervalo-con-bootstrap"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se construye un intervalo
+con bootstrap?</strong></span></h2>
+<p>Para estimadores sin fórmula, como la mediana, se usa la distribución
+bootstrap de la página <a href="recurso305.html">Bootstrap</a>. El
+<strong>intervalo percentil</strong> toma los percentiles 2.5 y 97.5 de
+las estimaciones bootstrap:</p>
+<pre class="r"><code>set.seed(2026)
+llamadas &lt;- rexp(100, rate = 1/5)
+set.seed(2026)
+medianas_boot &lt;- replicate(5000, median(sample(llamadas, replace = TRUE)))
+median(llamadas)</code></pre>
+<pre><code>[1] 4.040946</code></pre>
+<pre class="r"><code>quantile(medianas_boot, c(0.025, 0.975))    # intervalo percentil del 95 % para la mediana</code></pre>
+<pre><code>    2.5%    97.5% 
+2.406427 5.315704 </code></pre>
+<p>Con 95 % de confianza, la mediana de la duración de las llamadas está
+entre 2.4 y 5.3 minutos. Existen versiones más precisas del intervalo
+bootstrap, pero el percentil es suficiente para empezar y funciona bien
+con muestras moderadas.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">“Hay 95 % de probabilidad de que <span
+class="math inline">\(\mu\)</span> esté en este intervalo”</td>
+<td align="left">El 95 % describe el método, no un intervalo ya
+calculado</td>
+<td align="left">“Con 95 % de confianza, <span
+class="math inline">\(\mu\)</span> está entre…”</td>
+</tr>
+<tr class="even">
+<td align="left">“El 95 % de los datos está en el intervalo”</td>
+<td align="left">El intervalo es para el parámetro, no para los
+datos</td>
+<td align="left">El intervalo para la media es mucho más angosto que el
+rango de los datos</td>
+</tr>
+<tr class="odd">
+<td align="left">Usar <span class="math inline">\(z\)</span> en lugar de
+<span class="math inline">\(t\)</span> con muestras pequeñas</td>
+<td align="left">Se ignoró que <span
+class="math inline">\(\sigma\)</span> se estimó</td>
+<td align="left">Usar <code>qt()</code> o <code>t.test()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Creer que la t solo sirve si <span
+class="math inline">\(n &lt; 30\)</span></td>
+<td align="left">Es una regla práctica, no una condición</td>
+<td align="left">Con <span class="math inline">\(\sigma\)</span>
+desconocida, la t es la opción correcta para cualquier <span
+class="math inline">\(n\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Usar el intervalo de la varianza con datos
+asimétricos</td>
+<td align="left">El intervalo depende mucho de la normalidad</td>
+<td align="left">Revisar con un gráfico Q-Q o usar bootstrap</td>
+</tr>
+<tr class="even">
+<td align="left">Aplicar estos intervalos a datos que no son
+independientes</td>
+<td align="left">Por ejemplo, precios diarios de una acción</td>
+<td align="left">Los datos en el tiempo requieren otros métodos</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-intervalo-para-una-media"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Intervalo para una
+media</strong></span></h3>
+<p>Las notas de 12 estudiantes en un examen fueron 3.2, 4.1, 3.8, 2.9,
+4.5, 3.6, 3.9, 4.0, 3.3, 3.7, 4.2 y 3.5. Construya un intervalo del 95 %
+para la nota media del curso e interprételo.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>notas &lt;- c(3.2, 4.1, 3.8, 2.9, 4.5, 3.6, 3.9, 4.0, 3.3, 3.7, 4.2, 3.5)
+mean(notas)</code></pre>
+<pre><code>[1] 3.725</code></pre>
+<pre class="r"><code>t.test(notas)$conf.int</code></pre>
+<pre><code>[1] 3.435575 4.014425
+attr(,&quot;conf.level&quot;)
+[1] 0.95</code></pre>
+<p>Con 95 % de confianza, la nota media del curso está entre 3.44 y
+4.01.</p>
+</details>
+</div>
+<div id="reto-2.-encuesta-electoral"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Encuesta
+electoral</strong></span></h3>
+<p>Una encuesta a 1 200 personas encuentra que 516 apoyan una propuesta.
+Calcule el intervalo de Wald del 95 % para la proporción y su margen de
+error.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>p_r2 &lt;- 516 / 1200
+margen &lt;- 1.96 * sqrt(p_r2 * (1 - p_r2) / 1200)
+c(p_hat = p_r2, margen = margen)</code></pre>
+<pre><code>     p_hat     margen 
+0.43000000 0.02801155 </code></pre>
+<pre class="r"><code>p_r2 + c(-1, 1) * margen</code></pre>
+<pre><code>[1] 0.4019885 0.4580115</code></pre>
+<p>La proporción estimada es 43 %, con un margen de error de 2.8 puntos:
+el intervalo va de 40.2 % a 45.8 %.</p>
+</details>
+</div>
+<div id="reto-3.-tamaño-de-muestra"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Tamaño de
+muestra</strong></span></h3>
+<p>Una empresa quiere estimar el tiempo medio de atención telefónica con
+un margen de error de 30 segundos y 95 % de confianza. Por un estudio
+anterior se sabe que la desviación estándar es cercana a 4 minutos.
+¿Cuántas llamadas debe revisar?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Con <span class="math inline">\(E = 0.5\)</span> minutos y <span
+class="math inline">\(\sigma = 4\)</span> minutos:</p>
+<pre class="r"><code>ceiling((1.96 * 4 / 0.5)^2)</code></pre>
+<pre><code>[1] 246</code></pre>
+<p>Debe revisar 246 llamadas.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/8-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 8 trata los
+intervalos de confianza para la media y la proporción.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial. Los capítulos 5 y 7 tratan los intervalos para
+proporciones y medias.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 9 trata la estimación por intervalos.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <em>OpenIntro
+Statistics</em> (4.ª ed.). OpenIntro.</li>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>Yanowitz, J. (2001). <em>In-use emissions from heavy-duty diesel
+vehicles</em>. Fuente de los datos de eficiencia de combustible, citada
+en el sitio original del curso.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

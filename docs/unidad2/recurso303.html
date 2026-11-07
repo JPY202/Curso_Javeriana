@@ -410,6 +410,42 @@ div.tocify {
     </li>
   </ul>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Intervalos de confianza
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Intervalos para una población</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Intervalos para dos poblaciones</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Pruebas de hipótesis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Conceptos</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Medias y proporciones</a>
+    </li>
+    <li>
+      <a href="recurso502.html">No paramétricas y tablas</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Caso integrador</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -439,8 +475,8 @@ cuál es mejor?</p>
 <p>Como cada estimador es una variable aleatoria, se juzga por su
 <strong>distribución muestral</strong>: dónde se ubica y qué tanto varía
 de una muestra a otra. Esta página presenta las propiedades que se usan
-para comparar estimadores: insesgadez, varianza, error cuadrático medio,
-consistencia y robustez. Los bloques de código se ejecutan en orden.</p>
+para comparar estimadores: insesgadez, eficiencia, error cuadrático
+medio y consistencia. Los bloques de código se ejecutan en orden.</p>
 <p><br/></p>
 <div id="cómo-se-ve-un-buen-estimador" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Cómo se ve un buen
@@ -721,25 +757,6 @@ media de la población, 5.
 </div>
 <p><br/></p>
 </div>
-<div id="qué-es-un-estimador-robusto" class="section level2">
-<h2><span style="color:#034a94"><strong>¿Qué es un estimador
-robusto?</strong></span></h2>
-<p>Un estimador es <strong>robusto</strong> si no cambia mucho cuando la
-muestra tiene unos pocos valores extremos o errores de digitación.</p>
-<p>Por ejemplo, se registran los tiempos de entrega (en minutos) de 10
-domicilios. El último dato se digitó mal: debía ser 12 y quedó como
-120.</p>
-<pre class="r"><code>tiempos &lt;- c(12, 15, 14, 13, 16, 15, 14, 13, 15, 120)
-mean(tiempos)</code></pre>
-<pre><code>[1] 24.7</code></pre>
-<pre class="r"><code>median(tiempos)</code></pre>
-<pre><code>[1] 14.5</code></pre>
-<p>Un solo dato erróneo lleva la media de alrededor de 14 a 24.7
-minutos, mientras que la mediana queda en 14.5. La mediana es robusta y
-la media no. Por eso, antes de estimar, conviene graficar los datos y
-revisar los valores extremos.</p>
-<p><br/></p>
-</div>
 <div id="qué-propiedad-importa-más" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Qué propiedad importa
 más?</strong></span></h2>
@@ -778,11 +795,6 @@ más?</strong></span></h2>
 <td align="left">¿Mejora al aumentar la muestra?</td>
 <td align="left">El ECM se acerca a 0 cuando <span
 class="math inline">\(n\)</span> crece</td>
-</tr>
-<tr class="odd">
-<td align="left">Robustez</td>
-<td align="left">¿Resiste valores extremos?</td>
-<td align="left">Ver cuánto cambia con un dato atípico</td>
 </tr>
 </tbody>
 </table>
@@ -904,8 +916,7 @@ class="section level3 content-box-yellow">
 mediana?</strong></span></h3>
 <p>Simule 10 000 muestras de tamaño 25 de una población normal con media
 10 y desviación estándar 2. Compare la varianza de la media muestral y
-la de la mediana muestral. ¿Cuál es más eficiente cuando no hay valores
-extremos?</p>
+la de la mediana muestral. ¿Cuál es más eficiente?</p>
 <details>
 <summary>
 Ver solución
@@ -919,9 +930,8 @@ rowMeans(est_r3)</code></pre>
 <pre><code>    media   mediana 
 0.1605302 0.2468709 </code></pre>
 <p>Las dos son insesgadas para la media, porque la normal es simétrica,
-pero la varianza de la mediana es cerca de 1.5 veces la de la media. Sin
-valores extremos, la media es más eficiente; con valores extremos, la
-mediana es más robusta.</p>
+pero la varianza de la mediana es cerca de 1.5 veces la de la media.
+Para una población normal, la media es más eficiente que la mediana.</p>
 </details>
 </div>
 <p><br/></p>
