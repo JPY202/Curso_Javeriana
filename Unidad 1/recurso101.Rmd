@@ -721,15 +721,13 @@ El primer vector se convierte a texto y el segundo a numérico. `iris[, 1]` devu
 ## <span style="color:#034a94">**Libros y recursos**</span>
 
 - Mendoza Vega, J. B. [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/). Introducción a **R** en español.
-- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R para Ciencia de Datos](https://davidrsch.github.io/r4ds-es/) (2.ª ed., traducción al español).
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R for Data Science](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly. Versión gratuita en línea de los autores. La [traducción oficial al español](https://es.r4ds.hadley.nz/) corresponde a la 1.ª edición.
 - Wickham, H. (2019). [Advanced R](https://adv-r.hadley.nz/) (2.ª ed.). Chapman & Hall/CRC. Para profundizar, ver el capítulo [Functionals](https://adv-r.hadley.nz/functionals.html).
-- Burns, P. (2011). [The R Inferno](https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf). Trata errores y trampas frecuentes de **R**.
 
 <br/>
 
 ## <span style="color:#034a94">**Referencias**</span>
 
-- Burns, P. (2011). [The R Inferno](https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf).
 - Chambers, J. M. (2014). [Object-Oriented Programming, Functional Programming and R](https://arxiv.org/abs/1409.3531). *Statistical Science*, 29(2), 167-180.
 - Mendoza Vega, J. B. [R para principiantes](https://bookdown.org/jboscomendoza/r-principiantes4/).
 - R Core Team. [R Language Definition](https://cran.r-project.org/doc/manuals/r-release/R-lang.html).

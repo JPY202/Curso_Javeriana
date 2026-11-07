@@ -229,7 +229,7 @@ iris[, 1:4] |>
 
 Es una creencia común, pero no es una regla. Esta es la conclusión de las fuentes consultadas:
 
-- `apply()` y `lapply()` no son vectorización real. [Burns (2011)](https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf) las describe como una forma de ocultar el ciclo, y señala que sus tiempos tienden a ser similares a los de un `for` explícito.
+- `apply()` y `lapply()` no son vectorización real: por dentro recorren los elementos uno por uno, así que sus tiempos suelen ser parecidos a los de un `for` bien escrito. Su ventaja es que el código queda más corto y claro (ver el capítulo [Functionals](https://adv-r.hadley.nz/functionals.html) de *Advanced R*).
 - Lo que hace lento a un ciclo suele ser [hacer crecer un objeto](https://library.virginia.edu/data/articles/why-preallocate-memory-r-loops) en cada iteración. Se evita reservando su tamaño desde el inicio.
 - Elegir entre `for` y `apply` es en buena parte una [cuestión de preferencia y claridad](https://swcarpentry.github.io/r-novice-inflammation/15-supp-loops-in-depth.html). `for` suele ser más natural cuando cada paso tiene varias operaciones relacionadas.
 

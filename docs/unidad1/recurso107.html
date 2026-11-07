@@ -833,11 +833,11 @@ for?</strong></span></h2>
 las fuentes consultadas:</p>
 <ul>
 <li><code>apply()</code> y <code>lapply()</code> no son vectorización
-real. <a
-href="https://www.dia.uned.es/31106065/Complementario_R/R_inferno.pdf">Burns
-(2011)</a> las describe como una forma de ocultar el ciclo, y señala que
-sus tiempos tienden a ser similares a los de un <code>for</code>
-explícito.</li>
+real: por dentro recorren los elementos uno por uno, así que sus tiempos
+suelen ser parecidos a los de un <code>for</code> bien escrito. Su
+ventaja es que el código queda más corto y claro (ver el capítulo <a
+href="https://adv-r.hadley.nz/functionals.html">Functionals</a> de
+<em>Advanced R</em>).</li>
 <li>Lo que hace lento a un ciclo suele ser <a
 href="https://library.virginia.edu/data/articles/why-preallocate-memory-r-loops">hacer
 crecer un objeto</a> en cada iteración. Se evita reservando su tamaño
