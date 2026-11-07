@@ -1,0 +1,446 @@
+---
+title: <span style="color:#034a94"> **Modelos discretos**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+Muchas variables discretas aparecen una y otra vez en situaciones distintas: el número de clientes que compran entre los que reciben una oferta, el número de llamadas que llegan en una hora, el número de defectuosos en una muestra. Para estas situaciones ya existen **modelos de probabilidad** con fórmulas conocidas para su función de probabilidad, su valor esperado y su varianza.
+
+Esta página presenta seis modelos discretos: Bernoulli, binomial, Poisson, hipergeométrico, geométrico y binomial negativo. Para cada uno se explica cuándo se usa, sus fórmulas y cómo calcular probabilidades en **R**. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se usan los modelos en R?**</span>
+
+Para cada modelo, **R** tiene cuatro funciones. Sus nombres empiezan con una letra que indica qué calculan, seguida del nombre del modelo:
+
+| Letra | Qué calcula | Ejemplo con la binomial |
+|:-----:|:------------|:------------------------|
+| `d` | La función de probabilidad, $P(X = x)$ | `dbinom(3, size = 10, prob = 0.3)` |
+| `p` | La función de distribución acumulada, $P(X \leq x)$ | `pbinom(3, size = 10, prob = 0.3)` |
+| `q` | El cuantil: el menor valor $x$ con $P(X \leq x) \geq$ una probabilidad dada | `qbinom(0.5, size = 10, prob = 0.3)` |
+| `r` | Valores simulados al azar | `rbinom(100, size = 10, prob = 0.3)` |
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el modelo de Bernoulli?**</span>
+
+Un **ensayo de Bernoulli** es un experimento con solo dos resultados: **éxito**, con probabilidad $p$, y **fracaso**, con probabilidad $1 - p$. La variable $X$ vale 1 si hay éxito y 0 si hay fracaso:
+
+$$
+P(X = 1) = p, \qquad P(X = 0) = 1 - p
+$$
+
+$$
+E(X) = p, \qquad \text{Var}(X) = p\,(1 - p)
+$$
+
+Ejemplos: un cliente compra o no compra, una pieza es defectuosa o no, un paciente responde o no a un tratamiento. La palabra "éxito" solo indica el resultado que se cuenta, aunque no sea algo bueno: en control de calidad, el "éxito" puede ser encontrar una pieza defectuosa.
+
+El modelo de Bernoulli es la pieza con la que se construyen los demás modelos de esta página.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el modelo binomial?**</span>
+
+Se repite un ensayo de Bernoulli $n$ veces, de forma **independiente** y con la **misma** probabilidad de éxito $p$. La variable $X$ es el **número de éxitos** en los $n$ ensayos. Se escribe $X \sim \text{Bin}(n, p)$.
+
+$$
+P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}, \qquad x = 0, 1, \ldots, n
+$$
+
+$$
+E(X) = n\,p, \qquad \text{Var}(X) = n\,p\,(1 - p)
+$$
+
+El número $\binom{n}{x}$ cuenta de cuántas formas se pueden ubicar los $x$ éxitos entre los $n$ ensayos; en **R** se calcula con `choose(n, x)`.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: una oferta por correo**</span>
+
+Una tienda sabe que el 30 % de los clientes que reciben una oferta compran. Envía la oferta a 10 clientes, que deciden de forma independiente. El número de clientes que compran es $X \sim \text{Bin}(10, 0.3)$.
+
+```{r, fig.width=8, fig.height=3.8, fig.cap="Función de probabilidad de X ~ Bin(10, 0.3). La línea roja marca el valor esperado, 3.", fig.alt="Barras azules con la más alta en x = 3, cerca de 0.27, y una línea roja vertical en 3", out.width="90%", fig.align="center"}
+x  <- 0:10
+fx <- dbinom(x, size = 10, prob = 0.3)
+pos <- barplot(fx, names.arg = x, col = "#034A94", ylim = c(0, 0.3),
+               xlab = "Número de clientes que compran (x)", ylab = "P(X = x)")
+abline(v = pos[4], col = "#C0392B", lwd = 2, lty = 2)   # x = 3 es la cuarta barra
+```
+
+```{r}
+dbinom(3, 10, 0.3)         # P(X = 3): exactamente 3 compran
+pbinom(2, 10, 0.3)         # P(X <= 2): a lo sumo 2 compran
+1 - pbinom(4, 10, 0.3)     # P(X >= 5): al menos 5 compran
+c(media = 10 * 0.3, varianza = 10 * 0.3 * 0.7)
+```
+
+La probabilidad de que compren exactamente 3 clientes es 0.267. En promedio compran 3 de cada 10.
+
+Una simulación ayuda a interpretar estos números. Se repite el envío a 10 clientes **1 000 veces** con `rbinom()`:
+
+```{r}
+set.seed(2026)
+envios <- rbinom(1000, size = 10, prob = 0.3)
+mean(envios)        # promedio de compradores por envío, cerca de 3
+mean(envios == 3)   # proporción de envíos con exactamente 3 compradores, cerca de 0.267
+```
+
+En cerca del 26.7 % de los envíos compran exactamente 3 clientes, y el promedio de compradores se acerca a 3.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el modelo de Poisson?**</span>
+
+El modelo de Poisson describe el **número de eventos** que ocurren en un intervalo de tiempo o de espacio, cuando los eventos ocurren al azar, de forma independiente y con un promedio constante $\lambda$ por intervalo. Se escribe $X \sim \text{Poisson}(\lambda)$.
+
+$$
+P(X = x) = \frac{e^{-\lambda}\,\lambda^x}{x!}, \qquad x = 0, 1, 2, \ldots
+$$
+
+$$
+E(X) = \lambda, \qquad \text{Var}(X) = \lambda
+$$
+
+Ejemplos: llamadas que llegan a un centro de atención en una hora, accidentes en una vía en un mes, errores de digitación por página. A diferencia de la binomial, no hay un número máximo de eventos.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: llamadas a un centro de atención**</span>
+
+A un centro de atención llegan en promedio 2 llamadas por minuto. El número de llamadas en un minuto es $X \sim \text{Poisson}(2)$.
+
+```{r, fig.width=8, fig.height=3.8, fig.cap="Función de probabilidad de X ~ Poisson(2).", fig.alt="Barras azules con las más altas en x = 1 y x = 2, cerca de 0.27, que bajan hacia la derecha hasta casi 0 en x = 10", out.width="90%", fig.align="center"}
+x  <- 0:10
+fx <- dpois(x, lambda = 2)
+barplot(fx, names.arg = x, col = "#034A94", ylim = c(0, 0.3),
+        xlab = "Número de llamadas en un minuto (x)", ylab = "P(X = x)")
+```
+
+```{r}
+dpois(0, lambda = 2)          # P(X = 0): ninguna llamada en un minuto
+ppois(2, lambda = 2)          # P(X <= 2)
+1 - ppois(3, lambda = 2)      # P(X >= 4): 4 o más llamadas
+```
+
+Si el centro puede atender hasta 3 llamadas por minuto, en el 14.3 % de los minutos llegarán más llamadas de las que puede atender.
+
+Si el intervalo cambia, el promedio cambia en la misma proporción. En 5 minutos llegan en promedio $5 \times 2 = 10$ llamadas, así que el número de llamadas en 5 minutos es $\text{Poisson}(10)$.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo cambian la binomial y la Poisson con sus parámetros?**</span>
+
+En el gráfico interactivo puede elegir el modelo, mover sus parámetros y un valor $k$. El gráfico muestra la función de probabilidad, y a la izquierda aparecen $P(X = k)$, $P(X \leq k)$, $P(X > k)$, el valor esperado y la varianza. Pruebe, por ejemplo, qué pasa con la forma de la binomial cuando $p$ se acerca a 0.5, o con la Poisson cuando $\lambda$ crece.
+
+```{=html}
+<div id="dis-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;">
+<div style="flex:1 1 250px;min-width:230px;font-size:0.95em;">
+<label><b>Distribución:</b>
+<select id="dis-tipo" style="margin-left:6px;">
+<option value="binom">Binomial</option>
+<option value="pois">Poisson</option>
+</select></label>
+<div id="dis-binom" style="margin-top:10px;">
+<div>Número de ensayos, n = <b><span id="dis-n-v">10</span></b></div>
+<input type="range" id="dis-n" min="1" max="40" value="10" style="width:100%;">
+<div>Probabilidad de éxito, p = <b><span id="dis-p-v">0.30</span></b></div>
+<input type="range" id="dis-p" min="0.01" max="0.99" step="0.01" value="0.30" style="width:100%;">
+</div>
+<div id="dis-pois" style="margin-top:10px;display:none;">
+<div>Promedio de eventos, λ = <b><span id="dis-l-v">2.0</span></b></div>
+<input type="range" id="dis-l" min="0.5" max="20" step="0.5" value="2" style="width:100%;">
+</div>
+<div style="margin-top:10px;">Valor k = <b><span id="dis-k-v">3</span></b></div>
+<input type="range" id="dis-k" min="0" max="10" value="3" style="width:100%;">
+<div id="dis-res" style="margin-top:10px;line-height:1.6;"></div>
+</div>
+<div style="flex:2 1 380px;min-width:300px;">
+<canvas id="dis-graf" width="560" height="300" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Barras azules: valores menores o iguales que k, cuya suma es P(X ≤ k). Barra naranja: P(X = k).</div>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  function lfact(n){ var s = 0; for (var i = 2; i <= n; i++) s += Math.log(i); return s; }
+  function dbinom(x, n, p){ if (x < 0 || x > n) return 0; if (p <= 0) return x === 0 ? 1 : 0; if (p >= 1) return x === n ? 1 : 0;
+    return Math.exp(lfact(n) - lfact(x) - lfact(n - x) + x * Math.log(p) + (n - x) * Math.log(1 - p)); }
+  function dpois(x, l){ return Math.exp(-l + x * Math.log(l) - lfact(x)); }
+  var $ = function(id){ return document.getElementById(id); };
+  function f4(v){ return v.toFixed(4); }
+  function actualizar(){
+    var tipo = $("dis-tipo").value, n = +$("dis-n").value, p = +$("dis-p").value, l = +$("dis-l").value;
+    $("dis-binom").style.display = tipo === "binom" ? "" : "none";
+    $("dis-pois").style.display = tipo === "pois" ? "" : "none";
+    $("dis-n-v").textContent = n; $("dis-p-v").textContent = p.toFixed(2); $("dis-l-v").textContent = l.toFixed(1);
+    var xmax = tipo === "binom" ? n : Math.ceil(l + 4 * Math.sqrt(l) + 3);
+    var kk = $("dis-k"); kk.max = xmax; if (+kk.value > xmax) kk.value = xmax;
+    var k = +kk.value; $("dis-k-v").textContent = k;
+    var probs = [], acum = 0;
+    for (var x = 0; x <= xmax; x++) { var v = tipo === "binom" ? dbinom(x, n, p) : dpois(x, l); probs.push(v); if (x <= k) acum += v; }
+    var media = tipo === "binom" ? n * p : l, vari = tipo === "binom" ? n * p * (1 - p) : l;
+    $("dis-res").innerHTML = "P(X = " + k + ") = <b>" + f4(probs[k]) + "</b><br>P(X ≤ " + k + ") = <b>" + f4(acum) + "</b><br>P(X > " + k + ") = <b>" + f4(1 - acum) + "</b><br>E(X) = <b>" + media.toFixed(2) + "</b>, Var(X) = <b>" + vari.toFixed(2) + "</b>";
+    var c = $("dis-graf"), g = c.getContext("2d"), W = c.width, H = c.height, izq = 46, der = 10, arr = 12, abj = 36;
+    g.clearRect(0, 0, W, H); g.font = "11px sans-serif";
+    var ymax = Math.max.apply(null, probs); ymax = Math.ceil(ymax * 10 + 0.0001) / 10; if (ymax > 1) ymax = 1;
+    var ancho = (W - izq - der) / (xmax + 1);
+    function Y(v){ return arr + (H - arr - abj) * (1 - v / ymax); }
+    g.strokeStyle = "#e5e5e5"; g.fillStyle = "#333";
+    for (var t = 0; t <= 5; t++) { var vv = ymax * t / 5; g.beginPath(); g.moveTo(izq, Y(vv)); g.lineTo(W - der, Y(vv)); g.stroke(); g.fillText(vv.toFixed(2), 6, Y(vv) + 4); }
+    var paso = Math.ceil((xmax + 1) / 20);
+    for (var x = 0; x <= xmax; x++) {
+      g.fillStyle = x === k ? "#FF7F00" : (x < k ? "#034A94" : "#BDD7EE");
+      var x0 = izq + x * ancho + ancho * 0.12;
+      g.fillRect(x0, Y(probs[x]), ancho * 0.76, Y(0) - Y(probs[x]));
+      if (x % paso === 0) { g.fillStyle = "#333"; g.fillText(String(x), x0 + ancho * 0.38 - 3 * String(x).length, H - abj + 14); }
+    }
+    g.fillStyle = "#333"; g.fillText("x", W / 2, H - 6);
+    g.save(); g.translate(12, H / 2 + 40); g.rotate(-Math.PI / 2); g.restore();
+  }
+  ["dis-tipo", "dis-n", "dis-p", "dis-l", "dis-k"].forEach(function(id){ $(id).addEventListener("input", actualizar); $(id).addEventListener("change", actualizar); });
+  actualizar();
+})();
+</script>
+```
+
+Los valores del gráfico coinciden con los de **R**. Por ejemplo, con la binomial de $n = 10$ y $p = 0.3$ y con $k = 3$, el gráfico muestra $P(X = 3) = 0.2668$, el mismo valor de `dbinom(3, 10, 0.3)`.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el modelo hipergeométrico?**</span>
+
+Se toma una muestra **sin reemplazo** de una población pequeña que tiene $m$ éxitos y $n$ fracasos. La variable $X$ es el **número de éxitos en la muestra** de tamaño $k$.
+
+$$
+P(X = x) = \frac{\binom{m}{x}\binom{n}{k - x}}{\binom{m + n}{k}}
+$$
+
+$$
+E(X) = k\,\frac{m}{m + n}
+$$
+
+La diferencia con la binomial es que, al no haber reemplazo, la probabilidad de éxito cambia en cada extracción, como en la regla de la multiplicación de [Tipos de probabilidad](recurso102.html). Si la población es muy grande comparada con la muestra, el cambio es mínimo y la binomial es una buena aproximación.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: control de calidad**</span>
+
+Un lote tiene 20 productos, de los cuales 5 son defectuosos. Un inspector toma 4 al azar, sin reemplazo. En **R**, `dhyper(x, m, n, k)` usa $m = 5$ defectuosos, $n = 15$ buenos y $k = 4$ en la muestra:
+
+```{r}
+x  <- 0:4
+fx <- dhyper(x, m = 5, n = 15, k = 4)
+round(data.frame(x, fx), 4)
+1 - dhyper(0, m = 5, n = 15, k = 4)   # P(X >= 1): al menos un defectuoso
+4 * 5 / 20                            # E(X)
+```
+
+La probabilidad de que la muestra no tenga defectuosos es 0.282: en más de una de cada cuatro inspecciones, un lote con 25 % de defectuosos pasaría sin que se detecte ninguno.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el modelo geométrico?**</span>
+
+Se repiten ensayos de Bernoulli independientes con probabilidad de éxito $p$ hasta obtener el **primer éxito**. Hay dos formas de contar, y conviene no confundirlas:
+
+| Variable | Valores | $P(X = x)$ | $E(X)$ |
+|:---------|:--------|:-----------|:-------|
+| Número de **fracasos** antes del primer éxito (la que usa **R**) | $0, 1, 2, \ldots$ | $(1 - p)^x\,p$ | $\dfrac{1 - p}{p}$ |
+| Número de **ensayos** hasta el primer éxito | $1, 2, 3, \ldots$ | $(1 - p)^{x - 1}\,p$ | $\dfrac{1}{p}$ |
+
+Las dos tienen la misma varianza, $\dfrac{1 - p}{p^2}$. Los ensayos son siempre uno más que los fracasos.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: llamadas de venta**</span>
+
+Un vendedor cierra una venta en el 20 % de sus llamadas. ¿Cuál es la probabilidad de que su primera venta sea en la **tercera** llamada? Eso significa 2 fracasos antes del primer éxito:
+
+$$
+P(\text{primera venta en la llamada 3}) = 0.8^2 \times 0.2 = 0.128
+$$
+
+```{r}
+dgeom(2, prob = 0.2)       # 2 fracasos y luego el éxito
+pgeom(4, prob = 0.2)       # P(a lo sumo 4 fracasos) = P(vende en las primeras 5 llamadas)
+(1 - 0.2) / 0.2            # fracasos esperados antes de la primera venta
+1 / 0.2                    # llamadas esperadas hasta la primera venta
+```
+
+En promedio, el vendedor necesita 5 llamadas para hacer su primera venta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el modelo binomial negativo?**</span>
+
+Es la generalización del geométrico: se repiten ensayos hasta obtener **$r$ éxitos**. En **R**, la variable es el **número de fracasos** antes del éxito número $r$:
+
+$$
+P(X = x) = \binom{x + r - 1}{x}\,p^r (1 - p)^x, \qquad x = 0, 1, 2, \ldots
+$$
+
+$$
+E(X) = \frac{r\,(1 - p)}{p}, \qquad \text{Var}(X) = \frac{r\,(1 - p)}{p^2}
+$$
+
+Con $r = 1$ se obtiene el modelo geométrico.
+
+Siguiendo con el vendedor, ¿cuál es la probabilidad de que necesite exactamente 8 llamadas para hacer 3 ventas? Eso es 5 fracasos antes de la tercera venta:
+
+```{r}
+dnbinom(5, size = 3, prob = 0.2)    # 5 fracasos antes de la tercera venta
+3 * (1 - 0.2) / 0.2                 # fracasos esperados antes de la tercera venta
+```
+
+En promedio, tendrá 12 llamadas sin venta antes de completar 3 ventas, es decir, unas 15 llamadas en total.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuál modelo usar?**</span>
+
+| Modelo | Qué cuenta | Parámetros | $E(X)$ | Funciones en R |
+|:-------|:-----------|:-----------|:------:|:---------------|
+| Bernoulli | Éxito (1) o fracaso (0) en un ensayo | $p$ | $p$ | `dbinom(x, 1, p)` |
+| Binomial | Éxitos en $n$ ensayos independientes | $n$, $p$ | $np$ | `dbinom`, `pbinom`, `qbinom`, `rbinom` |
+| Poisson | Eventos en un intervalo | $\lambda$ | $\lambda$ | `dpois`, `ppois`, `qpois`, `rpois` |
+| Hipergeométrico | Éxitos en una muestra sin reemplazo | $m$, $n$, $k$ | $\dfrac{km}{m + n}$ | `dhyper`, `phyper`, `qhyper`, `rhyper` |
+| Geométrico | Fracasos antes del primer éxito | $p$ | $\dfrac{1 - p}{p}$ | `dgeom`, `pgeom`, `qgeom`, `rgeom` |
+| Binomial negativo | Fracasos antes del éxito número $r$ | $r$, $p$ | $\dfrac{r(1 - p)}{p}$ | `dnbinom`, `pnbinom`, `qnbinom`, `rnbinom` |
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| $P(X \geq 5)$ calculado como `1 - pbinom(5, ...)` | `pbinom(5, ...)` incluye el 5 | Usar `1 - pbinom(4, ...)` |
+| Usar la binomial en un muestreo sin reemplazo de una población pequeña | La probabilidad de éxito cambia en cada extracción | Usar la hipergeométrica |
+| Usar `dgeom(3, p)` para "el primer éxito en el tercer ensayo" | `dgeom()` cuenta fracasos, no ensayos | Usar `dgeom(2, p)` |
+| No ajustar $\lambda$ al cambiar el intervalo | $\lambda$ es el promedio por intervalo | Si el intervalo se multiplica por $t$, usar $\lambda t$ |
+| Usar la binomial con ensayos que no son independientes o con $p$ que cambia | No se revisaron los supuestos | Verificar ensayos independientes con la misma $p$ |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Examen de selección múltiple**</span>
+
+Un examen tiene 20 preguntas con 4 opciones cada una. Un estudiante responde todas al azar. ¿Cuál es la probabilidad de que acierte al menos 10? ¿Cuántas acierta en promedio?
+
+<details>
+<summary>Ver solución</summary>
+
+$X \sim \text{Bin}(20, 0.25)$.
+
+```{r}
+1 - pbinom(9, size = 20, prob = 0.25)   # P(X >= 10)
+20 * 0.25                               # E(X)
+```
+
+La probabilidad de acertar al menos 10 es 0.014. En promedio acierta 5.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Clientes en un banco**</span>
+
+A un cajero llegan en promedio 12 clientes por hora. ¿Cuál es la probabilidad de que en 15 minutos lleguen más de 5 clientes?
+
+<details>
+<summary>Ver solución</summary>
+
+En 15 minutos, $\lambda = 12 / 4 = 3$.
+
+```{r}
+1 - ppois(5, lambda = 3)
+```
+
+La probabilidad es 0.084.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Binomial o hipergeométrica?**</span>
+
+De un curso de 30 estudiantes, 12 son de ingeniería. Se elige al azar un comité de 5. Calcule la probabilidad de que haya exactamente 2 estudiantes de ingeniería con la hipergeométrica y compárela con la binomial. ¿Por qué difieren?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+dhyper(2, m = 12, n = 18, k = 5)    # sin reemplazo
+dbinom(2, size = 5, prob = 12/30)   # como si fuera con reemplazo
+```
+
+La hipergeométrica da 0.378 y la binomial, 0.346. Difieren porque el curso es pequeño: cada estudiante elegido cambia la proporción de los que quedan.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Primer defectuoso**</span>
+
+Una máquina produce piezas defectuosas con probabilidad 0.05, de forma independiente. ¿Cuál es la probabilidad de que la primera pieza defectuosa sea una de las primeras 10? ¿Cuántas piezas buenas se esperan antes de la primera defectuosa?
+
+<details>
+<summary>Ver solución</summary>
+
+"Entre las primeras 10" significa a lo sumo 9 piezas buenas antes de la defectuosa.
+
+```{r}
+pgeom(9, prob = 0.05)    # P(a lo sumo 9 fracasos)
+(1 - 0.05) / 0.05        # piezas buenas esperadas
+```
+
+La probabilidad es 0.401, y se esperan 19 piezas buenas antes de la primera defectuosa.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/4-introduccion). En español. El capítulo 4 trata los modelos binomial, geométrico, hipergeométrico y de Poisson.
+- Grinstead, C. M. y Snell, J. L. (1997). [*Introduction to Probability*](https://chance.dartmouth.edu/book.html) (2.ª ed.). American Mathematical Society. Se descarga en PDF. El capítulo 5 trata las distribuciones discretas más importantes.
+- Blitzstein, J. K. y Hwang, J. (2019). [*Introduction to Probability*](http://probabilitybook.net) (2.ª ed.). Chapman & Hall/CRC. Versión gratuita para leer en línea, para quien quiera profundizar. Los capítulos 3 y 4 tratan los modelos discretos.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 5 trata las distribuciones discretas.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+- R Core Team. Documentación de las funciones de las distribuciones binomial, Poisson, hipergeométrica, geométrica y binomial negativa (`?Binomial`, `?Poisson`, `?Hypergeometric`, `?Geometric`, `?NegBinomial`).
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

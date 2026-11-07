@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -697,15 +701,15 @@ href="https://tidyverse.org/blog/2017/12/workflow-vs-script/">usar rutas
 relativas</a> y evitar <code>setwd()</code>: una ruta propia de un
 computador casi nunca funciona en otro.</p>
 <pre class="r"><code>ventas &lt;- read.csv(&quot;data/ventas.csv&quot;)
-head(ventas, 3)
-  tienda mes ventas
+head(ventas, 3)</code></pre>
+<pre><code>  tienda mes ventas
 1   Cali   1    120
 2   Cali   2    135
 3   Cali   3    128</code></pre>
 <p>La función <code>file.path()</code> construye rutas con la barra
 correcta:</p>
-<pre class="r"><code>file.path(&quot;data&quot;, &quot;ventas.csv&quot;)
-[1] &quot;data/ventas.csv&quot;</code></pre>
+<pre class="r"><code>file.path(&quot;data&quot;, &quot;ventas.csv&quot;)</code></pre>
+<pre><code>[1] &quot;data/ventas.csv&quot;</code></pre>
 <div id="cuidado-en-windows" class="section level3 content-box-gray">
 <h3><span style="color:#686868"><strong>Cuidado en
 Windows</strong></span></h3>
@@ -714,8 +718,8 @@ Windows</strong></span></h3>
 href="https://r4ds.hadley.nz/workflow-scripts.html">escribir
 <code>/</code></a>, que funciona en todos los sistemas.</p>
 </div>
-<pre class="r"><code>ruta &lt;- &quot;C:\Users\Ana\ventas.csv&quot;
-Error: &#39;\U&#39; used without hex digits in character string (&lt;text&gt;:1:13)</code></pre>
+<pre class="r"><code>ruta &lt;- &quot;C:\Users\Ana\ventas.csv&quot;</code></pre>
+<pre><code>Error: &#39;\U&#39; used without hex digits in character string (&lt;text&gt;:1:13)</code></pre>
 <div id="el-paquete-here" class="section level3">
 <h3><span style="color:#034a94"><strong>El paquete
 here</strong></span></h3>
@@ -1034,8 +1038,8 @@ Ver solución
 
 promedio &lt;- aggregate(ventas ~ tienda, data = ventas, FUN = mean)
 promedio &lt;- promedio[order(promedio$ventas, decreasing = TRUE), ]
-promedio
-  tienda ventas
+promedio</code></pre>
+<pre><code>  tienda ventas
 1   Cali 133.25
 3  Pasto  91.25
 2  Neiva  70.50</code></pre>

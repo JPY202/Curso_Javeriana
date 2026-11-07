@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -587,11 +591,11 @@ mostrar. Anscombe (1973) lo ilustró con cuatro conjuntos de datos, que
 vienen incluidos en <strong>R</strong> con el nombre
 <code>anscombe</code>. Las medias y las desviaciones estándar son casi
 iguales en los cuatro:</p>
-<pre class="r"><code>round(sapply(anscombe, mean), 2)
- x1  x2  x3  x4  y1  y2  y3  y4 
-9.0 9.0 9.0 9.0 7.5 7.5 7.5 7.5 
-round(sapply(anscombe, sd), 2)
-  x1   x2   x3   x4   y1   y2   y3   y4 
+<pre class="r"><code>round(sapply(anscombe, mean), 2)</code></pre>
+<pre><code> x1  x2  x3  x4  y1  y2  y3  y4 
+9.0 9.0 9.0 9.0 7.5 7.5 7.5 7.5 </code></pre>
+<pre class="r"><code>round(sapply(anscombe, sd), 2)</code></pre>
+<pre><code>  x1   x2   x3   x4   y1   y2   y3   y4 
 3.32 3.32 3.32 3.32 2.03 2.03 2.03 2.03 </code></pre>
 <p>Al graficarlos, los cuatro conjuntos resultan muy distintos:</p>
 <pre class="r"><code>datos &lt;- data.frame(
@@ -867,8 +871,8 @@ align="left"><code>scale_y_continuous(limits = c(0, 3000))</code></td>
 primero la tabla de frecuencias:</p>
 <pre class="r"><code>estratos &lt;- as.data.frame(table(vivienda_faltantes$estrato))
 names(estratos) &lt;- c(&quot;estrato&quot;, &quot;viviendas&quot;)
-estratos
-  estrato viviendas
+estratos</code></pre>
+<pre><code>  estrato viviendas
 1       3      1453
 2       4      2131
 3       5      2751

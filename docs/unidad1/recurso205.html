@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -509,8 +513,8 @@ creados en bloques anteriores.</p>
 grupo2 &lt;- c(35, 25, 19, 17, 24, 17, 55, 25, 31, 35, 43, 28, 32, 19, 20,
             17, 25, 18, 21, 22, 17, 35, 29, 20, 54, 46, 24, 29, 40, 18)
 
-c(media_1 = mean(grupo1), media_2 = mean(grupo2))
-media_1 media_2 
+c(media_1 = mean(grupo1), media_2 = mean(grupo2))</code></pre>
+<pre><code>media_1 media_2 
      28      28 </code></pre>
 <p>Aunque las dos medias son iguales, la figura muestra que los grupos
 son distintos:</p>
@@ -535,8 +539,8 @@ la diferencia entre el valor máximo y el valor mínimo.</p>
 <p><span class="math display">\[
 r = \max(x) - \min(x)
 \]</span></p>
-<pre class="r"><code>c(rango_1 = diff(range(grupo1)), rango_2 = diff(range(grupo2)))
-rango_1 rango_2 
+<pre class="r"><code>c(rango_1 = diff(range(grupo1)), rango_2 = diff(range(grupo2)))</code></pre>
+<pre><code>rango_1 rango_2 
      16      38 </code></pre>
 <p>El rango muestra que las edades del grupo 2 están más dispersas. Es
 fácil de calcular, pero solo usa dos datos, así que no refleja lo que
@@ -573,12 +577,12 @@ siempre es cero. Por eso se elevan al cuadrado. La
 <p><span class="math display">\[
 s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2
 \]</span></p>
-<pre class="r"><code>sum(tiempo_juvenil - media_juvenil)                                   # suma de desviaciones
-[1] 0
-sum((tiempo_juvenil - media_juvenil)^2) / (length(tiempo_juvenil) - 1)   # aplicando la fórmula
-[1] 256.4182
-var(tiempo_juvenil)                                                   # con la función
-[1] 256.4182</code></pre>
+<pre class="r"><code>sum(tiempo_juvenil - media_juvenil)                                   # suma de desviaciones</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>sum((tiempo_juvenil - media_juvenil)^2) / (length(tiempo_juvenil) - 1)   # aplicando la fórmula</code></pre>
+<pre><code>[1] 256.4182</code></pre>
+<pre class="r"><code>var(tiempo_juvenil)                                                   # con la función</code></pre>
+<pre><code>[1] 256.4182</code></pre>
 <div id="por-qué-se-divide-entre-n---1"
 class="section level3 content-box-gray">
 <h3><span style="color:#686868"><strong>¿Por qué se divide entre <span
@@ -624,14 +628,14 @@ dos variables:</p>
 \]</span></p></li>
 </ol>
 <p>Las propiedades 4 y 5 se pueden comprobar en <strong>R</strong>:</p>
-<pre class="r"><code>var(10 * tiempo_juvenil)            # propiedad 4
-[1] 25641.82
-100 * var(tiempo_juvenil)
-[1] 25641.82
-var(tiempo_juvenil + 5)             # propiedad 5
-[1] 256.4182
-var(tiempo_juvenil)
-[1] 256.4182</code></pre>
+<pre class="r"><code>var(10 * tiempo_juvenil)            # propiedad 4</code></pre>
+<pre><code>[1] 25641.82</code></pre>
+<pre class="r"><code>100 * var(tiempo_juvenil)</code></pre>
+<pre><code>[1] 25641.82</code></pre>
+<pre class="r"><code>var(tiempo_juvenil + 5)             # propiedad 5</code></pre>
+<pre><code>[1] 256.4182</code></pre>
+<pre class="r"><code>var(tiempo_juvenil)</code></pre>
+<pre><code>[1] 256.4182</code></pre>
 <p>La varianza tiene una limitación: sus unidades están al cuadrado, por
 ejemplo, minutos<span class="math inline">\(^2\)</span>. Esto dificulta
 su interpretación.</p>
@@ -649,11 +653,11 @@ s = \sqrt{s^2}
 <p>Indica qué tan alejados están los datos de la media, de forma típica.
 Una desviación estándar pequeña indica que los datos están cerca de la
 media, y una grande, que están más dispersos.</p>
-<pre class="r"><code>c(varianza_1 = var(grupo1), varianza_2 = var(grupo2))
-varianza_1 varianza_2 
-  16.62069  116.89655 
-c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))
-desviacion_1 desviacion_2 
+<pre class="r"><code>c(varianza_1 = var(grupo1), varianza_2 = var(grupo2))</code></pre>
+<pre><code>varianza_1 varianza_2 
+  16.62069  116.89655 </code></pre>
+<pre class="r"><code>c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))</code></pre>
+<pre><code>desviacion_1 desviacion_2 
     4.076848    10.811871 </code></pre>
 <p>Las dos medias son de 28 años, pero la desviación estándar es de 4.08
 años en el grupo 1 y de 10.81 años en el grupo 2.</p>
@@ -719,12 +723,12 @@ class="math inline">\(k &gt; 1\)</span>:</p>
 media &lt;- mean(tiempo)
 desviacion &lt;- sd(tiempo)
 
-100 * mean(abs(tiempo - media) &lt;= 1 * desviacion)
-[1] 69.14672
-100 * mean(abs(tiempo - media) &lt;= 2 * desviacion)
-[1] 96.09781
-100 * mean(abs(tiempo - media) &lt;= 3 * desviacion)
-[1] 99.68783</code></pre>
+100 * mean(abs(tiempo - media) &lt;= 1 * desviacion)</code></pre>
+<pre><code>[1] 69.14672</code></pre>
+<pre class="r"><code>100 * mean(abs(tiempo - media) &lt;= 2 * desviacion)</code></pre>
+<pre><code>[1] 96.09781</code></pre>
+<pre class="r"><code>100 * mean(abs(tiempo - media) &lt;= 3 * desviacion)</code></pre>
+<pre><code>[1] 99.68783</code></pre>
 <pre class="r"><code>cortes &lt;- seq(30, 170, by = 10)
 limites &lt;- media + c(-2, -1, 1, 2) * desviacion
 
@@ -789,14 +793,14 @@ fórmula anterior.</p>
 cambia más que el RIC y la MAD:</p>
 <pre class="r"><code>sin_maximo &lt;- tiempo[tiempo &lt; max(tiempo)]
 
-c(todos = sd(tiempo), sin_maximo = sd(sin_maximo))          # desviación estándar
-     todos sin_maximo 
-  12.72077   12.51442 
-c(todos = IQR(tiempo), sin_maximo = IQR(sin_maximo))        # rango intercuartílico
-     todos sin_maximo 
-  16.90833   16.90000 
-c(todos = mad(tiempo), sin_maximo = mad(sin_maximo))        # MAD ajustada
-     todos sin_maximo 
+c(todos = sd(tiempo), sin_maximo = sd(sin_maximo))          # desviación estándar</code></pre>
+<pre><code>     todos sin_maximo 
+  12.72077   12.51442 </code></pre>
+<pre class="r"><code>c(todos = IQR(tiempo), sin_maximo = IQR(sin_maximo))        # rango intercuartílico</code></pre>
+<pre><code>     todos sin_maximo 
+  16.90833   16.90000 </code></pre>
+<pre class="r"><code>c(todos = mad(tiempo), sin_maximo = mad(sin_maximo))        # MAD ajustada</code></pre>
+<pre><code>     todos sin_maximo 
   12.05848   12.03377 </code></pre>
 <p><br/></p>
 </div>
@@ -817,8 +821,8 @@ se usa con temperaturas en °C, porque su cero es una convención.</p>
 su dispersión relativa se puede comparar:</p>
 <pre class="r"><code>cv &lt;- function(x) 100 * sd(x) / mean(x)
 
-c(edad = cv(CarreraLuz22$edad), tiempo = cv(tiempo))
-    edad   tiempo 
+c(edad = cv(CarreraLuz22$edad), tiempo = cv(tiempo))</code></pre>
+<pre><code>    edad   tiempo 
 29.09796 19.49164 </code></pre>
 <p>La edad tiene una mayor dispersión relativa que el tiempo.</p>
 <p>Una guía usada para interpretarlo es la siguiente. Los cortes
@@ -863,8 +867,8 @@ dependen del área y del contexto:</p>
 </tbody>
 </table>
 <p>Para los dos grupos de edades:</p>
-<pre class="r"><code>c(cv_1 = cv(grupo1), cv_2 = cv(grupo2))
-    cv_1     cv_2 
+<pre class="r"><code>c(cv_1 = cv(grupo1), cv_2 = cv(grupo2))</code></pre>
+<pre><code>    cv_1     cv_2 
 14.56017 38.61382 </code></pre>
 <p>El grupo 1 tiene baja variabilidad y el grupo 2, alta.</p>
 <p><br/></p>
@@ -1026,8 +1030,8 @@ Ver solución
 suman 8. Entonces, <span class="math inline">\(s^2 = 8/3 = 2.67\)</span>
 y <span class="math inline">\(s = 1.63\)</span>.</p>
 <pre class="r"><code>x &lt;- c(2, 4, 4, 6)
-c(media = mean(x), varianza = var(x), desviacion = sd(x))
-     media   varianza desviacion 
+c(media = mean(x), varianza = var(x), desviacion = sd(x))</code></pre>
+<pre><code>     media   varianza desviacion 
   4.000000   2.666667   1.632993 </code></pre>
 </details>
 </div>
@@ -1042,11 +1046,11 @@ relativa?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, sd)
-  Hombre    Mujer 
-12.25425 11.74628 
-tapply(tiempo, CarreraLuz22$sex, cv)
-  Hombre    Mujer 
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, sd)</code></pre>
+<pre><code>  Hombre    Mujer 
+12.25425 11.74628 </code></pre>
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, cv)</code></pre>
+<pre><code>  Hombre    Mujer 
 19.75193 16.69355 </code></pre>
 <p>Los hombres tienen mayor dispersión relativa.</p>
 </details>
@@ -1064,11 +1068,11 @@ Ver solución
 </summary>
 <p>La desviación estándar se multiplica por 60. El coeficiente de
 variación no cambia, porque la media también se multiplica por 60.</p>
-<pre class="r"><code>c(minutos = sd(tiempo), segundos = sd(60 * tiempo))
-  minutos  segundos 
- 12.72077 763.24650 
-c(minutos = cv(tiempo), segundos = cv(60 * tiempo))
- minutos segundos 
+<pre class="r"><code>c(minutos = sd(tiempo), segundos = sd(60 * tiempo))</code></pre>
+<pre><code>  minutos  segundos 
+ 12.72077 763.24650 </code></pre>
+<pre class="r"><code>c(minutos = cv(tiempo), segundos = cv(60 * tiempo))</code></pre>
+<pre><code> minutos segundos 
 19.49164 19.49164 </code></pre>
 </details>
 </div>
@@ -1087,11 +1091,11 @@ Ver solución
 coeficiente de variación disminuye.</p>
 <pre class="r"><code>notas &lt;- c(3, 3.5, 4, 4.5)
 
-c(media = mean(notas), desviacion = sd(notas), cv = cv(notas))
-     media desviacion         cv 
- 3.7500000  0.6454972 17.2132593 
-c(media = mean(notas + 0.5), desviacion = sd(notas + 0.5), cv = cv(notas + 0.5))
-     media desviacion         cv 
+c(media = mean(notas), desviacion = sd(notas), cv = cv(notas))</code></pre>
+<pre><code>     media desviacion         cv 
+ 3.7500000  0.6454972 17.2132593 </code></pre>
+<pre class="r"><code>c(media = mean(notas + 0.5), desviacion = sd(notas + 0.5), cv = cv(notas + 0.5))</code></pre>
+<pre><code>     media desviacion         cv 
  4.2500000  0.6454972 15.1881700 </code></pre>
 </details>
 </div>
@@ -1110,8 +1114,8 @@ Ver solución
 \%\)</span>.</p>
 <pre class="r"><code>edad &lt;- CarreraLuz22$edad
 
-100 * mean(abs(edad - mean(edad)) &lt;= 2 * sd(edad))
-[1] 96.09781</code></pre>
+100 * mean(abs(edad - mean(edad)) &lt;= 2 * sd(edad))</code></pre>
+<pre><code>[1] 96.09781</code></pre>
 <p>Se cumple.</p>
 </details>
 </div>

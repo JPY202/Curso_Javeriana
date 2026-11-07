@@ -1,0 +1,56 @@
+---
+title: <span style="color:#034a94"> **Unidad 2. Probabilidad e inferencia**</span>
+output:
+  html_document:
+    toc: no
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = NA)
+```
+
+```{r, out.width="100%", fig.align="center", fig.alt="Banner de Métodos y Simulación Estadística"}
+knitr::include_graphics("img/banner_presentacion.jpg")
+```
+
+<br/>
+
+Esta unidad presenta las bases de la inferencia estadística: la probabilidad, las variables aleatorias, las distribuciones muestrales, la estimación y las pruebas de hipótesis. Cada tema se explica con ejemplos y se acompaña de código en **R** para calcular y simular.
+
+<br/>
+
+## <span style="color:#034a94">**Contenido de la unidad**</span>
+
+1.  **Probabilidad**
+
+    - [Espacio muestral y eventos](recurso100.html)
+    - [Enfoques y axiomas](recurso101.html)
+    - [Tipos de probabilidad](recurso102.html)
+    - [Independencia](recurso103.html)
+    - [Teorema de Bayes](recurso104.html)
+
+    <br/>
+
+2.  **Variables aleatorias**
+
+    - [Variable aleatoria](recurso200.html)
+    - [Valor esperado y varianza](recurso201.html)
+    - [Variables conjuntas](recurso202.html)
+    - [Modelos discretos](recurso203.html)
+    - [Modelos continuos](recurso204.html)
+
+    <br/>
+
+3.  **Distribuciones muestrales** (en preparación)
+
+    <br/>
+
+4.  **Estimación** (en preparación)
+
+    <br/>
+
+5.  **Pruebas de hipótesis** (en preparación)
+
+<br/><br/>

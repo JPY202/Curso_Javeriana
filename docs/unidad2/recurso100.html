@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Espacio muestral y eventos</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Espacio muestral y eventos</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un laboratorio procesa muestras de pacientes con fiebre, una tienda
+en línea registra si cada visitante compra o no, y un ingeniero mide
+cuántas horas dura un componente antes de fallar. En los tres casos se
+conoce el conjunto de resultados posibles, pero no cuál va a ocurrir. La
+<strong>probabilidad</strong> es el lenguaje matemático para describir
+esa incertidumbre.</p>
+<p>Antes de asignar probabilidades hay que responder una pregunta:
+¿cuáles son los resultados posibles? Esta página define el experimento
+aleatorio, el espacio muestral y los eventos, y muestra cómo
+representarlos en <strong>R</strong>. Los bloques de código se ejecutan
+en orden.</p>
+<p><br/></p>
+<div id="qué-es-un-experimento-aleatorio" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un experimento
+aleatorio?</strong></span></h2>
+<p>Un <strong>experimento aleatorio</strong> es un proceso que cumple
+tres condiciones:</p>
+<ol style="list-style-type: decimal">
+<li>Se conocen todos los resultados posibles antes de realizarlo.</li>
+<li>No se sabe con certeza cuál de ellos va a ocurrir.</li>
+<li>Se puede repetir, al menos en principio, en condiciones
+similares.</li>
+</ol>
+<p>La tercera condición es la que permite interpretar la probabilidad
+como frecuencia, como se verá en <a href="recurso101.html">Enfoques y
+axiomas</a>. Hay situaciones que no se pueden repetir, como el resultado
+de una elección; para ellas se usa la interpretación subjetiva.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-el-espacio-muestral" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el espacio
+muestral?</strong></span></h2>
+<p>El <strong>espacio muestral</strong> <span
+class="math inline">\(\Omega\)</span> (en algunos textos, <span
+class="math inline">\(S\)</span>) es el conjunto de todos los resultados
+posibles de un experimento. Según el tipo de resultados, puede ser
+<strong>finito</strong>, si tiene un número limitado de resultados;
+<strong>infinito numerable</strong>, si los resultados se pueden
+enumerar <span class="math inline">\(0, 1, 2, \ldots\)</span> sin un
+final; o <strong>continuo</strong> (infinito no numerable), si el
+resultado puede ser cualquier valor de un intervalo, como un tiempo o un
+peso.</p>
+<table>
+<colgroup>
+<col width="35%" />
+<col width="48%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Experimento</th>
+<th align="left">Espacio muestral</th>
+<th align="left">Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Resultado de una prueba rápida de dengue</td>
+<td align="left"><span class="math inline">\(\Omega = \{+,
+-\}\)</span></td>
+<td align="left">Finito</td>
+</tr>
+<tr class="even">
+<td align="left">Lanzar dos dados</td>
+<td align="left"><span class="math inline">\(\Omega = \{(i, j) : i, j =
+1, \ldots, 6\}\)</span>, 36 resultados</td>
+<td align="left">Finito</td>
+</tr>
+<tr class="odd">
+<td align="left">Número de visitantes de una página en una hora</td>
+<td align="left"><span class="math inline">\(\Omega = \{0, 1, 2,
+\ldots\}\)</span></td>
+<td align="left">Infinito numerable</td>
+</tr>
+<tr class="even">
+<td align="left">Número de intentos hasta la primera venta</td>
+<td align="left"><span class="math inline">\(\Omega = \{1, 2, 3,
+\ldots\}\)</span></td>
+<td align="left">Infinito numerable</td>
+</tr>
+<tr class="odd">
+<td align="left">Horas hasta la falla de un componente</td>
+<td align="left"><span class="math inline">\(\Omega = [0,
+\infty)\)</span></td>
+<td align="left">Continuo</td>
+</tr>
+</tbody>
+</table>
+<p>El espacio muestral no es único: depende de qué se decide registrar.
+Al lanzar dos dados se puede registrar el par <span
+class="math inline">\((i, j)\)</span> o solo la suma, con <span
+class="math inline">\(\Omega = \{2, \ldots, 12\}\)</span>. El primero es
+más útil, porque sus 36 resultados son igualmente probables y los 11 de
+la suma no.</p>
+<p>En <strong>R</strong>, un espacio muestral finito se puede construir
+con <code>expand.grid()</code>, que genera todas las combinaciones de
+sus argumentos:</p>
+<pre class="r"><code>dados &lt;- expand.grid(d1 = 1:6, d2 = 1:6)
+nrow(dados)</code></pre>
+<pre><code>[1] 36</code></pre>
+<pre class="r"><code>head(dados, 4)</code></pre>
+<pre><code>  d1 d2
+1  1  1
+2  2  1
+3  3  1
+4  4  1</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-es-un-evento" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un
+evento?</strong></span></h2>
+<p>Un <strong>evento</strong> es un subconjunto del espacio muestral. Se
+dice que el evento <span class="math inline">\(A\)</span>
+<strong>ocurre</strong> si el resultado del experimento pertenece a
+<span class="math inline">\(A\)</span>. El conjunto vacío <span
+class="math inline">\(\emptyset\)</span> es el evento imposible y <span
+class="math inline">\(\Omega\)</span> es el evento seguro.</p>
+<p>Con los dos dados, sean <span class="math inline">\(A\)</span>: la
+suma es 7, y <span class="math inline">\(B\)</span>: el primer dado es
+par.</p>
+<pre class="r"><code>A &lt;- which(dados$d1 + dados$d2 == 7)   # filas de dados que forman A
+B &lt;- which(dados$d1 %% 2 == 0)
+length(A)</code></pre>
+<pre><code>[1] 6</code></pre>
+<pre class="r"><code>length(B)</code></pre>
+<pre><code>[1] 18</code></pre>
+<div id="qué-operaciones-hay-entre-eventos" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué operaciones hay entre
+eventos?</strong></span></h3>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="23%" />
+<col width="35%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Operación</th>
+<th align="left">Notación</th>
+<th align="left">Ocurre cuando</th>
+<th align="left">En R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Unión</td>
+<td align="left"><span class="math inline">\(A \cup B\)</span></td>
+<td align="left">Ocurre <span class="math inline">\(A\)</span>, <span
+class="math inline">\(B\)</span> o ambos</td>
+<td align="left"><code>union(A, B)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Intersección</td>
+<td align="left"><span class="math inline">\(A \cap B\)</span></td>
+<td align="left">Ocurren <span class="math inline">\(A\)</span> y <span
+class="math inline">\(B\)</span></td>
+<td align="left"><code>intersect(A, B)</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Complemento</td>
+<td align="left"><span class="math inline">\(A^c\)</span></td>
+<td align="left">No ocurre <span class="math inline">\(A\)</span></td>
+<td align="left"><code>setdiff(1:36, A)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Diferencia</td>
+<td align="left"><span class="math inline">\(A \setminus B = A \cap
+B^c\)</span></td>
+<td align="left">Ocurre <span class="math inline">\(A\)</span> y no
+<span class="math inline">\(B\)</span></td>
+<td align="left"><code>setdiff(A, B)</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>length(union(A, B))</code></pre>
+<pre><code>[1] 21</code></pre>
+<pre class="r"><code>dados[intersect(A, B), ]</code></pre>
+<pre><code>   d1 d2
+6   6  1
+16  4  3
+26  2  5</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Asignar probabilidad <span
+class="math inline">\(1/11\)</span> a cada suma de dos dados</td>
+<td align="left">Se usó un espacio muestral cuyos resultados no son
+igualmente probables</td>
+<td align="left">Usar los 36 pares <span class="math inline">\((i,
+j)\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Escribir “mayor a 15” como <span
+class="math inline">\(\{15, 16, \ldots\}\)</span></td>
+<td align="left">Confundir <span class="math inline">\(&gt;\)</span> con
+<span class="math inline">\(\geq\)</span></td>
+<td align="left">Mayor a 15 es <span class="math inline">\(\{16, 17,
+\ldots\}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>expand.grid()</code> agota la memoria</td>
+<td align="left">El espacio muestral es demasiado grande para
+listarlo</td>
+<td align="left">Usar la simulación, que se presenta en la página
+siguiente</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-es-un-experimento-aleatorio"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. ¿Es un experimento
+aleatorio?</strong></span></h3>
+<p>Para cada situación, diga si es un experimento aleatorio. Revise las
+tres condiciones de la definición.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Contar cuántos pacientes con fiebre llegan a urgencias de un
+hospital un lunes.</li>
+<li>Calcular el área de un círculo de 2 cm de radio.</li>
+<li>Medir el tiempo de respuesta de un servidor web a una consulta.</li>
+<li>Registrar quién gana la final de un torneo deportivo de este
+año.</li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p>Sí: se conocen los resultados posibles (<span
+class="math inline">\(0, 1, 2, \ldots\)</span>), no se sabe cuál
+ocurrirá y se puede repetir cada lunes en condiciones
+similares.</p></li>
+<li><p>No: el resultado, <span class="math inline">\(4\pi\)</span> cm²,
+se conoce con certeza antes de calcularlo.</p></li>
+<li><p>Sí: el tiempo varía de una consulta a otra y la medición se puede
+repetir muchas veces.</p></li>
+<li><p>No cumple la tercera condición: esa final no se puede repetir. Se
+le puede asignar una probabilidad con la interpretación subjetiva, como
+se verá en <a href="recurso101.html">Enfoques y axiomas</a>.</p></li>
+</ol>
+</details>
+</div>
+<div id="reto-2.-construya-el-espacio-muestral"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Construya el espacio
+muestral</strong></span></h3>
+<p>Se lanza una moneda hasta obtener la primera cara. Escriba el espacio
+muestral. ¿Es finito, infinito numerable o continuo? Escriba como
+subconjunto el evento: se necesitan más de 3 lanzamientos.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Si se registra el número de lanzamientos, <span
+class="math inline">\(\Omega = \{1, 2, 3, \ldots\}\)</span>, que es
+infinito numerable. El evento es <span class="math inline">\(\{4, 5, 6,
+\ldots\}\)</span>. También se puede registrar la secuencia: <span
+class="math inline">\(\Omega = \{C, SC, SSC, \ldots\}\)</span>.</p>
+</details>
+</div>
+<div id="reto-3.-dos-pruebas-diagnósticas"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Dos pruebas
+diagnósticas</strong></span></h3>
+<p>A un paciente con fiebre se le aplican dos pruebas para dengue, una
+rápida y una de laboratorio. Cada una puede dar positivo (<span
+class="math inline">\(+\)</span>) o negativo (<span
+class="math inline">\(-\)</span>). Construya el espacio muestral con
+<code>expand.grid()</code> y escriba los eventos <span
+class="math inline">\(E\)</span>: al menos una prueba es positiva, y
+<span class="math inline">\(G\)</span>: las dos pruebas no coinciden.
+¿Cuál es <span class="math inline">\(E \cap G\)</span>? ¿Es <span
+class="math inline">\(G\)</span> un subconjunto de <span
+class="math inline">\(E\)</span>?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>pruebas &lt;- expand.grid(rapida = c(&quot;+&quot;, &quot;-&quot;), laboratorio = c(&quot;+&quot;, &quot;-&quot;))
+pruebas</code></pre>
+<pre><code>  rapida laboratorio
+1      +           +
+2      -           +
+3      +           -
+4      -           -</code></pre>
+<pre class="r"><code>E &lt;- which(pruebas$rapida == &quot;+&quot; | pruebas$laboratorio == &quot;+&quot;)
+G &lt;- which(pruebas$rapida != pruebas$laboratorio)
+pruebas[E, ]</code></pre>
+<pre><code>  rapida laboratorio
+1      +           +
+2      -           +
+3      +           -</code></pre>
+<pre class="r"><code>pruebas[intersect(E, G), ]</code></pre>
+<pre><code>  rapida laboratorio
+2      -           +
+3      +           -</code></pre>
+<pre class="r"><code>all(G %in% E)</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<p><span class="math inline">\(\Omega = \{(+,+), (-,+), (+,-),
+(-,-)\}\)</span>. El evento <span class="math inline">\(E\)</span> tiene
+tres resultados y <span class="math inline">\(G = \{(-,+),
+(+,-)\}\)</span>. Como los dos resultados de <span
+class="math inline">\(G\)</span> tienen al menos un positivo, <span
+class="math inline">\(G \subseteq E\)</span> y <span
+class="math inline">\(E \cap G = G\)</span>.</p>
+</details>
+</div>
+<div id="reto-4.-operaciones-entre-eventos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Operaciones entre
+eventos</strong></span></h3>
+<p>Con los dos dados, sean <span class="math inline">\(C\)</span>: los
+dos dados son iguales, y <span class="math inline">\(D\)</span>: la suma
+es mayor que 9. Encuentre en <strong>R</strong> los resultados de <span
+class="math inline">\(C \cap D\)</span> y el número de resultados de
+<span class="math inline">\(C \cup D\)</span>, <span
+class="math inline">\(D^c\)</span> y <span class="math inline">\(C
+\setminus D\)</span>. Describa cada evento con palabras.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>C &lt;- which(dados$d1 == dados$d2)
+D &lt;- which(dados$d1 + dados$d2 &gt; 9)
+dados[intersect(C, D), ]</code></pre>
+<pre><code>   d1 d2
+29  5  5
+36  6  6</code></pre>
+<pre class="r"><code>length(union(C, D))</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>length(setdiff(1:36, D))</code></pre>
+<pre><code>[1] 30</code></pre>
+<pre class="r"><code>length(setdiff(C, D))</code></pre>
+<pre><code>[1] 4</code></pre>
+<p><span class="math inline">\(C \cap D = \{(5, 5), (6, 6)\}\)</span>:
+dados iguales con suma mayor que 9. <span class="math inline">\(C \cup
+D\)</span> tiene 10 resultados: los 6 pares iguales más los 4 de suma
+mayor que 9 que no son iguales. <span class="math inline">\(D^c\)</span>
+tiene 30 resultados: la suma es 9 o menos. <span class="math inline">\(C
+\setminus D\)</span> tiene 4: dados iguales con suma de 9 o menos.</p>
+</details>
+</div>
+<div id="reto-5.-qué-espacio-muestral-conviene"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 5. ¿Qué espacio muestral
+conviene?</strong></span></h3>
+<p>Un estudiante registra solo la suma de dos dados, con <span
+class="math inline">\(\Omega = \{2, \ldots, 12\}\)</span>, y concluye
+que la probabilidad de que la suma sea 7 es <span
+class="math inline">\(1/11\)</span>. Use la tabla <code>dados</code>
+para mostrar cuántos pares <span class="math inline">\((i, j)\)</span>
+dan cada suma y explique el error.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>table(dados$d1 + dados$d2)</code></pre>
+<pre><code>
+ 2  3  4  5  6  7  8  9 10 11 12 
+ 1  2  3  4  5  6  5  4  3  2  1 </code></pre>
+<p>La suma 7 se obtiene con 6 de los 36 pares, y las sumas 2 y 12 con
+uno solo. Los 11 resultados de la suma no son igualmente probables, así
+que no se puede asignar <span class="math inline">\(1/11\)</span> a cada
+uno. Con los 36 pares, que sí lo son, la probabilidad de que la suma sea
+7 es <span class="math inline">\(6/36 = 1/6\)</span>.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/3-introduccion"><em>Introducción
+a la estadística</em></a>, capítulo 3, Temas de probabilidad. En
+español. La sección 3.1 trata la terminología: experimento, espacio
+muestral y eventos.</li>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <a
+href="https://chance.dartmouth.edu/book.html"><em>Introduction to
+Probability</em></a> (2.ª ed.). American Mathematical Society. Se
+descarga en PDF.</li>
+<li>Blitzstein, J. K. y Hwang, J. (2019). <a
+href="http://probabilitybook.net"><em>Introduction to
+Probability</em></a> (2.ª ed.). Chapman &amp; Hall/CRC. Versión gratuita
+para leer en línea, para quien quiera profundizar. La sección 1.2 trata
+espacios muestrales y eventos.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 2 trata el espacio muestral, los eventos y
+sus operaciones.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>R Core Team. Documentación de <code>expand.grid()</code> y de las
+funciones de conjuntos (<code>union()</code>, <code>intersect()</code>,
+<code>setdiff()</code>).</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

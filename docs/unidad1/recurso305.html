@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -523,8 +527,8 @@ longitudes aparecen como <code>-76576</code> y otras como
 ubicacion$lon &lt;- ifelse(abs(ubicacion$longitud) &gt; 1000, ubicacion$longitud / 1000, ubicacion$longitud)
 ubicacion$lat &lt;- ifelse(abs(ubicacion$latitud) &gt; 1000, ubicacion$latitud / 1000, ubicacion$latitud)
 
-summary(ubicacion[, c(&quot;lon&quot;, &quot;lat&quot;)])
-      lon              lat       
+summary(ubicacion[, c(&quot;lon&quot;, &quot;lat&quot;)])</code></pre>
+<pre><code>      lon              lat       
  Min.   :-76.59   Min.   :3.333  
  1st Qu.:-76.54   1st Qu.:3.381  
  Median :-76.53   Median :3.416  

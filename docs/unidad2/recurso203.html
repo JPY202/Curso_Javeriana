@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Modelos discretos</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Modelos discretos</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Muchas variables discretas aparecen una y otra vez en situaciones
+distintas: el número de clientes que compran entre los que reciben una
+oferta, el número de llamadas que llegan en una hora, el número de
+defectuosos en una muestra. Para estas situaciones ya existen
+<strong>modelos de probabilidad</strong> con fórmulas conocidas para su
+función de probabilidad, su valor esperado y su varianza.</p>
+<p>Esta página presenta seis modelos discretos: Bernoulli, binomial,
+Poisson, hipergeométrico, geométrico y binomial negativo. Para cada uno
+se explica cuándo se usa, sus fórmulas y cómo calcular probabilidades en
+<strong>R</strong>. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="cómo-se-usan-los-modelos-en-r" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se usan los modelos en
+R?</strong></span></h2>
+<p>Para cada modelo, <strong>R</strong> tiene cuatro funciones. Sus
+nombres empiezan con una letra que indica qué calculan, seguida del
+nombre del modelo:</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="28%" />
+<col width="55%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Letra</th>
+<th align="left">Qué calcula</th>
+<th align="left">Ejemplo con la binomial</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>d</code></td>
+<td align="left">La función de probabilidad, <span
+class="math inline">\(P(X = x)\)</span></td>
+<td align="left"><code>dbinom(3, size = 10, prob = 0.3)</code></td>
+</tr>
+<tr class="even">
+<td align="center"><code>p</code></td>
+<td align="left">La función de distribución acumulada, <span
+class="math inline">\(P(X \leq x)\)</span></td>
+<td align="left"><code>pbinom(3, size = 10, prob = 0.3)</code></td>
+</tr>
+<tr class="odd">
+<td align="center"><code>q</code></td>
+<td align="left">El cuantil: el menor valor <span
+class="math inline">\(x\)</span> con <span class="math inline">\(P(X
+\leq x) \geq\)</span> una probabilidad dada</td>
+<td align="left"><code>qbinom(0.5, size = 10, prob = 0.3)</code></td>
+</tr>
+<tr class="even">
+<td align="center"><code>r</code></td>
+<td align="left">Valores simulados al azar</td>
+<td align="left"><code>rbinom(100, size = 10, prob = 0.3)</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="qué-es-el-modelo-de-bernoulli" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el modelo de
+Bernoulli?</strong></span></h2>
+<p>Un <strong>ensayo de Bernoulli</strong> es un experimento con solo
+dos resultados: <strong>éxito</strong>, con probabilidad <span
+class="math inline">\(p\)</span>, y <strong>fracaso</strong>, con
+probabilidad <span class="math inline">\(1 - p\)</span>. La variable
+<span class="math inline">\(X\)</span> vale 1 si hay éxito y 0 si hay
+fracaso:</p>
+<p><span class="math display">\[
+P(X = 1) = p, \qquad P(X = 0) = 1 - p
+\]</span></p>
+<p><span class="math display">\[
+E(X) = p, \qquad \text{Var}(X) = p\,(1 - p)
+\]</span></p>
+<p>Ejemplos: un cliente compra o no compra, una pieza es defectuosa o
+no, un paciente responde o no a un tratamiento. La palabra “éxito” solo
+indica el resultado que se cuenta, aunque no sea algo bueno: en control
+de calidad, el “éxito” puede ser encontrar una pieza defectuosa.</p>
+<p>El modelo de Bernoulli es la pieza con la que se construyen los demás
+modelos de esta página.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-el-modelo-binomial" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el modelo
+binomial?</strong></span></h2>
+<p>Se repite un ensayo de Bernoulli <span
+class="math inline">\(n\)</span> veces, de forma
+<strong>independiente</strong> y con la <strong>misma</strong>
+probabilidad de éxito <span class="math inline">\(p\)</span>. La
+variable <span class="math inline">\(X\)</span> es el <strong>número de
+éxitos</strong> en los <span class="math inline">\(n\)</span> ensayos.
+Se escribe <span class="math inline">\(X \sim \text{Bin}(n,
+p)\)</span>.</p>
+<p><span class="math display">\[
+P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}, \qquad x = 0, 1, \ldots, n
+\]</span></p>
+<p><span class="math display">\[
+E(X) = n\,p, \qquad \text{Var}(X) = n\,p\,(1 - p)
+\]</span></p>
+<p>El número <span class="math inline">\(\binom{n}{x}\)</span> cuenta de
+cuántas formas se pueden ubicar los <span
+class="math inline">\(x\)</span> éxitos entre los <span
+class="math inline">\(n\)</span> ensayos; en <strong>R</strong> se
+calcula con <code>choose(n, x)</code>.</p>
+<p><br/></p>
+<div id="ejemplo-una-oferta-por-correo" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: una oferta por
+correo</strong></span></h3>
+<p>Una tienda sabe que el 30 % de los clientes que reciben una oferta
+compran. Envía la oferta a 10 clientes, que deciden de forma
+independiente. El número de clientes que compran es <span
+class="math inline">\(X \sim \text{Bin}(10, 0.3)\)</span>.</p>
+<pre class="r"><code>x  &lt;- 0:10
+fx &lt;- dbinom(x, size = 10, prob = 0.3)
+pos &lt;- barplot(fx, names.arg = x, col = &quot;#034A94&quot;, ylim = c(0, 0.3),
+               xlab = &quot;Número de clientes que compran (x)&quot;, ylab = &quot;P(X = x)&quot;)
+abline(v = pos[4], col = &quot;#C0392B&quot;, lwd = 2, lty = 2)   # x = 3 es la cuarta barra</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso203_files/figure-html/unnamed-chunk-1-1.png" alt="Barras azules con la más alta en x = 3, cerca de 0.27, y una línea roja vertical en 3" width="90%" />
+<p class="caption">
+Función de probabilidad de X ~ Bin(10, 0.3). La línea roja marca el
+valor esperado, 3.
+</p>
+</div>
+<pre class="r"><code>dbinom(3, 10, 0.3)         # P(X = 3): exactamente 3 compran</code></pre>
+<pre><code>[1] 0.2668279</code></pre>
+<pre class="r"><code>pbinom(2, 10, 0.3)         # P(X &lt;= 2): a lo sumo 2 compran</code></pre>
+<pre><code>[1] 0.3827828</code></pre>
+<pre class="r"><code>1 - pbinom(4, 10, 0.3)     # P(X &gt;= 5): al menos 5 compran</code></pre>
+<pre><code>[1] 0.1502683</code></pre>
+<pre class="r"><code>c(media = 10 * 0.3, varianza = 10 * 0.3 * 0.7)</code></pre>
+<pre><code>   media varianza 
+     3.0      2.1 </code></pre>
+<p>La probabilidad de que compren exactamente 3 clientes es 0.267. En
+promedio compran 3 de cada 10.</p>
+<p>Una simulación ayuda a interpretar estos números. Se repite el envío
+a 10 clientes <strong>1 000 veces</strong> con
+<code>rbinom()</code>:</p>
+<pre class="r"><code>set.seed(2026)
+envios &lt;- rbinom(1000, size = 10, prob = 0.3)
+mean(envios)        # promedio de compradores por envío, cerca de 3</code></pre>
+<pre><code>[1] 2.981</code></pre>
+<pre class="r"><code>mean(envios == 3)   # proporción de envíos con exactamente 3 compradores, cerca de 0.267</code></pre>
+<pre><code>[1] 0.262</code></pre>
+<p>En cerca del 26.7 % de los envíos compran exactamente 3 clientes, y
+el promedio de compradores se acerca a 3.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-es-el-modelo-de-poisson" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el modelo de
+Poisson?</strong></span></h2>
+<p>El modelo de Poisson describe el <strong>número de eventos</strong>
+que ocurren en un intervalo de tiempo o de espacio, cuando los eventos
+ocurren al azar, de forma independiente y con un promedio constante
+<span class="math inline">\(\lambda\)</span> por intervalo. Se escribe
+<span class="math inline">\(X \sim \text{Poisson}(\lambda)\)</span>.</p>
+<p><span class="math display">\[
+P(X = x) = \frac{e^{-\lambda}\,\lambda^x}{x!}, \qquad x = 0, 1, 2,
+\ldots
+\]</span></p>
+<p><span class="math display">\[
+E(X) = \lambda, \qquad \text{Var}(X) = \lambda
+\]</span></p>
+<p>Ejemplos: llamadas que llegan a un centro de atención en una hora,
+accidentes en una vía en un mes, errores de digitación por página. A
+diferencia de la binomial, no hay un número máximo de eventos.</p>
+<p><br/></p>
+<div id="ejemplo-llamadas-a-un-centro-de-atención"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: llamadas a un centro de
+atención</strong></span></h3>
+<p>A un centro de atención llegan en promedio 2 llamadas por minuto. El
+número de llamadas en un minuto es <span class="math inline">\(X \sim
+\text{Poisson}(2)\)</span>.</p>
+<pre class="r"><code>x  &lt;- 0:10
+fx &lt;- dpois(x, lambda = 2)
+barplot(fx, names.arg = x, col = &quot;#034A94&quot;, ylim = c(0, 0.3),
+        xlab = &quot;Número de llamadas en un minuto (x)&quot;, ylab = &quot;P(X = x)&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso203_files/figure-html/unnamed-chunk-4-1.png" alt="Barras azules con las más altas en x = 1 y x = 2, cerca de 0.27, que bajan hacia la derecha hasta casi 0 en x = 10" width="90%" />
+<p class="caption">
+Función de probabilidad de X ~ Poisson(2).
+</p>
+</div>
+<pre class="r"><code>dpois(0, lambda = 2)          # P(X = 0): ninguna llamada en un minuto</code></pre>
+<pre><code>[1] 0.1353353</code></pre>
+<pre class="r"><code>ppois(2, lambda = 2)          # P(X &lt;= 2)</code></pre>
+<pre><code>[1] 0.6766764</code></pre>
+<pre class="r"><code>1 - ppois(3, lambda = 2)      # P(X &gt;= 4): 4 o más llamadas</code></pre>
+<pre><code>[1] 0.1428765</code></pre>
+<p>Si el centro puede atender hasta 3 llamadas por minuto, en el 14.3 %
+de los minutos llegarán más llamadas de las que puede atender.</p>
+<p>Si el intervalo cambia, el promedio cambia en la misma proporción. En
+5 minutos llegan en promedio <span class="math inline">\(5 \times 2 =
+10\)</span> llamadas, así que el número de llamadas en 5 minutos es
+<span class="math inline">\(\text{Poisson}(10)\)</span>.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-cambian-la-binomial-y-la-poisson-con-sus-parámetros"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo cambian la binomial y la
+Poisson con sus parámetros?</strong></span></h2>
+<p>En el gráfico interactivo puede elegir el modelo, mover sus
+parámetros y un valor <span class="math inline">\(k\)</span>. El gráfico
+muestra la función de probabilidad, y a la izquierda aparecen <span
+class="math inline">\(P(X = k)\)</span>, <span class="math inline">\(P(X
+\leq k)\)</span>, <span class="math inline">\(P(X &gt; k)\)</span>, el
+valor esperado y la varianza. Pruebe, por ejemplo, qué pasa con la forma
+de la binomial cuando <span class="math inline">\(p\)</span> se acerca a
+0.5, o con la Poisson cuando <span
+class="math inline">\(\lambda\)</span> crece.</p>
+<div id="dis-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;">
+<div style="flex:1 1 250px;min-width:230px;font-size:0.95em;">
+<label><b>Distribución:</b>
+<select id="dis-tipo" style="margin-left:6px;">
+<option value="binom">Binomial</option>
+<option value="pois">Poisson</option>
+</select></label>
+<div id="dis-binom" style="margin-top:10px;">
+<div>Número de ensayos, n = <b><span id="dis-n-v">10</span></b></div>
+<input type="range" id="dis-n" min="1" max="40" value="10" style="width:100%;">
+<div>Probabilidad de éxito, p = <b><span id="dis-p-v">0.30</span></b></div>
+<input type="range" id="dis-p" min="0.01" max="0.99" step="0.01" value="0.30" style="width:100%;">
+</div>
+<div id="dis-pois" style="margin-top:10px;display:none;">
+<div>Promedio de eventos, λ = <b><span id="dis-l-v">2.0</span></b></div>
+<input type="range" id="dis-l" min="0.5" max="20" step="0.5" value="2" style="width:100%;">
+</div>
+<div style="margin-top:10px;">Valor k = <b><span id="dis-k-v">3</span></b></div>
+<input type="range" id="dis-k" min="0" max="10" value="3" style="width:100%;">
+<div id="dis-res" style="margin-top:10px;line-height:1.6;"></div>
+</div>
+<div style="flex:2 1 380px;min-width:300px;">
+<canvas id="dis-graf" width="560" height="300" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Barras azules: valores menores o iguales que k, cuya suma es P(X ≤ k). Barra naranja: P(X = k).</div>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  function lfact(n){ var s = 0; for (var i = 2; i <= n; i++) s += Math.log(i); return s; }
+  function dbinom(x, n, p){ if (x < 0 || x > n) return 0; if (p <= 0) return x === 0 ? 1 : 0; if (p >= 1) return x === n ? 1 : 0;
+    return Math.exp(lfact(n) - lfact(x) - lfact(n - x) + x * Math.log(p) + (n - x) * Math.log(1 - p)); }
+  function dpois(x, l){ return Math.exp(-l + x * Math.log(l) - lfact(x)); }
+  var $ = function(id){ return document.getElementById(id); };
+  function f4(v){ return v.toFixed(4); }
+  function actualizar(){
+    var tipo = $("dis-tipo").value, n = +$("dis-n").value, p = +$("dis-p").value, l = +$("dis-l").value;
+    $("dis-binom").style.display = tipo === "binom" ? "" : "none";
+    $("dis-pois").style.display = tipo === "pois" ? "" : "none";
+    $("dis-n-v").textContent = n; $("dis-p-v").textContent = p.toFixed(2); $("dis-l-v").textContent = l.toFixed(1);
+    var xmax = tipo === "binom" ? n : Math.ceil(l + 4 * Math.sqrt(l) + 3);
+    var kk = $("dis-k"); kk.max = xmax; if (+kk.value > xmax) kk.value = xmax;
+    var k = +kk.value; $("dis-k-v").textContent = k;
+    var probs = [], acum = 0;
+    for (var x = 0; x <= xmax; x++) { var v = tipo === "binom" ? dbinom(x, n, p) : dpois(x, l); probs.push(v); if (x <= k) acum += v; }
+    var media = tipo === "binom" ? n * p : l, vari = tipo === "binom" ? n * p * (1 - p) : l;
+    $("dis-res").innerHTML = "P(X = " + k + ") = <b>" + f4(probs[k]) + "</b><br>P(X ≤ " + k + ") = <b>" + f4(acum) + "</b><br>P(X > " + k + ") = <b>" + f4(1 - acum) + "</b><br>E(X) = <b>" + media.toFixed(2) + "</b>, Var(X) = <b>" + vari.toFixed(2) + "</b>";
+    var c = $("dis-graf"), g = c.getContext("2d"), W = c.width, H = c.height, izq = 46, der = 10, arr = 12, abj = 36;
+    g.clearRect(0, 0, W, H); g.font = "11px sans-serif";
+    var ymax = Math.max.apply(null, probs); ymax = Math.ceil(ymax * 10 + 0.0001) / 10; if (ymax > 1) ymax = 1;
+    var ancho = (W - izq - der) / (xmax + 1);
+    function Y(v){ return arr + (H - arr - abj) * (1 - v / ymax); }
+    g.strokeStyle = "#e5e5e5"; g.fillStyle = "#333";
+    for (var t = 0; t <= 5; t++) { var vv = ymax * t / 5; g.beginPath(); g.moveTo(izq, Y(vv)); g.lineTo(W - der, Y(vv)); g.stroke(); g.fillText(vv.toFixed(2), 6, Y(vv) + 4); }
+    var paso = Math.ceil((xmax + 1) / 20);
+    for (var x = 0; x <= xmax; x++) {
+      g.fillStyle = x === k ? "#FF7F00" : (x < k ? "#034A94" : "#BDD7EE");
+      var x0 = izq + x * ancho + ancho * 0.12;
+      g.fillRect(x0, Y(probs[x]), ancho * 0.76, Y(0) - Y(probs[x]));
+      if (x % paso === 0) { g.fillStyle = "#333"; g.fillText(String(x), x0 + ancho * 0.38 - 3 * String(x).length, H - abj + 14); }
+    }
+    g.fillStyle = "#333"; g.fillText("x", W / 2, H - 6);
+    g.save(); g.translate(12, H / 2 + 40); g.rotate(-Math.PI / 2); g.restore();
+  }
+  ["dis-tipo", "dis-n", "dis-p", "dis-l", "dis-k"].forEach(function(id){ $(id).addEventListener("input", actualizar); $(id).addEventListener("change", actualizar); });
+  actualizar();
+})();
+</script>
+<p>Los valores del gráfico coinciden con los de <strong>R</strong>. Por
+ejemplo, con la binomial de <span class="math inline">\(n = 10\)</span>
+y <span class="math inline">\(p = 0.3\)</span> y con <span
+class="math inline">\(k = 3\)</span>, el gráfico muestra <span
+class="math inline">\(P(X = 3) = 0.2668\)</span>, el mismo valor de
+<code>dbinom(3, 10, 0.3)</code>.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-el-modelo-hipergeométrico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el modelo
+hipergeométrico?</strong></span></h2>
+<p>Se toma una muestra <strong>sin reemplazo</strong> de una población
+pequeña que tiene <span class="math inline">\(m\)</span> éxitos y <span
+class="math inline">\(n\)</span> fracasos. La variable <span
+class="math inline">\(X\)</span> es el <strong>número de éxitos en la
+muestra</strong> de tamaño <span class="math inline">\(k\)</span>.</p>
+<p><span class="math display">\[
+P(X = x) = \frac{\binom{m}{x}\binom{n}{k - x}}{\binom{m + n}{k}}
+\]</span></p>
+<p><span class="math display">\[
+E(X) = k\,\frac{m}{m + n}
+\]</span></p>
+<p>La diferencia con la binomial es que, al no haber reemplazo, la
+probabilidad de éxito cambia en cada extracción, como en la regla de la
+multiplicación de <a href="recurso102.html">Tipos de probabilidad</a>.
+Si la población es muy grande comparada con la muestra, el cambio es
+mínimo y la binomial es una buena aproximación.</p>
+<p><br/></p>
+<div id="ejemplo-control-de-calidad" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: control de
+calidad</strong></span></h3>
+<p>Un lote tiene 20 productos, de los cuales 5 son defectuosos. Un
+inspector toma 4 al azar, sin reemplazo. En <strong>R</strong>,
+<code>dhyper(x, m, n, k)</code> usa <span class="math inline">\(m =
+5\)</span> defectuosos, <span class="math inline">\(n = 15\)</span>
+buenos y <span class="math inline">\(k = 4\)</span> en la muestra:</p>
+<pre class="r"><code>x  &lt;- 0:4
+fx &lt;- dhyper(x, m = 5, n = 15, k = 4)
+round(data.frame(x, fx), 4)</code></pre>
+<pre><code>  x     fx
+1 0 0.2817
+2 1 0.4696
+3 2 0.2167
+4 3 0.0310
+5 4 0.0010</code></pre>
+<pre class="r"><code>1 - dhyper(0, m = 5, n = 15, k = 4)   # P(X &gt;= 1): al menos un defectuoso</code></pre>
+<pre><code>[1] 0.7182663</code></pre>
+<pre class="r"><code>4 * 5 / 20                            # E(X)</code></pre>
+<pre><code>[1] 1</code></pre>
+<p>La probabilidad de que la muestra no tenga defectuosos es 0.282: en
+más de una de cada cuatro inspecciones, un lote con 25 % de defectuosos
+pasaría sin que se detecte ninguno.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-es-el-modelo-geométrico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el modelo
+geométrico?</strong></span></h2>
+<p>Se repiten ensayos de Bernoulli independientes con probabilidad de
+éxito <span class="math inline">\(p\)</span> hasta obtener el
+<strong>primer éxito</strong>. Hay dos formas de contar, y conviene no
+confundirlas:</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="23%" />
+<col width="30%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Valores</th>
+<th align="left"><span class="math inline">\(P(X = x)\)</span></th>
+<th align="left"><span class="math inline">\(E(X)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Número de <strong>fracasos</strong> antes del primer
+éxito (la que usa <strong>R</strong>)</td>
+<td align="left"><span class="math inline">\(0, 1, 2,
+\ldots\)</span></td>
+<td align="left"><span class="math inline">\((1 - p)^x\,p\)</span></td>
+<td align="left"><span class="math inline">\(\dfrac{1 -
+p}{p}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Número de <strong>ensayos</strong> hasta el primer
+éxito</td>
+<td align="left"><span class="math inline">\(1, 2, 3,
+\ldots\)</span></td>
+<td align="left"><span class="math inline">\((1 - p)^{x -
+1}\,p\)</span></td>
+<td align="left"><span class="math inline">\(\dfrac{1}{p}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Las dos tienen la misma varianza, <span
+class="math inline">\(\dfrac{1 - p}{p^2}\)</span>. Los ensayos son
+siempre uno más que los fracasos.</p>
+<p><br/></p>
+<div id="ejemplo-llamadas-de-venta" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: llamadas de
+venta</strong></span></h3>
+<p>Un vendedor cierra una venta en el 20 % de sus llamadas. ¿Cuál es la
+probabilidad de que su primera venta sea en la <strong>tercera</strong>
+llamada? Eso significa 2 fracasos antes del primer éxito:</p>
+<p><span class="math display">\[
+P(\text{primera venta en la llamada 3}) = 0.8^2 \times 0.2 = 0.128
+\]</span></p>
+<pre class="r"><code>dgeom(2, prob = 0.2)       # 2 fracasos y luego el éxito</code></pre>
+<pre><code>[1] 0.128</code></pre>
+<pre class="r"><code>pgeom(4, prob = 0.2)       # P(a lo sumo 4 fracasos) = P(vende en las primeras 5 llamadas)</code></pre>
+<pre><code>[1] 0.67232</code></pre>
+<pre class="r"><code>(1 - 0.2) / 0.2            # fracasos esperados antes de la primera venta</code></pre>
+<pre><code>[1] 4</code></pre>
+<pre class="r"><code>1 / 0.2                    # llamadas esperadas hasta la primera venta</code></pre>
+<pre><code>[1] 5</code></pre>
+<p>En promedio, el vendedor necesita 5 llamadas para hacer su primera
+venta.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-es-el-modelo-binomial-negativo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el modelo binomial
+negativo?</strong></span></h2>
+<p>Es la generalización del geométrico: se repiten ensayos hasta obtener
+<strong><span class="math inline">\(r\)</span> éxitos</strong>. En
+<strong>R</strong>, la variable es el <strong>número de
+fracasos</strong> antes del éxito número <span
+class="math inline">\(r\)</span>:</p>
+<p><span class="math display">\[
+P(X = x) = \binom{x + r - 1}{x}\,p^r (1 - p)^x, \qquad x = 0, 1, 2,
+\ldots
+\]</span></p>
+<p><span class="math display">\[
+E(X) = \frac{r\,(1 - p)}{p}, \qquad \text{Var}(X) = \frac{r\,(1 -
+p)}{p^2}
+\]</span></p>
+<p>Con <span class="math inline">\(r = 1\)</span> se obtiene el modelo
+geométrico.</p>
+<p>Siguiendo con el vendedor, ¿cuál es la probabilidad de que necesite
+exactamente 8 llamadas para hacer 3 ventas? Eso es 5 fracasos antes de
+la tercera venta:</p>
+<pre class="r"><code>dnbinom(5, size = 3, prob = 0.2)    # 5 fracasos antes de la tercera venta</code></pre>
+<pre><code>[1] 0.05505024</code></pre>
+<pre class="r"><code>3 * (1 - 0.2) / 0.2                 # fracasos esperados antes de la tercera venta</code></pre>
+<pre><code>[1] 12</code></pre>
+<p>En promedio, tendrá 12 llamadas sin venta antes de completar 3
+ventas, es decir, unas 15 llamadas en total.</p>
+<p><br/></p>
+</div>
+<div id="cuál-modelo-usar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál modelo
+usar?</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="14%" />
+<col width="21%" />
+<col width="21%" />
+<col width="14%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Modelo</th>
+<th align="left">Qué cuenta</th>
+<th align="left">Parámetros</th>
+<th align="center"><span class="math inline">\(E(X)\)</span></th>
+<th align="left">Funciones en R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bernoulli</td>
+<td align="left">Éxito (1) o fracaso (0) en un ensayo</td>
+<td align="left"><span class="math inline">\(p\)</span></td>
+<td align="center"><span class="math inline">\(p\)</span></td>
+<td align="left"><code>dbinom(x, 1, p)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Binomial</td>
+<td align="left">Éxitos en <span class="math inline">\(n\)</span>
+ensayos independientes</td>
+<td align="left"><span class="math inline">\(n\)</span>, <span
+class="math inline">\(p\)</span></td>
+<td align="center"><span class="math inline">\(np\)</span></td>
+<td align="left"><code>dbinom</code>, <code>pbinom</code>,
+<code>qbinom</code>, <code>rbinom</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Poisson</td>
+<td align="left">Eventos en un intervalo</td>
+<td align="left"><span class="math inline">\(\lambda\)</span></td>
+<td align="center"><span class="math inline">\(\lambda\)</span></td>
+<td align="left"><code>dpois</code>, <code>ppois</code>,
+<code>qpois</code>, <code>rpois</code></td>
+</tr>
+<tr class="even">
+<td align="left">Hipergeométrico</td>
+<td align="left">Éxitos en una muestra sin reemplazo</td>
+<td align="left"><span class="math inline">\(m\)</span>, <span
+class="math inline">\(n\)</span>, <span
+class="math inline">\(k\)</span></td>
+<td align="center"><span class="math inline">\(\dfrac{km}{m +
+n}\)</span></td>
+<td align="left"><code>dhyper</code>, <code>phyper</code>,
+<code>qhyper</code>, <code>rhyper</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Geométrico</td>
+<td align="left">Fracasos antes del primer éxito</td>
+<td align="left"><span class="math inline">\(p\)</span></td>
+<td align="center"><span class="math inline">\(\dfrac{1 -
+p}{p}\)</span></td>
+<td align="left"><code>dgeom</code>, <code>pgeom</code>,
+<code>qgeom</code>, <code>rgeom</code></td>
+</tr>
+<tr class="even">
+<td align="left">Binomial negativo</td>
+<td align="left">Fracasos antes del éxito número <span
+class="math inline">\(r\)</span></td>
+<td align="left"><span class="math inline">\(r\)</span>, <span
+class="math inline">\(p\)</span></td>
+<td align="center"><span class="math inline">\(\dfrac{r(1 -
+p)}{p}\)</span></td>
+<td align="left"><code>dnbinom</code>, <code>pnbinom</code>,
+<code>qnbinom</code>, <code>rnbinom</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(P(X \geq 5)\)</span>
+calculado como <code>1 - pbinom(5, ...)</code></td>
+<td align="left"><code>pbinom(5, ...)</code> incluye el 5</td>
+<td align="left">Usar <code>1 - pbinom(4, ...)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Usar la binomial en un muestreo sin reemplazo de una
+población pequeña</td>
+<td align="left">La probabilidad de éxito cambia en cada extracción</td>
+<td align="left">Usar la hipergeométrica</td>
+</tr>
+<tr class="odd">
+<td align="left">Usar <code>dgeom(3, p)</code> para “el primer éxito en
+el tercer ensayo”</td>
+<td align="left"><code>dgeom()</code> cuenta fracasos, no ensayos</td>
+<td align="left">Usar <code>dgeom(2, p)</code></td>
+</tr>
+<tr class="even">
+<td align="left">No ajustar <span class="math inline">\(\lambda\)</span>
+al cambiar el intervalo</td>
+<td align="left"><span class="math inline">\(\lambda\)</span> es el
+promedio por intervalo</td>
+<td align="left">Si el intervalo se multiplica por <span
+class="math inline">\(t\)</span>, usar <span
+class="math inline">\(\lambda t\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Usar la binomial con ensayos que no son independientes
+o con <span class="math inline">\(p\)</span> que cambia</td>
+<td align="left">No se revisaron los supuestos</td>
+<td align="left">Verificar ensayos independientes con la misma <span
+class="math inline">\(p\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-examen-de-selección-múltiple"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Examen de selección
+múltiple</strong></span></h3>
+<p>Un examen tiene 20 preguntas con 4 opciones cada una. Un estudiante
+responde todas al azar. ¿Cuál es la probabilidad de que acierte al menos
+10? ¿Cuántas acierta en promedio?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(X \sim \text{Bin}(20, 0.25)\)</span>.</p>
+<pre class="r"><code>1 - pbinom(9, size = 20, prob = 0.25)   # P(X &gt;= 10)</code></pre>
+<pre><code>[1] 0.01386442</code></pre>
+<pre class="r"><code>20 * 0.25                               # E(X)</code></pre>
+<pre><code>[1] 5</code></pre>
+<p>La probabilidad de acertar al menos 10 es 0.014. En promedio acierta
+5.</p>
+</details>
+</div>
+<div id="reto-2.-clientes-en-un-banco"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Clientes en un
+banco</strong></span></h3>
+<p>A un cajero llegan en promedio 12 clientes por hora. ¿Cuál es la
+probabilidad de que en 15 minutos lleguen más de 5 clientes?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>En 15 minutos, <span class="math inline">\(\lambda = 12 / 4 =
+3\)</span>.</p>
+<pre class="r"><code>1 - ppois(5, lambda = 3)</code></pre>
+<pre><code>[1] 0.08391794</code></pre>
+<p>La probabilidad es 0.084.</p>
+</details>
+</div>
+<div id="reto-3.-binomial-o-hipergeométrica"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Binomial o
+hipergeométrica?</strong></span></h3>
+<p>De un curso de 30 estudiantes, 12 son de ingeniería. Se elige al azar
+un comité de 5. Calcule la probabilidad de que haya exactamente 2
+estudiantes de ingeniería con la hipergeométrica y compárela con la
+binomial. ¿Por qué difieren?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>dhyper(2, m = 12, n = 18, k = 5)    # sin reemplazo</code></pre>
+<pre><code>[1] 0.3779209</code></pre>
+<pre class="r"><code>dbinom(2, size = 5, prob = 12/30)   # como si fuera con reemplazo</code></pre>
+<pre><code>[1] 0.3456</code></pre>
+<p>La hipergeométrica da 0.378 y la binomial, 0.346. Difieren porque el
+curso es pequeño: cada estudiante elegido cambia la proporción de los
+que quedan.</p>
+</details>
+</div>
+<div id="reto-4.-primer-defectuoso"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Primer
+defectuoso</strong></span></h3>
+<p>Una máquina produce piezas defectuosas con probabilidad 0.05, de
+forma independiente. ¿Cuál es la probabilidad de que la primera pieza
+defectuosa sea una de las primeras 10? ¿Cuántas piezas buenas se esperan
+antes de la primera defectuosa?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>“Entre las primeras 10” significa a lo sumo 9 piezas buenas antes de
+la defectuosa.</p>
+<pre class="r"><code>pgeom(9, prob = 0.05)    # P(a lo sumo 9 fracasos)</code></pre>
+<pre><code>[1] 0.4012631</code></pre>
+<pre class="r"><code>(1 - 0.05) / 0.05        # piezas buenas esperadas</code></pre>
+<pre><code>[1] 19</code></pre>
+<p>La probabilidad es 0.401, y se esperan 19 piezas buenas antes de la
+primera defectuosa.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/4-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 4 trata los modelos
+binomial, geométrico, hipergeométrico y de Poisson.</li>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <a
+href="https://chance.dartmouth.edu/book.html"><em>Introduction to
+Probability</em></a> (2.ª ed.). American Mathematical Society. Se
+descarga en PDF. El capítulo 5 trata las distribuciones discretas más
+importantes.</li>
+<li>Blitzstein, J. K. y Hwang, J. (2019). <a
+href="http://probabilitybook.net"><em>Introduction to
+Probability</em></a> (2.ª ed.). Chapman &amp; Hall/CRC. Versión gratuita
+para leer en línea, para quien quiera profundizar. Los capítulos 3 y 4
+tratan los modelos discretos.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 5 trata las distribuciones discretas.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>R Core Team. Documentación de las funciones de las distribuciones
+binomial, Poisson, hipergeométrica, geométrica y binomial negativa
+(<code>?Binomial</code>, <code>?Poisson</code>,
+<code>?Hypergeometric</code>, <code>?Geometric</code>,
+<code>?NegBinomial</code>).</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

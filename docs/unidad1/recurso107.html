@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -587,15 +591,15 @@ apply()?</strong></span></h2>
 indica filas, <code>MARGIN = 2</code> columnas y <code>...</code> son
 argumentos adicionales para <code>FUN</code>.</p>
 <pre class="r"><code>mi_matriz &lt;- matrix(1:9, nrow = 3, byrow = TRUE)
-mi_matriz
-     [,1] [,2] [,3]
+mi_matriz</code></pre>
+<pre><code>     [,1] [,2] [,3]
 [1,]    1    2    3
 [2,]    4    5    6
-[3,]    7    8    9
-apply(mi_matriz, MARGIN = 1, FUN = sum)     # suma por fila
-[1]  6 15 24
-apply(mi_matriz, MARGIN = 2, FUN = mean)    # media por columna
-[1] 4 5 6</code></pre>
+[3,]    7    8    9</code></pre>
+<pre class="r"><code>apply(mi_matriz, MARGIN = 1, FUN = sum)     # suma por fila</code></pre>
+<pre><code>[1]  6 15 24</code></pre>
+<pre class="r"><code>apply(mi_matriz, MARGIN = 2, FUN = mean)    # media por columna</code></pre>
+<pre><code>[1] 4 5 6</code></pre>
 <p>También admite funciones propias. Esta multiplica por 2 el primer
 valor de cada fila, le suma el promedio y divide entre 4:</p>
 <pre class="r"><code>df &lt;- data.frame(A = c(2, 4, 6), B = c(8, 10, 12), C = c(1, 3, 5))
@@ -604,8 +608,8 @@ mi_funcion &lt;- function(x) {
   (2 * x[1] + mean(x)) / 4
 }
 
-apply(df, MARGIN = 1, FUN = mi_funcion)
-[1] 1.916667 3.416667 4.916667</code></pre>
+apply(df, MARGIN = 1, FUN = mi_funcion)</code></pre>
+<pre><code>[1] 1.916667 3.416667 4.916667</code></pre>
 <p>Combinada con simulación, permite repetir un cálculo sobre muchas
 muestras. Cada fila de la matriz es una muestra de tamaño 4 de una
 distribución uniforme:</p>
@@ -619,18 +623,18 @@ operacion_vector &lt;- function(x) {
 
 set.seed(123)
 muestras &lt;- generar_muestras(m = 5, n = 4)
-apply(muestras, MARGIN = 1, FUN = operacion_vector)
-[1] 18.8992251  0.7883051  0.8924190  0.8830174  8.8518827</code></pre>
+apply(muestras, MARGIN = 1, FUN = operacion_vector)</code></pre>
+<pre><code>[1] 18.8992251  0.7883051  0.8924190  0.8830174  8.8518827</code></pre>
 <p>Los argumentos adicionales se escriben después de la función. Si la
 función devuelve más de un valor por fila, cada resultado queda en una
 <strong>columna</strong>, como indica la <a
 href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/apply.html">documentación</a>:</p>
-<pre class="r"><code>apply(iris[, 1:4], 2, quantile, probs = c(0.25, 0.75))
-    Sepal.Length Sepal.Width Petal.Length Petal.Width
+<pre class="r"><code>apply(iris[, 1:4], 2, quantile, probs = c(0.25, 0.75))</code></pre>
+<pre><code>    Sepal.Length Sepal.Width Petal.Length Petal.Width
 25%          5.1         2.8          1.6         0.3
-75%          6.4         3.3          5.1         1.8
-apply(mi_matriz, 1, range)    # 3 filas originales: 3 columnas
-     [,1] [,2] [,3]
+75%          6.4         3.3          5.1         1.8</code></pre>
+<pre class="r"><code>apply(mi_matriz, 1, range)    # 3 filas originales: 3 columnas</code></pre>
+<pre><code>     [,1] [,2] [,3]
 [1,]    1    4    7
 [2,]    3    6    9</code></pre>
 <div id="cuidado" class="section level3 content-box-gray">
@@ -639,18 +643,18 @@ apply(mi_matriz, 1, range)    # 3 filas originales: 3 columnas
 <code>as.matrix()</code>. Como una matriz admite un solo tipo, si hay
 una columna de texto todos los valores pasan a ser texto.</p>
 </div>
-<pre class="r"><code>apply(iris[1:2, ], 1, class)
-          1           2 
+<pre class="r"><code>apply(iris[1:2, ], 1, class)</code></pre>
+<pre><code>          1           2 
 &quot;character&quot; &quot;character&quot; </code></pre>
 <p>Para sumas y medias por fila o columna, <code>rowSums()</code>,
 <code>colSums()</code>, <code>rowMeans()</code> y
 <code>colMeans()</code> son equivalentes y, según su <a
 href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/colSums.html">documentación</a>,
 mucho más rápidas.</p>
-<pre class="r"><code>rowSums(mi_matriz)
-[1]  6 15 24
-colMeans(mi_matriz)
-[1] 4 5 6</code></pre>
+<pre class="r"><code>rowSums(mi_matriz)</code></pre>
+<pre><code>[1]  6 15 24</code></pre>
+<pre class="r"><code>colMeans(mi_matriz)</code></pre>
+<pre><code>[1] 4 5 6</code></pre>
 <p><br/></p>
 </div>
 <div id="cómo-usar-lapply" class="section level2">
@@ -664,8 +668,8 @@ cuadrados_vector &lt;- function(x) {
   x^2
 }
 
-lapply(mi_lista, cuadrados_vector)
-$grupo1
+lapply(mi_lista, cuadrados_vector)</code></pre>
+<pre><code>$grupo1
 [1] 1 4 9
 
 $grupo2
@@ -676,8 +680,8 @@ $grupo3
 <p>Como un data frame es una lista de columnas, <code>lapply()</code> lo
 recorre por columnas. Con <code>split()</code> se aplica por grupos:</p>
 <pre class="r"><code>por_especie &lt;- split(iris$Sepal.Length, iris$Species)
-lapply(por_especie, summary)
-$setosa
+lapply(por_especie, summary)</code></pre>
+<pre><code>$setosa
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   4.300   4.800   5.000   5.006   5.200   5.800 
 
@@ -703,15 +707,15 @@ de <code>lapply()</code></a> que intenta simplificar el resultado:</p>
 </ul>
 <pre class="r"><code>medidas &lt;- list(grupo1 = c(2, 4, 6), grupo2 = c(5, 7, 9, 11), grupo3 = c(1, 3))
 
-sapply(medidas, mean)                     # vector
-grupo1 grupo2 grupo3 
-     4      8      2 
-sapply(medidas, range)                    # matriz
-     grupo1 grupo2 grupo3
+sapply(medidas, mean)                     # vector</code></pre>
+<pre><code>grupo1 grupo2 grupo3 
+     4      8      2 </code></pre>
+<pre class="r"><code>sapply(medidas, range)                    # matriz</code></pre>
+<pre><code>     grupo1 grupo2 grupo3
 [1,]      2      5      1
-[2,]      6     11      3
-sapply(medidas, function(x) x[x &gt; 3])     # lista
-$grupo1
+[2,]      6     11      3</code></pre>
+<pre class="r"><code>sapply(medidas, function(x) x[x &gt; 3])     # lista</code></pre>
+<pre><code>$grupo1
 [1] 4 6
 
 $grupo2
@@ -725,8 +729,8 @@ número de elementos y lo divide entre la varianza:</p>
   (max(x) * length(x)) / var(x)
 }
 
-sapply(medidas, indicador)
-grupo1 grupo2 grupo3 
+sapply(medidas, indicador)</code></pre>
+<pre><code>grupo1 grupo2 grupo3 
    4.5    6.6    3.0 </code></pre>
 <p><br/></p>
 </div>
@@ -739,15 +743,15 @@ de resultado, por lo que la documentación la describe como <a
 href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html">más
 segura</a>. Se recomienda dentro de funciones que otras personas vayan a
 reutilizar.</p>
-<pre class="r"><code>sapply(character(0), nchar)                        # devuelve una lista vacía
-named list()
-vapply(character(0), nchar, numeric(1))            # devuelve un numérico vacío
-named numeric(0)
-vapply(iris[, 1:4], mean, numeric(1))
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
-    5.843333     3.057333     3.758000     1.199333 
-vapply(iris[, 1:4], range, numeric(1))             # genera error: devuelve 2 valores
-Error in vapply(iris[, 1:4], range, numeric(1)): values must be length 1,
+<pre class="r"><code>sapply(character(0), nchar)                        # devuelve una lista vacía</code></pre>
+<pre><code>named list()</code></pre>
+<pre class="r"><code>vapply(character(0), nchar, numeric(1))            # devuelve un numérico vacío</code></pre>
+<pre><code>named numeric(0)</code></pre>
+<pre class="r"><code>vapply(iris[, 1:4], mean, numeric(1))</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+    5.843333     3.057333     3.758000     1.199333 </code></pre>
+<pre class="r"><code>vapply(iris[, 1:4], range, numeric(1))             # genera error: devuelve 2 valores</code></pre>
+<pre><code>Error in vapply(iris[, 1:4], range, numeric(1)): values must be length 1,
  but FUN(X[[1]]) result is length 2</code></pre>
 <p><br/></p>
 </div>
@@ -755,11 +759,11 @@ Error in vapply(iris[, 1:4], range, numeric(1)): values must be length 1,
 <h2><span style="color:#034a94"><strong>tapply()</strong></span></h2>
 <p>Aplica una función por grupos definidos por uno o varios
 factores.</p>
-<pre class="r"><code>tapply(mtcars$mpg, mtcars$cyl, mean)
-       4        6        8 
-26.66364 19.74286 15.10000 
-tapply(mtcars$mpg, list(cilindros = mtcars$cyl, transmision = mtcars$am), mean)
-         transmision
+<pre class="r"><code>tapply(mtcars$mpg, mtcars$cyl, mean)</code></pre>
+<pre><code>       4        6        8 
+26.66364 19.74286 15.10000 </code></pre>
+<pre class="r"><code>tapply(mtcars$mpg, list(cilindros = mtcars$cyl, transmision = mtcars$am), mean)</code></pre>
+<pre><code>         transmision
 cilindros      0        1
         4 22.900 28.07500
         6 19.125 20.56667
@@ -773,8 +777,8 @@ href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/mapply.html">versi
 de <code>sapply()</code> para varios argumentos</a>: toma el primer
 elemento de cada uno, luego el segundo, y así sucesivamente.</p>
 <pre class="r"><code>mapply(function(nombre, nota) paste(nombre, &quot;obtuvo&quot;, nota),
-       c(&quot;Ana&quot;, &quot;Luis&quot;), c(4.2, 3.8), USE.NAMES = FALSE)
-[1] &quot;Ana obtuvo 4.2&quot;  &quot;Luis obtuvo 3.8&quot;</code></pre>
+       c(&quot;Ana&quot;, &quot;Luis&quot;), c(4.2, 3.8), USE.NAMES = FALSE)</code></pre>
+<pre><code>[1] &quot;Ana obtuvo 4.2&quot;  &quot;Luis obtuvo 3.8&quot;</code></pre>
 <p><br/></p>
 </div>
 <div id="replicate" class="section level2">
@@ -789,14 +793,13 @@ normal, como se estudiará en la siguiente unidad.</p>
 <pre class="r"><code>set.seed(123)
 medias &lt;- replicate(5000, mean(rexp(30, rate = 0.1)))
 
-mean(medias)          # cercano a la media poblacional: 10
-[1] 9.960501
-sd(medias)            # cercano a 10 / sqrt(30)
-[1] 1.809959
-10 / sqrt(30)
-[1] 1.825742
-
-hist(medias, breaks = 40, col = &quot;#0EB0C6&quot;, border = &quot;white&quot;, las = 1,
+mean(medias)          # cercano a la media poblacional: 10</code></pre>
+<pre><code>[1] 9.960501</code></pre>
+<pre class="r"><code>sd(medias)            # cercano a 10 / sqrt(30)</code></pre>
+<pre><code>[1] 1.809959</code></pre>
+<pre class="r"><code>10 / sqrt(30)</code></pre>
+<pre><code>[1] 1.825742</code></pre>
+<pre class="r"><code>hist(medias, breaks = 40, col = &quot;#0EB0C6&quot;, border = &quot;white&quot;, las = 1,
      main = &quot;Medias de 5,000 muestras de tamaño 30&quot;,
      xlab = &quot;Media muestral&quot;, ylab = &quot;Frecuencia&quot;)</code></pre>
 <p><img src="recurso107_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
@@ -810,17 +813,16 @@ encadenamiento</strong></span></h2>
 href="https://www.r-bloggers.com/2021/05/new-features-in-r-4-1-0/">forma
 corta</a> de escribir <code>function(x)</code>, y el operador
 <code>|&gt;</code> encadena instrucciones.</p>
-<pre class="r"><code>sapply(iris[, 1:4], function(x) sd(x) / mean(x) * 100)    # coeficiente de variación
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
-    14.17113     14.25642     46.97441     63.55511 
-sapply(iris[, 1:4], \(x) sd(x) / mean(x) * 100)           # forma corta
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
-    14.17113     14.25642     46.97441     63.55511 
-
-iris[, 1:4] |&gt;
+<pre class="r"><code>sapply(iris[, 1:4], function(x) sd(x) / mean(x) * 100)    # coeficiente de variación</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+    14.17113     14.25642     46.97441     63.55511 </code></pre>
+<pre class="r"><code>sapply(iris[, 1:4], \(x) sd(x) / mean(x) * 100)           # forma corta</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+    14.17113     14.25642     46.97441     63.55511 </code></pre>
+<pre class="r"><code>iris[, 1:4] |&gt;
   sapply(mean) |&gt;
-  round(2)
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+  round(2)</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
         5.84         3.06         3.76         1.20 </code></pre>
 <p><br/></p>
 </div>
@@ -851,14 +853,13 @@ resultado &lt;- numeric(4)
 for (i in 1:4) {
   resultado[i] &lt;- mean(iris[[i]])
 }
-resultado
-[1] 5.843333 3.057333 3.758000 1.199333
-
-# Mismo cálculo con sapply y con una función vectorizada
-unname(sapply(iris[, 1:4], mean))
-[1] 5.843333 3.057333 3.758000 1.199333
-unname(colMeans(iris[, 1:4]))
-[1] 5.843333 3.057333 3.758000 1.199333</code></pre>
+resultado</code></pre>
+<pre><code>[1] 5.843333 3.057333 3.758000 1.199333</code></pre>
+<pre class="r"><code># Mismo cálculo con sapply y con una función vectorizada
+unname(sapply(iris[, 1:4], mean))</code></pre>
+<pre><code>[1] 5.843333 3.057333 3.758000 1.199333</code></pre>
+<pre class="r"><code>unname(colMeans(iris[, 1:4]))</code></pre>
+<pre><code>[1] 5.843333 3.057333 3.758000 1.199333</code></pre>
 <p>Un orden de preferencia razonable es el siguiente:</p>
 <ol style="list-style-type: decimal">
 <li>Usar una función vectorizada si existe, como
@@ -937,10 +938,10 @@ cada fila y la media de cada columna.</p>
 Ver solución
 </summary>
 <pre class="r"><code>m &lt;- matrix(1:12, nrow = 3)
-apply(m, MARGIN = 1, FUN = max)
-[1] 10 11 12
-apply(m, MARGIN = 2, FUN = mean)
-[1]  2  5  8 11</code></pre>
+apply(m, MARGIN = 1, FUN = max)</code></pre>
+<pre><code>[1] 10 11 12</code></pre>
+<pre class="r"><code>apply(m, MARGIN = 2, FUN = mean)</code></pre>
+<pre><code>[1]  2  5  8 11</code></pre>
 </details>
 </div>
 <div id="reto-2.-lapply-o-sapply"
@@ -954,8 +955,8 @@ sapply</strong></span></h3>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>lapply(iris[, 1:4], median)
-$Sepal.Length
+<pre class="r"><code>lapply(iris[, 1:4], median)</code></pre>
+<pre><code>$Sepal.Length
 [1] 5.8
 
 $Sepal.Width
@@ -965,9 +966,9 @@ $Petal.Length
 [1] 4.35
 
 $Petal.Width
-[1] 1.3
-sapply(iris[, 1:4], median)
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+[1] 1.3</code></pre>
+<pre class="r"><code>sapply(iris[, 1:4], median)</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
         5.80         3.00         4.35         1.30 </code></pre>
 <p><code>lapply()</code> devuelve una lista, y <code>sapply()</code> la
 simplifica a un vector.</p>

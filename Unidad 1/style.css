@@ -160,3 +160,36 @@ p code, td code, li code {
     margin-top: 0;
     font-size: 1.5em;
 }
+
+/* Código y salidas de R en bloques separados y con aspecto distinto */
+pre.r {
+  background-color: #f5f7fa;
+  border: 1px solid #d0d7de;
+  border-left: 4px solid #034a94;
+  margin-bottom: 4px;
+}
+pre.r::before {
+  content: "Código R";
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: #034a94;
+  margin-bottom: 4px;
+}
+.main-container pre:not(.r) {
+  background-color: #ffffff;
+  border: 1px dashed #b0b7bf;
+  border-left: 4px solid #FF7F00;
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+.main-container pre:not(.r)::before {
+  content: "Salida";
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: #c45f00;
+  margin-bottom: 4px;
+}

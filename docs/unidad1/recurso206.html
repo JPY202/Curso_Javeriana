@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -583,10 +587,10 @@ funciones, <code>skewness()</code> para la asimetría y
 datos &lt;- c(41.67, 42.23, 45.53, 50.82, 52.93, 57.03,
            61.13, 62.48, 72.77, 75.58, 76.98, 78.05)
 
-mean((datos - mean(datos))^3) / sd(datos)^3    # aplicando la fórmula
-[1] 0.07062934
-skewness(datos)                                # con la función
-[1] 0.07062934</code></pre>
+mean((datos - mean(datos))^3) / sd(datos)^3    # aplicando la fórmula</code></pre>
+<pre><code>[1] 0.07062934</code></pre>
+<pre class="r"><code>skewness(datos)                                # con la función</code></pre>
+<pre><code>[1] 0.07062934</code></pre>
 <p>El resultado es cercano a cero, así que estos datos son
 aproximadamente simétricos.</p>
 <p><strong>¿Cuándo usarlo?</strong> Cuando se quiera resumir la forma de
@@ -602,8 +606,8 @@ cola hacia la derecha:</p>
 <pre class="r"><code>tiempo &lt;- CarreraLuz22$timerun / 60
 precio &lt;- na.omit(vivienda_faltantes$preciom)
 
-c(tiempo = skewness(tiempo), precio = skewness(precio))
-   tiempo    precio 
+c(tiempo = skewness(tiempo), precio = skewness(precio))</code></pre>
+<pre><code>   tiempo    precio 
 0.6864325 1.8474402 </code></pre>
 <pre class="r"><code>cortes &lt;- seq(0, 2000, by = 100)
 
@@ -765,15 +769,15 @@ R?</strong></span></h3>
 <code>e1071</code>. Con los mismos datos del ejemplo anterior:</p>
 <pre class="r"><code>library(e1071)
 
-mean((datos - mean(datos))^4) / sd(datos)^4 - 3    # aplicando la fórmula
-[1] -1.674344
-kurtosis(datos)                                    # con la función
-[1] -1.674344</code></pre>
+mean((datos - mean(datos))^4) / sd(datos)^4 - 3    # aplicando la fórmula</code></pre>
+<pre><code>[1] -1.674344</code></pre>
+<pre class="r"><code>kurtosis(datos)                                    # con la función</code></pre>
+<pre><code>[1] -1.674344</code></pre>
 <p>El valor es negativo, por lo que los datos tienen colas más livianas
 que las de una normal. En cambio, los precios de las viviendas tienen
 colas pesadas, porque hay valores muy altos:</p>
-<pre class="r"><code>c(tiempo = kurtosis(tiempo), precio = kurtosis(precio))
-  tiempo   precio 
+<pre class="r"><code>c(tiempo = kurtosis(tiempo), precio = kurtosis(precio))</code></pre>
+<pre><code>  tiempo   precio 
 1.889312 3.658214 </code></pre>
 <p><br/></p>
 </div>
@@ -874,8 +878,8 @@ atletas</strong></span></h3>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>c(asimetria = skewness(CarreraLuz22$edad), curtosis = kurtosis(CarreraLuz22$edad))
-asimetria  curtosis 
+<pre class="r"><code>c(asimetria = skewness(CarreraLuz22$edad), curtosis = kurtosis(CarreraLuz22$edad))</code></pre>
+<pre><code>asimetria  curtosis 
 0.6386494 0.1144357 </code></pre>
 <p>La asimetría es positiva: hay una cola hacia las edades altas. La
 curtosis es cercana a cero: las colas son similares a las de una
@@ -892,8 +896,8 @@ mujeres</strong></span></h3>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, skewness)
-   Hombre     Mujer 
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, skewness)</code></pre>
+<pre><code>   Hombre     Mujer 
 1.0811993 0.3749535 </code></pre>
 <p>En los hombres, cuya asimetría es mayor.</p>
 </details>
@@ -911,11 +915,11 @@ Ver solución
 <pre class="r"><code>hombres &lt;- tiempo[CarreraLuz22$sex == &quot;Hombre&quot;]
 sin_maximo &lt;- hombres[hombres &lt; max(hombres)]
 
-c(asimetria = skewness(hombres), curtosis = kurtosis(hombres))
-asimetria  curtosis 
- 1.081199  4.504920 
-c(asimetria = skewness(sin_maximo), curtosis = kurtosis(sin_maximo))
-asimetria  curtosis 
+c(asimetria = skewness(hombres), curtosis = kurtosis(hombres))</code></pre>
+<pre><code>asimetria  curtosis 
+ 1.081199  4.504920 </code></pre>
+<pre class="r"><code>c(asimetria = skewness(sin_maximo), curtosis = kurtosis(sin_maximo))</code></pre>
+<pre><code>asimetria  curtosis 
 0.6403497 0.5359142 </code></pre>
 <p>Un solo dato cambia mucho los dos coeficientes, y en especial la
 curtosis. Conviene revisar los valores extremos antes de
@@ -933,8 +937,8 @@ indicador de centro, uno de dispersión y uno de forma.</p>
 Ver solución
 </summary>
 <pre class="r"><code>c(mediana = median(precio), Q1 = unname(quantile(precio, 0.25)),
-  Q3 = unname(quantile(precio, 0.75)), asimetria = skewness(precio))
-  mediana        Q1        Q3 asimetria 
+  Q3 = unname(quantile(precio, 0.75)), asimetria = skewness(precio))</code></pre>
+<pre><code>  mediana        Q1        Q3 asimetria 
 330.00000 220.00000 540.00000   1.84744 </code></pre>
 <p>Una redacción posible es: <em>El precio mediano fue de 330 millones,
 y la mitad central de los precios estuvo entre 220 y 540 millones. La

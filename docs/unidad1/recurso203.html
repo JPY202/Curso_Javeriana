@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -512,8 +516,8 @@ mujeres de la categoría juvenil:</p>
 <pre class="r"><code>juvenil &lt;- subset(CarreraLuz22, categoria == &quot;1. Juvenil&quot; &amp; sex == &quot;Mujer&quot;)
 tiempo_juvenil &lt;- round(juvenil$timerun / 60, 2)
 
-sort(tiempo_juvenil)
-[1] 50.97 60.38 61.10 81.48 83.05 88.77 91.33</code></pre>
+sort(tiempo_juvenil)</code></pre>
+<pre><code>[1] 50.97 60.38 61.10 81.48 83.05 88.77 91.33</code></pre>
 <p><br/></p>
 <div id="qué-es-la-media-aritmética" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Qué es la media
@@ -527,10 +531,10 @@ los valores dividida por el número total de datos:</p>
 observaciones y <span class="math inline">\(x_i\)</span> es el valor de
 la observación <span class="math inline">\(i\)</span>. En
 <strong>R</strong> se calcula con <code>mean()</code>:</p>
-<pre class="r"><code>sum(tiempo_juvenil) / length(tiempo_juvenil)    # aplicando la fórmula
-[1] 73.86857
-mean(tiempo_juvenil)                            # con la función
-[1] 73.86857</code></pre>
+<pre class="r"><code>sum(tiempo_juvenil) / length(tiempo_juvenil)    # aplicando la fórmula</code></pre>
+<pre><code>[1] 73.86857</code></pre>
+<pre class="r"><code>mean(tiempo_juvenil)                            # con la función</code></pre>
+<pre><code>[1] 73.86857</code></pre>
 <p>Las mujeres de la categoría juvenil tienen un tiempo promedio de
 73.87 minutos.</p>
 <div id="qué-propiedades-tiene" class="section level3">
@@ -558,12 +562,12 @@ class="math inline">\(\bar{z} = a \bar{x} + b \bar{y}\)</span>.</p></li>
 </ol>
 <p>La propiedad 4 permite cambiar de unidad sin recalcular todo. Por
 ejemplo, la media en segundos es 60 veces la media en minutos:</p>
-<pre class="r"><code>sum(tiempo_juvenil - mean(tiempo_juvenil))       # propiedad 1
-[1] 0
-mean(60 * tiempo_juvenil)                        # media en segundos
-[1] 4432.114
-60 * mean(tiempo_juvenil)                        # propiedad 4
-[1] 4432.114</code></pre>
+<pre class="r"><code>sum(tiempo_juvenil - mean(tiempo_juvenil))       # propiedad 1</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>mean(60 * tiempo_juvenil)                        # media en segundos</code></pre>
+<pre><code>[1] 4432.114</code></pre>
+<pre class="r"><code>60 * mean(tiempo_juvenil)                        # propiedad 4</code></pre>
+<pre><code>[1] 4432.114</code></pre>
 <p><br/></p>
 </div>
 </div>
@@ -593,10 +597,10 @@ es el promedio de los dos valores centrales.</li>
 <p>En el ejemplo, <span class="math inline">\(n = 7\)</span>, así que la
 mediana está en la posición <span class="math inline">\(\frac{7+1}{2} =
 4\)</span>:</p>
-<pre class="r"><code>sort(tiempo_juvenil)[4]        # aplicando la fórmula
-[1] 81.48
-median(tiempo_juvenil)         # con la función
-[1] 81.48</code></pre>
+<pre class="r"><code>sort(tiempo_juvenil)[4]        # aplicando la fórmula</code></pre>
+<pre><code>[1] 81.48</code></pre>
+<pre class="r"><code>median(tiempo_juvenil)         # con la función</code></pre>
+<pre><code>[1] 81.48</code></pre>
 <p>Por lo tanto, <span class="math inline">\(Me = 81.48\)</span>
 minutos: la mitad de los tiempos es menor o igual a ese valor.</p>
 <p>En un <strong>gráfico de cajas</strong>, la línea central de la caja
@@ -624,11 +628,11 @@ ejemplo, si se agrega al grupo el mayor tiempo de la carrera, la media
 aumenta mucho más que la mediana:</p>
 <pre class="r"><code>tiempo_con_extremo &lt;- c(tiempo_juvenil, 166.03)
 
-c(media_antes = mean(tiempo_juvenil), media_despues = mean(tiempo_con_extremo))
-  media_antes media_despues 
-     73.86857      85.38875 
-c(mediana_antes = median(tiempo_juvenil), mediana_despues = median(tiempo_con_extremo))
-  mediana_antes mediana_despues 
+c(media_antes = mean(tiempo_juvenil), media_despues = mean(tiempo_con_extremo))</code></pre>
+<pre><code>  media_antes media_despues 
+     73.86857      85.38875 </code></pre>
+<pre class="r"><code>c(mediana_antes = median(tiempo_juvenil), mediana_despues = median(tiempo_con_extremo))</code></pre>
+<pre><code>  mediana_antes mediana_despues 
          81.480          82.265 </code></pre>
 <p>Si se observan todos los atletas, la media es mayor que la mediana,
 porque hay una cola de tiempos altos:</p>
@@ -649,8 +653,8 @@ legend(&quot;topright&quot;, legend = c(&quot;Media&quot;, &quot;Mediana&quot;),
 Tiempos de todos los atletas con su media y su mediana.
 </p>
 </div>
-<pre class="r"><code>c(media = mean(tiempo), mediana = median(tiempo))
-   media  mediana 
+<pre class="r"><code>c(media = mean(tiempo), mediana = median(tiempo))</code></pre>
+<pre><code>   media  mediana 
 65.26274 63.50833 </code></pre>
 <p><br/></p>
 </div>
@@ -675,12 +679,12 @@ porque <code>mode()</code> indica cómo se guarda un objeto. Se obtiene a
 partir de una tabla de frecuencias, con <code>which.max()</code>:</p>
 <pre class="r"><code>frecuencias &lt;- table(CarreraLuz22$categoria)
 
-frecuencias
-
+frecuencias</code></pre>
+<pre><code>
     1. Juvenil     2. Abierta 3. Veteranos A 4. Veteranos B 5. Veteranos C 
-            19           1179            423            227             74 
-names(which.max(frecuencias))
-[1] &quot;2. Abierta&quot;</code></pre>
+            19           1179            423            227             74 </code></pre>
+<pre class="r"><code>names(which.max(frecuencias))</code></pre>
+<pre><code>[1] &quot;2. Abierta&quot;</code></pre>
 <p>La moda es la categoría <code>2. Abierta</code>, con 1,179
 atletas.</p>
 <p><br/></p>
@@ -707,10 +711,10 @@ un dato en cada extremo:</p>
 <pre class="r"><code>x &lt;- c(41.67, 42.23, 45.53, 50.82, 52.93, 57.03,
        61.13, 62.48, 72.77, 75.58, 76.98, 78.05)
 
-mean(sort(x)[2:11])       # aplicando la fórmula
-[1] 59.748
-mean(x, trim = 0.10)      # con la función
-[1] 59.748</code></pre>
+mean(sort(x)[2:11])       # aplicando la fórmula</code></pre>
+<pre><code>[1] 59.748</code></pre>
+<pre class="r"><code>mean(x, trim = 0.10)      # con la función</code></pre>
+<pre><code>[1] 59.748</code></pre>
 <p><br/></p>
 </div>
 <div id="qué-es-el-rango-medio" class="section level2">
@@ -724,8 +728,8 @@ RM = \frac{\max(x) + \min(x)}{2}
 <p>Es fácil de calcular, pero solo usa dos datos. Por eso, un dato
 extremo lo afecta mucho. En la carrera, el tiempo máximo lo aleja de la
 media y de la mediana:</p>
-<pre class="r"><code>(min(tiempo) + max(tiempo)) / 2
-[1] 99.58333</code></pre>
+<pre class="r"><code>(min(tiempo) + max(tiempo)) / 2</code></pre>
+<pre><code>[1] 99.58333</code></pre>
 <p><br/></p>
 </div>
 <div id="qué-indicador-usar" class="section level2">
@@ -848,8 +852,8 @@ Ver solución
 <p>Ordenados, los datos son 7, 9, 12, 15, 20 y 30. Como <span
 class="math inline">\(n = 6\)</span>, se promedian las posiciones 3 y 4:
 <span class="math inline">\((12 + 15) / 2 = 13.5\)</span>.</p>
-<pre class="r"><code>median(c(12, 7, 20, 15, 9, 30))
-[1] 13.5</code></pre>
+<pre class="r"><code>median(c(12, 7, 20, 15, 9, 30))</code></pre>
+<pre><code>[1] 13.5</code></pre>
 </details>
 </div>
 <div id="reto-2.-hombres-y-mujeres"
@@ -864,11 +868,11 @@ mediana?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, mean)
-  Hombre    Mujer 
-62.04079 70.36416 
-tapply(tiempo, CarreraLuz22$sex, median)
-  Hombre    Mujer 
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, mean)</code></pre>
+<pre><code>  Hombre    Mujer 
+62.04079 70.36416 </code></pre>
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, median)</code></pre>
+<pre><code>  Hombre    Mujer 
 60.09167 68.99167 </code></pre>
 <p>Los hombres tuvieron menor tiempo promedio. En los dos grupos, la
 media supera a la mediana.</p>
@@ -884,8 +888,8 @@ moda del número de habitaciones en <code>vivienda_faltantes</code>.</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>names(which.max(table(vivienda_faltantes$habitac)))
-[1] &quot;3&quot;</code></pre>
+<pre class="r"><code>names(which.max(table(vivienda_faltantes$habitac)))</code></pre>
+<pre><code>[1] &quot;3&quot;</code></pre>
 <p>La moda es 3 habitaciones.</p>
 </details>
 </div>
@@ -899,8 +903,8 @@ mediana de los tiempos de todos los atletas. ¿Qué observa?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>c(media = mean(tiempo), truncada = mean(tiempo, trim = 0.10), mediana = median(tiempo))
-   media truncada  mediana 
+<pre class="r"><code>c(media = mean(tiempo), truncada = mean(tiempo, trim = 0.10), mediana = median(tiempo))</code></pre>
+<pre><code>   media truncada  mediana 
 65.26274 64.64266 63.50833 </code></pre>
 <p>La media truncada queda entre la media y la mediana, porque deja por
 fuera los tiempos más extremos.</p>
@@ -920,8 +924,8 @@ Ver solución
 <p>Por las propiedades de la media, la nueva media es <span
 class="math inline">\(1.1 \times (3.4 + 2) = 5.94\)</span>.</p>
 <pre class="r"><code>notas &lt;- c(3, 3.2, 3.4, 3.6, 3.8)
-mean(1.1 * (notas + 2))
-[1] 5.94</code></pre>
+mean(1.1 * (notas + 2))</code></pre>
+<pre><code>[1] 5.94</code></pre>
 </details>
 </div>
 <p><br/></p>

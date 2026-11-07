@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -511,22 +515,22 @@ objeto?</strong></span></h2>
 + -</strong> en Windows y Linux, y <strong>Option + -</strong> en
 macOS.</p>
 <pre class="r"><code>edad &lt;- 21          # crea el objeto
-edad                # muestra su contenido
-[1] 21
-edad + 4            # lo usa en un cálculo; no cambia el objeto
-[1] 25
-edad &lt;- edad + 4    # reemplaza el contenido
-edad
-[1] 25</code></pre>
+edad                # muestra su contenido</code></pre>
+<pre><code>[1] 21</code></pre>
+<pre class="r"><code>edad + 4            # lo usa en un cálculo; no cambia el objeto</code></pre>
+<pre><code>[1] 25</code></pre>
+<pre class="r"><code>edad &lt;- edad + 4    # reemplaza el contenido
+edad</code></pre>
+<pre><code>[1] 25</code></pre>
 <p>Los nombres pueden contener letras, números, puntos y guiones bajos,
 y no pueden empezar con un número. <strong>R</strong> distingue
 mayúsculas de minúsculas: <code>Edad</code> y <code>edad</code> son
 objetos distintos.</p>
 <p>Para consultar y eliminar objetos del ambiente de trabajo se usan
 <code>ls()</code> y <code>rm()</code>:</p>
-<pre class="r"><code>ls()
-[1] &quot;edad&quot;
-rm(edad)</code></pre>
+<pre class="r"><code>ls()</code></pre>
+<pre><code>[1] &quot;edad&quot;</code></pre>
+<pre class="r"><code>rm(edad)</code></pre>
 <p><br/></p>
 </div>
 <div id="qué-objetos-existen-en-r" class="section level2">
@@ -624,16 +628,16 @@ principiantes</a>.</sub></p>
 existen?</strong></span></h2>
 <p>Cada valor tiene un tipo. La función <code>typeof()</code> lo informa
 y <code>class()</code> indica cómo se comporta el objeto.</p>
-<pre class="r"><code>typeof(3.5)      # número decimal (double)
-[1] &quot;double&quot;
-typeof(5L)       # número entero: la L lo indica
-[1] &quot;integer&quot;
-typeof(&quot;hola&quot;)   # texto
-[1] &quot;character&quot;
-typeof(TRUE)     # lógico
-[1] &quot;logical&quot;
-typeof(2 + 3i)   # complejo
-[1] &quot;complex&quot;</code></pre>
+<pre class="r"><code>typeof(3.5)      # número decimal (double)</code></pre>
+<pre><code>[1] &quot;double&quot;</code></pre>
+<pre class="r"><code>typeof(5L)       # número entero: la L lo indica</code></pre>
+<pre><code>[1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>typeof(&quot;hola&quot;)   # texto</code></pre>
+<pre><code>[1] &quot;character&quot;</code></pre>
+<pre class="r"><code>typeof(TRUE)     # lógico</code></pre>
+<pre><code>[1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>typeof(2 + 3i)   # complejo</code></pre>
+<pre><code>[1] &quot;complex&quot;</code></pre>
 <p><strong>R</strong> también tiene valores especiales:</p>
 <table>
 <thead>
@@ -669,10 +673,10 @@ typeof(2 + 3i)   # complejo
 <p>Un dato faltante se propaga en los cálculos. Por eso muchas funciones
 tienen el argumento <code>na.rm</code>:</p>
 <pre class="r"><code>notas &lt;- c(4.0, NA, 3.5)
-mean(notas)
-[1] NA
-mean(notas, na.rm = TRUE)
-[1] 3.75</code></pre>
+mean(notas)</code></pre>
+<pre><code>[1] NA</code></pre>
+<pre class="r"><code>mean(notas, na.rm = TRUE)</code></pre>
+<pre><code>[1] 3.75</code></pre>
 <div id="curiosidad" class="section level3 content-box-gray">
 <h3><span style="color:#686868"><strong>Curiosidad</strong></span></h3>
 <p>Los números decimales se guardan con precisión finita, así que
@@ -680,10 +684,10 @@ algunas comparaciones exactas fallan. Para comparar decimales se usa
 <code>all.equal()</code>, como explica la <a
 href="https://cran.r-project.org/doc/FAQ/R-FAQ.html">FAQ de R</a>.</p>
 </div>
-<pre class="r"><code>0.1 + 0.2 == 0.3
-[1] FALSE
-all.equal(0.1 + 0.2, 0.3)
-[1] TRUE</code></pre>
+<pre class="r"><code>0.1 + 0.2 == 0.3</code></pre>
+<pre><code>[1] FALSE</code></pre>
+<pre class="r"><code>all.equal(0.1 + 0.2, 0.3)</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <p><br/></p>
 </div>
 <div id="qué-es-un-vector" class="section level2">
@@ -694,12 +698,12 @@ elementos del <strong>mismo tipo</strong>. Es la unidad básica de
 <strong>R</strong>: un solo número es un vector de longitud 1.</p>
 <pre class="r"><code>x &lt;- c(1, 2, 3, 4, 5)
 y &lt;- c(&quot;Muy regular&quot;, &quot;Regular&quot;, &quot;Bueno&quot;, &quot;Muy bueno&quot;, &quot;Excelente&quot;)
-x
-[1] 1 2 3 4 5
-y
-[1] &quot;Muy regular&quot; &quot;Regular&quot;     &quot;Bueno&quot;       &quot;Muy bueno&quot;   &quot;Excelente&quot;  
-length(y)
-[1] 5</code></pre>
+x</code></pre>
+<pre><code>[1] 1 2 3 4 5</code></pre>
+<pre class="r"><code>y</code></pre>
+<pre><code>[1] &quot;Muy regular&quot; &quot;Regular&quot;     &quot;Bueno&quot;       &quot;Muy bueno&quot;   &quot;Excelente&quot;  </code></pre>
+<pre class="r"><code>length(y)</code></pre>
+<pre><code>[1] 5</code></pre>
 <div id="selección-de-elementos" class="section level3">
 <h3><span style="color:#034a94"><strong>Selección de
 elementos</strong></span></h3>
@@ -707,20 +711,20 @@ elementos</strong></span></h3>
 en 1.</p>
 <pre class="r"><code>precios &lt;- c(cafe = 3500, pan = 1200, jugo = 4800, arepa = 2500)
 
-precios[2]                 # por posición
- pan 
-1200 
-precios[c(1, 3)]           # varias posiciones
-cafe jugo 
-3500 4800 
-precios[-1]                # todos menos el primero
-  pan  jugo arepa 
- 1200  4800  2500 
-precios[&quot;jugo&quot;]            # por nombre
-jugo 
-4800 
-precios[precios &gt; 3000]    # por condición
-cafe jugo 
+precios[2]                 # por posición</code></pre>
+<pre><code> pan 
+1200 </code></pre>
+<pre class="r"><code>precios[c(1, 3)]           # varias posiciones</code></pre>
+<pre><code>cafe jugo 
+3500 4800 </code></pre>
+<pre class="r"><code>precios[-1]                # todos menos el primero</code></pre>
+<pre><code>  pan  jugo arepa 
+ 1200  4800  2500 </code></pre>
+<pre class="r"><code>precios[&quot;jugo&quot;]            # por nombre</code></pre>
+<pre><code>jugo 
+4800 </code></pre>
+<pre class="r"><code>precios[precios &gt; 3000]    # por condición</code></pre>
+<pre><code>cafe jugo 
 3500 4800 </code></pre>
 </div>
 <div id="operaciones-elemento-a-elemento" class="section level3">
@@ -728,20 +732,20 @@ cafe jugo
 elemento</strong></span></h3>
 <p>Las operaciones se aplican a cada elemento sin necesidad de un ciclo.
 Esta propiedad se llama <strong>vectorización</strong>.</p>
-<pre class="r"><code>precios * 1.05            # aumento del 5 %
- cafe   pan  jugo arepa 
- 3675  1260  5040  2625 
-c(1, 2, 3) + c(10, 20, 30)
-[1] 11 22 33</code></pre>
+<pre class="r"><code>precios * 1.05            # aumento del 5 %</code></pre>
+<pre><code> cafe   pan  jugo arepa 
+ 3675  1260  5040  2625 </code></pre>
+<pre class="r"><code>c(1, 2, 3) + c(10, 20, 30)</code></pre>
+<pre><code>[1] 11 22 33</code></pre>
 <p>Si los vectores tienen longitudes distintas, <strong>R</strong>
 repite el más corto. Esta regla se llama <strong>reciclaje</strong> y
 solo genera una advertencia cuando las longitudes no son múltiplos.</p>
-<pre class="r"><code>1:6 + c(10, 20)
-[1] 11 22 13 24 15 26
-1:5 + c(10, 20)
-Warning in 1:5 + c(10, 20): longer object length is not a multiple of shorter
-object length
-[1] 11 22 13 24 15</code></pre>
+<pre class="r"><code>1:6 + c(10, 20)</code></pre>
+<pre><code>[1] 11 22 13 24 15 26</code></pre>
+<pre class="r"><code>1:5 + c(10, 20)</code></pre>
+<pre><code>Warning in 1:5 + c(10, 20): longer object length is not a multiple of shorter
+object length</code></pre>
+<pre><code>[1] 11 22 13 24 15</code></pre>
 </div>
 <div id="conversión-automática-de-tipos" class="section level3">
 <h3><span style="color:#034a94"><strong>Conversión automática de
@@ -749,18 +753,18 @@ tipos</strong></span></h3>
 <p>Como un vector admite un solo tipo, <strong>R</strong> convierte
 todos los elementos al tipo más general: de lógico a numérico y de
 numérico a texto.</p>
-<pre class="r"><code>c(1, TRUE, FALSE)
-[1] 1 1 0
-c(1, &quot;dos&quot;, TRUE)
-[1] &quot;1&quot;    &quot;dos&quot;  &quot;TRUE&quot;</code></pre>
+<pre class="r"><code>c(1, TRUE, FALSE)</code></pre>
+<pre><code>[1] 1 1 0</code></pre>
+<pre class="r"><code>c(1, &quot;dos&quot;, TRUE)</code></pre>
+<pre><code>[1] &quot;1&quot;    &quot;dos&quot;  &quot;TRUE&quot;</code></pre>
 <p>Al convertir valores lógicos en números, <code>TRUE</code> vale 1 y
 <code>FALSE</code> vale 0. Esto permite contar y calcular
 proporciones:</p>
 <pre class="r"><code>tiempos &lt;- c(52, 61, 48, 75, 58, 66)
-sum(tiempos &lt; 60)     # cuántos tardaron menos de 60 minutos
-[1] 3
-mean(tiempos &lt; 60)    # qué proporción
-[1] 0.5</code></pre>
+sum(tiempos &lt; 60)     # cuántos tardaron menos de 60 minutos</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>mean(tiempos &lt; 60)    # qué proporción</code></pre>
+<pre><code>[1] 0.5</code></pre>
 <p><br/></p>
 </div>
 </div>
@@ -772,13 +776,13 @@ los valores posibles, llamados <strong>niveles</strong>, y se usa para
 clasificar datos en grupos.</p>
 <pre class="r"><code>colores &lt;- rep(c(&quot;rojo&quot;, &quot;verde&quot;, &quot;azul&quot;), times = 4)
 colores &lt;- factor(colores)
-colores
- [1] rojo  verde azul  rojo  verde azul  rojo  verde azul  rojo  verde azul 
-Levels: azul rojo verde
-levels(colores)
-[1] &quot;azul&quot;  &quot;rojo&quot;  &quot;verde&quot;
-table(colores)
-colores
+colores</code></pre>
+<pre><code> [1] rojo  verde azul  rojo  verde azul  rojo  verde azul  rojo  verde azul 
+Levels: azul rojo verde</code></pre>
+<pre class="r"><code>levels(colores)</code></pre>
+<pre><code>[1] &quot;azul&quot;  &quot;rojo&quot;  &quot;verde&quot;</code></pre>
+<pre class="r"><code>table(colores)</code></pre>
+<pre><code>colores
  azul  rojo verde 
     4     4     4 </code></pre>
 <p>Por defecto, los niveles se ordenan alfabéticamente. En una variable
@@ -787,15 +791,15 @@ ordinal hay que indicar el orden:</p>
 calificacion &lt;- factor(respuestas,
                        levels = c(&quot;Regular&quot;, &quot;Bueno&quot;, &quot;Excelente&quot;),
                        ordered = TRUE)
-calificacion
-[1] Bueno     Regular   Excelente Bueno    
-Levels: Regular &lt; Bueno &lt; Excelente
-calificacion &gt;= &quot;Bueno&quot;
-[1]  TRUE FALSE  TRUE  TRUE</code></pre>
+calificacion</code></pre>
+<pre><code>[1] Bueno     Regular   Excelente Bueno    
+Levels: Regular &lt; Bueno &lt; Excelente</code></pre>
+<pre class="r"><code>calificacion &gt;= &quot;Bueno&quot;</code></pre>
+<pre><code>[1]  TRUE FALSE  TRUE  TRUE</code></pre>
 <p>La función <code>cut()</code> crea un factor a partir de una variable
 cuantitativa:</p>
-<pre class="r"><code>cut(tiempos, breaks = c(0, 50, 60, Inf), labels = c(&quot;Alto&quot;, &quot;Medio&quot;, &quot;Bajo&quot;))
-[1] Medio Bajo  Alto  Bajo  Medio Bajo 
+<pre class="r"><code>cut(tiempos, breaks = c(0, 50, 60, Inf), labels = c(&quot;Alto&quot;, &quot;Medio&quot;, &quot;Bajo&quot;))</code></pre>
+<pre><code>[1] Medio Bajo  Alto  Bajo  Medio Bajo 
 Levels: Alto Medio Bajo</code></pre>
 <div id="cuidado" class="section level3 content-box-gray">
 <h3><span style="color:#686868"><strong>Cuidado</strong></span></h3>
@@ -803,10 +807,10 @@ Levels: Alto Medio Bajo</code></pre>
 categorías parecen números, primero se convierte a texto.</p>
 </div>
 <pre class="r"><code>estrato &lt;- factor(c(&quot;10&quot;, &quot;20&quot;, &quot;20&quot;, &quot;50&quot;))
-as.numeric(estrato)                  # devuelve los códigos internos
-[1] 1 2 2 3
-as.numeric(as.character(estrato))    # devuelve los valores
-[1] 10 20 20 50</code></pre>
+as.numeric(estrato)                  # devuelve los códigos internos</code></pre>
+<pre><code>[1] 1 2 2 3</code></pre>
+<pre class="r"><code>as.numeric(as.character(estrato))    # devuelve los valores</code></pre>
+<pre><code>[1] 10 20 20 50</code></pre>
 <p><br/></p>
 </div>
 <div id="qué-es-una-matriz" class="section level2">
@@ -816,41 +820,41 @@ matriz?</strong></span></h2>
 elementos del mismo tipo. Por defecto se llena por columnas.</p>
 <pre class="r"><code>m &lt;- matrix(1:6, nrow = 2)
 p &lt;- matrix(1:6, nrow = 2, byrow = TRUE)
-m
-     [,1] [,2] [,3]
+m</code></pre>
+<pre><code>     [,1] [,2] [,3]
 [1,]    1    3    5
-[2,]    2    4    6
-p
-     [,1] [,2] [,3]
+[2,]    2    4    6</code></pre>
+<pre class="r"><code>p</code></pre>
+<pre><code>     [,1] [,2] [,3]
 [1,]    1    2    3
-[2,]    4    5    6
-dim(m)
-[1] 2 3</code></pre>
+[2,]    4    5    6</code></pre>
+<pre class="r"><code>dim(m)</code></pre>
+<pre><code>[1] 2 3</code></pre>
 <p>Los elementos se seleccionan indicando <code>[fila, columna]</code>.
 Si se omite uno de los dos, se obtiene toda la fila o la columna.</p>
-<pre class="r"><code>m[2, 3]    # fila 2, columna 3
-[1] 6
-m[1, ]     # fila 1
-[1] 1 3 5
-m[, 2]     # columna 2
-[1] 3 4</code></pre>
+<pre class="r"><code>m[2, 3]    # fila 2, columna 3</code></pre>
+<pre><code>[1] 6</code></pre>
+<pre class="r"><code>m[1, ]     # fila 1</code></pre>
+<pre><code>[1] 1 3 5</code></pre>
+<pre class="r"><code>m[, 2]     # columna 2</code></pre>
+<pre><code>[1] 3 4</code></pre>
 <p>El operador <code>*</code> multiplica elemento a elemento. El
 producto matricial se calcula con <code>%*%</code>:</p>
 <pre class="r"><code>A &lt;- matrix(c(2, 1, 0, 3), nrow = 2)
-A * A
-     [,1] [,2]
+A * A</code></pre>
+<pre><code>     [,1] [,2]
 [1,]    4    0
-[2,]    1    9
-A %*% A
-     [,1] [,2]
+[2,]    1    9</code></pre>
+<pre class="r"><code>A %*% A</code></pre>
+<pre><code>     [,1] [,2]
 [1,]    4    0
-[2,]    5    9
-t(A)        # transpuesta
-     [,1] [,2]
+[2,]    5    9</code></pre>
+<pre class="r"><code>t(A)        # transpuesta</code></pre>
+<pre><code>     [,1] [,2]
 [1,]    2    1
-[2,]    0    3
-solve(A)    # inversa
-           [,1]      [,2]
+[2,]    0    3</code></pre>
+<pre class="r"><code>solve(A)    # inversa</code></pre>
+<pre><code>           [,1]      [,2]
 [1,]  0.5000000 0.0000000
 [2,] -0.1666667 0.3333333</code></pre>
 <p><br/></p>
@@ -862,10 +866,10 @@ arreglo?</strong></span></h2>
 de dos dimensiones. El siguiente ejemplo apila 3 matrices de 3x3, como
 un cubo de datos.</p>
 <pre class="r"><code>cubo &lt;- array(1:27, dim = c(3, 3, 3))
-cubo[2, 3, 1]    # fila 2, columna 3, matriz 1
-[1] 8
-cubo[, , 2]      # matriz 2 completa
-     [,1] [,2] [,3]
+cubo[2, 3, 1]    # fila 2, columna 3, matriz 1</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>cubo[, , 2]      # matriz 2 completa</code></pre>
+<pre><code>     [,1] [,2] [,3]
 [1,]   10   13   16
 [2,]   11   14   17
 [3,]   12   15   18</code></pre>
@@ -873,21 +877,21 @@ cubo[, , 2]      # matriz 2 completa
 <code>UCBAdmissions</code>, incluida en <strong>R</strong>, tiene las
 solicitudes de admisión a la Universidad de California en Berkeley en
 1973 por resultado, sexo y departamento.</p>
-<pre class="r"><code>dim(UCBAdmissions)
-[1] 2 2 6
-dimnames(UCBAdmissions)
-$Admit
+<pre class="r"><code>dim(UCBAdmissions)</code></pre>
+<pre><code>[1] 2 2 6</code></pre>
+<pre class="r"><code>dimnames(UCBAdmissions)</code></pre>
+<pre><code>$Admit
 [1] &quot;Admitted&quot; &quot;Rejected&quot;
 
 $Gender
 [1] &quot;Male&quot;   &quot;Female&quot;
 
 $Dept
-[1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot;
-UCBAdmissions[&quot;Admitted&quot;, &quot;Female&quot;, &quot;A&quot;]    # consulta por nombre
-[1] 89
-apply(UCBAdmissions, c(1, 2), sum)          # total por resultado y sexo
-          Gender
+[1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot;</code></pre>
+<pre class="r"><code>UCBAdmissions[&quot;Admitted&quot;, &quot;Female&quot;, &quot;A&quot;]    # consulta por nombre</code></pre>
+<pre><code>[1] 89</code></pre>
+<pre class="r"><code>apply(UCBAdmissions, c(1, 2), sum)          # total por resultado y sexo</code></pre>
+<pre><code>          Gender
 Admit      Male Female
   Admitted 1198    557
   Rejected 1493   1278</code></pre>
@@ -903,21 +907,21 @@ contener objetos de cualquier tipo y longitud, incluso otras listas.</p>
   notas  = c(3.5, 4.2, 4.8),
   activo = TRUE
 )
-str(curso)
-List of 3
+str(curso)</code></pre>
+<pre><code>List of 3
  $ nombre: chr &quot;Métodos y Simulación Estadística&quot;
  $ notas : num [1:3] 3.5 4.2 4.8
  $ activo: logi TRUE</code></pre>
 <p>Hay tres formas de acceder a una lista, y la diferencia importa:</p>
-<pre class="r"><code>curso[2]          # una lista con el elemento: sigue siendo lista
-$notas
-[1] 3.5 4.2 4.8
-curso[[2]]        # el elemento: un vector numérico
-[1] 3.5 4.2 4.8
-curso$notas       # el elemento, por nombre
-[1] 3.5 4.2 4.8
-mean(curso$notas)
-[1] 4.166667</code></pre>
+<pre class="r"><code>curso[2]          # una lista con el elemento: sigue siendo lista</code></pre>
+<pre><code>$notas
+[1] 3.5 4.2 4.8</code></pre>
+<pre class="r"><code>curso[[2]]        # el elemento: un vector numérico</code></pre>
+<pre><code>[1] 3.5 4.2 4.8</code></pre>
+<pre class="r"><code>curso$notas       # el elemento, por nombre</code></pre>
+<pre><code>[1] 3.5 4.2 4.8</code></pre>
+<pre class="r"><code>mean(curso$notas)</code></pre>
+<pre><code>[1] 4.166667</code></pre>
 <p>Una imagen útil: si la lista es un tren, <code>[ ]</code> devuelve un
 vagón y <code>[[ ]]</code> devuelve lo que va dentro del vagón.</p>
 <div id="muchos-resultados-de-r-son-listas" class="section level3">
@@ -931,24 +935,24 @@ h &lt;- hist(rnorm(100, 45, 5), col = &quot;#FF7F00&quot;,
           main = &quot;Distribución del tiempo de carrera K10&quot;,
           xlab = &quot;Tiempo (min)&quot;, ylab = &quot;Frecuencia&quot;, las = 1)</code></pre>
 <p><img src="recurso101_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<pre class="r"><code>names(h)
-[1] &quot;breaks&quot;   &quot;counts&quot;   &quot;density&quot;  &quot;mids&quot;     &quot;xname&quot;    &quot;equidist&quot;
-h$breaks
-[1] 30 35 40 45 50 55 60
-h$counts
-[1]  1 13 34 35 14  3</code></pre>
+<pre class="r"><code>names(h)</code></pre>
+<pre><code>[1] &quot;breaks&quot;   &quot;counts&quot;   &quot;density&quot;  &quot;mids&quot;     &quot;xname&quot;    &quot;equidist&quot;</code></pre>
+<pre class="r"><code>h$breaks</code></pre>
+<pre><code>[1] 30 35 40 45 50 55 60</code></pre>
+<pre class="r"><code>h$counts</code></pre>
+<pre><code>[1]  1 13 34 35 14  3</code></pre>
 <p>Lo mismo ocurre con un modelo: <code>lm()</code> devuelve una lista
 de la que se puede extraer lo que se necesite.</p>
 <pre class="r"><code>modelo &lt;- lm(mpg ~ wt, data = mtcars)
-typeof(modelo)
-[1] &quot;list&quot;
-names(modelo)[1:4]
-[1] &quot;coefficients&quot; &quot;residuals&quot;    &quot;effects&quot;      &quot;rank&quot;        
-modelo$coefficients
-(Intercept)          wt 
-  37.285126   -5.344472 
-summary(modelo)$r.squared
-[1] 0.7528328</code></pre>
+typeof(modelo)</code></pre>
+<pre><code>[1] &quot;list&quot;</code></pre>
+<pre class="r"><code>names(modelo)[1:4]</code></pre>
+<pre><code>[1] &quot;coefficients&quot; &quot;residuals&quot;    &quot;effects&quot;      &quot;rank&quot;        </code></pre>
+<pre class="r"><code>modelo$coefficients</code></pre>
+<pre><code>(Intercept)          wt 
+  37.285126   -5.344472 </code></pre>
+<pre class="r"><code>summary(modelo)$r.squared</code></pre>
+<pre><code>[1] 0.7528328</code></pre>
 <p><br/></p>
 </div>
 </div>
@@ -965,8 +969,8 @@ cada columna puede tener un tipo distinto.</p>
   ciudad   = c(&quot;Cali&quot;, &quot;Pasto&quot;, &quot;Cali&quot;, &quot;Popayán&quot;),
   aprobado = c(TRUE, TRUE, FALSE, TRUE)
 )
-estudiantes
-  nombre edad  ciudad aprobado
+estudiantes</code></pre>
+<pre><code>  nombre edad  ciudad aprobado
 1    Ana   21    Cali     TRUE
 2   Luis   24   Pasto     TRUE
 3  Marta   22    Cali    FALSE
@@ -974,22 +978,22 @@ estudiantes
 <p>Para explorar un data frame se usan estas funciones.
 <code>iris</code> tiene 150 registros (filas) y 5 variables
 (columnas).</p>
-<pre class="r"><code>dim(iris)         # filas y columnas
-[1] 150   5
-head(iris, 3)     # primeros registros
-  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+<pre class="r"><code>dim(iris)         # filas y columnas</code></pre>
+<pre><code>[1] 150   5</code></pre>
+<pre class="r"><code>head(iris, 3)     # primeros registros</code></pre>
+<pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 1          5.1         3.5          1.4         0.2  setosa
 2          4.9         3.0          1.4         0.2  setosa
-3          4.7         3.2          1.3         0.2  setosa
-str(iris)         # estructura
-&#39;data.frame&#39;:   150 obs. of  5 variables:
+3          4.7         3.2          1.3         0.2  setosa</code></pre>
+<pre class="r"><code>str(iris)         # estructura</code></pre>
+<pre><code>&#39;data.frame&#39;:   150 obs. of  5 variables:
  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
- $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
-summary(iris)     # resumen por variable
-  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
+ $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<pre class="r"><code>summary(iris)     # resumen por variable</code></pre>
+<pre><code>  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
  Median :5.800   Median :3.000   Median :4.350   Median :1.300  
@@ -1004,29 +1008,29 @@ summary(iris)     # resumen por variable
                 
                 </code></pre>
 <p>Las columnas y filas se seleccionan de varias maneras:</p>
-<pre class="r"><code>estudiantes$edad                              # una columna
-[1] 21 24 22 30
-estudiantes[2, ]                              # una fila
-  nombre edad ciudad aprobado
-2   Luis   24  Pasto     TRUE
-estudiantes[estudiantes$ciudad == &quot;Cali&quot;, ]   # filas que cumplen una condición
-  nombre edad ciudad aprobado
+<pre class="r"><code>estudiantes$edad                              # una columna</code></pre>
+<pre><code>[1] 21 24 22 30</code></pre>
+<pre class="r"><code>estudiantes[2, ]                              # una fila</code></pre>
+<pre><code>  nombre edad ciudad aprobado
+2   Luis   24  Pasto     TRUE</code></pre>
+<pre class="r"><code>estudiantes[estudiantes$ciudad == &quot;Cali&quot;, ]   # filas que cumplen una condición</code></pre>
+<pre><code>  nombre edad ciudad aprobado
 1    Ana   21   Cali     TRUE
-3  Marta   22   Cali    FALSE
-estudiantes$mayor25 &lt;- estudiantes$edad &gt; 25  # nueva columna
-estudiantes
-  nombre edad  ciudad aprobado mayor25
+3  Marta   22   Cali    FALSE</code></pre>
+<pre class="r"><code>estudiantes$mayor25 &lt;- estudiantes$edad &gt; 25  # nueva columna
+estudiantes</code></pre>
+<pre><code>  nombre edad  ciudad aprobado mayor25
 1    Ana   21    Cali     TRUE   FALSE
 2   Luis   24   Pasto     TRUE   FALSE
 3  Marta   22    Cali    FALSE   FALSE
 4  Pedro   30 Popayán     TRUE    TRUE</code></pre>
 <p>Las funciones <code>tapply()</code> y <code>sapply()</code> permiten
 calcular resúmenes rápidos:</p>
-<pre class="r"><code>tapply(iris$Sepal.Length, iris$Species, mean)    # media por especie
-    setosa versicolor  virginica 
-     5.006      5.936      6.588 
-sapply(iris, class)                              # clase de cada columna
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+<pre class="r"><code>tapply(iris$Sepal.Length, iris$Species, mean)    # media por especie</code></pre>
+<pre><code>    setosa versicolor  virginica 
+     5.006      5.936      6.588 </code></pre>
+<pre class="r"><code>sapply(iris, class)                              # clase de cada columna</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;     &quot;factor&quot; </code></pre>
 <p>Los paquetes <code>readr</code>, para leer archivos de texto como
 <code>.csv</code>, y <code>readxl</code>, para leer archivos de Excel,
@@ -1043,25 +1047,25 @@ tiempo?</strong></span></h2>
 Se compone de los datos, el inicio y la frecuencia.</p>
 <pre class="r"><code>set.seed(123)
 temperatura &lt;- ts(round(rnorm(24, 20, 3), 1), frequency = 12, start = c(2024, 1))
-temperatura
-      Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec
+temperatura</code></pre>
+<pre><code>      Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec
 2024 18.3 19.3 24.7 20.2 20.4 25.1 21.4 16.2 17.9 18.7 23.7 21.1
 2025 21.2 20.3 18.3 25.4 21.5 14.1 22.1 18.6 16.8 19.3 16.9 17.8</code></pre>
 <p><code>AirPassengers</code>, incluida en <strong>R</strong>, registra
 los pasajeros mensuales de aerolíneas internacionales entre 1949 y
 1960.</p>
-<pre class="r"><code>class(AirPassengers)
-[1] &quot;ts&quot;
-start(AirPassengers)
-[1] 1949    1
-end(AirPassengers)
-[1] 1960   12
-frequency(AirPassengers)
-[1] 12
-window(AirPassengers, start = c(1960, 1))    # solo 1960
-     Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
-1960 417 391 419 461 472 535 622 606 508 461 390 432
-plot(AirPassengers, col = &quot;#034A94&quot;, lwd = 2, las = 1,
+<pre class="r"><code>class(AirPassengers)</code></pre>
+<pre><code>[1] &quot;ts&quot;</code></pre>
+<pre class="r"><code>start(AirPassengers)</code></pre>
+<pre><code>[1] 1949    1</code></pre>
+<pre class="r"><code>end(AirPassengers)</code></pre>
+<pre><code>[1] 1960   12</code></pre>
+<pre class="r"><code>frequency(AirPassengers)</code></pre>
+<pre><code>[1] 12</code></pre>
+<pre class="r"><code>window(AirPassengers, start = c(1960, 1))    # solo 1960</code></pre>
+<pre><code>     Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+1960 417 391 419 461 472 535 622 606 508 461 390 432</code></pre>
+<pre class="r"><code>plot(AirPassengers, col = &quot;#034A94&quot;, lwd = 2, las = 1,
      xlab = &quot;Año&quot;, ylab = &quot;Pasajeros (miles)&quot;)</code></pre>
 <p><img src="recurso101_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <p><br/></p>
@@ -1074,16 +1078,16 @@ son el número de días transcurridos desde el 1 de enero de 1970, y por
 eso se puede operar con ellas.</p>
 <pre class="r"><code>inicio &lt;- as.Date(&quot;2026-02-02&quot;)
 fin    &lt;- as.Date(&quot;2026-05-29&quot;)
-class(inicio)
-[1] &quot;Date&quot;
-fin - inicio
-Time difference of 116 days
-as.numeric(as.Date(&quot;1970-01-10&quot;))
-[1] 9
-seq(inicio, by = &quot;week&quot;, length.out = 4)
-[1] &quot;2026-02-02&quot; &quot;2026-02-09&quot; &quot;2026-02-16&quot; &quot;2026-02-23&quot;
-format(inicio, &quot;%d/%m/%Y&quot;)
-[1] &quot;02/02/2026&quot;</code></pre>
+class(inicio)</code></pre>
+<pre><code>[1] &quot;Date&quot;</code></pre>
+<pre class="r"><code>fin - inicio</code></pre>
+<pre><code>Time difference of 116 days</code></pre>
+<pre class="r"><code>as.numeric(as.Date(&quot;1970-01-10&quot;))</code></pre>
+<pre><code>[1] 9</code></pre>
+<pre class="r"><code>seq(inicio, by = &quot;week&quot;, length.out = 4)</code></pre>
+<pre><code>[1] &quot;2026-02-02&quot; &quot;2026-02-09&quot; &quot;2026-02-16&quot; &quot;2026-02-23&quot;</code></pre>
+<pre class="r"><code>format(inicio, &quot;%d/%m/%Y&quot;)</code></pre>
+<pre><code>[1] &quot;02/02/2026&quot;</code></pre>
 <p><br/></p>
 </div>
 <div id="las-funciones-también-son-objetos" class="section level2">
@@ -1104,21 +1108,21 @@ decir, información adicional. Una matriz es un vector con el atributo
 <code>dim</code>:</p>
 <pre class="r"><code>v &lt;- 1:6
 dim(v) &lt;- c(2, 3)
-v
-     [,1] [,2] [,3]
+v</code></pre>
+<pre><code>     [,1] [,2] [,3]
 [1,]    1    3    5
-[2,]    2    4    6
-attributes(v)
-$dim
+[2,]    2    4    6</code></pre>
+<pre class="r"><code>attributes(v)</code></pre>
+<pre><code>$dim
 [1] 2 3</code></pre>
 <p>Un factor es un vector de enteros con niveles, y un data frame es una
 lista:</p>
-<pre class="r"><code>unclass(factor(c(&quot;a&quot;, &quot;b&quot;, &quot;a&quot;)))
-[1] 1 2 1
+<pre class="r"><code>unclass(factor(c(&quot;a&quot;, &quot;b&quot;, &quot;a&quot;)))</code></pre>
+<pre><code>[1] 1 2 1
 attr(,&quot;levels&quot;)
-[1] &quot;a&quot; &quot;b&quot;
-typeof(iris)
-[1] &quot;list&quot;</code></pre>
+[1] &quot;a&quot; &quot;b&quot;</code></pre>
+<pre class="r"><code>typeof(iris)</code></pre>
+<pre><code>[1] &quot;list&quot;</code></pre>
 <p>La siguiente tabla compara lo que informan <code>typeof()</code> y
 <code>class()</code> para distintos objetos.</p>
 <table>
@@ -1176,11 +1180,11 @@ typeof(iris)
 objeto. <code>summary()</code> y <code>plot()</code> son
 <strong>funciones genéricas</strong>: revisan la clase y aplican el
 método que corresponde.</p>
-<pre class="r"><code>summary(iris$Sepal.Length)    # numérico: cuartiles y media
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  4.300   5.100   5.800   5.843   6.400   7.900 
-summary(iris$Species)         # factor: conteo por nivel
-    setosa versicolor  virginica 
+<pre class="r"><code>summary(iris$Sepal.Length)    # numérico: cuartiles y media</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  4.300   5.100   5.800   5.843   6.400   7.900 </code></pre>
+<pre class="r"><code>summary(iris$Species)         # factor: conteo por nivel</code></pre>
+<pre><code>    setosa versicolor  virginica 
         50         50         50 </code></pre>
 <p><br/></p>
 </div>
@@ -1301,16 +1305,16 @@ comparación</strong></span></h3>
 <p><sub>Adaptada de: <a
 href="https://bookdown.org/jboscomendoza/r-principiantes4/">R para
 principiantes</a>.</sub></p>
-<pre class="r"><code>17 %% 5                        # residuo
-[1] 2
-17 %/% 5                       # cociente entero
-[1] 3
-&quot;Cali&quot; %in% c(&quot;Pasto&quot;, &quot;Cali&quot;)
-[1] TRUE
--2^2                           # la potencia se evalúa antes que el signo
-[1] -4
-(-2)^2
-[1] 4</code></pre>
+<pre class="r"><code>17 %% 5                        # residuo</code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code>17 %/% 5                       # cociente entero</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>&quot;Cali&quot; %in% c(&quot;Pasto&quot;, &quot;Cali&quot;)</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code>-2^2                           # la potencia se evalúa antes que el signo</code></pre>
+<pre><code>[1] -4</code></pre>
+<pre class="r"><code>(-2)^2</code></pre>
+<pre><code>[1] 4</code></pre>
 <p><br/></p>
 </div>
 </div>
@@ -1327,12 +1331,12 @@ rep(x,                # objeto a replicar
     each = 1)         # número de veces que se replica cada elemento
 </pre>
 <pre class="r"><code>vector &lt;- c(&quot;uno&quot;, &quot;dos&quot;, &quot;tres&quot;)
-rep(vector, times = 2)
-[1] &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot;
-rep(vector, each = 2)
-[1] &quot;uno&quot;  &quot;uno&quot;  &quot;dos&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;tres&quot;
-rep(vector, length.out = 7)
-[1] &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;uno&quot; </code></pre>
+rep(vector, times = 2)</code></pre>
+<pre><code>[1] &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot;</code></pre>
+<pre class="r"><code>rep(vector, each = 2)</code></pre>
+<pre><code>[1] &quot;uno&quot;  &quot;uno&quot;  &quot;dos&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;tres&quot;</code></pre>
+<pre class="r"><code>rep(vector, length.out = 7)</code></pre>
+<pre><code>[1] &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;uno&quot;  &quot;dos&quot;  &quot;tres&quot; &quot;uno&quot; </code></pre>
 </div>
 <div id="seq" class="section level3">
 <h3><span style="color:#034a94"><strong>seq()</strong></span></h3>
@@ -1344,28 +1348,28 @@ seq(from = 1,            # valor inicial
     length.out = NULL,   # longitud de la secuencia
     along.with = NULL)   # toma la longitud de este vector
 </pre>
-<pre class="r"><code>seq(20)                       # equivalente a 1:20
- [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
-seq(2, 20, by = 2)            # números pares entre 2 y 20
- [1]  2  4  6  8 10 12 14 16 18 20
-seq(0, 1, by = 0.1)           # del 0 al 1 con incrementos de 0.1
- [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
-seq(0, 1, length.out = 5)     # 5 valores igualmente espaciados
-[1] 0.00 0.25 0.50 0.75 1.00</code></pre>
+<pre class="r"><code>seq(20)                       # equivalente a 1:20</code></pre>
+<pre><code> [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20</code></pre>
+<pre class="r"><code>seq(2, 20, by = 2)            # números pares entre 2 y 20</code></pre>
+<pre><code> [1]  2  4  6  8 10 12 14 16 18 20</code></pre>
+<pre class="r"><code>seq(0, 1, by = 0.1)           # del 0 al 1 con incrementos de 0.1</code></pre>
+<pre><code> [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0</code></pre>
+<pre class="r"><code>seq(0, 1, length.out = 5)     # 5 valores igualmente espaciados</code></pre>
+<pre><code>[1] 0.00 0.25 0.50 0.75 1.00</code></pre>
 </div>
 <div id="round-trunc-floor-y-ceiling" class="section level3">
 <h3><span style="color:#034a94"><strong>round(), trunc(), floor() y
 ceiling()</strong></span></h3>
-<pre class="r"><code>round(pi, 3)      # aproxima a 3 decimales
-[1] 3.142
-signif(pi, 3)     # conserva 3 cifras significativas
-[1] 3.14
-trunc(-2.7)       # elimina la parte decimal
-[1] -2
-floor(-2.7)       # redondea hacia abajo
-[1] -3
-ceiling(-2.7)     # redondea hacia arriba
-[1] -2</code></pre>
+<pre class="r"><code>round(pi, 3)      # aproxima a 3 decimales</code></pre>
+<pre><code>[1] 3.142</code></pre>
+<pre class="r"><code>signif(pi, 3)     # conserva 3 cifras significativas</code></pre>
+<pre><code>[1] 3.14</code></pre>
+<pre class="r"><code>trunc(-2.7)       # elimina la parte decimal</code></pre>
+<pre><code>[1] -2</code></pre>
+<pre class="r"><code>floor(-2.7)       # redondea hacia abajo</code></pre>
+<pre><code>[1] -3</code></pre>
+<pre class="r"><code>ceiling(-2.7)     # redondea hacia arriba</code></pre>
+<pre><code>[1] -2</code></pre>
 </div>
 <div id="curiosidad-1" class="section level3 content-box-gray">
 <h3><span style="color:#686868"><strong>Curiosidad</strong></span></h3>
@@ -1374,8 +1378,8 @@ justo en la mitad, busca el número par. Por eso <code>round(0.5)</code>
 da 0 y <code>round(2.5)</code> da 2, como indica su <a
 href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/Round.html">documentación</a>.</p>
 </div>
-<pre class="r"><code>round(c(0.5, 1.5, 2.5, 3.5))
-[1] 0 2 2 4</code></pre>
+<pre class="r"><code>round(c(0.5, 1.5, 2.5, 3.5))</code></pre>
+<pre><code>[1] 0 2 2 4</code></pre>
 <div id="otras-funciones" class="section level3">
 <h3><span style="color:#034a94"><strong>Otras
 funciones</strong></span></h3>
@@ -1457,20 +1461,20 @@ Los mensajes pueden aparecer en español, según el idioma de
 <strong>R</strong>.</p>
 <p>Usar <code>$</code> en un vector, que no tiene columnas:</p>
 <pre class="r"><code>x &lt;- c(a = 1, b = 2)
-x$a
-Error in x$a: $ operator is invalid for atomic vectors</code></pre>
+x$a</code></pre>
+<pre><code>Error in x$a: $ operator is invalid for atomic vectors</code></pre>
 <p>Pedir dos dimensiones a un vector:</p>
-<pre class="r"><code>x[1, 2]
-Error in x[1, 2]: incorrect number of dimensions</code></pre>
+<pre class="r"><code>x[1, 2]</code></pre>
+<pre><code>Error in x[1, 2]: incorrect number of dimensions</code></pre>
 <p>Operar con texto que parece número:</p>
-<pre class="r"><code>&quot;5&quot; + 2
-Error in &quot;5&quot; + 2: non-numeric argument to binary operator
-as.numeric(&quot;5&quot;) + 2
-[1] 7</code></pre>
+<pre class="r"><code>&quot;5&quot; + 2</code></pre>
+<pre><code>Error in &quot;5&quot; + 2: non-numeric argument to binary operator</code></pre>
+<pre class="r"><code>as.numeric(&quot;5&quot;) + 2</code></pre>
+<pre><code>[1] 7</code></pre>
 <p>Usar <code>=</code> en lugar de <code>==</code> en una
 comparación:</p>
-<pre class="r"><code>estudiantes[estudiantes$edad = 21, ]
-Error: &lt;text&gt;:1:30: unexpected &#39;=&#39;
+<pre class="r"><code>estudiantes[estudiantes$edad = 21, ]</code></pre>
+<pre><code>Error: &lt;text&gt;:1:30: unexpected &#39;=&#39;
 1: estudiantes[estudiantes$edad =
                                  ^</code></pre>
 <p><br/></p>
@@ -1489,12 +1493,12 @@ calcule la media sin el dato faltante, cuente los valores mayores que
 Ver solución
 </summary>
 <pre class="r"><code>ventas &lt;- c(120, 85, NA, 240, 60)
-mean(ventas, na.rm = TRUE)
-[1] 126.25
-sum(ventas &gt; 100, na.rm = TRUE)
-[1] 2
-mean(ventas &gt; 100, na.rm = TRUE)
-[1] 0.5</code></pre>
+mean(ventas, na.rm = TRUE)</code></pre>
+<pre><code>[1] 126.25</code></pre>
+<pre class="r"><code>sum(ventas &gt; 100, na.rm = TRUE)</code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code>mean(ventas &gt; 100, na.rm = TRUE)</code></pre>
+<pre><code>[1] 0.5</code></pre>
 </details>
 </div>
 <div id="reto-2.-un-factor-ordenado"
@@ -1510,8 +1514,8 @@ Ver solución
 </summary>
 <pre class="r"><code>nivel &lt;- factor(c(&quot;Bajo&quot;, &quot;Alto&quot;, &quot;Medio&quot;, &quot;Bajo&quot;),
                 levels = c(&quot;Bajo&quot;, &quot;Medio&quot;, &quot;Alto&quot;), ordered = TRUE)
-table(nivel)
-nivel
+table(nivel)</code></pre>
+<pre><code>nivel
  Bajo Medio  Alto 
     2     1     1 </code></pre>
 </details>
@@ -1528,14 +1532,14 @@ class="math inline">\(R^2\)</span>.</p>
 Ver solución
 </summary>
 <pre class="r"><code>ajuste &lt;- lm(mpg ~ hp, data = mtcars)
-ajuste$coefficients[&quot;hp&quot;]
-         hp 
--0.06822828 
-ajuste$residuals[1:3]
-    Mazda RX4 Mazda RX4 Wag    Datsun 710 
-   -1.5937500    -1.5937500    -0.9536307 
-summary(ajuste)$r.squared
-[1] 0.6024373</code></pre>
+ajuste$coefficients[&quot;hp&quot;]</code></pre>
+<pre><code>         hp 
+-0.06822828 </code></pre>
+<pre class="r"><code>ajuste$residuals[1:3]</code></pre>
+<pre><code>    Mazda RX4 Mazda RX4 Wag    Datsun 710 
+   -1.5937500    -1.5937500    -0.9536307 </code></pre>
+<pre class="r"><code>summary(ajuste)$r.squared</code></pre>
+<pre><code>[1] 0.6024373</code></pre>
 </details>
 </div>
 <div id="reto-4.-cálculos-por-columna"
@@ -1551,23 +1555,23 @@ columna, y <code>tapply()</code> para obtener la mediana de
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>apply(mtcars, 2, mean)
-       mpg        cyl       disp         hp       drat         wt       qsec 
+<pre class="r"><code>apply(mtcars, 2, mean)</code></pre>
+<pre><code>       mpg        cyl       disp         hp       drat         wt       qsec 
  20.090625   6.187500 230.721875 146.687500   3.596563   3.217250  17.848750 
         vs         am       gear       carb 
-  0.437500   0.406250   3.687500   2.812500 
-colMeans(mtcars)
-       mpg        cyl       disp         hp       drat         wt       qsec 
+  0.437500   0.406250   3.687500   2.812500 </code></pre>
+<pre class="r"><code>colMeans(mtcars)</code></pre>
+<pre><code>       mpg        cyl       disp         hp       drat         wt       qsec 
  20.090625   6.187500 230.721875 146.687500   3.596563   3.217250  17.848750 
         vs         am       gear       carb 
-  0.437500   0.406250   3.687500   2.812500 
-sapply(mtcars, \(x) sd(x) / mean(x) * 100)
-      mpg       cyl      disp        hp      drat        wt      qsec        vs 
+  0.437500   0.406250   3.687500   2.812500 </code></pre>
+<pre class="r"><code>sapply(mtcars, \(x) sd(x) / mean(x) * 100)</code></pre>
+<pre><code>      mpg       cyl      disp        hp      drat        wt      qsec        vs 
  29.99881  28.86338  53.71779  46.74077  14.86638  30.41285  10.01159 115.20369 
        am      gear      carb 
-122.82853  20.00825  57.42933 
-tapply(mtcars$hp, mtcars$cyl, median)
-    4     6     8 
+122.82853  20.00825  57.42933 </code></pre>
+<pre class="r"><code>tapply(mtcars$hp, mtcars$cyl, median)</code></pre>
+<pre><code>    4     6     8 
  91.0 110.0 192.5 </code></pre>
 </details>
 </div>
@@ -1585,10 +1589,10 @@ Ver solución
 </summary>
 <pre class="r"><code>set.seed(1)
 medianas &lt;- replicate(2000, median(runif(50)))
-mean(medianas)
-[1] 0.499541
-sd(medianas)
-[1] 0.06802639</code></pre>
+mean(medianas)</code></pre>
+<pre><code>[1] 0.499541</code></pre>
+<pre class="r"><code>sd(medianas)</code></pre>
+<pre><code>[1] 0.06802639</code></pre>
 </details>
 </div>
 <div id="reto-6.-por-qué-cambia-el-tipo-de-dato"

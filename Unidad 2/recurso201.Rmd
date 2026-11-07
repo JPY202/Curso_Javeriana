@@ -1,0 +1,311 @@
+---
+title: <span style="color:#034a94"> **Valor esperado y varianza**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+La función de probabilidad o de densidad describe por completo una variable aleatoria, pero a veces basta con dos números: uno que diga **alrededor de qué valor** se ubica la variable y otro que diga **qué tanto se dispersa**. Esos números son el **valor esperado** y la **varianza**.
+
+La idea del valor esperado nació en los juegos de azar, cuando los jugadores querían saber cuánto ganarían en promedio si jugaban muchas veces. Esta página presenta las dos medidas, sus propiedades y cómo calcularlas en **R**. Los bloques de código se ejecutan en orden y usan los ejemplos de [Variable aleatoria](recurso200.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el valor esperado?**</span>
+
+El **valor esperado** de una variable aleatoria $X$, que se escribe $E(X)$ o $\mu$, es el promedio de sus valores, ponderado por sus probabilidades. Representa el promedio que se obtendría si el experimento se repitiera muchísimas veces.
+
+| Variable discreta | Variable continua |
+|:-----------------:|:-----------------:|
+| $E(X) = \sum_x x\,f(x)$ | $E(X) = \int_{-\infty}^{\infty} x\,f(x)\,dx$ |
+
+En el caso discreto, se multiplica cada valor por su probabilidad y se suman los resultados. En el continuo, la suma se reemplaza por una integral.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: número de caras**</span>
+
+Al lanzar tres monedas, el número de caras $X$ toma los valores 0, 1, 2 y 3 con probabilidades 1/8, 3/8, 3/8 y 1/8:
+
+$$
+E(X) = 0 \times \tfrac{1}{8} + 1 \times \tfrac{3}{8} + 2 \times \tfrac{3}{8} + 3 \times \tfrac{1}{8} = 1.5
+$$
+
+El valor esperado no tiene que ser un valor posible de la variable: nunca se obtienen 1.5 caras, pero en muchos lanzamientos de tres monedas el promedio de caras se acerca a 1.5.
+
+```{r}
+x_caras <- 0:3
+f_caras <- c(1, 3, 3, 1) / 8
+sum(x_caras * f_caras)   # E(X)
+```
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: reservas en el restaurante**</span>
+
+En el restaurante que recibe 20 reservas, el número de personas que asisten, $X$, tiene distribución binomial con $n = 20$ y $p = 0.7$. Su valor esperado es
+
+```{r}
+x  <- 0:20
+fx <- dbinom(x, size = 20, prob = 0.7)
+sum(x * fx)   # E(X)
+```
+
+En promedio asisten 14 de las 20 personas que reservan. Una simulación lo confirma: la función `rbinom()` genera 10 000 noches al azar y su promedio queda muy cerca de 14.
+
+```{r}
+set.seed(2026)
+noches <- rbinom(10000, size = 20, prob = 0.7)
+mean(noches)
+```
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: tiempo hasta una reparación**</span>
+
+Para la lavadora, con densidad $f(x) = \frac{1}{4}e^{-x/4}$ para $x \geq 0$, el valor esperado es una integral. En **R** se calcula con `integrate()`:
+
+```{r}
+f <- function(x) (1/4) * exp(-x/4)
+integrate(function(x) x * f(x), lower = 0, upper = Inf)
+```
+
+En promedio, una lavadora necesita su primera reparación mayor a los 4 años.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué propiedades tiene el valor esperado?**</span>
+
+| Propiedad | Fórmula | Ejemplo |
+|:----------|:--------|:--------|
+| Una constante | $E(k) = k$ | El valor esperado de 5 es 5 |
+| Cambio de escala y de origen | $E(aX + b) = a\,E(X) + b$ | Si $X$ está en metros, $E(100X) = 100\,E(X)$ en centímetros |
+| Suma de variables | $E(X + Y) = E(X) + E(Y)$ | Vale siempre, sean o no independientes |
+| Producto de variables independientes | $E(XY) = E(X)\,E(Y)$ | Vale si $X$ e $Y$ son independientes |
+
+Por ejemplo, cada persona que asiste al restaurante gasta en promedio 50 mil pesos, y abrir cada noche cuesta 200 mil pesos. La ganancia es $G = 50X - 200$ (en miles de pesos) y su valor esperado es
+
+$$
+E(G) = 50\,E(X) - 200 = 50 \times 14 - 200 = 500 \text{ mil pesos}
+$$
+
+```{r}
+50 * sum(x * fx) - 200
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la varianza?**</span>
+
+Dos variables pueden tener el mismo valor esperado y comportarse muy distinto: una puede tomar casi siempre valores cercanos a su media y otra, valores muy alejados. La **varianza** mide esa dispersión. Es el promedio de las distancias al cuadrado entre la variable y su media:
+
+$$
+\text{Var}(X) = \sigma^2 = E\big[(X - \mu)^2\big]
+$$
+
+En la práctica es más fácil usar esta forma equivalente:
+
+$$
+\text{Var}(X) = E(X^2) - \mu^2
+$$
+
+donde $E(X^2)$ se calcula como $E(X)$, pero con $x^2$ en lugar de $x$. A $E(X)$ y $E(X^2)$ se les llama **momentos** de orden 1 y 2.
+
+Como la varianza está en unidades al cuadrado, se usan también:
+
+- La **desviación estándar**, $\sigma = \sqrt{\text{Var}(X)}$, que está en las mismas unidades de $X$.
+- El **coeficiente de variación**, $CV = \dfrac{\sigma}{\mu} \times 100\,\%$, que compara la dispersión con la media y no tiene unidades.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplos**</span>
+
+**Número de caras.** $E(X^2) = 0 \times \frac{1}{8} + 1 \times \frac{3}{8} + 4 \times \frac{3}{8} + 9 \times \frac{1}{8} = 3$, así que $\text{Var}(X) = 3 - 1.5^2 = 0.75$ y $\sigma = 0.87$.
+
+```{r}
+mu_caras <- sum(x_caras * f_caras)
+sum(x_caras^2 * f_caras) - mu_caras^2   # Var(X)
+```
+
+**Reservas en el restaurante.** $E(X^2) = 200.2$, así que $\text{Var}(X) = 200.2 - 14^2 = 4.2$, $\sigma = 2.05$ personas y $CV = 2.05/14 = 14.6\,\%$. El número de personas que asisten varía poco respecto a su media.
+
+```{r}
+mu <- sum(x * fx)
+varianza <- sum(x^2 * fx) - mu^2
+c(media = mu, varianza = varianza, desv_est = sqrt(varianza), CV = 100 * sqrt(varianza) / mu)
+```
+
+**Tiempo hasta una reparación.** $E(X^2) = 32$, así que $\text{Var}(X) = 32 - 4^2 = 16$ años², $\sigma = 4$ años y $CV = 4/4 = 100\,\%$. Los tiempos varían mucho: una lavadora puede fallar al primer año y otra durar más de diez.
+
+```{r}
+EX2 <- integrate(function(x) x^2 * f(x), lower = 0, upper = Inf)$value
+c(media = 4, varianza = EX2 - 4^2, desv_est = sqrt(EX2 - 4^2), CV = 100 * sqrt(EX2 - 4^2) / 4)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué propiedades tiene la varianza?**</span>
+
+| Propiedad | Fórmula | Significado |
+|:----------|:--------|:------------|
+| Nunca es negativa | $\text{Var}(X) \geq 0$ | Es un promedio de cuadrados |
+| Una constante no varía | $\text{Var}(k) = 0$ | |
+| Sumar una constante no cambia la dispersión | $\text{Var}(X + b) = \text{Var}(X)$ | Correr todos los valores no los acerca ni los aleja |
+| Multiplicar por una constante | $\text{Var}(aX) = a^2\,\text{Var}(X)$ | La constante sale al cuadrado |
+| Suma de variables independientes | $\text{Var}(aX + bY) = a^2\,\text{Var}(X) + b^2\,\text{Var}(Y)$ | Si no son independientes, se agrega un término con la covarianza (ver [Variables conjuntas](recurso202.html)) |
+
+Por ejemplo, la ganancia del restaurante, $G = 50X - 200$, tiene varianza $\text{Var}(G) = 50^2 \times 4.2 = 10\,500$ y desviación estándar $\sqrt{10\,500} = 102.5$ mil pesos. El costo fijo de 200 no cambia la dispersión.
+
+<br/>
+
+### <span style="color:#034a94">**Ejemplo: promedio ponderado de notas**</span>
+
+En un instituto, la nota de Matemáticas, $X_1$, tiene media 3.0 y varianza 1.0, y la nota de Dibujo, $X_2$, tiene media 3.8 y varianza 1.3. Las dos notas son independientes. La nota final es un promedio ponderado con pesos 0.6 y 0.4: $Y = 0.6X_1 + 0.4X_2$.
+
+$$
+E(Y) = 0.6 \times 3.0 + 0.4 \times 3.8 = 3.32
+$$
+
+$$
+\text{Var}(Y) = 0.6^2 \times 1.0 + 0.4^2 \times 1.3 = 0.36 + 0.208 = 0.568
+$$
+
+```{r}
+0.6 * 3.0 + 0.4 * 3.8             # E(Y)
+0.6^2 * 1.0 + 0.4^2 * 1.3         # Var(Y)
+```
+
+La varianza de la nota final, 0.568, es menor que la de cada nota por separado: al promediar, los valores extremos de una asignatura se compensan en parte con los de la otra.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Calcular $E(X)$ como el promedio simple de los valores posibles | Se olvidaron las probabilidades | Multiplicar cada valor por su probabilidad |
+| $\text{Var}(aX) = a\,\text{Var}(X)$ | La constante no se elevó al cuadrado | Usar $a^2\,\text{Var}(X)$ |
+| $\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)$ con variables relacionadas | Se supuso independencia | Agregar el término de covarianza |
+| $\text{Var}(X - Y) = \text{Var}(X) - \text{Var}(Y)$ | Se aplicó el signo a la varianza | Si son independientes, $\text{Var}(X - Y) = \text{Var}(X) + \text{Var}(Y)$ |
+| Comparar desviaciones estándar de variables con medias muy distintas | La dispersión depende de la escala | Usar el coeficiente de variación |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Un dado**</span>
+
+Calcule el valor esperado, la varianza y la desviación estándar del resultado de lanzar un dado balanceado. Compruebe el valor esperado con una simulación de 10 000 lanzamientos.
+
+<details>
+<summary>Ver solución</summary>
+
+$E(X) = 3.5$ y $\text{Var}(X) = 91/6 - 3.5^2 = 2.917$, con $\sigma = 1.708$.
+
+```{r}
+cara <- 1:6
+p_cara <- rep(1/6, 6)
+mu_dado <- sum(cara * p_cara)
+var_dado <- sum(cara^2 * p_cara) - mu_dado^2
+c(media = mu_dado, varianza = var_dado, desv_est = sqrt(var_dado))
+set.seed(2026)
+mean(sample(1:6, 10000, replace = TRUE))
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. ¿Vale la pena el juego?**</span>
+
+En un juego se paga 2 000 pesos por lanzar un dado. Si sale 6 se ganan 10 000 pesos; si no, no se gana nada. ¿Cuál es la ganancia esperada por juego?
+
+<details>
+<summary>Ver solución</summary>
+
+La ganancia neta es 8 000 con probabilidad 1/6 y −2 000 con probabilidad 5/6:
+
+$$
+E(G) = 8000 \times \tfrac{1}{6} - 2000 \times \tfrac{5}{6} = -333.3 \text{ pesos}
+$$
+
+En promedio, se pierden 333 pesos por juego.
+
+```{r}
+sum(c(8000, -2000) * c(1/6, 5/6))
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Cambio de unidades**</span>
+
+El tiempo de espera en una fila, en minutos, tiene media 12 y desviación estándar 3. ¿Cuáles son la media y la desviación estándar en segundos? ¿Cambia el coeficiente de variación?
+
+<details>
+<summary>Ver solución</summary>
+
+En segundos, $Y = 60X$: $E(Y) = 720$ segundos y $\sigma_Y = 60 \times 3 = 180$ segundos. El coeficiente de variación es el mismo, $3/12 = 180/720 = 25\,\%$, porque no depende de las unidades.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Dos turnos**</span>
+
+Una planta produce en dos turnos independientes. La producción del turno de la mañana tiene media 500 unidades y desviación estándar 40; la de la tarde, media 450 y desviación estándar 30. Calcule la media y la desviación estándar de la producción total del día.
+
+<details>
+<summary>Ver solución</summary>
+
+$E(T) = 500 + 450 = 950$ unidades. Como los turnos son independientes, $\text{Var}(T) = 40^2 + 30^2 = 2500$, así que $\sigma_T = 50$ unidades. Las desviaciones estándar no se suman: se suman las varianzas.
+
+```{r}
+c(media = 500 + 450, desv_est = sqrt(40^2 + 30^2))
+```
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/4-introduccion). En español. El capítulo 4 trata el valor esperado y la desviación estándar de variables discretas.
+- Grinstead, C. M. y Snell, J. L. (1997). [*Introduction to Probability*](https://chance.dartmouth.edu/book.html) (2.ª ed.). American Mathematical Society. Se descarga en PDF. El capítulo 6 trata el valor esperado y la varianza.
+- Blitzstein, J. K. y Hwang, J. (2019). [*Introduction to Probability*](http://probabilitybook.net) (2.ª ed.). Chapman & Hall/CRC. Versión gratuita para leer en línea, para quien quiera profundizar. El capítulo 4 trata el valor esperado.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 4 trata la esperanza matemática, la varianza y sus propiedades.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+- R Core Team. Documentación de `dbinom()`, `rbinom()` e `integrate()`.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

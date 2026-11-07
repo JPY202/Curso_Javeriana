@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -505,11 +509,13 @@ paquete <code>paqueteMETODOS</code>, con los 1,922 atletas de la carrera
 La Luz 2022, en Cali.</p>
 <pre class="r"><code>library(paqueteMETODOS)
 data(&quot;CarreraLuz22&quot;)</code></pre>
-<pre class="r"><code>head(CarreraLuz22, 3)
-  id    sex edad  origen timerun  categoria nacionalidad
-1  1 Hombre   22 Sevilla    1988 2. Abierta          COL
-2  2 Hombre   31 Sevilla    2041 2. Abierta          COL
-3  3 Hombre   31   Yumbo    2083 2. Abierta          COL</code></pre>
+<pre class="r"><code>head(CarreraLuz22, 3)</code></pre>
+<pre><code># A tibble: 3 × 7
+     id sex     edad origen  timerun categoria  nacionalidad
+  &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       
+1     1 Hombre    22 Sevilla    1988 2. Abierta COL         
+2     2 Hombre    31 Sevilla    2041 2. Abierta COL         
+3     3 Hombre    31 Yumbo      2083 2. Abierta COL         </code></pre>
 <p>Los bloques de código de esta página se ejecutan en orden, porque
 algunos usan objetos creados en bloques anteriores.</p>
 <p><br/></p>
@@ -932,8 +938,8 @@ ausencia</td>
 <p>En escala de intervalo no tiene sentido decir que un valor es el
 doble de otro. Por ejemplo, 20 °C no es el doble de calor que 10 °C. Si
 se pasan a kelvin, la escala absoluta, el cociente es cercano a 1:</p>
-<pre class="r"><code>(20 + 273.15) / (10 + 273.15)
-[1] 1.035317</code></pre>
+<pre class="r"><code>(20 + 273.15) / (10 + 273.15)</code></pre>
+<pre><code>[1] 1.035317</code></pre>
 <p>En cambio, un tiempo de 80 minutos sí es el doble de uno de 40,
 porque el tiempo es de razón. La temperatura en kelvin se escribe K, sin
 el símbolo de grado.</p>
@@ -1009,20 +1015,20 @@ siendo en segundos:</p>
 <pre class="r"><code>minutos &lt;- c(40, 80)
 segundos &lt;- 60 * minutos
 
-minutos[2] / minutos[1]
-[1] 2
-segundos[2] / segundos[1]
-[1] 2</code></pre>
+minutos[2] / minutos[1]</code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code>segundos[2] / segundos[1]</code></pre>
+<pre><code>[1] 2</code></pre>
 <p><strong>Ejemplo 2. En escala de intervalo, el doble depende de la
 unidad.</strong> 20 parece el doble de 10 en °C, pero el cociente cambia
 en °F. Por eso, esa frase no tiene sentido en esta escala:</p>
 <pre class="r"><code>celsius &lt;- c(10, 20)
 fahrenheit &lt;- 1.8 * celsius + 32
 
-celsius[2] / celsius[1]
-[1] 2
-fahrenheit[2] / fahrenheit[1]
-[1] 1.36</code></pre>
+celsius[2] / celsius[1]</code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code>fahrenheit[2] / fahrenheit[1]</code></pre>
+<pre><code>[1] 1.36</code></pre>
 <p><strong>Ejemplo 3. En escala ordinal, el promedio puede cambiar la
 conclusión.</strong> Suponga dos grupos que califican un servicio como
 malo, regular o bueno. Si se cambian los códigos sin alterar el orden,
@@ -1035,17 +1041,16 @@ niveles &lt;- c(&quot;malo&quot;, &quot;regular&quot;, &quot;bueno&quot;)
 codigos_1 &lt;- c(malo = 1, regular = 2, bueno = 3)
 codigos_2 &lt;- c(malo = 1, regular = 2, bueno = 10)
 
-c(media_a = mean(codigos_1[grupo_a]), media_b = mean(codigos_1[grupo_b]))
- media_a  media_b 
-2.000000 1.666667 
-c(media_a = mean(codigos_2[grupo_a]), media_b = mean(codigos_2[grupo_b]))
-media_a media_b 
-      2       4 
-
-niveles[median(codigos_1[grupo_a])]
-[1] &quot;regular&quot;
-niveles[median(codigos_1[grupo_b])]
-[1] &quot;malo&quot;</code></pre>
+c(media_a = mean(codigos_1[grupo_a]), media_b = mean(codigos_1[grupo_b]))</code></pre>
+<pre><code> media_a  media_b 
+2.000000 1.666667 </code></pre>
+<pre class="r"><code>c(media_a = mean(codigos_2[grupo_a]), media_b = mean(codigos_2[grupo_b]))</code></pre>
+<pre><code>media_a media_b 
+      2       4 </code></pre>
+<pre class="r"><code>niveles[median(codigos_1[grupo_a])]</code></pre>
+<pre><code>[1] &quot;regular&quot;</code></pre>
+<pre class="r"><code>niveles[median(codigos_1[grupo_b])]</code></pre>
+<pre><code>[1] &quot;malo&quot;</code></pre>
 <p>Con los primeros códigos, el grupo A tiene mayor media. Con los
 segundos, la tiene el grupo B. La mediana no cambia: <em>regular</em> en
 el grupo A y <em>malo</em> en el grupo B. Por eso, en una variable
@@ -1120,14 +1125,13 @@ categoría: el resultado es <code>TRUE</code> o <code>FALSE</code>, y
 apply, lapply y sapply</a>, repite la comparación para cada
 categoría:</p>
 <pre class="r"><code>categorias &lt;- sort(unique(CarreraLuz22$categoria))
-categorias
-[1] &quot;1. Juvenil&quot;     &quot;2. Abierta&quot;     &quot;3. Veteranos A&quot; &quot;4. Veteranos B&quot;
-[5] &quot;5. Veteranos C&quot;
-
-indicadoras &lt;- sapply(categorias, function(k) as.integer(CarreraLuz22$categoria == k))
+categorias</code></pre>
+<pre><code>[1] &quot;1. Juvenil&quot;     &quot;2. Abierta&quot;     &quot;3. Veteranos A&quot; &quot;4. Veteranos B&quot;
+[5] &quot;5. Veteranos C&quot;</code></pre>
+<pre class="r"><code>indicadoras &lt;- sapply(categorias, function(k) as.integer(CarreraLuz22$categoria == k))
 colnames(indicadoras) &lt;- c(&quot;juvenil&quot;, &quot;abierta&quot;, &quot;veteranos_a&quot;, &quot;veteranos_b&quot;, &quot;veteranos_c&quot;)
-head(indicadoras, 3)
-     juvenil abierta veteranos_a veteranos_b veteranos_c
+head(indicadoras, 3)</code></pre>
+<pre><code>     juvenil abierta veteranos_a veteranos_b veteranos_c
 [1,]       0       1           0           0           0
 [2,]       0       1           0           0           0
 [3,]       0       1           0           0           0</code></pre>
@@ -1140,11 +1144,11 @@ indicadoras. La usan los modelos de regresión.</p>
 indicadora?</strong></span></h3>
 <p>La suma de una indicadora es el número de unidades con la
 característica, y su media es la proporción:</p>
-<pre class="r"><code>colSums(indicadoras)
-    juvenil     abierta veteranos_a veteranos_b veteranos_c 
-         19        1179         423         227          74 
-round(colMeans(indicadoras), 3)
-    juvenil     abierta veteranos_a veteranos_b veteranos_c 
+<pre class="r"><code>colSums(indicadoras)</code></pre>
+<pre><code>    juvenil     abierta veteranos_a veteranos_b veteranos_c 
+         19        1179         423         227          74 </code></pre>
+<pre class="r"><code>round(colMeans(indicadoras), 3)</code></pre>
+<pre><code>    juvenil     abierta veteranos_a veteranos_b veteranos_c 
       0.010       0.613       0.220       0.118       0.039 </code></pre>
 <p>Los conteos coinciden con los de
 <code>table(CarreraLuz22$categoria)</code>. Por ejemplo, el 61.3 % de
@@ -1183,8 +1187,8 @@ fila, y <code>%in%</code> comprueba si cada valor es 0 o 1:</p>
 <pre class="r"><code>solo_0_y_1 &lt;- apply(estado, 1, function(fila) all(fila %in% c(0, 1)))
 suma &lt;- rowSums(estado)
 
-clientes[!solo_0_y_1 | suma != 1, ]
-  id_cliente casado soltero union_libre divorciado viudo
+clientes[!solo_0_y_1 | suma != 1, ]</code></pre>
+<pre><code>  id_cliente casado soltero union_libre divorciado viudo
 4       C004      0       0           0        100     0
 5       C005      0       0           0          0     0
 6       C006      1       0           1          0     0</code></pre>
@@ -1203,8 +1207,8 @@ tratan como se explica en <a href="recurso402.html">Datos
 faltantes</a>.</p>
 <pre class="r"><code>estado[estado == 100] &lt;- 1     # corrección confirmada con la fuente
 validas &lt;- rowSums(estado) == 1
-validas
-[1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE</code></pre>
+validas</code></pre>
+<pre><code>[1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE</code></pre>
 <p><strong>Paso 2. Tomar el nombre de la columna.</strong>
 <code>max.col()</code> devuelve, en cada fila, la posición de la columna
 con el valor más alto. Como en las filas válidas hay un solo 1, esa
@@ -1215,16 +1219,16 @@ clientes$estado_civil[validas] &lt;- colnames(estado)[max.col(estado[validas, ])
 <code>levels</code> fija el orden de las categorías en tablas y
 gráficos, e incluye las que no aparecen, como <code>viudo</code>:</p>
 <pre class="r"><code>clientes$estado_civil &lt;- factor(clientes$estado_civil, levels = colnames(estado))
-clientes[, c(&quot;id_cliente&quot;, &quot;estado_civil&quot;)]
-  id_cliente estado_civil
+clientes[, c(&quot;id_cliente&quot;, &quot;estado_civil&quot;)]</code></pre>
+<pre><code>  id_cliente estado_civil
 1       C001       casado
 2       C002      soltero
 3       C003  union_libre
 4       C004   divorciado
 5       C005         &lt;NA&gt;
-6       C006         &lt;NA&gt;
-table(clientes$estado_civil, useNA = &quot;ifany&quot;)
-
+6       C006         &lt;NA&gt;</code></pre>
+<pre class="r"><code>table(clientes$estado_civil, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
      casado     soltero union_libre  divorciado       viudo        &lt;NA&gt; 
           1           1           1           1           0           2 </code></pre>
 <p>Si la variable es ordinal, como el nivel educativo o la categoría de
@@ -1233,12 +1237,12 @@ ponen en orden. Con la carrera, el resultado coincide con la variable
 original:</p>
 <pre class="r"><code>categoria_nueva &lt;- factor(colnames(indicadoras)[max.col(indicadoras)],
                           levels = colnames(indicadoras), ordered = TRUE)
-table(categoria_nueva)
-categoria_nueva
+table(categoria_nueva)</code></pre>
+<pre><code>categoria_nueva
     juvenil     abierta veteranos_a veteranos_b veteranos_c 
-         19        1179         423         227          74 
-all(as.vector(table(categoria_nueva)) == as.vector(table(CarreraLuz22$categoria)))
-[1] TRUE</code></pre>
+         19        1179         423         227          74 </code></pre>
+<pre class="r"><code>all(as.vector(table(categoria_nueva)) == as.vector(table(CarreraLuz22$categoria)))</code></pre>
+<pre><code>[1] TRUE</code></pre>
 </div>
 <div id="cuidado-max.col-decide-al-azar-los-empates"
 class="section level3 content-box-gray">
@@ -1451,8 +1455,8 @@ mu &lt;- sum(tiempo) / N                             # media poblacional
 sigma &lt;- sqrt(sum((tiempo - mu)^2) / N)           # desviación estándar poblacional
 p &lt;- sum(CarreraLuz22$sex == &quot;Mujer&quot;) / N         # proporción de mujeres
 
-c(mu = mu, sigma = sigma, p = p)
-        mu      sigma          p 
+c(mu = mu, sigma = sigma, p = p)</code></pre>
+<pre><code>        mu      sigma          p 
 65.2627385 12.7174653  0.3870968 </code></pre>
 <p>La función <code>sd()</code> divide entre <span
 class="math inline">\(n - 1\)</span>, porque está pensada para muestras.
@@ -1479,8 +1483,8 @@ muestras posibles, todas con la misma probabilidad, y:</p>
 \pi_i = \frac{n}{N}
 \]</span></p>
 <p>Con 50 atletas de la carrera, la probabilidad de inclusión es:</p>
-<pre class="r"><code>50 / nrow(CarreraLuz22)
-[1] 0.02601457</code></pre>
+<pre class="r"><code>50 / nrow(CarreraLuz22)</code></pre>
+<pre><code>[1] 0.02601457</code></pre>
 <table>
 <colgroup>
 <col width="23%" />
@@ -1543,8 +1547,8 @@ colegios</td>
 <p>Por ejemplo, para seleccionar 50 atletas al azar:</p>
 <pre class="r"><code>set.seed(2022)                               # fija el resultado aleatorio
 muestra &lt;- CarreraLuz22[sample(nrow(CarreraLuz22), 50), ]
-nrow(muestra)
-[1] 50</code></pre>
+nrow(muestra)</code></pre>
+<pre><code>[1] 50</code></pre>
 </div>
 <div id="qué-es-una-muestra-aleatoria-i.i.d." class="section level3">
 <h3><span style="color:#034a94"><strong>¿Qué es una muestra aleatoria
@@ -1577,12 +1581,11 @@ X_1, \dots, X_{50} \overset{\text{i.i.d.}}{\sim} N(170,\ 10)
 \]</span></p>
 <pre class="r"><code>set.seed(123)
 alturas &lt;- rnorm(50, mean = 170, sd = 10)
-mean(alturas)
-[1] 170.344
-sd(alturas)
-[1] 9.2587
-
-cortes_altura &lt;- seq(140, 200, by = 5)
+mean(alturas)</code></pre>
+<pre><code>[1] 170.344</code></pre>
+<pre class="r"><code>sd(alturas)</code></pre>
+<pre><code>[1] 9.2587</code></pre>
+<pre class="r"><code>cortes_altura &lt;- seq(140, 200, by = 5)
 densidad &lt;- hist(alturas, breaks = cortes_altura, plot = FALSE)$density
 limite_y &lt;- max(pretty(c(densidad, dnorm(170, 170, 10))))
 
@@ -1693,10 +1696,10 @@ class="math inline">\(\bar{x}\)</span>)</td>
 </table>
 <p>Como aquí se conocen los datos de todos los atletas, se puede
 comparar el parámetro con la estimación:</p>
-<pre class="r"><code>mean(CarreraLuz22$timerun / 60)    # parámetro: media de todos, en minutos
-[1] 65.26274
-mean(muestra$timerun / 60)         # estimación: media de los 50
-[1] 65.968</code></pre>
+<pre class="r"><code>mean(CarreraLuz22$timerun / 60)    # parámetro: media de todos, en minutos</code></pre>
+<pre><code>[1] 65.26274</code></pre>
+<pre class="r"><code>mean(muestra$timerun / 60)         # estimación: media de los 50</code></pre>
+<pre><code>[1] 65.968</code></pre>
 <p>Otra muestra daría una estimación distinta. Esta variación se llama
 <strong>variabilidad muestral</strong>. La figura repite la selección
 1,000 veces y muestra las medias obtenidas: se reúnen alrededor del
@@ -2043,10 +2046,10 @@ concluye?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>mean(head(CarreraLuz22$timerun / 60, 50))
-[1] 40.55133
-mean(CarreraLuz22$timerun / 60)
-[1] 65.26274</code></pre>
+<pre class="r"><code>mean(head(CarreraLuz22$timerun / 60, 50))</code></pre>
+<pre><code>[1] 40.55133</code></pre>
+<pre class="r"><code>mean(CarreraLuz22$timerun / 60)</code></pre>
+<pre><code>[1] 65.26274</code></pre>
 <p>El archivo está ordenado por tiempo, así que los primeros registros
 son los atletas más rápidos. Por eso su media es mucho menor que la de
 todos. Tomar lo primero es un muestreo por conveniencia y produce un
@@ -2064,8 +2067,8 @@ encuentra? ¿Por qué importa?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>table(grep(&quot;Bogot&quot;, CarreraLuz22$origen, value = TRUE))
-
+<pre class="r"><code>table(grep(&quot;Bogot&quot;, CarreraLuz22$origen, value = TRUE))</code></pre>
+<pre><code>
     Bogota     Bogotá Bogota D.c 
          8          6          1 </code></pre>
 <p>La misma ciudad aparece escrita de varias maneras. Si no se corrige,
@@ -2089,8 +2092,8 @@ Ver solución
 muestras &lt;- replicate(10, rexp(n = 100, rate = 0.1))
 
 round(rbind(media = colMeans(muestras),
-            desviacion = apply(muestras, 2, sd)), 2)
-            [,1]  [,2] [,3]  [,4] [,5]  [,6] [,7] [,8]  [,9] [,10]
+            desviacion = apply(muestras, 2, sd)), 2)</code></pre>
+<pre><code>            [,1]  [,2] [,3]  [,4] [,5]  [,6] [,7] [,8]  [,9] [,10]
 media      10.21 10.24 9.21 10.38 9.65 10.39 9.83 9.46 11.21 11.09
 desviacion 10.63  9.79 8.92 10.24 8.49 12.08 8.21 8.36 10.08 10.28</code></pre>
 <p>Las estimaciones cambian de una muestra a otra, pero se ubican
@@ -2120,22 +2123,21 @@ Ver solución
 <pre class="r"><code>niveles_educ &lt;- educ[, c(&quot;basica&quot;, &quot;pregrado&quot;, &quot;maestria&quot;, &quot;doctorado&quot;)]
 solo_0_y_1 &lt;- apply(niveles_educ, 1, function(fila) all(fila %in% c(0, 1)))
 validas &lt;- solo_0_y_1 &amp; rowSums(niveles_educ) == 1
-educ[!validas, ]
-  id_cliente basica pregrado maestria doctorado
-4       C104      0        1        1         0
-
-educ$educacion &lt;- NA
+educ[!validas, ]</code></pre>
+<pre><code>  id_cliente basica pregrado maestria doctorado
+4       C104      0        1        1         0</code></pre>
+<pre class="r"><code>educ$educacion &lt;- NA
 educ$educacion[validas] &lt;- colnames(niveles_educ)[max.col(niveles_educ[validas, ])]
 educ$educacion &lt;- factor(educ$educacion, levels = colnames(niveles_educ), ordered = TRUE)
-educ[, c(&quot;id_cliente&quot;, &quot;educacion&quot;)]
-  id_cliente educacion
+educ[, c(&quot;id_cliente&quot;, &quot;educacion&quot;)]</code></pre>
+<pre><code>  id_cliente educacion
 1       C101  pregrado
 2       C102    basica
 3       C103  maestria
 4       C104      &lt;NA&gt;
-5       C105  pregrado
-table(educ$educacion, useNA = &quot;ifany&quot;)
-
+5       C105  pregrado</code></pre>
+<pre class="r"><code>table(educ$educacion, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
    basica  pregrado  maestria doctorado      &lt;NA&gt; 
         1         2         1         0         1 </code></pre>
 <p>El cliente C104 tiene un 1 en pregrado y otro en maestría. No se

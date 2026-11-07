@@ -1,0 +1,33 @@
+name: " "
+output_dir: "../docs/unidad2"
+exclude: ["README.md", "render.R"]
+navbar:
+  title: " "
+  left:
+    - text: "Métodos"
+      icon: fa-home
+      href: index.html
+    - text: "Probabilidad"
+      menu:
+        - text: "Espacio muestral y eventos"
+          href: recurso100.html
+        - text: "Enfoques y axiomas"
+          href: recurso101.html
+        - text: "Tipos de probabilidad"
+          href: recurso102.html
+        - text: "Independencia"
+          href: recurso103.html
+        - text: "Teorema de Bayes"
+          href: recurso104.html
+    - text: "Variables aleatorias"
+      menu:
+        - text: "Variable aleatoria"
+          href: recurso200.html
+        - text: "Valor esperado y varianza"
+          href: recurso201.html
+        - text: "Variables conjuntas"
+          href: recurso202.html
+        - text: "Modelos discretos"
+          href: recurso203.html
+        - text: "Modelos continuos"
+          href: recurso204.html

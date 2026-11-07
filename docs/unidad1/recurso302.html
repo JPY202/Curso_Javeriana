@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -556,8 +560,8 @@ que la barra mayor para que quepan.</p>
 <pre class="r"><code>categorias &lt;- as.data.frame(table(CarreraLuz22$categoria))
 names(categorias) &lt;- c(&quot;categoria&quot;, &quot;corredores&quot;)
 categorias$porcentaje &lt;- round(100 * categorias$corredores / sum(categorias$corredores), 1)
-categorias
-       categoria corredores porcentaje
+categorias</code></pre>
+<pre><code>       categoria corredores porcentaje
 1     1. Juvenil         19        1.0
 2     2. Abierta       1179       61.3
 3 3. Veteranos A        423       22.0
@@ -733,15 +737,14 @@ de graficar hay que decidir qué representa el 100 %:</p>
 <pre class="r"><code>sexo_categoria &lt;- table(CarreraLuz22$sex, CarreraLuz22$categoria)
 
 # El 100 % es cada sexo (filas)
-round(100 * prop.table(sexo_categoria, margin = 1), 1)
-        
+round(100 * prop.table(sexo_categoria, margin = 1), 1)</code></pre>
+<pre><code>        
          1. Juvenil 2. Abierta 3. Veteranos A 4. Veteranos B 5. Veteranos C
   Hombre        1.0       57.5           23.4           13.2            4.9
-  Mujer         0.9       67.5           19.8            9.7            2.2
-
-# El 100 % es cada categoría (columnas)
-round(100 * prop.table(sexo_categoria, margin = 2), 1)
-        
+  Mujer         0.9       67.5           19.8            9.7            2.2</code></pre>
+<pre class="r"><code># El 100 % es cada categoría (columnas)
+round(100 * prop.table(sexo_categoria, margin = 2), 1)</code></pre>
+<pre><code>        
          1. Juvenil 2. Abierta 3. Veteranos A 4. Veteranos B 5. Veteranos C
   Hombre       63.2       57.4           65.2           68.3           78.4
   Mujer        36.8       42.6           34.8           31.7           21.6</code></pre>
@@ -865,13 +868,13 @@ tipo &lt;- tolower(viviendas$tipo)
 tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
 
 es_casa &lt;- as.integer(tipo == &quot;casa&quot;)
-round(100 * mean(es_casa), 1)                              # en toda la base
-[1] 38.7
-round(100 * tapply(es_casa, viviendas$estrato, mean), 1)   # en cada estrato
-   3    4    5    6 
-56.0 34.1 35.8 34.9 
-table(viviendas$estrato)                                   # viviendas por estrato
-
+round(100 * mean(es_casa), 1)                              # en toda la base</code></pre>
+<pre><code>[1] 38.7</code></pre>
+<pre class="r"><code>round(100 * tapply(es_casa, viviendas$estrato, mean), 1)   # en cada estrato</code></pre>
+<pre><code>   3    4    5    6 
+56.0 34.1 35.8 34.9 </code></pre>
+<pre class="r"><code>table(viviendas$estrato)                                   # viviendas por estrato</code></pre>
+<pre><code>
    3    4    5    6 
 1453 2131 2751 1992 </code></pre>
 <p>El número de unidades de cada grupo se reporta junto con el
@@ -1059,8 +1062,8 @@ Ver solución
 </summary>
 <pre class="r"><code>origen &lt;- chartr(&quot;áéíóú&quot;, &quot;aeiou&quot;, CarreraLuz22$origen)
 grupo &lt;- ifelse(origen %in% c(&quot;Cali&quot;, &quot;Jamundi&quot;, &quot;Palmira&quot;), origen, &quot;Otras&quot;)
-round(100 * prop.table(table(grupo)), 1)
-grupo
+round(100 * prop.table(table(grupo)), 1)</code></pre>
+<pre><code>grupo
    Cali Jamundi   Otras Palmira 
    86.9     3.0     8.3     1.9 </code></pre>
 <p>Se cumplen: son cuatro categorías, el total es el número de

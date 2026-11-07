@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -572,8 +576,8 @@ resumen &lt;- c(
   asimetria = mean((tiempo - mean(tiempo))^3) / sd(tiempo)^3
 )
 
-round(resumen, 2)
-         media        mediana      cuartil_1      cuartil_3     desviacion 
+round(resumen, 2)</code></pre>
+<pre><code>         media        mediana      cuartil_1      cuartil_3     desviacion 
          65.26          63.51          56.35          73.26          12.72 
 coef_variacion      asimetria 
          19.49           0.69 </code></pre>
@@ -684,11 +688,11 @@ las edades de dos grupos de 30 personas:</p>
 grupo2 &lt;- c(35, 25, 19, 17, 24, 17, 55, 25, 31, 35, 43, 28, 32, 19, 20,
             17, 25, 18, 21, 22, 17, 35, 29, 20, 54, 46, 24, 29, 40, 18)
 
-c(media_1 = mean(grupo1), media_2 = mean(grupo2))
-media_1 media_2 
-     28      28 
-c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))
-desviacion_1 desviacion_2 
+c(media_1 = mean(grupo1), media_2 = mean(grupo2))</code></pre>
+<pre><code>media_1 media_2 
+     28      28 </code></pre>
+<pre class="r"><code>c(desviacion_1 = sd(grupo1), desviacion_2 = sd(grupo2))</code></pre>
+<pre><code>desviacion_1 desviacion_2 
     4.076848    10.811871 </code></pre>
 <p>Las dos medias son iguales, pero el grupo 2 tiene mucha más
 dispersión. Por eso, un indicador de centro se reporta junto con uno de
@@ -865,8 +869,8 @@ Ver solución
 </summary>
 <pre class="r"><code>ingresos &lt;- c(1.2, 1.3, 1.5, 1.8, 30)
 
-c(media = mean(ingresos), mediana = median(ingresos))
-  media mediana 
+c(media = mean(ingresos), mediana = median(ingresos))</code></pre>
+<pre><code>  media mediana 
    7.16    1.50 </code></pre>
 <p>La mediana describe mejor un ingreso típico, porque un solo ingreso
 muy alto eleva la media por encima de lo que ganan los otros cuatro.</p>
@@ -886,8 +890,8 @@ Ver solución
 <pre class="r"><code>medias &lt;- tapply(tiempo, CarreraLuz22$sex, mean)
 desviaciones &lt;- tapply(tiempo, CarreraLuz22$sex, sd)
 
-paste0(names(medias), &quot;: &quot;, round(medias, 1), &quot; (&quot;, round(desviaciones, 1), &quot;)&quot;)
-[1] &quot;Hombre: 62 (12.3)&quot;  &quot;Mujer: 70.4 (11.7)&quot;</code></pre>
+paste0(names(medias), &quot;: &quot;, round(medias, 1), &quot; (&quot;, round(desviaciones, 1), &quot;)&quot;)</code></pre>
+<pre><code>[1] &quot;Hombre: 62 (12.3)&quot;  &quot;Mujer: 70.4 (11.7)&quot;</code></pre>
 </details>
 </div>
 <p><br/></p>

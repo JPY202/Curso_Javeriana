@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Enfoques y axiomas</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Enfoques y axiomas</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>La <strong>probabilidad</strong> es un número entre 0 y 1 que mide
+qué tan posible es que ocurra un evento. Un valor cercano a 0 indica que
+el evento casi nunca ocurre y uno cercano a 1, que ocurre casi
+siempre.</p>
+<p>Hay varias formas de asignar ese número. Esta página presenta los
+tres enfoques más usados, las reglas que debe cumplir cualquier
+probabilidad y la forma de estimar probabilidades con simulación en
+<strong>R</strong>. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-enfoques-existen" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué enfoques
+existen?</strong></span></h2>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="57%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Enfoque</th>
+<th align="left">Cómo se asigna la probabilidad</th>
+<th align="left">Cuándo se usa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Clásico</strong></td>
+<td align="left">Casos favorables sobre casos posibles</td>
+<td align="left">Cuando todos los resultados tienen la misma
+probabilidad, como en un dado balanceado</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Frecuentista</strong></td>
+<td align="left">Proporción de veces que ocurre el evento en muchas
+repeticiones</td>
+<td align="left">Cuando el experimento se puede repetir o hay registros
+históricos</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Subjetivo</strong></td>
+<td align="left">Juicio de un experto</td>
+<td align="left">Cuando el evento es único o no hay datos
+suficientes</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<div id="qué-dice-el-enfoque-clásico" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué dice el enfoque
+clásico?</strong></span></h3>
+<p>Si todos los resultados del espacio muestral tienen la misma
+probabilidad, la probabilidad de un evento <span
+class="math inline">\(A\)</span> se calcula con la <strong>regla de
+Laplace</strong>:</p>
+<p><span class="math display">\[
+P(A) = \frac{\text{número de resultados en } A}{\text{número de
+resultados en } \Omega}
+\]</span></p>
+<p>Por ejemplo, al lanzar dos monedas balanceadas, <span
+class="math inline">\(\Omega = \{(c, c), (c, s), (s, c), (s,
+s)\}\)</span> y la probabilidad de obtener dos caras es <span
+class="math inline">\(1/4 = 0.25\)</span>. Al lanzar dos dados
+balanceados, la probabilidad de que la suma sea menor que 4 es <span
+class="math inline">\(3/36 = 0.083\)</span>, porque solo los pares <span
+class="math inline">\((1, 1)\)</span>, <span class="math inline">\((1,
+2)\)</span> y <span class="math inline">\((2, 1)\)</span> cumplen la
+condición.</p>
+<p>En <strong>R</strong>, con el espacio muestral de los dos dados, la
+regla de Laplace es la proporción de filas que cumplen la condición. La
+función <code>mean()</code> aplicada a una condición calcula esa
+proporción, porque cuenta cada <code>TRUE</code> como 1 y cada
+<code>FALSE</code> como 0:</p>
+<pre class="r"><code>dados &lt;- expand.grid(d1 = 1:6, d2 = 1:6)
+mean(dados$d1 + dados$d2 &lt; 4)     # P(suma menor que 4)</code></pre>
+<pre><code>[1] 0.08333333</code></pre>
+<pre class="r"><code>mean(dados$d1 + dados$d2 == 7)    # P(suma igual a 7)</code></pre>
+<pre><code>[1] 0.1666667</code></pre>
+<p>La regla de Laplace solo vale si los resultados son igualmente
+probables. Si el dado está cargado, o si se registra la suma en lugar
+del par, los resultados no tienen la misma probabilidad y la regla da
+valores incorrectos.</p>
+<p><br/></p>
+</div>
+<div id="qué-dice-el-enfoque-frecuentista" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué dice el enfoque
+frecuentista?</strong></span></h3>
+<p>La probabilidad de un evento se estima con su <strong>frecuencia
+relativa</strong>: el número de veces que ocurre dividido por el número
+de repeticiones, <span class="math inline">\(n\)</span>. Cuantas más
+repeticiones haya, más cerca estará la frecuencia relativa de la
+probabilidad.</p>
+<p>Un arquero quiere saber hacia dónde patea los penaltis un jugador.
+Divide el arco en nueve zonas y revisa los registros de cobros
+anteriores. La figura muestra las zonas, numeradas de abajo hacia arriba
+y de izquierda a derecha, vistas desde el punto del penalti.</p>
+<pre class="r"><code>par(mar = c(0.5, 0.5, 0.5, 0.5))
+plot(0, 0, type = &quot;n&quot;, xlim = c(-0.4, 7.72), ylim = c(-0.3, 2.74), axes = FALSE, xlab = &quot;&quot;, ylab = &quot;&quot;, asp = 1)
+
+# zona 1 resaltada y cuadrícula de 3 x 3
+rect(0, 0, 7.32 / 3, 2.44 / 3, col = adjustcolor(&quot;#034A94&quot;, 0.3), border = NA)
+segments(7.32 * (1:2) / 3, 0, 7.32 * (1:2) / 3, 2.44, col = &quot;gray60&quot;, lty = 2)
+segments(0, 2.44 * (1:2) / 3, 7.32, 2.44 * (1:2) / 3, col = &quot;gray60&quot;, lty = 2)
+
+# postes, travesaño y línea de gol (un arco mide 7.32 m por 2.44 m)
+segments(c(0, 7.32, 0), c(0, 0, 2.44), c(0, 7.32, 7.32), c(2.44, 2.44, 2.44), lwd = 6)
+segments(-0.4, 0, 7.72, 0, lwd = 2, col = &quot;darkgreen&quot;)
+
+# número y nombre de cada zona
+centro_x &lt;- rep(7.32 * c(1, 3, 5) / 6, times = 3)
+centro_y &lt;- rep(2.44 * c(1, 3, 5) / 6, each = 3)
+nombres &lt;- paste(rep(c(&quot;Baja&quot;, &quot;Media&quot;, &quot;Alta&quot;), each = 3), rep(c(&quot;izquierda&quot;, &quot;centro&quot;, &quot;derecha&quot;), times = 3))
+text(centro_x, centro_y + 0.1, 1:9, font = 2, cex = 1.4)
+text(centro_x, centro_y - 0.18, nombres, cex = 0.8)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso101_files/figure-html/unnamed-chunk-2-1.png" alt="Arco de fútbol dividido en una cuadrícula de 3 por 3 con las zonas numeradas del 1 al 9; la zona 1, abajo a la izquierda, está sombreada en azul" width="85%" />
+<p class="caption">
+Las nueve zonas del arco. La zona 1, resaltada, es la parte baja
+izquierda.
+</p>
+</div>
+<p>La probabilidad de que el jugador patee a la zona 1, la parte baja
+izquierda, se estima como el número de cobros a esa zona dividido por el
+total de cobros registrados. Con 10 cobros la estimación es poco
+confiable; con 200, es mucho mejor.</p>
+<p>En el siguiente gráfico interactivo, un jugador simulado patea
+penaltis. Sus probabilidades reales están ocultas: el reto es estimarlas
+con los cobros. Use los botones para patear y observe dos cosas. En el
+arco, cada zona muestra el número de cobros y, entre paréntesis, su
+frecuencia relativa; entre más oscura la zona, más cobros recibe. En la
+gráfica de la derecha, la línea azul muestra cómo cambia la frecuencia
+relativa de la zona 1 a medida que se acumulan cobros. Al final, marque
+la casilla para comparar con las probabilidades reales.</p>
+<div id="pen-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;">
+<div style="flex:1 1 360px;min-width:300px;">
+<svg id="pen-arco" viewBox="-10 -10 386 142" style="width:100%;height:auto;display:block;"></svg>
+<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+<button class="pen-btn" data-n="1">Patear 1</button>
+<button class="pen-btn" data-n="10">Patear 10</button>
+<button class="pen-btn" data-n="100">Patear 100</button>
+<button class="pen-btn" data-n="0">Reiniciar</button>
+</div>
+<label style="display:block;margin-top:8px;font-size:0.95em;"><input type="checkbox" id="pen-real"> Mostrar la probabilidad real de cada zona</label>
+</div>
+<div style="flex:1 1 300px;min-width:260px;">
+<div style="font-size:0.95em;margin-bottom:4px;"><b>Cobros registrados:</b> <span id="pen-n">0</span>. <b>Frecuencia relativa de la zona 1:</b> <span id="pen-f1">sin datos</span></div>
+<canvas id="pen-graf" width="420" height="230" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Línea azul: frecuencia relativa de la zona 1. Línea roja punteada: probabilidad real, 0.20.</div>
+</div>
+</div>
+</div>
+<style>
+.pen-btn{background:#034A94;color:#fff;border:none;border-radius:4px;padding:5px 12px;cursor:pointer;font-size:0.9em;}
+.pen-btn:hover{background:#02386f;}
+.pen-btn[data-n="0"]{background:#6c757d;}
+</style>
+<script>
+(function(){
+  var p = [0.20, 0.05, 0.15, 0.12, 0.03, 0.10, 0.15, 0.05, 0.15]; // zonas 1 a 9
+  var nombres = ["Baja izq.","Baja centro","Baja der.","Media izq.","Media centro","Media der.","Alta izq.","Alta centro","Alta der."];
+  var cuenta = [0,0,0,0,0,0,0,0,0], total = 0, historia = [];
+  var W = 366, H = 122, svg = document.getElementById("pen-arco"), ns = "http://www.w3.org/2000/svg";
+  function el(tag, at, txt){ var e = document.createElementNS(ns, tag); for (var k in at) e.setAttribute(k, at[k]); if (txt !== undefined) e.textContent = txt; svg.appendChild(e); return e; }
+  var celdas = [], textos = [];
+  for (var z = 0; z < 9; z++) {
+    var col = z % 3, fila = 2 - Math.floor(z / 3), x = col * W / 3, y = fila * H / 3;
+    celdas.push(el("rect", {x: x, y: y, width: W / 3, height: H / 3, fill: "#ffffff", stroke: "#aaa", "stroke-dasharray": "3,3"}));
+    el("text", {x: x + W / 6, y: y + 13, "text-anchor": "middle", "font-size": 9, fill: "#333"}, (z + 1) + ". " + nombres[z]);
+    textos.push(el("text", {x: x + W / 6, y: y + 30, "text-anchor": "middle", "font-size": 11, "font-weight": "bold", fill: "#000"}, ""));
+  }
+  el("path", {d: "M0," + H + " L0,0 L" + W + ",0 L" + W + "," + H, fill: "none", stroke: "#000", "stroke-width": 5});
+  el("line", {x1: -10, y1: H, x2: W + 10, y2: H, stroke: "darkgreen", "stroke-width": 2});
+  var balon = el("circle", {cx: -50, cy: -50, r: 5, fill: "#C0392B"});
+  function patear(){ var u = Math.random(), a = 0; for (var z = 0; z < 9; z++) { a += p[z]; if (u < a) return z; } return 8; }
+  function dibujar(ultimo){
+    var real = document.getElementById("pen-real").checked;
+    for (var z = 0; z < 9; z++) {
+      var f = total > 0 ? cuenta[z] / total : 0;
+      celdas[z].setAttribute("fill", "rgba(3,74,148," + (0.08 + 1.6 * f).toFixed(3) + ")");
+      var t = total > 0 ? cuenta[z] + " (" + f.toFixed(2) + ")" : "";
+      if (real) t += (t ? "  |  " : "") + "real " + p[z].toFixed(2);
+      textos[z].textContent = t;
+    }
+    if (ultimo !== undefined) {
+      var col = ultimo % 3, fila = 2 - Math.floor(ultimo / 3);
+      balon.setAttribute("cx", col * W / 3 + W / 6 + (Math.random() - 0.5) * 70);
+      balon.setAttribute("cy", fila * H / 3 + H / 6 + 6 + Math.random() * 10);
+    } else { balon.setAttribute("cx", -50); }
+    document.getElementById("pen-n").textContent = total;
+    document.getElementById("pen-f1").textContent = total > 0 ? (cuenta[0] / total).toFixed(3) : "sin datos";
+    grafico();
+  }
+  function grafico(){
+    var c = document.getElementById("pen-graf"), g = c.getContext("2d"), w = c.width, h = c.height;
+    var izq = 42, der = 12, arr = 10, abj = 30, n = Math.max(historia.length, 10);
+    g.clearRect(0, 0, w, h); g.font = "11px sans-serif"; g.fillStyle = "#333"; g.strokeStyle = "#ccc"; g.lineWidth = 1;
+    function X(i){ return izq + (w - izq - der) * i / n; } function Y(v){ return arr + (h - arr - abj) * (1 - v / 0.6); }
+    for (var v = 0; v <= 0.6001; v += 0.1) { g.beginPath(); g.moveTo(izq, Y(v)); g.lineTo(w - der, Y(v)); g.stroke(); g.fillText(v.toFixed(1), 8, Y(v) + 4); }
+    g.fillText("1", X(1) - 3, h - abj + 14); g.fillText(String(n), w - der - 8 * String(n).length, h - abj + 14);
+    g.fillText("Número de cobros", w / 2 - 45, h - 4);
+    g.strokeStyle = "#C0392B"; g.setLineDash([5, 4]); g.beginPath(); g.moveTo(izq, Y(0.2)); g.lineTo(w - der, Y(0.2)); g.stroke(); g.setLineDash([]);
+    if (historia.length > 0) {
+      g.strokeStyle = "#034A94"; g.lineWidth = 2; g.beginPath();
+      for (var i = 0; i < historia.length; i++) { var yy = Y(Math.min(historia[i], 0.6)); if (i === 0) g.moveTo(X(i + 1), yy); else g.lineTo(X(i + 1), yy); }
+      g.stroke();
+    }
+  }
+  var botones = document.querySelectorAll("#pen-app .pen-btn");
+  for (var b = 0; b < botones.length; b++) {
+    botones[b].addEventListener("click", function(){
+      var n = parseInt(this.getAttribute("data-n")), ultimo;
+      if (n === 0) { cuenta = [0,0,0,0,0,0,0,0,0]; total = 0; historia = []; dibujar(); return; }
+      for (var i = 0; i < n; i++) { ultimo = patear(); cuenta[ultimo]++; total++; historia.push(cuenta[0] / total); }
+      dibujar(ultimo);
+    });
+  }
+  document.getElementById("pen-real").addEventListener("change", function(){ dibujar(); });
+  dibujar();
+})();
+</script>
+<p>Con pocos cobros, la frecuencia relativa de la zona 1 salta mucho;
+con cientos de cobros, se mantiene cerca de 0.20. En <strong>R</strong>,
+la misma simulación se hace con <code>sample()</code>, que elige una
+zona en cada cobro según las probabilidades del argumento
+<code>prob</code>:</p>
+<pre class="r"><code>set.seed(2026)
+prob_real &lt;- c(0.20, 0.05, 0.15, 0.12, 0.03, 0.10, 0.15, 0.05, 0.15)   # zonas 1 a 9
+cobros &lt;- sample(1:9, size = 2000, replace = TRUE, prob = prob_real)
+round(prop.table(table(cobros)), 3)   # frecuencia relativa de cada zona en 2000 cobros</code></pre>
+<pre><code>cobros
+    1     2     3     4     5     6     7     8     9 
+0.198 0.050 0.145 0.126 0.032 0.090 0.157 0.048 0.155 </code></pre>
+<p>Lo mismo ocurre con un dado. La función <code>sample()</code> lo
+lanza 5 000 veces y <code>cumsum()</code> acumula cuántos 6 han salido
+después de cada lanzamiento:</p>
+<pre class="r"><code>set.seed(2026)
+lanzamientos &lt;- sample(1:6, size = 5000, replace = TRUE)
+frecuencia &lt;- cumsum(lanzamientos == 6) / (1:5000)
+
+plot(frecuencia, type = &quot;l&quot;, col = &quot;#034A94&quot;, ylim = c(0, 0.5),
+     xlab = &quot;Número de lanzamientos&quot;, ylab = &quot;Frecuencia relativa de 6&quot;)
+abline(h = 1/6, col = &quot;#C0392B&quot;, lty = 2)</code></pre>
+<div class="figure">
+<img src="recurso101_files/figure-html/unnamed-chunk-4-1.png" alt="Línea azul que oscila mucho en los primeros lanzamientos y luego se mantiene cerca de la línea roja horizontal en 0.167" width="100%" />
+<p class="caption">
+Frecuencia relativa de obtener 6 al lanzar un dado. La línea roja es la
+probabilidad 1/6.
+</p>
+</div>
+<pre class="r"><code>frecuencia[c(10, 100, 1000, 5000)]   # frecuencia relativa con 10, 100, 1000 y 5000 lanzamientos</code></pre>
+<pre><code>[1] 0.1000 0.1100 0.1640 0.1608</code></pre>
+<p>Con pocos lanzamientos la frecuencia relativa se aleja bastante de
+<span class="math inline">\(1/6 = 0.167\)</span>. Con muchos, se
+mantiene cerca.</p>
+<p><br/></p>
+</div>
+<div id="qué-dice-el-enfoque-subjetivo" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué dice el enfoque
+subjetivo?</strong></span></h3>
+<p>La probabilidad la asigna un <strong>experto</strong> con base en su
+formación, su experiencia y el contexto. No se obtiene de una fórmula ni
+de frecuencias observadas.</p>
+<p>Por ejemplo, un médico epidemiólogo estima en 0.3 la probabilidad de
+que un paciente desarrolle complicaciones graves por una infección
+viral. No tiene datos de casos idénticos, pero integra lo que sabe de la
+enfermedad, del estado del paciente y de casos parecidos. Este enfoque
+es útil cuando hay que decidir sin datos suficientes. Su limitación es
+que dos expertos pueden asignar valores distintos.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-reglas-debe-cumplir-una-probabilidad"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué reglas debe cumplir una
+probabilidad?</strong></span></h2>
+<p>Sin importar el enfoque, toda probabilidad cumple tres reglas
+básicas, llamadas <strong>axiomas de Kolmogorov</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><strong>No negatividad:</strong> la probabilidad de cualquier evento
+es mayor o igual que cero, <span class="math inline">\(P(A) \geq
+0\)</span>.</li>
+<li><strong>Evento seguro:</strong> la probabilidad del espacio muestral
+es uno, <span class="math inline">\(P(\Omega) = 1\)</span>.</li>
+<li><strong>Aditividad:</strong> si <span
+class="math inline">\(A\)</span> y <span
+class="math inline">\(B\)</span> son <strong>mutuamente
+excluyentes</strong>, es decir, no pueden ocurrir a la vez (<span
+class="math inline">\(A \cap B = \emptyset\)</span>), entonces <span
+class="math inline">\(P(A \cup B) = P(A) + P(B)\)</span>. La regla vale
+también para más de dos eventos excluyentes.</li>
+</ol>
+<p>Por ejemplo, con dos dados, los eventos “la suma es 7” y “la suma es
+8” son excluyentes, así que <span class="math inline">\(P(\text{suma 7 o
+suma 8}) = 6/36 + 5/36 = 11/36\)</span>.</p>
+<pre class="r"><code>mean(dados$d1 + dados$d2 == 7 | dados$d1 + dados$d2 == 8)   # el símbolo | significa &quot;o&quot;</code></pre>
+<pre><code>[1] 0.3055556</code></pre>
+<pre class="r"><code>11 / 36</code></pre>
+<pre><code>[1] 0.3055556</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-otras-reglas-se-obtienen" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué otras reglas se
+obtienen?</strong></span></h2>
+<p>De los tres axiomas se obtienen las reglas que se usan en el resto
+del curso:</p>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="31%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Regla</th>
+<th align="left">Fórmula</th>
+<th align="left">Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Rango</td>
+<td align="left"><span class="math inline">\(0 \leq P(A) \leq
+1\)</span></td>
+<td align="left">Ninguna probabilidad es negativa ni mayor que 1</td>
+</tr>
+<tr class="even">
+<td align="left">Evento imposible</td>
+<td align="left"><span class="math inline">\(P(\emptyset) =
+0\)</span></td>
+<td align="left">Lo que no puede ocurrir tiene probabilidad 0</td>
+</tr>
+<tr class="odd">
+<td align="left">Complemento</td>
+<td align="left"><span class="math inline">\(P(A^c) = 1 -
+P(A)\)</span></td>
+<td align="left">La probabilidad de que <span
+class="math inline">\(A\)</span> <strong>no</strong> ocurra</td>
+</tr>
+<tr class="even">
+<td align="left">Unión de dos eventos</td>
+<td align="left"><span class="math inline">\(P(A \cup B) = P(A) + P(B) -
+P(A \cap B)\)</span></td>
+<td align="left">La probabilidad de que ocurra <span
+class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>
+o ambos</td>
+</tr>
+</tbody>
+</table>
+<p>La regla del <strong>complemento</strong> es útil cuando es más fácil
+calcular lo contrario. Por ejemplo, la probabilidad de obtener
+<strong>al menos un 6</strong> al lanzar dos dados es uno menos la
+probabilidad de no obtener ningún 6: <span class="math inline">\(1 -
+25/36 = 11/36\)</span>.</p>
+<p>La regla de la <strong>unión</strong> resta la intersección porque,
+al sumar <span class="math inline">\(P(A)\)</span> y <span
+class="math inline">\(P(B)\)</span>, los resultados que están en ambos
+eventos se cuentan dos veces. El diagrama de Venn de la figura siguiente
+lo muestra.</p>
+<pre class="r"><code>par(mar = c(0.5, 0.5, 0.5, 0.5))
+plot(0, 0, type = &quot;n&quot;, xlim = c(0, 10), ylim = c(0, 6), axes = FALSE, xlab = &quot;&quot;, ylab = &quot;&quot;, asp = 1)
+rect(0.2, 0.2, 9.8, 5.8)
+symbols(c(3.8, 6.2), c(3, 3), circles = c(2.2, 2.2), add = TRUE, inches = FALSE,
+        bg = c(adjustcolor(&quot;#034A94&quot;, 0.35), adjustcolor(&quot;#C0392B&quot;, 0.35)))
+text(c(2.6, 7.4, 5, 0.7), c(3, 3, 3, 5.3), c(&quot;A&quot;, &quot;B&quot;, &quot;A ∩ B&quot;, &quot;Ω&quot;), cex = 1.2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso101_files/figure-html/unnamed-chunk-7-1.png" alt="Rectángulo con dos círculos que se cruzan, uno azul marcado A y otro rojo marcado B; la zona común se ve morada" width="70%" />
+<p class="caption">
+Diagrama de Venn de dos eventos. La zona morada, la intersección, queda
+dentro de A y dentro de B.
+</p>
+</div>
+<p>Con dos dados, sean <span class="math inline">\(A\)</span>: el primer
+dado es 6, y <span class="math inline">\(B\)</span>: el segundo dado es
+6. Entonces <span class="math inline">\(P(A) = P(B) = 6/36\)</span> y
+<span class="math inline">\(P(A \cap B) = 1/36\)</span>, porque solo el
+par <span class="math inline">\((6, 6)\)</span> está en ambos:</p>
+<pre class="r"><code>P_A  &lt;- mean(dados$d1 == 6)
+P_B  &lt;- mean(dados$d2 == 6)
+P_AB &lt;- mean(dados$d1 == 6 &amp; dados$d2 == 6)   # el símbolo &amp; significa &quot;y&quot;
+P_A + P_B - P_AB                              # regla de la unión</code></pre>
+<pre><code>[1] 0.3055556</code></pre>
+<pre class="r"><code>mean(dados$d1 == 6 | dados$d2 == 6)           # conteo directo</code></pre>
+<pre><code>[1] 0.3055556</code></pre>
+<pre class="r"><code>1 - mean(dados$d1 != 6 &amp; dados$d2 != 6)       # regla del complemento</code></pre>
+<pre><code>[1] 0.3055556</code></pre>
+<p>Las tres formas dan <span class="math inline">\(11/36 =
+0.306\)</span>.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-estima-una-probabilidad-con-simulación"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se estima una probabilidad
+con simulación?</strong></span></h2>
+<p>Cuando un cálculo es largo, se puede <strong>simular</strong> el
+experimento muchas veces en <strong>R</strong> y usar la frecuencia
+relativa como estimación, como en el enfoque frecuentista. Los pasos
+son:</p>
+<ol style="list-style-type: decimal">
+<li>Escribir el experimento con <code>sample()</code>.</li>
+<li>Repetirlo muchas veces con <code>replicate()</code>.</li>
+<li>Calcular la proporción de veces que ocurre el evento con
+<code>mean()</code>.</li>
+</ol>
+<p>Por ejemplo, para estimar la probabilidad de que la suma de dos dados
+sea 7:</p>
+<pre class="r"><code>set.seed(2026)
+suma_siete &lt;- replicate(10000, sum(sample(1:6, size = 2, replace = TRUE)) == 7)
+mean(suma_siete)   # estimación por simulación</code></pre>
+<pre><code>[1] 0.1654</code></pre>
+<pre class="r"><code>6 / 36             # valor exacto</code></pre>
+<pre><code>[1] 0.1666667</code></pre>
+<p>La función <code>set.seed()</code> fija el punto de partida de los
+números aleatorios. Así, quien ejecute el código obtiene el mismo
+resultado. La estimación no es exactamente igual al valor real, pero se
+acerca más cuantas más repeticiones se usen.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(P(A \cup B)\)</span> da más
+de 1</td>
+<td align="left">Se sumó dos veces la intersección</td>
+<td align="left">Usar <span class="math inline">\(P(A) + P(B) - P(A \cap
+B)\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Usar la regla de Laplace con un dado cargado</td>
+<td align="left">Los resultados no son igualmente probables</td>
+<td align="left">Usar frecuencias o el modelo correcto</td>
+</tr>
+<tr class="odd">
+<td align="left">La simulación da un resultado distinto cada vez</td>
+<td align="left">No se fijó la semilla</td>
+<td align="left">Usar <code>set.seed()</code> antes de simular</td>
+</tr>
+<tr class="even">
+<td align="left">La estimación por simulación se aleja del valor
+real</td>
+<td align="left">Se usaron pocas repeticiones</td>
+<td align="left">Aumentar el número de repeticiones</td>
+</tr>
+<tr class="odd">
+<td align="left">Confundir <span class="math inline">\(P(A^c)\)</span>
+con <span class="math inline">\(P(A)\)</span></td>
+<td align="left">No se leyó bien el evento</td>
+<td align="left">Escribir el evento con palabras antes de calcular</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-qué-enfoque-se-usa"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. ¿Qué enfoque se
+usa?</strong></span></h3>
+<p>Diga qué enfoque de probabilidad se usa en cada caso:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Una aseguradora calcula la probabilidad de que un conductor de 20
+años tenga un accidente con los registros de los últimos cinco
+años.</li>
+<li>La probabilidad de sacar un as de una baraja de 52 cartas es <span
+class="math inline">\(4/52\)</span>.</li>
+<li>Un ingeniero estima en 0.8 la probabilidad de que un proyecto nuevo
+termine a tiempo.</li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p>Frecuentista: usa la proporción observada en los
+registros.</p></li>
+<li><p>Clásico: las 52 cartas tienen la misma probabilidad de
+salir.</p></li>
+<li><p>Subjetivo: es el juicio del ingeniero sobre un proyecto
+único.</p></li>
+</ol>
+</details>
+</div>
+<div id="reto-2.-regla-de-laplace"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Regla de
+Laplace</strong></span></h3>
+<p>Se lanzan dos monedas balanceadas. Calcule la probabilidad de obtener
+al menos una cara, primero con la regla de Laplace y luego con el
+complemento.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>De los cuatro resultados, tres tienen al menos una cara: <span
+class="math inline">\((c, c)\)</span>, <span class="math inline">\((c,
+s)\)</span> y <span class="math inline">\((s, c)\)</span>. Entonces
+<span class="math inline">\(P = 3/4 = 0.75\)</span>. Con el complemento:
+el único resultado sin caras es <span class="math inline">\((s,
+s)\)</span>, así que <span class="math inline">\(P = 1 - 1/4 =
+0.75\)</span>.</p>
+<pre class="r"><code>monedas &lt;- expand.grid(m1 = c(&quot;c&quot;, &quot;s&quot;), m2 = c(&quot;c&quot;, &quot;s&quot;))
+mean(monedas$m1 == &quot;c&quot; | monedas$m2 == &quot;c&quot;)</code></pre>
+<pre><code>[1] 0.75</code></pre>
+</details>
+</div>
+<div id="reto-3.-regla-de-la-unión"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Regla de la
+unión</strong></span></h3>
+<p>Con dos dados, sean <span class="math inline">\(A\)</span>: la suma
+es 7, y <span class="math inline">\(B\)</span>: el primer dado es par.
+Calcule <span class="math inline">\(P(A \cup B)\)</span> con la regla de
+la unión y compruébelo en <strong>R</strong>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(P(A) = 6/36\)</span>, <span
+class="math inline">\(P(B) = 18/36\)</span> y <span
+class="math inline">\(P(A \cap B) = 3/36\)</span>, por los pares <span
+class="math inline">\((2, 5)\)</span>, <span class="math inline">\((4,
+3)\)</span> y <span class="math inline">\((6, 1)\)</span>. Entonces
+<span class="math inline">\(P(A \cup B) = (6 + 18 - 3)/36 = 21/36 =
+0.583\)</span>.</p>
+<pre class="r"><code>A &lt;- dados$d1 + dados$d2 == 7
+B &lt;- dados$d1 %% 2 == 0         # %% es el residuo de la división: un número par tiene residuo 0
+mean(A) + mean(B) - mean(A &amp; B)</code></pre>
+<pre><code>[1] 0.5833333</code></pre>
+<pre class="r"><code>mean(A | B)</code></pre>
+<pre><code>[1] 0.5833333</code></pre>
+</details>
+</div>
+<div id="reto-4.-más-repeticiones-mejor-estimación"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Más repeticiones, mejor
+estimación</strong></span></h3>
+<p>Estime por simulación la probabilidad de obtener al menos un 6 al
+lanzar dos dados, con 100 y con 10 000 repeticiones. Compare con el
+valor exacto, <span class="math inline">\(11/36\)</span>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+mean(replicate(100, any(sample(1:6, 2, replace = TRUE) == 6)))</code></pre>
+<pre><code>[1] 0.26</code></pre>
+<pre class="r"><code>mean(replicate(10000, any(sample(1:6, 2, replace = TRUE) == 6)))</code></pre>
+<pre><code>[1] 0.2968</code></pre>
+<pre class="r"><code>11 / 36</code></pre>
+<pre><code>[1] 0.3055556</code></pre>
+<p>La función <code>any()</code> devuelve <code>TRUE</code> si al menos
+un dado es 6. La estimación con 10 000 repeticiones queda más cerca de
+<span class="math inline">\(0.306\)</span>.</p>
+</details>
+</div>
+<div id="reto-5.-cumpleaños-en-el-curso"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 5. Cumpleaños en el
+curso</strong></span></h3>
+<p>En un curso de 30 estudiantes, ¿qué tan probable es que al menos dos
+cumplan años el mismo día? Haga una predicción antes de simular. Suponga
+365 días igualmente probables.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+cumple_repetido &lt;- replicate(10000, any(duplicated(sample(1:365, size = 30, replace = TRUE))))
+mean(cumple_repetido)</code></pre>
+<pre><code>[1] 0.7117</code></pre>
+<p>La función <code>duplicated()</code> marca las fechas repetidas. La
+probabilidad es cercana a 0.7, mucho más alta de lo que la mayoría
+espera, porque hay 435 parejas posibles de estudiantes que pueden
+coincidir.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/3-introduccion"><em>Introducción
+a la estadística</em></a>, capítulo 3, Temas de probabilidad. En
+español. Las secciones 3.1 y 3.3 tratan la terminología y las reglas de
+adición y multiplicación.</li>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <a
+href="https://chance.dartmouth.edu/book.html"><em>Introduction to
+Probability</em></a> (2.ª ed.). American Mathematical Society. Se
+descarga en PDF. El capítulo 1 explica la probabilidad con muchos
+ejemplos de simulación.</li>
+<li>Blitzstein, J. K. y Hwang, J. (2019). <a
+href="http://probabilitybook.net"><em>Introduction to
+Probability</em></a> (2.ª ed.). Chapman &amp; Hall/CRC. Versión gratuita
+para leer en línea, para quien quiera profundizar.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 2 trata los enfoques, los axiomas y las
+reglas de la probabilidad.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <em>Introduction to
+Probability</em> (2.ª ed.). American Mathematical Society.</li>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>R Core Team. Documentación de <code>sample()</code>,
+<code>replicate()</code>, <code>cumsum()</code> y
+<code>duplicated()</code>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

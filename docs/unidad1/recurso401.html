@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -516,8 +520,8 @@ library(tidyr)</code></pre>
 registros?</strong></span></h2>
 <p>Lo primero es mirar la tabla. En <code>vivienda_faltantes</code>, las
 últimas filas de <code>id</code> están vacías:</p>
-<pre class="r"><code>vivienda_faltantes[is.na(vivienda_faltantes$id), c(&quot;id&quot;, &quot;zona&quot;, &quot;estrato&quot;, &quot;preciom&quot;)]
-# A tibble: 3 × 4
+<pre class="r"><code>vivienda_faltantes[is.na(vivienda_faltantes$id), c(&quot;id&quot;, &quot;zona&quot;, &quot;estrato&quot;, &quot;preciom&quot;)]</code></pre>
+<pre><code># A tibble: 3 × 4
      id zona  estrato preciom
   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 1    NA &lt;NA&gt;       NA      NA
@@ -527,14 +531,14 @@ registros?</strong></span></h2>
 tiene un precio, que no se puede atribuir a ninguna vivienda. Se
 quitan:</p>
 <pre class="r"><code>viviendas &lt;- filter(vivienda_faltantes, !is.na(id))
-nrow(vivienda_faltantes) - nrow(viviendas)
-[1] 3</code></pre>
+nrow(vivienda_faltantes) - nrow(viviendas)</code></pre>
+<pre><code>[1] 3</code></pre>
 <p>Las categorías escritas de varias formas también se unifican, como se
 hizo en <a href="recurso201.html">Tablas de frecuencia</a>:</p>
 <pre class="r"><code>viviendas$tipo &lt;- tolower(viviendas$tipo)
 viviendas$tipo[viviendas$tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
-table(viviendas$tipo)
-
+table(viviendas$tipo)</code></pre>
+<pre><code>
 apartamento        casa 
        5106        3221 </code></pre>
 <p><br/></p>
@@ -555,30 +559,28 @@ mejor. <code>pivot_wider()</code> pasa de largo a ancho, y
 <code>pivot_longer()</code> hace lo contrario:</p>
 <pre class="r"><code># Formato largo: una fila por cada combinación de zona y tipo
 largo &lt;- aggregate(preciom ~ zona + tipo, data = viviendas, FUN = median)
-head(largo, 4)
-          zona        tipo preciom
+head(largo, 4)</code></pre>
+<pre><code>          zona        tipo preciom
 1  Zona Centro apartamento   152.5
 2   Zona Norte apartamento   250.0
 3   Zona Oeste apartamento   570.0
-4 Zona Oriente apartamento   115.0
-
-# Formato ancho: una fila por zona
+4 Zona Oriente apartamento   115.0</code></pre>
+<pre class="r"><code># Formato ancho: una fila por zona
 ancho &lt;- pivot_wider(largo, names_from = tipo, values_from = preciom)
-ancho
-# A tibble: 5 × 3
+ancho</code></pre>
+<pre><code># A tibble: 5 × 3
   zona         apartamento  casa
   &lt;chr&gt;              &lt;dbl&gt; &lt;dbl&gt;
 1 Zona Centro         152.   310
 2 Zona Norte          250    390
 3 Zona Oeste          570    680
 4 Zona Oriente        115    235
-5 Zona Sur            245    480
-
-# De nuevo a formato largo
+5 Zona Sur            245    480</code></pre>
+<pre class="r"><code># De nuevo a formato largo
 pivot_longer(ancho, cols = c(apartamento, casa),
              names_to = &quot;tipo&quot;, values_to = &quot;preciom&quot;) |&gt;
-  head(4)
-# A tibble: 4 × 3
+  head(4)</code></pre>
+<pre><code># A tibble: 4 × 3
   zona        tipo        preciom
   &lt;chr&gt;       &lt;chr&gt;         &lt;dbl&gt;
 1 Zona Centro apartamento    152.
@@ -597,8 +599,8 @@ corredores:</p>
 hombres &lt;- filter(CarreraLuz22, sex == &quot;Hombre&quot;)
 
 corredores &lt;- bind_rows(mujeres, hombres)
-c(nrow(mujeres), nrow(hombres), nrow(corredores))
-[1]  744 1178 1922</code></pre>
+c(nrow(mujeres), nrow(hombres), nrow(corredores))</code></pre>
+<pre><code>[1]  744 1178 1922</code></pre>
 <p>La función <code>rbind()</code>, de la base de <strong>R</strong>,
 hace lo mismo, pero da error si las columnas no coinciden.
 <code>bind_rows()</code> une por nombre de columna y deja
@@ -651,8 +653,8 @@ b &lt;- viviendas[3:8, c(&quot;id&quot;, &quot;preciom&quot;, &quot;tipo&quot;)]
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>left_join(a, b, by = &quot;id&quot;)
-# A tibble: 6 × 5
+<pre class="r"><code>left_join(a, b, by = &quot;id&quot;)</code></pre>
+<pre><code># A tibble: 6 × 5
      id zona       estrato preciom tipo 
   &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;
 1  8312 Zona Oeste       6      NA &lt;NA&gt; 
@@ -665,10 +667,10 @@ b &lt;- viviendas[3:8, c(&quot;id&quot;, &quot;preciom&quot;, &quot;tipo&quot;)]
 <code>NA</code> en las columnas nuevas. Antes de unir hay que revisar la
 llave (<a href="https://r4ds.hadley.nz/joins.html">Wickham et al.,
 2023</a>):</p>
-<pre class="r"><code>sum(is.na(a$id))           # no debe tener faltantes
-[1] 0
-anyDuplicated(a$id)        # 0 indica que no hay repetidos
-[1] 0</code></pre>
+<pre class="r"><code>sum(is.na(a$id))           # no debe tener faltantes</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>anyDuplicated(a$id)        # 0 indica que no hay repetidos</code></pre>
+<pre><code>[1] 0</code></pre>
 <p>Si la llave se repite en las dos tablas, cada fila se combina con
 varias y la tabla crece sin que se note. Por eso, después de unir
 conviene comparar el número de filas.</p>
@@ -728,8 +730,8 @@ situaciones distintas, a propósito:</p>
   ingreso    = c(4.2, 6.8, 3.1, 4.2, 5.5, 7.0, 7.9, 3.1),
   hijos      = c(1, 2, 0, 1, 3, 1, 1, 0)
 )
-clientes
-  id_cliente edad ingreso hijos
+clientes</code></pre>
+<pre><code>  id_cliente edad ingreso hijos
 1       C001   34     4.2     1
 2       C002   51     6.8     2
 3       C003   28     3.1     0
@@ -741,8 +743,8 @@ clientes
 <p><strong>Paso 1. Buscar por identificador.</strong> Se revisa si algún
 <code>id_cliente</code> se repite:</p>
 <pre class="r"><code>id_repetido &lt;- duplicated(clientes$id_cliente) | duplicated(clientes$id_cliente, fromLast = TRUE)
-clientes[id_repetido, ]
-  id_cliente edad ingreso hijos
+clientes[id_repetido, ]</code></pre>
+<pre><code>  id_cliente edad ingreso hijos
 1       C001   34     4.2     1
 4       C001   34     4.2     1
 6       C005   39     7.0     1
@@ -760,8 +762,8 @@ cuál ingreso es el correcto sin volver a la fuente.</li>
 el identificador:</p>
 <pre class="r"><code>sin_id &lt;- select(clientes, -id_cliente)
 contenido_repetido &lt;- duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE)
-clientes[contenido_repetido, ]
-  id_cliente edad ingreso hijos
+clientes[contenido_repetido, ]</code></pre>
+<pre><code>  id_cliente edad ingreso hijos
 1       C001   34     4.2     1
 3       C003   28     3.1     0
 4       C001   34     4.2     1
@@ -774,10 +776,10 @@ conservan, salvo que la fuente diga otra cosa.</p>
 <p><strong>Paso 3. Decidir.</strong> Solo se quitan las filas que son
 iguales en todo, identificador incluido. C005 se marca para revisar:</p>
 <pre class="r"><code>clientes_sin_copias &lt;- distinct(clientes)
-nrow(clientes) - nrow(clientes_sin_copias)
-[1] 1
-clientes_sin_copias
-  id_cliente edad ingreso hijos
+nrow(clientes) - nrow(clientes_sin_copias)</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>clientes_sin_copias</code></pre>
+<pre><code>  id_cliente edad ingreso hijos
 1       C001   34     4.2     1
 2       C002   51     6.8     2
 3       C003   28     3.1     0
@@ -830,24 +832,23 @@ repiten, y el contenido muestra si las copias son iguales.</p>
 <h3><span style="color:#034a94"><strong>¿Qué pasa en las
 viviendas?</strong></span></h3>
 <p>En <code>viviendas</code> ocurren los dos casos:</p>
-<pre class="r"><code>sum(duplicated(viviendas$id))                          # identificadores repetidos
-[1] 8
-sum(duplicated(viviendas))                             # filas idénticas, id incluido
-[1] 8
-sum(duplicated(select(viviendas, -id)))                # mismo contenido, cualquier id
-[1] 65</code></pre>
+<pre class="r"><code>sum(duplicated(viviendas$id))                          # identificadores repetidos</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>sum(duplicated(viviendas))                             # filas idénticas, id incluido</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>sum(duplicated(select(viviendas, -id)))                # mismo contenido, cualquier id</code></pre>
+<pre><code>[1] 65</code></pre>
 <p>Los 8 identificadores repetidos corresponden a filas idénticas: son
 viviendas registradas dos veces, y se quitan. Las otras 57 filas repiten
 el contenido con un <code>id</code> distinto:</p>
 <pre class="r"><code>viviendas_unicas &lt;- distinct(viviendas)
-nrow(viviendas) - nrow(viviendas_unicas)
-[1] 8
-
-sin_id &lt;- select(viviendas_unicas, -id)
+nrow(viviendas) - nrow(viviendas_unicas)</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>sin_id &lt;- select(viviendas_unicas, -id)
 repetidas &lt;- viviendas_unicas[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
 head(repetidas[order(repetidas$barrio, repetidas$preciom),
-               c(&quot;id&quot;, &quot;barrio&quot;, &quot;preciom&quot;, &quot;areaconst&quot;, &quot;tipo&quot;)], 4)
-# A tibble: 4 × 5
+               c(&quot;id&quot;, &quot;barrio&quot;, &quot;preciom&quot;, &quot;areaconst&quot;, &quot;tipo&quot;)], 4)</code></pre>
+<pre><code># A tibble: 4 × 5
      id barrio              preciom areaconst tipo       
   &lt;dbl&gt; &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      
 1  2013 acopi                   270       330 casa       
@@ -887,10 +888,10 @@ LS = Q_3 + 1.5 \times RIC
 \]</span></p>
 <pre class="r"><code>q &lt;- quantile(viviendas$preciom, c(0.25, 0.75), na.rm = TRUE)
 ls &lt;- q[[2]] + 1.5 * (q[[2]] - q[[1]])
-ls
-[1] 1020
-sum(viviendas$preciom &gt; ls, na.rm = TRUE)
-[1] 555</code></pre>
+ls</code></pre>
+<pre><code>[1] 1020</code></pre>
+<pre class="r"><code>sum(viviendas$preciom &gt; ls, na.rm = TRUE)</code></pre>
+<pre><code>[1] 555</code></pre>
 <p>Otro criterio marca los valores a más de 3 desviaciones estándar de
 la media. No es lo mismo: la media y la desviación estándar se ven
 afectadas por los propios valores extremos.</p>
@@ -986,8 +987,8 @@ formato ancho, con una columna por estrato.</p>
 Ver solución
 </summary>
 <pre class="r"><code>por_estrato &lt;- aggregate(preciom ~ zona + estrato, data = viviendas, FUN = median)
-pivot_wider(por_estrato, names_from = estrato, values_from = preciom)
-# A tibble: 5 × 5
+pivot_wider(por_estrato, names_from = estrato, values_from = preciom)</code></pre>
+<pre><code># A tibble: 5 × 5
   zona           `3`   `4`   `5`   `6`
   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 1 Zona Centro    280   325  338.  1000
@@ -1009,10 +1010,10 @@ unión</strong></span></h3>
 Ver solución
 </summary>
 <pre class="r"><code>completa &lt;- full_join(a, b, by = &quot;id&quot;)
-nrow(completa)
-[1] 8
-sum(is.na(completa$preciom))
-[1] 2</code></pre>
+nrow(completa)</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>sum(is.na(completa$preciom))</code></pre>
+<pre><code>[1] 2</code></pre>
 <p>Son 8 filas, y 2 no tienen precio, porque esas viviendas solo están
 en <code>a</code>.</p>
 </details>
@@ -1027,8 +1028,8 @@ faltan?</strong></span></h3>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>anti_join(b, a, by = &quot;id&quot;)
-# A tibble: 2 × 3
+<pre class="r"><code>anti_join(b, a, by = &quot;id&quot;)</code></pre>
+<pre><code># A tibble: 2 × 3
      id preciom tipo       
   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;      
 1  8299     305 apartamento
@@ -1052,21 +1053,19 @@ cuál revisaría?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>encuesta[duplicated(encuesta$id) | duplicated(encuesta$id, fromLast = TRUE), ]
-   id   sexo edad nota
+<pre class="r"><code>encuesta[duplicated(encuesta$id) | duplicated(encuesta$id, fromLast = TRUE), ]</code></pre>
+<pre><code>   id   sexo edad nota
 2 102 Hombre   35    3
-4 102 Hombre   35    3
-
-sin_id &lt;- select(encuesta, -id)
-encuesta[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]
-   id   sexo edad nota
+4 102 Hombre   35    3</code></pre>
+<pre class="r"><code>sin_id &lt;- select(encuesta, -id)
+encuesta[duplicated(sin_id) | duplicated(sin_id, fromLast = TRUE), ]</code></pre>
+<pre><code>   id   sexo edad nota
 1 101  Mujer   22    4
 2 102 Hombre   35    3
 3 103  Mujer   22    4
-4 102 Hombre   35    3
-
-distinct(encuesta)
-   id   sexo edad nota
+4 102 Hombre   35    3</code></pre>
+<pre class="r"><code>distinct(encuesta)</code></pre>
+<pre><code>   id   sexo edad nota
 1 101  Mujer   22    4
 2 102 Hombre   35    3
 3 103  Mujer   22    4

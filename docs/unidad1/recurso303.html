@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -520,8 +524,8 @@ veteranos$minutos &lt;- veteranos$timerun / 60
 mujeres &lt;- veteranos$minutos[veteranos$sex == &quot;Mujer&quot;]
 hombres &lt;- veteranos$minutos[veteranos$sex == &quot;Hombre&quot;]
 
-c(mujeres = length(mujeres), hombres = length(hombres))
-mujeres hombres 
+c(mujeres = length(mujeres), hombres = length(hombres))</code></pre>
+<pre><code>mujeres hombres 
      72     155 </code></pre>
 <p><br/></p>
 <div id="cómo-usar-un-histograma" class="section level2">
@@ -544,14 +548,13 @@ redondear hacia arriba. Con los 72 tiempos de las mujeres, la regla
 sugiere 8 clases. <code>hist()</code> usa ese número solo como
 sugerencia y ajusta los cortes a valores redondos, y aquí produce 10
 clases de 5 minutos:</p>
-<pre class="r"><code>ceiling(log2(72) + 1)
-[1] 8
-
-clases &lt;- hist(mujeres, plot = FALSE)
-clases$breaks
- [1] 45 50 55 60 65 70 75 80 85 90 95
-clases$counts
- [1]  2  4  7 11 13  9  8 11  5  2</code></pre>
+<pre class="r"><code>ceiling(log2(72) + 1)</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>clases &lt;- hist(mujeres, plot = FALSE)
+clases$breaks</code></pre>
+<pre><code> [1] 45 50 55 60 65 70 75 80 85 90 95</code></pre>
+<pre class="r"><code>clases$counts</code></pre>
+<pre><code> [1]  2  4  7 11 13  9  8 11  5  2</code></pre>
 <p><strong>¿Cómo se hace?</strong> Con <code>ggplot2</code> se fijan los
 cortes con <code>breaks</code>. Conviene usar límites enteros, porque
 describen mejor el fenómeno.</p>
@@ -681,8 +684,8 @@ LS = Q_3 + 1.5 \times RIC
           atipicos = sum(x &lt; q[[1]] - 1.5 * ric | x &gt; q[[2]] + 1.5 * ric)), 1)
 }
 
-rbind(mujeres = resumen(mujeres), hombres = resumen(hombres))
-        minimo   Q1 mediana   Q3 maximo  RIC   LI    LS atipicos
+rbind(mujeres = resumen(mujeres), hombres = resumen(hombres))</code></pre>
+<pre><code>        minimo   Q1 mediana   Q3 maximo  RIC   LI    LS atipicos
 mujeres   45.8 63.2    68.8 79.9   93.6 16.7 38.2 105.0        0
 hombres   37.8 54.0    60.2 66.3  105.2 12.3 35.6  84.7        8</code></pre>
 <p><strong>¿Cómo se hace?</strong> Se usa <code>geom_boxplot()</code>.
@@ -723,8 +726,8 @@ Healy</a>). Además, una sola medida no resume toda la dispersión. Si se
 incluyen los valores extremos, el coeficiente de variación es mayor en
 los hombres:</p>
 <pre class="r"><code>round(rbind(mujeres = c(s = sd(mujeres), CV = 100 * sd(mujeres) / mean(mujeres)),
-            hombres = c(s = sd(hombres), CV = 100 * sd(hombres) / mean(hombres))), 1)
-           s   CV
+            hombres = c(s = sd(hombres), CV = 100 * sd(hombres) / mean(hombres))), 1)</code></pre>
+<pre><code>           s   CV
 mujeres 11.0 15.6
 hombres 11.3 18.3</code></pre>
 <p><strong>Ver más:</strong> <a
@@ -763,8 +766,8 @@ indicadores &lt;- function(x) {
     maximo = max(x, na.rm = TRUE))
 }
 
-round(t(sapply(numericas, indicadores)), 1)
-             n faltantes media    de minimo  Q1 mediana  Q3 maximo
+round(t(sapply(numericas, indicadores)), 1)</code></pre>
+<pre><code>             n faltantes media    de minimo  Q1 mediana  Q3 maximo
 preciom   8327         0 434.3 329.0     58 220     330 540   1999
 areaconst 8327         0 175.0 142.9     30  80     123 229   1745
 banios    8327         0   3.1   1.4      0   2       3   4     10
@@ -787,8 +790,8 @@ panel por variable:</p>
 
 largo &lt;- pivot_longer(numericas, cols = everything(),
                       names_to = &quot;variable&quot;, values_to = &quot;valor&quot;)
-head(largo, 4)
-# A tibble: 4 × 2
+head(largo, 4)</code></pre>
+<pre><code># A tibble: 4 × 2
   variable  valor
   &lt;chr&gt;     &lt;dbl&gt;
 1 preciom    1300
@@ -912,10 +915,9 @@ la forma.</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>range(CarreraLuz22$edad)
-[1] 15 76
-
-ggplot(CarreraLuz22, aes(x = edad)) +
+<pre class="r"><code>range(CarreraLuz22$edad)</code></pre>
+<pre><code>[1] 15 76</code></pre>
+<pre class="r"><code>ggplot(CarreraLuz22, aes(x = edad)) +
   geom_histogram(breaks = seq(10, 80, 5), fill = &quot;#034A94&quot;, color = &quot;white&quot;) +
   scale_x_continuous(limits = c(10, 80), breaks = seq(10, 80, 10), expand = c(0, 0)) +
   scale_y_continuous(limits = c(0, 500), breaks = seq(0, 500, 100), expand = c(0, 0)) +
@@ -954,9 +956,8 @@ Ver solución
 Edad de los corredores por sexo
 </p>
 </div>
-<pre class="r"><code>
-tapply(CarreraLuz22$edad, CarreraLuz22$sex, median)
-Hombre  Mujer 
+<pre class="r"><code>tapply(CarreraLuz22$edad, CarreraLuz22$sex, median)</code></pre>
+<pre><code>Hombre  Mujer 
     37     34 </code></pre>
 <p>Los hombres tienen la mediana más alta, con 37 años frente a 34.</p>
 </details>
@@ -986,9 +987,8 @@ ggplot(viviendas, aes(x = preciom, y = reorder(zona, preciom, median))) +
 Precio de las viviendas por zona
 </p>
 </div>
-<pre class="r"><code>
-tapply(viviendas$preciom, viviendas$zona, IQR)
- Zona Centro   Zona Norte   Zona Oeste Zona Oriente     Zona Sur 
+<pre class="r"><code>tapply(viviendas$preciom, viviendas$zona, IQR)</code></pre>
+<pre><code> Zona Centro   Zona Norte   Zona Oeste Zona Oriente     Zona Sur 
        172.5        270.0        505.5        145.0        298.0 </code></pre>
 <p>La caja más ancha es la de la Zona Oeste, que tiene el rango
 intercuartílico más alto, con 505.5 millones.</p>

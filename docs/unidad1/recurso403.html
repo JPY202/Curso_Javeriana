@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -527,15 +531,15 @@ combinación de varias. La función <code>mutate()</code>, de
                     tamano = cut(areaconst, breaks = c(0, 100, 200, Inf),
                                  labels = c(&quot;Pequeña&quot;, &quot;Mediana&quot;, &quot;Grande&quot;)))
 
-select(viviendas, preciom, areaconst, precio_area, tamano) |&gt; head(3)
-# A tibble: 3 × 4
+select(viviendas, preciom, areaconst, precio_area, tamano) |&gt; head(3)</code></pre>
+<pre><code># A tibble: 3 × 4
   preciom areaconst precio_area tamano
     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt; 
 1    1300       318        4.09 Grande
 2     480       300        1.6  Grande
-3    1200       800        1.5  Grande
-tapply(viviendas$precio_area, viviendas$estrato, median, na.rm = TRUE) |&gt; round(2)
-   3    4    5    6 
+3    1200       800        1.5  Grande</code></pre>
+<pre class="r"><code>tapply(viviendas$precio_area, viviendas$estrato, median, na.rm = TRUE) |&gt; round(2)</code></pre>
+<pre><code>   3    4    5    6 
 1.71 2.50 2.82 3.66 </code></pre>
 <p>El precio por unidad de área permite comparar viviendas de distinto
 tamaño: su mediana sube de 1.71 millones en estrato 3 a 3.66 en estrato
@@ -559,10 +563,10 @@ z_i = \frac{x_i - \bar{x}}{s}
 <code>scale()</code>:</p>
 <pre class="r"><code>x &lt;- 1:5
 
-(x - mean(x)) / sd(x)
-[1] -1.2649111 -0.6324555  0.0000000  0.6324555  1.2649111
-as.numeric(scale(x))
-[1] -1.2649111 -0.6324555  0.0000000  0.6324555  1.2649111</code></pre>
+(x - mean(x)) / sd(x)</code></pre>
+<pre><code>[1] -1.2649111 -0.6324555  0.0000000  0.6324555  1.2649111</code></pre>
+<pre class="r"><code>as.numeric(scale(x))</code></pre>
+<pre><code>[1] -1.2649111 -0.6324555  0.0000000  0.6324555  1.2649111</code></pre>
 <p><strong>¿Cómo se interpreta?</strong> Por ejemplo, ¿qué tan rápido
 fue un tiempo de 60 minutos en la categoría Juvenil y en Veteranos
 C?</p>
@@ -573,8 +577,8 @@ valor_z &lt;- function(categoria, tiempo) {
   (tiempo - mean(grupo)) / sd(grupo)
 }
 
-round(c(juvenil = valor_z(&quot;1. Juvenil&quot;, 60), veteranos_c = valor_z(&quot;5. Veteranos C&quot;, 60)), 2)
-    juvenil veteranos_c 
+round(c(juvenil = valor_z(&quot;1. Juvenil&quot;, 60), veteranos_c = valor_z(&quot;5. Veteranos C&quot;, 60)), 2)</code></pre>
+<pre><code>    juvenil veteranos_c 
       -0.32       -0.46 </code></pre>
 <p>Un valor negativo indica un tiempo menor que el promedio de la
 categoría. Los 60 minutos están más por debajo del promedio en Veteranos
@@ -592,10 +596,10 @@ x_i&#39; = \frac{x_i - \min(x)}{\max(x) - \min(x)}
 \]</span></p>
 <p><strong>¿Cómo se hace en R?</strong> Se aplica la fórmula, o se usa
 <code>rescale()</code>, del paquete <code>scales</code>:</p>
-<pre class="r"><code>(x - min(x)) / (max(x) - min(x))
-[1] 0.00 0.25 0.50 0.75 1.00
-rescale(x)
-[1] 0.00 0.25 0.50 0.75 1.00</code></pre>
+<pre class="r"><code>(x - min(x)) / (max(x) - min(x))</code></pre>
+<pre><code>[1] 0.00 0.25 0.50 0.75 1.00</code></pre>
+<pre class="r"><code>rescale(x)</code></pre>
+<pre><code>[1] 0.00 0.25 0.50 0.75 1.00</code></pre>
 <p><strong>¿Qué cuidados tener?</strong> Depende del mínimo y del
 máximo, así que un solo valor extremo aplasta a los demás. Además,
 produce exactamente los valores 0 y 1. Por eso no sirve para métodos que
@@ -629,8 +633,8 @@ El precio original, estandarizado y normalizado
 </p>
 </div>
 <pre class="r"><code>round(c(original = skewness(precio), estandarizado = skewness(scale(precio)),
-        normalizado = skewness(rescale(precio))), 3)
-     original estandarizado   normalizado 
+        normalizado = skewness(rescale(precio))), 3)</code></pre>
+<pre><code>     original estandarizado   normalizado 
         1.847         1.847         1.847 </code></pre>
 <p><br/></p>
 </div>
@@ -660,8 +664,8 @@ ggplot(comparar, aes(x = valor)) +
 El precio antes y después del logaritmo
 </p>
 </div>
-<pre class="r"><code>round(c(precio = skewness(precio), logaritmo = skewness(log(precio))), 2)
-   precio logaritmo 
+<pre class="r"><code>round(c(precio = skewness(precio), logaritmo = skewness(log(precio))), 2)</code></pre>
+<pre><code>   precio logaritmo 
      1.85      0.25 </code></pre>
 <p><strong>¿Cómo se interpreta?</strong> Una diferencia de 1 en
 logaritmo natural equivale a multiplicar por <span
@@ -793,10 +797,10 @@ habitación. ¿Qué problema tiene si <code>habitac</code> vale cero?</p>
 Ver solución
 </summary>
 <pre class="r"><code>viviendas &lt;- mutate(viviendas, banios_hab = banios / habitac)
-sum(viviendas$habitac == 0, na.rm = TRUE)
-[1] 66
-sum(is.infinite(viviendas$banios_hab))
-[1] 31</code></pre>
+sum(viviendas$habitac == 0, na.rm = TRUE)</code></pre>
+<pre><code>[1] 66</code></pre>
+<pre class="r"><code>sum(is.infinite(viviendas$banios_hab))</code></pre>
+<pre><code>[1] 31</code></pre>
 <p>Dividir entre cero da <code>Inf</code> o <code>NaN</code>. Esos
 registros se revisan antes de usar la variable.</p>
 </details>
@@ -817,8 +821,8 @@ Ver solución
   (valor - mean(grupo, na.rm = TRUE)) / sd(grupo, na.rm = TRUE)
 }
 
-round(c(estrato3 = z_estrato(3, 500), estrato6 = z_estrato(6, 800)), 2)
-estrato3 estrato6 
+round(c(estrato3 = z_estrato(3, 500), estrato6 = z_estrato(6, 800)), 2)</code></pre>
+<pre><code>estrato3 estrato6 
     2.16     0.00 </code></pre>
 <p>La vivienda de estrato 3 está muy por encima del promedio de su
 estrato, mientras que la de estrato 6 está cerca del suyo.</p>
@@ -835,8 +839,8 @@ transformación</strong></span></h3>
 Ver solución
 </summary>
 <pre class="r"><code>area &lt;- na.omit(viviendas$areaconst)
-round(c(area = skewness(area), logaritmo = skewness(log(area))), 2)
-     area logaritmo 
+round(c(area = skewness(area), logaritmo = skewness(log(area))), 2)</code></pre>
+<pre><code>     area logaritmo 
      2.69      0.51 </code></pre>
 <p>El logaritmo, porque reduce la asimetría. Estandarizar o normalizar
 no la cambiaría.</p>

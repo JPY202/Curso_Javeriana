@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -722,12 +726,11 @@ una sola columna.</p>
 <pre class="r"><code>library(readr)
 
 viviendas &lt;- read_csv(&quot;data/ejemplos/viviendas.csv&quot;, show_col_types = FALSE)
-dim(viviendas)
-[1] 200   7
-
-viviendas2 &lt;- read_csv2(&quot;data/ejemplos/viviendas_excel.csv&quot;, show_col_types = FALSE)
-dim(viviendas2)
-[1] 200   7</code></pre>
+dim(viviendas)</code></pre>
+<pre><code>[1] 200   7</code></pre>
+<pre class="r"><code>viviendas2 &lt;- read_csv2(&quot;data/ejemplos/viviendas_excel.csv&quot;, show_col_types = FALSE)
+dim(viviendas2)</code></pre>
+<pre><code>[1] 200   7</code></pre>
 <p>Si los faltantes están escritos con un código, como <code>-99</code>
 o <code>NA</code>, el argumento <code>na</code> los convierte:
 <code>read_csv(archivo, na = c("", "NA", "-99"))</code>.</p>
@@ -740,12 +743,11 @@ número. La función <code>excel_sheets()</code> muestra las hojas que
 tiene.</p>
 <pre class="r"><code>library(readxl)
 
-excel_sheets(&quot;data/ejemplos/viviendas.xlsx&quot;)
-[1] &quot;viviendas&quot; &quot;notas&quot;    
-
-viviendas3 &lt;- read_excel(&quot;data/ejemplos/viviendas.xlsx&quot;, sheet = &quot;viviendas&quot;)
-dim(viviendas3)
-[1] 200   7</code></pre>
+excel_sheets(&quot;data/ejemplos/viviendas.xlsx&quot;)</code></pre>
+<pre><code>[1] &quot;viviendas&quot; &quot;notas&quot;    </code></pre>
+<pre class="r"><code>viviendas3 &lt;- read_excel(&quot;data/ejemplos/viviendas.xlsx&quot;, sheet = &quot;viviendas&quot;)
+dim(viviendas3)</code></pre>
+<pre><code>[1] 200   7</code></pre>
 </div>
 <div id="cómo-se-importa-un-rds" class="section level3">
 <h3><span style="color:#034a94"><strong>¿Cómo se importa un
@@ -754,8 +756,8 @@ RDS?</strong></span></h3>
 un objeto con sus tipos de variables, y ocupa poco espacio. Se guarda
 con <code>saveRDS()</code> y se lee con <code>readRDS()</code>.</p>
 <pre class="r"><code>viviendas4 &lt;- readRDS(&quot;data/ejemplos/viviendas.rds&quot;)
-dim(viviendas4)
-[1] 200   7</code></pre>
+dim(viviendas4)</code></pre>
+<pre><code>[1] 200   7</code></pre>
 </div>
 <div id="cómo-se-importan-spss-y-json" class="section level3">
 <h3><span style="color:#034a94"><strong>¿Cómo se importan SPSS y
@@ -764,12 +766,11 @@ JSON?</strong></span></h3>
 library(jsonlite)
 
 viviendas5 &lt;- read_sav(&quot;data/ejemplos/viviendas.sav&quot;)
-dim(viviendas5)
-[1] 200   7
-
-viviendas6 &lt;- fromJSON(&quot;data/ejemplos/viviendas.json&quot;)
-dim(viviendas6)
-[1] 200   7</code></pre>
+dim(viviendas5)</code></pre>
+<pre><code>[1] 200   7</code></pre>
+<pre class="r"><code>viviendas6 &lt;- fromJSON(&quot;data/ejemplos/viviendas.json&quot;)
+dim(viviendas6)</code></pre>
+<pre><code>[1] 200   7</code></pre>
 <p><br/></p>
 </div>
 </div>
@@ -780,8 +781,8 @@ paquete?</strong></span></h2>
 <code>data()</code>, y <code>data(package = "datasets")</code> lista las
 que trae <strong>R</strong>.</p>
 <pre class="r"><code>data(&quot;iris&quot;)
-dim(iris)
-[1] 150   5</code></pre>
+dim(iris)</code></pre>
+<pre><code>[1] 150   5</code></pre>
 <pre class="r"><code>library(paqueteMETODOS)
 data(&quot;CarreraLuz22&quot;)</code></pre>
 <p><br/></p>
@@ -821,10 +822,10 @@ que revocarlo y crear uno nuevo.</p>
 <h2><span style="color:#034a94"><strong>¿Cómo revisar lo que se
 importó?</strong></span></h2>
 <p>Después de importar, se revisa que los datos hayan entrado bien:</p>
-<pre class="r"><code>dim(viviendas)            # filas y columnas
-[1] 200   7
-str(viviendas2)           # tipo de cada variable
-spc_tbl_ [200 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+<pre class="r"><code>dim(viviendas)            # filas y columnas</code></pre>
+<pre><code>[1] 200   7</code></pre>
+<pre class="r"><code>str(viviendas2)           # tipo de cada variable</code></pre>
+<pre><code>spc_tbl_ [200 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
  $ id       : num [1:200] 74 78 157 245 257 278 279 306 342 387 ...
  $ zona     : chr [1:200] &quot;Zona Oriente&quot; &quot;Zona Oriente&quot; &quot;Zona Norte&quot; &quot;Zona Norte&quot; ...
  $ estrato  : num [1:200] 3 3 3 3 3 3 3 3 3 3 ...
@@ -842,16 +843,16 @@ spc_tbl_ [200 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
   ..   banios = col_double(),
   ..   parquea = col_double()
   .. )
- - attr(*, &quot;problems&quot;)=&lt;externalptr&gt; 
-head(viviendas, 3)        # primeras filas
-# A tibble: 3 × 7
+ - attr(*, &quot;problems&quot;)=&lt;externalptr&gt; </code></pre>
+<pre class="r"><code>head(viviendas, 3)        # primeras filas</code></pre>
+<pre><code># A tibble: 3 × 7
      id zona         estrato preciom areaconst banios parquea
   &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
 1    74 Zona Oriente       3     180       136      1      NA
 2    78 Zona Oriente       3      58        50      1       1
-3   157 Zona Norte         3     180       114      2       1
-colSums(is.na(viviendas)) # datos faltantes por variable
-       id      zona   estrato   preciom areaconst    banios   parquea 
+3   157 Zona Norte         3     180       114      2       1</code></pre>
+<pre class="r"><code>colSums(is.na(viviendas)) # datos faltantes por variable</code></pre>
+<pre><code>       id      zona   estrato   preciom areaconst    banios   parquea 
         0         0         0         0         0         0        31 </code></pre>
 <p>Hay que comprobar el número de filas y columnas, que las variables
 numéricas no hayan quedado como texto y que los faltantes coincidan con
@@ -951,10 +952,10 @@ Ver solución
 <pre class="r"><code>library(readxl)
 
 datos &lt;- read_excel(&quot;data/ejemplos/viviendas.xlsx&quot;, sheet = 1)
-nrow(datos)
-[1] 200
-sum(is.na(datos$parquea))
-[1] 31</code></pre>
+nrow(datos)</code></pre>
+<pre><code>[1] 200</code></pre>
+<pre class="r"><code>sum(is.na(datos$parquea))</code></pre>
+<pre><code>[1] 31</code></pre>
 </details>
 </div>
 <div id="reto-3.-guardar-para-usar-después"
@@ -972,8 +973,8 @@ Ver solución
 saveRDS(viviendas, archivo)
 
 copia &lt;- readRDS(archivo)
-identical(dim(copia), dim(viviendas))
-[1] TRUE</code></pre>
+identical(dim(copia), dim(viviendas))</code></pre>
+<pre><code>[1] TRUE</code></pre>
 </details>
 </div>
 <p><br/></p>

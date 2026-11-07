@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -632,13 +636,12 @@ class="math inline">\(h = (7 - 1)(0.25) + 1 = 2.5\)</span>. Por eso, se
 interpola entre el segundo y el tercer dato:</p>
 <pre class="r"><code>juvenil &lt;- subset(CarreraLuz22, categoria == &quot;1. Juvenil&quot; &amp; sex == &quot;Mujer&quot;)
 tiempo_juvenil &lt;- sort(round(juvenil$timerun / 60, 2))
-tiempo_juvenil
-[1] 50.97 60.38 61.10 81.48 83.05 88.77 91.33
-
-tiempo_juvenil[2] + 0.5 * (tiempo_juvenil[3] - tiempo_juvenil[2])   # aplicando la fórmula
-[1] 60.74
-quantile(tiempo_juvenil, 0.25)                                      # con la función
-  25% 
+tiempo_juvenil</code></pre>
+<pre><code>[1] 50.97 60.38 61.10 81.48 83.05 88.77 91.33</code></pre>
+<pre class="r"><code>tiempo_juvenil[2] + 0.5 * (tiempo_juvenil[3] - tiempo_juvenil[2])   # aplicando la fórmula</code></pre>
+<pre><code>[1] 60.74</code></pre>
+<pre class="r"><code>quantile(tiempo_juvenil, 0.25)                                      # con la función</code></pre>
+<pre><code>  25% 
 60.74 </code></pre>
 <div id="otros-programas-pueden-dar-otro-resultado"
 class="section level3 content-box-gray">
@@ -649,11 +652,11 @@ href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quanti
 tiene 9 métodos, descritos por Hyndman y Fan (1996), y por defecto usa
 el tipo 7, que es la fórmula anterior. Con otro método, el resultado
 puede cambiar un poco, sobre todo en muestras pequeñas:</p>
-<pre class="r"><code>quantile(tiempo_juvenil, 0.25, type = 7)
-  25% 
-60.74 
-quantile(tiempo_juvenil, 0.25, type = 6)
-  25% 
+<pre class="r"><code>quantile(tiempo_juvenil, 0.25, type = 7)</code></pre>
+<pre><code>  25% 
+60.74 </code></pre>
+<pre class="r"><code>quantile(tiempo_juvenil, 0.25, type = 6)</code></pre>
+<pre><code>  25% 
 60.38 </code></pre>
 </div>
 <p><br/></p>
@@ -707,8 +710,8 @@ Cuartiles de los tiempos de la carrera. Curva de densidad con las cuatro
 partes de los datos.
 </p>
 </div>
-<pre class="r"><code>round(cuartiles, 2)
-  25%   50%   75% 
+<pre class="r"><code>round(cuartiles, 2)</code></pre>
+<pre><code>  25%   50%   75% 
 56.35 63.51 73.26 </code></pre>
 <p>El 25 % de los atletas tardó 56.4 minutos o menos, la mitad tardó
 63.5 minutos o menos, y el 75 % tardó 73.3 minutos o menos.</p>
@@ -779,8 +782,8 @@ Percentil 90 de los tiempos. A la izquierda queda el 90 % de los
 atletas.
 </p>
 </div>
-<pre class="r"><code>round(p90, 2)
-  90% 
+<pre class="r"><code>round(p90, 2)</code></pre>
+<pre><code>  90% 
 82.46 </code></pre>
 <div id="rango-percentil" class="section level3">
 <h3><span style="color:#034a94"><strong>Rango
@@ -792,8 +795,8 @@ valor <span class="math inline">\(x\)</span> es:</p>
 RP(x) = \frac{\text{número de datos} \leq x}{n} \times 100
 \]</span></p>
 <p>Por ejemplo, para una persona que tardó 60 minutos:</p>
-<pre class="r"><code>100 * mean(tiempo &lt;= 60)
-[1] 38.44953</code></pre>
+<pre class="r"><code>100 * mean(tiempo &lt;= 60)</code></pre>
+<pre><code>[1] 38.44953</code></pre>
 <p>El 38.4 % de los atletas tardó 60 minutos o menos. En una carrera, un
 menor tiempo es mejor, por lo que estar en un percentil bajo es un buen
 resultado. Lo contrario ocurre en una prueba, donde un mayor puntaje es
@@ -811,24 +814,24 @@ ejemplo, la variable <code>preciom</code>, con los precios de las
 viviendas en millones, tiene 2 datos faltantes:</p>
 <pre class="r"><code>precio &lt;- vivienda_faltantes$preciom
 
-sum(is.na(precio))                 # número de datos faltantes
-[1] 2
-median(precio)                     # da NA porque hay datos faltantes
-[1] NA
-median(precio, na.rm = TRUE)
-[1] 330</code></pre>
+sum(is.na(precio))                 # número de datos faltantes</code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code>median(precio)                     # da NA porque hay datos faltantes</code></pre>
+<pre><code>[1] NA</code></pre>
+<pre class="r"><code>median(precio, na.rm = TRUE)</code></pre>
+<pre><code>[1] 330</code></pre>
 <p>Con <code>na.rm = TRUE</code> se obtienen los indicadores:</p>
-<pre class="r"><code>quantile(precio, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)    # cuartiles
-25% 50% 75% 
-220 330 540 
-quantile(precio, probs = seq(0.2, 0.8, by = 0.2), na.rm = TRUE)    # quintiles
-20% 40% 60% 80% 
-190 285 390 610 
-quantile(precio, probs = seq(0.1, 0.9, by = 0.1), na.rm = TRUE)    # deciles
-10% 20% 30% 40% 50% 60% 70% 80% 90% 
-145 190 240 285 330 390 475 610 870 
-quantile(precio, probs = c(0.10, 0.25, 0.50, 0.75, 0.90), na.rm = TRUE)    # percentiles
-10% 25% 50% 75% 90% 
+<pre class="r"><code>quantile(precio, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)    # cuartiles</code></pre>
+<pre><code>25% 50% 75% 
+220 330 540 </code></pre>
+<pre class="r"><code>quantile(precio, probs = seq(0.2, 0.8, by = 0.2), na.rm = TRUE)    # quintiles</code></pre>
+<pre><code>20% 40% 60% 80% 
+190 285 390 610 </code></pre>
+<pre class="r"><code>quantile(precio, probs = seq(0.1, 0.9, by = 0.1), na.rm = TRUE)    # deciles</code></pre>
+<pre><code>10% 20% 30% 40% 50% 60% 70% 80% 90% 
+145 190 240 285 330 390 475 610 870 </code></pre>
+<pre class="r"><code>quantile(precio, probs = c(0.10, 0.25, 0.50, 0.75, 0.90), na.rm = TRUE)    # percentiles</code></pre>
+<pre><code>10% 25% 50% 75% 90% 
 145 220 330 540 870 </code></pre>
 <p>Una forma de presentar estos resultados es integrarlos en un
 texto:</p>
@@ -993,8 +996,8 @@ title(xlab = &quot;Tiempo (minutos)&quot;)</code></pre>
 Tiempos de la carrera según el sexo.
 </p>
 </div>
-<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, quantile, probs = c(0.25, 0.50, 0.75))
-$Hombre
+<pre class="r"><code>tapply(tiempo, CarreraLuz22$sex, quantile, probs = c(0.25, 0.50, 0.75))</code></pre>
+<pre><code>$Hombre
      25%      50%      75% 
 53.60833 60.09167 69.01667 
 
@@ -1026,11 +1029,11 @@ ric &lt;- IQR(precio, na.rm = TRUE)
 limite_superior &lt;- cuartiles_precio[2] + 1.5 * ric
 limite_inferior &lt;- cuartiles_precio[1] - 1.5 * ric
 
-c(limite_inferior, limite_superior)
- 25%  75% 
--260 1020 
-sum(precio &gt; limite_superior, na.rm = TRUE)
-[1] 555</code></pre>
+c(limite_inferior, limite_superior)</code></pre>
+<pre><code> 25%  75% 
+-260 1020 </code></pre>
+<pre class="r"><code>sum(precio &gt; limite_superior, na.rm = TRUE)</code></pre>
+<pre><code>[1] 555</code></pre>
 <p>Hay 555 viviendas con un precio superior a 1,020 millones. Un dato
 atípico no siempre es un error. Antes de eliminarlo, conviene revisar
 por qué aparece: aquí puede tratarse de viviendas de precio alto.</p>
@@ -1107,8 +1110,8 @@ Ver solución
 <p><span class="math inline">\(h = (8 - 1)(0.25) + 1 = 2.75\)</span>. Se
 interpola entre el segundo y el tercer dato: <span
 class="math inline">\(15 + 0.75(18 - 15) = 17.25\)</span>.</p>
-<pre class="r"><code>quantile(c(12, 15, 18, 20, 25, 30, 41, 50), 0.25)
-  25% 
+<pre class="r"><code>quantile(c(12, 15, 18, 20, 25, 30, 41, 50), 0.25)</code></pre>
+<pre><code>  25% 
 17.25 </code></pre>
 </details>
 </div>
@@ -1122,8 +1125,8 @@ atletas</strong></span></h3>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>quantile(CarreraLuz22$edad, c(0.25, 0.50, 0.75))
-25% 50% 75% 
+<pre class="r"><code>quantile(CarreraLuz22$edad, c(0.25, 0.50, 0.75))</code></pre>
+<pre><code>25% 50% 75% 
  30  36  44 </code></pre>
 <p>La edad mediana fue de 36 años, y la mitad central de los atletas
 tuvo entre 30 y 44 años.</p>
@@ -1139,8 +1142,8 @@ porcentaje de los atletas tardó ese tiempo o menos?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>100 * mean(tiempo &lt;= 75)
-[1] 77.73153</code></pre>
+<pre class="r"><code>100 * mean(tiempo &lt;= 75)</code></pre>
+<pre><code>[1] 77.73153</code></pre>
 <p>Cerca del 78 % de los atletas tardó 75 minutos o menos.</p>
 </details>
 </div>
@@ -1158,11 +1161,11 @@ Ver solución
 <pre class="r"><code>Q &lt;- quantile(tiempo, c(0.25, 0.75))
 limite &lt;- Q[2] + 1.5 * IQR(tiempo)
 
-limite
-   75% 
-98.625 
-sum(tiempo &gt; limite)
-[1] 22</code></pre>
+limite</code></pre>
+<pre><code>   75% 
+98.625 </code></pre>
+<pre class="r"><code>sum(tiempo &gt; limite)</code></pre>
+<pre><code>[1] 22</code></pre>
 </details>
 </div>
 <div id="reto-5.-mejore-la-redacción"

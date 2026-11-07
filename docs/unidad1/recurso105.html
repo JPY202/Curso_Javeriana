@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -685,8 +689,8 @@ Cómo se ve una sugerencia de Copilot. Esquema ilustrativo
 </p>
 </div>
 <p>Al ejecutar la línea del ejemplo se obtiene:</p>
-<pre class="r"><code>aggregate(mpg ~ cyl, data = mtcars, FUN = mean)
-  cyl      mpg
+<pre class="r"><code>aggregate(mpg ~ cyl, data = mtcars, FUN = mean)</code></pre>
+<pre><code>  cyl      mpg
 1   4 26.66364
 2   6 19.74286
 3   8 15.10000</code></pre>
@@ -998,8 +1002,8 @@ herramienta propone el siguiente código. Se ejecuta sin errores. ¿Es
 correcto?</p>
 <pre class="r"><code>ventas &lt;- c(120, 85, NA, 240, 60)
 ventas[is.na(ventas)] &lt;- 0
-mean(ventas)
-[1] 101</code></pre>
+mean(ventas)</code></pre>
+<pre><code>[1] 101</code></pre>
 <details>
 <summary>
 Ver solución
@@ -1008,8 +1012,8 @@ Ver solución
 y ese reemplazo baja la media. Lo adecuado es excluirlo, salvo que se
 sepa que el valor era cero:</p>
 <pre class="r"><code>ventas &lt;- c(120, 85, NA, 240, 60)
-mean(ventas, na.rm = TRUE)
-[1] 126.25</code></pre>
+mean(ventas, na.rm = TRUE)</code></pre>
+<pre><code>[1] 126.25</code></pre>
 <p>La media pasa de 101 a 126.25. Además, conviene informar que hay un
 dato faltante.</p>
 </details>
@@ -1023,8 +1027,8 @@ equivocado</strong></span></h3>
 identifica al paciente. Una herramienta propone el siguiente código y
 concluye que no hay diferencia, porque el valor p es mayor que 0.05.
 Revise <code>sleep</code> y <code>?sleep</code>. ¿Qué está mal?</p>
-<pre class="r"><code>t.test(extra ~ group, data = sleep)$p.value
-[1] 0.07939414</code></pre>
+<pre class="r"><code>t.test(extra ~ group, data = sleep)$p.value</code></pre>
+<pre><code>[1] 0.07939414</code></pre>
 <details>
 <summary>
 Ver solución
@@ -1034,8 +1038,8 @@ pacientes medidos dos veces. Es un diseño pareado:</p>
 <pre class="r"><code>extra1 &lt;- sleep$extra[sleep$group == 1]
 extra2 &lt;- sleep$extra[sleep$group == 2]
 
-t.test(extra2, extra1, paired = TRUE)$p.value
-[1] 0.00283289</code></pre>
+t.test(extra2, extra1, paired = TRUE)$p.value</code></pre>
+<pre><code>[1] 0.00283289</code></pre>
 <p>Con la prueba pareada, el valor p es cercano a 0.003 y la diferencia
 media es de 1.58 horas. La conclusión cambia. Los dos códigos se
 ejecutan sin errores: lo que los distingue es el diseño del estudio.</p>
@@ -1064,8 +1068,8 @@ simulada &lt;- data.frame(
   diagnostico = sample(c(&quot;A&quot;, &quot;B&quot;), 5, replace = TRUE),
   costo = round(runif(5, 100, 500))
 )
-str(simulada)
-&#39;data.frame&#39;:   5 obs. of  3 variables:
+str(simulada)</code></pre>
+<pre><code>&#39;data.frame&#39;:   5 obs. of  3 variables:
  $ edad       : int  74 21 56 18 51
  $ diagnostico: chr  &quot;A&quot; &quot;A&quot; &quot;A&quot; &quot;B&quot; ...
  $ costo      : num  182 171 375 254 408</code></pre>

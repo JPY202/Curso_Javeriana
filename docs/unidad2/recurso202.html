@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Variables conjuntas</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Variables conjuntas</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Muchas veces interesa estudiar dos variables a la vez: el precio de
+un producto y sus ventas, las horas de estudio y la nota del examen, la
+cantidad de abono y la producción de una planta. Para saber si están
+relacionadas no basta con estudiar cada una por separado; hay que
+describir cómo se comportan <strong>juntas</strong>.</p>
+<p>Esta página presenta la distribución conjunta de dos variables, las
+distribuciones marginales y condicionales, la independencia, la
+covarianza y la correlación. Se trabaja sobre todo con variables
+discretas, organizadas en tablas, y al final se muestra el caso
+continuo. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-una-distribución-conjunta" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una distribución
+conjunta?</strong></span></h2>
+<p>Si <span class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span> son variables discretas, su
+<strong>función de probabilidad conjunta</strong> da la probabilidad de
+que tomen, a la vez, los valores <span class="math inline">\(x\)</span>
+e <span class="math inline">\(y\)</span>:</p>
+<p><span class="math display">\[
+f(x, y) = P(X = x,\ Y = y)
+\]</span></p>
+<p>Igual que en una sola variable, ninguna probabilidad es negativa y
+todas suman 1. La forma natural de presentarla es una
+<strong>tabla</strong>, con los valores de <span
+class="math inline">\(X\)</span> en las filas y los de <span
+class="math inline">\(Y\)</span> en las columnas.</p>
+<p><br/></p>
+<div id="ejemplo-fallas-y-llamadas-al-técnico" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: fallas y llamadas al
+técnico</strong></span></h3>
+<p>En una planta se registran <span class="math inline">\(X\)</span>:
+número de fallas de una máquina en un día, y <span
+class="math inline">\(Y\)</span>: número de veces que el operario llama
+al técnico ese día. Las dos toman valores 1, 2 o 3. Su distribución
+conjunta es:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center"><span class="math inline">\(Y = 1\)</span></th>
+<th align="center"><span class="math inline">\(Y = 2\)</span></th>
+<th align="center"><span class="math inline">\(Y = 3\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(X = 1\)</span></td>
+<td align="center">0.05</td>
+<td align="center">0.05</td>
+<td align="center">0.10</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(X = 2\)</span></td>
+<td align="center">0.05</td>
+<td align="center">0.10</td>
+<td align="center">0.35</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(X = 3\)</span></td>
+<td align="center">0.00</td>
+<td align="center">0.20</td>
+<td align="center">0.10</td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, la probabilidad de que en un día haya 2 fallas y 3
+llamadas es <span class="math inline">\(f(2, 3) = 0.35\)</span>. En
+<strong>R</strong>, la tabla se guarda como una matriz:</p>
+<pre class="r"><code>fxy &lt;- matrix(c(0.05, 0.05, 0.10,
+                0.05, 0.10, 0.35,
+                0.00, 0.20, 0.10),
+              nrow = 3, byrow = TRUE,
+              dimnames = list(X = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;), Y = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;)))
+fxy</code></pre>
+<pre><code>   Y
+X      1    2    3
+  1 0.05 0.05 0.10
+  2 0.05 0.10 0.35
+  3 0.00 0.20 0.10</code></pre>
+<pre class="r"><code>sum(fxy)   # las probabilidades conjuntas suman 1</code></pre>
+<pre><code>[1] 1</code></pre>
+<p>La figura muestra cada probabilidad conjunta como una barra, agrupada
+por el número de fallas:</p>
+<pre class="r"><code>barplot(t(fxy), beside = TRUE, col = c(&quot;#BDD7EE&quot;, &quot;#5B9BD5&quot;, &quot;#034A94&quot;), ylim = c(0, 0.4),
+        xlab = &quot;Número de fallas (X)&quot;, ylab = &quot;f(x, y)&quot;,
+        legend.text = c(&quot;Y = 1&quot;, &quot;Y = 2&quot;, &quot;Y = 3&quot;), args.legend = list(x = &quot;topleft&quot;, title = &quot;Llamadas&quot;, bty = &quot;n&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso202_files/figure-html/unnamed-chunk-2-1.png" alt="Tres grupos de barras, uno por cada número de fallas; dentro de cada grupo, tres barras por el número de llamadas. La más alta, 0.35, corresponde a 2 fallas y 3 llamadas" width="90%" />
+<p class="caption">
+Distribución conjunta del número de fallas (X) y de llamadas al técnico
+(Y).
+</p>
+</div>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-son-las-distribuciones-marginales" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son las distribuciones
+marginales?</strong></span></h2>
+<p>A partir de la tabla conjunta se obtiene la distribución de
+<strong>cada variable por separado</strong>, sin tener en cuenta la
+otra. Se llaman <strong>distribuciones marginales</strong> porque quedan
+en los márgenes de la tabla:</p>
+<ul>
+<li>La marginal de <span class="math inline">\(X\)</span>, <span
+class="math inline">\(g(x)\)</span>, se obtiene <strong>sumando cada
+fila</strong>: <span class="math inline">\(g(x) = \sum_y f(x,
+y)\)</span>.</li>
+<li>La marginal de <span class="math inline">\(Y\)</span>, <span
+class="math inline">\(h(y)\)</span>, se obtiene <strong>sumando cada
+columna</strong>: <span class="math inline">\(h(y) = \sum_x f(x,
+y)\)</span>.</li>
+</ul>
+<pre class="r"><code>addmargins(fxy)</code></pre>
+<pre><code>     Y
+X        1    2    3 Sum
+  1   0.05 0.05 0.10 0.2
+  2   0.05 0.10 0.35 0.5
+  3   0.00 0.20 0.10 0.3
+  Sum 0.10 0.35 0.55 1.0</code></pre>
+<pre class="r"><code>g &lt;- rowSums(fxy)   # marginal de X
+h &lt;- colSums(fxy)   # marginal de Y
+g</code></pre>
+<pre><code>  1   2   3 
+0.2 0.5 0.3 </code></pre>
+<pre class="r"><code>h</code></pre>
+<pre><code>   1    2    3 
+0.10 0.35 0.55 </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center"><span class="math inline">\(Y = 1\)</span></th>
+<th align="center"><span class="math inline">\(Y = 2\)</span></th>
+<th align="center"><span class="math inline">\(Y = 3\)</span></th>
+<th align="center"><span class="math inline">\(g(x)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(X = 1\)</span></td>
+<td align="center">0.05</td>
+<td align="center">0.05</td>
+<td align="center">0.10</td>
+<td align="center"><strong>0.20</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(X = 2\)</span></td>
+<td align="center">0.05</td>
+<td align="center">0.10</td>
+<td align="center">0.35</td>
+<td align="center"><strong>0.50</strong></td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(X = 3\)</span></td>
+<td align="center">0.00</td>
+<td align="center">0.20</td>
+<td align="center">0.10</td>
+<td align="center"><strong>0.30</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(h(y)\)</span></td>
+<td align="center"><strong>0.10</strong></td>
+<td align="center"><strong>0.35</strong></td>
+<td align="center"><strong>0.55</strong></td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, la probabilidad de que en un día haya 2 fallas, sin
+importar cuántas llamadas, es <span class="math inline">\(g(2) =
+0.50\)</span>, y la probabilidad de que haya 3 llamadas es <span
+class="math inline">\(h(3) = 0.55\)</span>.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-una-distribución-condicional" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una distribución
+condicional?</strong></span></h2>
+<p>Si se sabe el valor de una variable, la distribución de la otra
+cambia. La <strong>distribución condicional</strong> de <span
+class="math inline">\(X\)</span> dado <span class="math inline">\(Y =
+y\)</span> es</p>
+<p><span class="math display">\[
+f(x \mid y) = \frac{f(x, y)}{h(y)}
+\]</span></p>
+<p>Es la misma idea de la probabilidad condicional de <a
+href="recurso102.html">Tipos de probabilidad</a>: se toma solo la
+columna de <span class="math inline">\(Y = y\)</span> y se divide por su
+total.</p>
+<p>Por ejemplo, en los días en que el operario llama <strong>2
+veces</strong> al técnico (<span class="math inline">\(h(2) =
+0.35\)</span>), la distribución del número de fallas es</p>
+<p><span class="math display">\[
+f(1 \mid 2) = \frac{0.05}{0.35} = 0.143, \quad f(2 \mid 2) =
+\frac{0.10}{0.35} = 0.286, \quad f(3 \mid 2) = \frac{0.20}{0.35} = 0.571
+\]</span></p>
+<pre class="r"><code>round(fxy[, &quot;2&quot;] / h[&quot;2&quot;], 3)          # f(x | Y = 2)</code></pre>
+<pre><code>    1     2     3 
+0.143 0.286 0.571 </code></pre>
+<pre class="r"><code>round(prop.table(fxy, margin = 2), 3)  # todas las condicionales de X dado Y</code></pre>
+<pre><code>   Y
+X     1     2     3
+  1 0.5 0.143 0.182
+  2 0.5 0.286 0.636
+  3 0.0 0.571 0.182</code></pre>
+<p>Cada columna de la última tabla suma 1. En los días con 2 llamadas,
+lo más probable es que haya habido 3 fallas.</p>
+<p><br/></p>
+</div>
+<div id="cuándo-son-independientes-dos-variables"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuándo son independientes dos
+variables?</strong></span></h2>
+<p><span class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span> son <strong>independientes</strong> si
+saber el valor de una no cambia la distribución de la otra. Esto ocurre
+si, para <strong>todas</strong> las parejas de valores,</p>
+<p><span class="math display">\[
+f(x, y) = g(x)\,h(y)
+\]</span></p>
+<p>Basta con que falle en una celda para que las variables sean
+dependientes. En <strong>R</strong>, la función <code>outer()</code>
+construye la tabla de productos <span
+class="math inline">\(g(x)\,h(y)\)</span> para compararla con la
+conjunta:</p>
+<pre class="r"><code>outer(g, h)          # lo que tendría que ser la tabla si fueran independientes</code></pre>
+<pre><code>     1     2     3
+1 0.02 0.070 0.110
+2 0.05 0.175 0.275
+3 0.03 0.105 0.165</code></pre>
+<pre class="r"><code>fxy - outer(g, h)    # diferencias</code></pre>
+<pre><code>   Y
+X       1      2      3
+  1  0.03 -0.020 -0.010
+  2  0.00 -0.075  0.075
+  3 -0.03  0.095 -0.065</code></pre>
+<p>Por ejemplo, <span class="math inline">\(f(1, 1) = 0.05\)</span>,
+pero <span class="math inline">\(g(1)\,h(1) = 0.20 \times 0.10 =
+0.02\)</span>. Las fallas y las llamadas <strong>no son
+independientes</strong>.</p>
+<p><br/></p>
+</div>
+<div id="qué-miden-la-covarianza-y-la-correlación"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué miden la covarianza y la
+correlación?</strong></span></h2>
+<p>La <strong>covarianza</strong> mide si dos variables tienden a
+moverse juntas en línea recta:</p>
+<p><span class="math display">\[
+\text{Cov}(X, Y) = E(XY) - E(X)\,E(Y), \qquad E(XY) = \sum_x \sum_y
+x\,y\,f(x, y)
+\]</span></p>
+<table>
+<colgroup>
+<col width="60%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Signo de la covarianza</th>
+<th align="left">Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Positiva</td>
+<td align="left">Cuando una variable está por encima de su media, la
+otra tiende a estarlo también</td>
+</tr>
+<tr class="even">
+<td align="left">Negativa</td>
+<td align="left">Cuando una variable está por encima de su media, la
+otra tiende a estar por debajo</td>
+</tr>
+<tr class="odd">
+<td align="left">Cero</td>
+<td align="left">No hay relación <strong>lineal</strong> entre las
+variables</td>
+</tr>
+</tbody>
+</table>
+<p>La covarianza depende de las unidades de las variables, así que su
+tamaño es difícil de interpretar. Por eso se usa el <strong>coeficiente
+de correlación</strong>, que siempre está entre −1 y 1:</p>
+<p><span class="math display">\[
+\rho = \frac{\text{Cov}(X, Y)}{\sigma_X\,\sigma_Y}
+\]</span></p>
+<p>Un valor de <span class="math inline">\(\rho\)</span> cercano a 1 o a
+−1 indica una relación lineal fuerte, y uno cercano a 0, una relación
+lineal débil o nula. La figura muestra cómo se ven datos con distintos
+valores de <span class="math inline">\(\rho\)</span>:</p>
+<pre class="r"><code>set.seed(2026)
+par(mfrow = c(2, 3), mar = c(4, 4, 2.5, 1))
+z1 &lt;- rnorm(200)
+z2 &lt;- rnorm(200)
+for (r in c(-1, -0.75, -0.5, 0, 0.5, 0.9)) {
+  y_sim &lt;- r * z1 + sqrt(1 - r^2) * z2     # variable con correlación r con z1
+  plot(z1, y_sim, pch = 19, cex = 0.6, col = &quot;#034A94&quot;,
+       xlab = &quot;X&quot;, ylab = &quot;Y&quot;, main = paste(&quot;Correlación&quot;, r))
+}</code></pre>
+<div class="figure">
+<img src="recurso202_files/figure-html/unnamed-chunk-6-1.png" alt="Seis diagramas de dispersión. Con correlación −1 los puntos forman una línea que baja; con −0.75 y −0.5 forman una nube alargada que baja; con 0 forman una nube redonda; con 0.5 y 0.9 forman una nube alargada que sube" width="100%" />
+<p class="caption">
+Datos simulados de dos variables con distintos coeficientes de
+correlación.
+</p>
+</div>
+<p><br/></p>
+<div id="ejemplo-fallas-y-llamadas" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: fallas y
+llamadas</strong></span></h3>
+<pre class="r"><code>x &lt;- 1:3
+y &lt;- 1:3
+EX  &lt;- sum(x * g)
+EY  &lt;- sum(y * h)
+EXY &lt;- sum(outer(x, y) * fxy)          # suma de x * y * f(x, y)
+covarianza &lt;- EXY - EX * EY
+sd_X &lt;- sqrt(sum(x^2 * g) - EX^2)
+sd_Y &lt;- sqrt(sum(y^2 * h) - EY^2)
+c(E_X = EX, E_Y = EY, E_XY = EXY, Cov = covarianza, rho = covarianza / (sd_X * sd_Y))</code></pre>
+<pre><code>       E_X        E_Y       E_XY        Cov        rho 
+2.10000000 2.45000000 5.15000000 0.00500000 0.01067764 </code></pre>
+<p><span class="math inline">\(E(X) = 2.10\)</span>, <span
+class="math inline">\(E(Y) = 2.45\)</span> y <span
+class="math inline">\(E(XY) = 5.15\)</span>, así que <span
+class="math inline">\(\text{Cov}(X, Y) = 5.15 - 2.10 \times 2.45 =
+0.005\)</span> y <span class="math inline">\(\rho = 0.011\)</span>. La
+relación <strong>lineal</strong> entre fallas y llamadas es
+prácticamente nula, aunque las variables no son independientes: la
+relación existe, pero no es una línea recta.</p>
+</div>
+<div id="independencia-y-covarianza-cero-no-son-lo-mismo"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Independencia y covarianza cero
+no son lo mismo</strong></span></h3>
+<p>Si dos variables son independientes, su covarianza es cero. Lo
+contrario no siempre es cierto: una covarianza cero solo dice que no hay
+relación <strong>lineal</strong>. Por ejemplo, si <span
+class="math inline">\(X\)</span> toma los valores −1, 0 y 1 con la misma
+probabilidad y <span class="math inline">\(Y = X^2\)</span>, la
+covarianza es cero, pero <span class="math inline">\(Y\)</span> depende
+por completo de <span class="math inline">\(X\)</span>. Se comprueba en
+el Reto 3.</p>
+</div>
+<p><br/></p>
+<div id="la-covarianza-en-la-varianza-de-una-suma"
+class="section level3">
+<h3><span style="color:#034a94"><strong>La covarianza en la varianza de
+una suma</strong></span></h3>
+<p>En <a href="recurso201.html">Valor esperado y varianza</a> se vio
+que, si <span class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span> son independientes, <span
+class="math inline">\(\text{Var}(aX + bY) = a^2\,\text{Var}(X) +
+b^2\,\text{Var}(Y)\)</span>. Si no lo son, hay que sumar un término con
+la covarianza:</p>
+<p><span class="math display">\[
+\text{Var}(aX + bY) = a^2\,\text{Var}(X) + b^2\,\text{Var}(Y) +
+2ab\,\text{Cov}(X, Y)
+\]</span></p>
+<p><br/></p>
+</div>
+</div>
+<div id="y-si-las-variables-son-continuas" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Y si las variables son
+continuas?</strong></span></h2>
+<p>Si <span class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span> son continuas, su distribución conjunta
+se describe con una <strong>función de densidad conjunta</strong>, <span
+class="math inline">\(f(x, y)\)</span>, cuya gráfica es una superficie.
+La probabilidad de que <span class="math inline">\((X, Y)\)</span> caiga
+en una región es el <strong>volumen</strong> bajo la superficie sobre
+esa región. Las ideas son las mismas del caso discreto, pero las sumas
+se reemplazan por integrales.</p>
+<p>Por ejemplo, las proporciones de dos ácidos, <span
+class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span>, en una mezcla tienen densidad conjunta
+<span class="math inline">\(f(x, y) = x + y\)</span> para <span
+class="math inline">\(0 \leq x \leq 1\)</span> y <span
+class="math inline">\(0 \leq y \leq 1\)</span>. La figura muestra la
+superficie: es más alta cuando las dos proporciones son grandes.</p>
+<pre class="r"><code>gx &lt;- seq(0, 1, length.out = 25)
+gy &lt;- seq(0, 1, length.out = 25)
+z  &lt;- outer(gx, gy, function(x, y) x + y)
+persp(gx, gy, z, theta = 35, phi = 25, col = &quot;lightblue&quot;, ticktype = &quot;detailed&quot;,
+      xlab = &quot;X&quot;, ylab = &quot;Y&quot;, zlab = &quot;f(x, y)&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso202_files/figure-html/unnamed-chunk-8-1.png" alt="Superficie plana inclinada sobre un cuadrado, que sube desde 0 en la esquina (0, 0) hasta 2 en la esquina (1, 1)" width="65%" />
+<p class="caption">
+Densidad conjunta f(x, y) = x + y en el cuadrado unitario.
+</p>
+</div>
+<ul>
+<li><strong>Marginal:</strong> se integra la variable que no interesa.
+<span class="math inline">\(g(x) = \int_0^1 (x + y)\,dy = x +
+\tfrac{1}{2}\)</span>, y del mismo modo <span class="math inline">\(h(y)
+= y + \tfrac{1}{2}\)</span>.</li>
+<li><strong>Independencia:</strong> <span
+class="math inline">\(g(x)\,h(y) = (x + \tfrac{1}{2})(y +
+\tfrac{1}{2})\)</span>, que no es igual a <span class="math inline">\(x
++ y\)</span>. Las variables son dependientes.</li>
+<li><strong>Covarianza:</strong> <span class="math inline">\(E(X) = E(Y)
+= 7/12\)</span> y <span class="math inline">\(E(XY) = 1/3\)</span>, así
+que <span class="math inline">\(\text{Cov}(X, Y) = 1/3 - (7/12)^2 =
+-1/144\)</span> y <span class="math inline">\(\rho = -1/11 =
+-0.09\)</span>: una relación lineal negativa muy débil.</li>
+</ul>
+<p>En <strong>R</strong>, las marginales se comprueban con
+<code>integrate()</code>. Por ejemplo, el área bajo <span
+class="math inline">\(g(x)\)</span> debe ser 1 y <span
+class="math inline">\(E(X)\)</span> debe ser <span
+class="math inline">\(7/12 = 0.583\)</span>:</p>
+<pre class="r"><code>g_cont &lt;- function(x) x + 1/2
+integrate(g_cont, 0, 1)$value                       # área total</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>integrate(function(x) x * g_cont(x), 0, 1)$value    # E(X)</code></pre>
+<pre><code>[1] 0.5833333</code></pre>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Las marginales salen intercambiadas</td>
+<td align="left">Se sumaron columnas para <span
+class="math inline">\(X\)</span> o filas para <span
+class="math inline">\(Y\)</span></td>
+<td align="left">Con <span class="math inline">\(X\)</span> en las
+filas, <span class="math inline">\(g(x)\)</span> es la suma de cada fila
+(<code>rowSums()</code>)</td>
+</tr>
+<tr class="even">
+<td align="left">Una distribución condicional no suma 1</td>
+<td align="left">Se dividió por un total equivocado</td>
+<td align="left">Dividir la columna (o fila) por su propio total</td>
+</tr>
+<tr class="odd">
+<td align="left">Concluir independencia revisando una sola celda</td>
+<td align="left">La condición debe cumplirse en todas</td>
+<td align="left">Comparar toda la tabla con
+<code>outer(g, h)</code></td>
+</tr>
+<tr class="even">
+<td align="left">Concluir independencia porque la covarianza es
+cero</td>
+<td align="left">La covarianza solo mide relación lineal</td>
+<td align="left">Revisar <span class="math inline">\(f(x, y) =
+g(x)\,h(y)\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Interpretar el tamaño de la covarianza</td>
+<td align="left">Depende de las unidades</td>
+<td align="left">Usar el coeficiente de correlación</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-condicional-de-las-llamadas"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Condicional de las
+llamadas</strong></span></h3>
+<p>En el ejemplo de la planta, encuentre la distribución del número de
+llamadas en los días con 2 fallas. ¿Cuál es el número de llamadas más
+probable?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Se toma la fila <span class="math inline">\(X = 2\)</span> y se
+divide por <span class="math inline">\(g(2) = 0.50\)</span>:</p>
+<pre class="r"><code>fxy[&quot;2&quot;, ] / g[&quot;2&quot;]</code></pre>
+<pre><code>  1   2   3 
+0.1 0.2 0.7 </code></pre>
+<p>En los días con 2 fallas, lo más probable es que haya 3 llamadas, con
+probabilidad 0.7.</p>
+</details>
+</div>
+<div id="reto-2.-son-independientes"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. ¿Son
+independientes?</strong></span></h3>
+<p>Una tabla conjunta tiene marginales <span class="math inline">\(g(x)
+= (0.4,\ 0.6)\)</span> y <span class="math inline">\(h(y) = (0.3,\
+0.7)\)</span>. Construya la tabla que tendrían que tener <span
+class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span> si fueran independientes.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Cada celda es el producto de sus marginales:</p>
+<pre class="r"><code>outer(c(0.4, 0.6), c(0.3, 0.7))</code></pre>
+<pre><code>     [,1] [,2]
+[1,] 0.12 0.28
+[2,] 0.18 0.42</code></pre>
+</details>
+</div>
+<div id="reto-3.-covarianza-cero-sin-independencia"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Covarianza cero sin
+independencia</strong></span></h3>
+<p><span class="math inline">\(X\)</span> toma los valores −1, 0 y 1 con
+probabilidad 1/3 cada uno, y <span class="math inline">\(Y =
+X^2\)</span>. Calcule <span class="math inline">\(\text{Cov}(X,
+Y)\)</span> y muestre que <span class="math inline">\(X\)</span> e <span
+class="math inline">\(Y\)</span> no son independientes.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(E(X) = 0\)</span> y <span
+class="math inline">\(E(XY) = E(X^3) = 0\)</span>, así que <span
+class="math inline">\(\text{Cov}(X, Y) = 0\)</span>. Pero <span
+class="math inline">\(P(X = 0,\ Y = 1) = 0\)</span>, mientras que <span
+class="math inline">\(P(X = 0)\,P(Y = 1) = \tfrac{1}{3} \times
+\tfrac{2}{3} = \tfrac{2}{9}\)</span>: no son independientes.</p>
+<pre class="r"><code>x_r3 &lt;- c(-1, 0, 1)
+p_r3 &lt;- rep(1/3, 3)
+y_r3 &lt;- x_r3^2
+sum(x_r3 * y_r3 * p_r3) - sum(x_r3 * p_r3) * sum(y_r3 * p_r3)   # Cov(X, Y)</code></pre>
+<pre><code>[1] 0</code></pre>
+</details>
+</div>
+<div id="reto-4.-varianza-de-una-suma"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Varianza de una
+suma</strong></span></h3>
+<p>En el ejemplo de la planta, calcule la varianza del total de eventos
+del día, <span class="math inline">\(X + Y\)</span> (fallas más
+llamadas). Compárela con <span class="math inline">\(\text{Var}(X) +
+\text{Var}(Y)\)</span>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(\text{Var}(X + Y) = \text{Var}(X) +
+\text{Var}(Y) + 2\,\text{Cov}(X, Y) = 0.49 + 0.4475 + 2 \times 0.005 =
+0.9475\)</span>. Como la covarianza es casi cero, el resultado es casi
+igual a <span class="math inline">\(\text{Var}(X) + \text{Var}(Y) =
+0.9375\)</span>.</p>
+<pre class="r"><code>c(Var_suma = sd_X^2 + sd_Y^2 + 2 * covarianza, sin_covarianza = sd_X^2 + sd_Y^2)</code></pre>
+<pre><code>      Var_suma sin_covarianza 
+        0.9475         0.9375 </code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/3-introduccion"><em>Introducción
+a la estadística</em></a>. En español. Las tablas de contingencia del
+capítulo 3 son la base de las distribuciones conjuntas discretas, y el
+capítulo 12 trata la correlación con datos.</li>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <a
+href="https://chance.dartmouth.edu/book.html"><em>Introduction to
+Probability</em></a> (2.ª ed.). American Mathematical Society. Se
+descarga en PDF. El capítulo 6 trata la covarianza y la
+correlación.</li>
+<li>Blitzstein, J. K. y Hwang, J. (2019). <a
+href="http://probabilitybook.net"><em>Introduction to
+Probability</em></a> (2.ª ed.). Chapman &amp; Hall/CRC. Versión gratuita
+para leer en línea, para quien quiera profundizar. El capítulo 7 trata
+las distribuciones conjuntas.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. Los capítulos 3 y 4 tratan las distribuciones conjuntas,
+la covarianza y la correlación.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>R Core Team. Documentación de <code>matrix()</code>,
+<code>addmargins()</code>, <code>outer()</code>, <code>persp()</code> e
+<code>integrate()</code>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -529,12 +533,12 @@ R?</strong></span></h2>
 Casi cualquier operación con <code>NA</code> da <code>NA</code>, por lo
 que varias funciones tienen el argumento <code>na.rm = TRUE</code>.</p>
 <pre class="r"><code>x &lt;- c(4, 7, NA, 10)
-is.na(x)
-[1] FALSE FALSE  TRUE FALSE
-mean(x)
-[1] NA
-mean(x, na.rm = TRUE)
-[1] 7</code></pre>
+is.na(x)</code></pre>
+<pre><code>[1] FALSE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code>mean(x)</code></pre>
+<pre><code>[1] NA</code></pre>
+<pre class="r"><code>mean(x, na.rm = TRUE)</code></pre>
+<pre><code>[1] 7</code></pre>
 <p>No todos los faltantes se ven como <code>NA</code> (<a
 href="https://r4ds.hadley.nz/missing-values.html">Wickham et al.,
 2023</a>):</p>
@@ -599,16 +603,16 @@ resumen &lt;- data.frame(
   row.names  = NULL
 )
 resumen &lt;- resumen[order(resumen$faltantes, decreasing = TRUE), ]
-resumen[resumen$faltantes &gt; 0, ]
-  variable faltantes porcentaje
+resumen[resumen$faltantes &gt; 0, ]</code></pre>
+<pre><code>  variable faltantes porcentaje
 3     piso      2638       31.7
 7  parquea      1603       19.3</code></pre>
 <p>Solo dos variables tienen faltantes: <code>piso</code>, con el 31.7
 %, y <code>parquea</code>, con el 19.3 %. La función
 <code>miss_var_summary()</code>, de <code>naniar</code>, da la misma
 tabla en una línea:</p>
-<pre class="r"><code>head(miss_var_summary(viviendas), 3)
-# A tibble: 3 × 3
+<pre class="r"><code>head(miss_var_summary(viviendas), 3)</code></pre>
+<pre><code># A tibble: 3 × 3
   variable n_miss pct_miss
   &lt;chr&gt;     &lt;int&gt;    &lt;num&gt;
 1 piso       2638     31.7
@@ -616,10 +620,10 @@ tabla en una línea:</p>
 3 id            0      0  </code></pre>
 <p>También conviene saber cuántas viviendas están completas, porque son
 las que quedarían si se eliminaran los registros con faltantes:</p>
-<pre class="r"><code>sum(complete.cases(viviendas))
-[1] 4812
-round(100 * mean(complete.cases(viviendas)), 1)
-[1] 57.8</code></pre>
+<pre class="r"><code>sum(complete.cases(viviendas))</code></pre>
+<pre><code>[1] 4812</code></pre>
+<pre class="r"><code>round(100 * mean(complete.cases(viviendas)), 1)</code></pre>
+<pre><code>[1] 57.8</code></pre>
 <p>Solo el 57.8 % de las viviendas tiene todos los datos.</p>
 </div>
 <div id="dónde-están" class="section level3">
@@ -628,10 +632,10 @@ están?</strong></span></h3>
 <p><code>which()</code> devuelve las posiciones de las filas con
 faltantes. Sirve para revisar esos registros uno por uno:</p>
 <pre class="r"><code>filas_sin_piso &lt;- which(is.na(viviendas$piso))
-length(filas_sin_piso)
-[1] 2638
-head(viviendas[filas_sin_piso, c(&quot;id&quot;, &quot;tipo&quot;, &quot;estrato&quot;, &quot;piso&quot;, &quot;parquea&quot;)])
-# A tibble: 6 × 5
+length(filas_sin_piso)</code></pre>
+<pre><code>[1] 2638</code></pre>
+<pre class="r"><code>head(viviendas[filas_sin_piso, c(&quot;id&quot;, &quot;tipo&quot;, &quot;estrato&quot;, &quot;piso&quot;, &quot;parquea&quot;)])</code></pre>
+<pre><code># A tibble: 6 × 5
      id tipo        estrato  piso parquea
   &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
 1  8307 Casa              5    NA       4
@@ -650,8 +654,8 @@ nombres de las variables se leen mejor:</p>
 Patrones de datos faltantes en piso y parquea
 </p>
 </div>
-<pre class="r"><code>patrones
-     preciom parquea piso     
+<pre class="r"><code>patrones</code></pre>
+<pre><code>     preciom parquea piso     
 4812       1       1    1    0
 1912       1       1    0    1
 877        1       0    1    1
@@ -716,8 +720,8 @@ llenar?</strong></span></h2>
 <p>No. Antes de imputar hay que preguntarse si el dato existe. En
 <code>vivienda_faltantes</code>, <code>parquea</code> podría estar vacío
 porque no se registró o porque la vivienda no tiene parqueadero:</p>
-<pre class="r"><code>table(viviendas$parquea, useNA = &quot;ifany&quot;)
-
+<pre class="r"><code>table(viviendas$parquea, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
    1    2    3    4    5    6    7    8    9   10 &lt;NA&gt; 
 3156 2478  521  386   68   68   18   17    4    8 1603 </code></pre>
 <p>No aparece ningún cero, lo que sugiere que una vivienda sin
@@ -800,8 +804,8 @@ las personas con el promedio de quienes respondieron:</p>
 <pre class="r"><code>round(c(todas = mean(ingreso),
         MCAR = mean(ingreso[!falta_mcar]),
         MAR = mean(ingreso[!falta_mar]),
-        MNAR = mean(ingreso[!falta_mnar])), 2)
-todas  MCAR   MAR  MNAR 
+        MNAR = mean(ingreso[!falta_mnar])), 2)</code></pre>
+<pre><code>todas  MCAR   MAR  MNAR 
  4.27  4.16  4.71  3.86 </code></pre>
 <p>El promedio de todas las personas es 4.27 millones. Con MCAR queda
 cerca, en 4.16. Con MAR sube a 4.71, porque faltan sobre todo los
@@ -866,8 +870,8 @@ no.</strong> Si los datos fueran MCAR, las viviendas con y sin
 indicador de falta y se compara con otras variables. En una variable
 categórica se calcula el porcentaje de faltantes en cada grupo:</p>
 <pre class="r"><code>falta &lt;- is.na(viviendas$parquea)
-round(100 * tapply(falta, viviendas$estrato, mean), 1)
-   3    4    5    6 
+round(100 * tapply(falta, viviendas$estrato, mean), 1)</code></pre>
+<pre><code>   3    4    5    6 
 52.9 22.9  8.3  5.9 </code></pre>
 <p><code>gg_miss_fct()</code>, de <code>naniar</code>, muestra lo mismo
 para todas las variables a la vez:</p>
@@ -882,11 +886,10 @@ Porcentaje de datos faltantes de cada variable según el estrato
 </div>
 <p>En una variable numérica se comparan sus valores en los dos grupos,
 con indicadores o con un gráfico de cajas:</p>
-<pre class="r"><code>tapply(viviendas$preciom, falta, median)
-FALSE  TRUE 
-  355   178 
-
-comparacion &lt;- data.frame(
+<pre class="r"><code>tapply(viviendas$preciom, falta, median)</code></pre>
+<pre><code>FALSE  TRUE 
+  355   178 </code></pre>
+<pre class="r"><code>comparacion &lt;- data.frame(
   precio = viviendas$preciom,
   grupo  = ifelse(falta, &quot;Sin el dato&quot;, &quot;Con el dato&quot;)
 )
@@ -914,8 +917,8 @@ MCAR. Compara las medias de las variables entre los distintos patrones
 de faltantes. La función <code>mcar_test()</code>, de
 <code>naniar</code>, la aplica a las variables numéricas:</p>
 <pre class="r"><code>numericas &lt;- viviendas[, c(&quot;piso&quot;, &quot;estrato&quot;, &quot;preciom&quot;, &quot;areaconst&quot;, &quot;parquea&quot;, &quot;banios&quot;, &quot;habitac&quot;)]
-mcar_test(numericas)
-# A tibble: 1 × 4
+mcar_test(numericas)</code></pre>
+<pre><code># A tibble: 1 × 4
   statistic    df p.value missing.patterns
       &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;            &lt;int&gt;
 1     1466.    17       0                4</code></pre>
@@ -1027,8 +1030,8 @@ href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
 Buuren (2018)</a>. <code>Ozone</code> tiene 37 faltantes de 153
 datos.</p>
 <pre class="r"><code>aire &lt;- airquality[, c(&quot;Ozone&quot;, &quot;Solar.R&quot;, &quot;Wind&quot;, &quot;Temp&quot;)]
-colSums(is.na(aire))
-  Ozone Solar.R    Wind    Temp 
+colSums(is.na(aire))</code></pre>
+<pre><code>  Ozone Solar.R    Wind    Temp 
      37       7       0       0 </code></pre>
 <p><br/></p>
 <div id="cuándo-eliminar-registros" class="section level3">
@@ -1042,8 +1045,8 @@ produce estimaciones insesgadas. También puede ser adecuado si se pierde
 solo una parte pequeña de los datos.</p>
 <p><strong>¿Cómo se implementa?</strong></p>
 <pre class="r"><code>completos &lt;- na.omit(aire)
-nrow(completos)
-[1] 111</code></pre>
+nrow(completos)</code></pre>
+<pre><code>[1] 111</code></pre>
 <p><strong>¿Qué cuidados tener?</strong> Se perdieron 42 de 153 días. Si
 los datos no son MCAR, las estimaciones pueden quedar sesgadas (<a
 href="https://stefvanbuuren.name/fimd/sec-simplesolutions.html">van
@@ -1064,8 +1067,8 @@ Buuren, 2018</a>).</p>
 <p><strong>¿Cómo se implementa?</strong></p>
 <pre class="r"><code>ozono_media &lt;- replace(aire$Ozone, is.na(aire$Ozone), mean(aire$Ozone, na.rm = TRUE))
 
-round(c(antes = sd(aire$Ozone, na.rm = TRUE), despues = sd(ozono_media)), 1)
-  antes despues 
+round(c(antes = sd(aire$Ozone, na.rm = TRUE), despues = sd(ozono_media)), 1)</code></pre>
+<pre><code>  antes despues 
    33.0    28.7 </code></pre>
 <p><strong>¿Qué cuidados tener?</strong> La desviación estándar bajó de
 33 a 28.7, porque todos los datos nuevos están en el centro. La
@@ -1125,8 +1128,8 @@ método <code>norm.nob</code>, usando <code>Wind</code> y
 estocastica &lt;- mice(base, method = &quot;norm.nob&quot;, m = 1, maxit = 1, seed = 123, printFlag = FALSE)
 ozono_est &lt;- complete(estocastica)$Ozone
 
-min(ozono_est)
-[1] -31.64427</code></pre>
+min(ozono_est)</code></pre>
+<pre><code>[1] -31.64427</code></pre>
 <p><strong>¿Qué cuidados tener?</strong> Puede producir valores
 imposibles. Aquí el ozono mínimo salió negativo. Además, los errores
 estándar quedan demasiado pequeños, porque la base se analiza como si
@@ -1187,8 +1190,8 @@ href="https://stefvanbuuren.name/fimd/sec-howmany.html">van Buuren,
 ejemplo, para la media de <code>Ozone</code>:</p>
 <pre class="r"><code>ajuste &lt;- with(imputacion, lm(Ozone ~ 1))
 resultado &lt;- summary(pool(ajuste))
-round(resultado[, c(&quot;estimate&quot;, &quot;std.error&quot;)], 2)
-  estimate std.error
+round(resultado[, c(&quot;estimate&quot;, &quot;std.error&quot;)], 2)</code></pre>
+<pre><code>  estimate std.error
 1    41.38       2.7</code></pre>
 <p>Hay que revisar si los valores imputados son razonables. En esta
 figura, cada línea gris es una base imputada y la azul son los datos
@@ -1245,8 +1248,8 @@ comparacion &lt;- rbind(
   &quot;Imputación múltiple&quot; = rowMeans(multiple)
 )
 colnames(comparacion) &lt;- c(&quot;Media&quot;, &quot;Desv. estándar&quot;, &quot;Correlación con Temp&quot;)
-round(comparacion, 2)
-                      Media Desv. estándar Correlación con Temp
+round(comparacion, 2)</code></pre>
+<pre><code>                      Media Desv. estándar Correlación con Temp
 Datos observados      42.13          32.99                 0.70
 Media                 42.13          28.69                 0.61
 Regresión             41.86          30.76                 0.73
@@ -1399,8 +1402,8 @@ Ver solución
 <pre class="r"><code>tipo &lt;- tolower(viviendas$tipo)
 tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
 
-round(100 * tapply(is.na(viviendas$piso), tipo, mean), 1)
-apartamento        casa 
+round(100 * tapply(is.na(viviendas$piso), tipo, mean), 1)</code></pre>
+<pre><code>apartamento        casa 
        27.1        39.0 </code></pre>
 <p>Falta en el 27.1 % de los apartamentos y en el 39 % de las casas. La
 falta se relaciona con el tipo, así que no parece MCAR. Además, en las
@@ -1418,8 +1421,8 @@ estándar antes y después.</p>
 Ver solución
 </summary>
 <pre class="r"><code>solar &lt;- replace(aire$Solar.R, is.na(aire$Solar.R), mean(aire$Solar.R, na.rm = TRUE))
-round(c(antes = sd(aire$Solar.R, na.rm = TRUE), despues = sd(solar)), 1)
-  antes despues 
+round(c(antes = sd(aire$Solar.R, na.rm = TRUE), despues = sd(solar)), 1)</code></pre>
+<pre><code>  antes despues 
    90.1    88.0 </code></pre>
 <p>Baja poco, porque solo faltan 7 datos. El efecto depende de cuántos
 valores se reemplazan.</p>
@@ -1437,12 +1440,11 @@ datos disponibles.</p>
 Ver solución
 </summary>
 <pre class="r"><code>ajuste_solar &lt;- with(imputacion, lm(Solar.R ~ 1))
-round(summary(pool(ajuste_solar))[, c(&quot;estimate&quot;, &quot;std.error&quot;)], 2)
-  estimate std.error
-1   184.72      7.51
-
-round(mean(aire$Solar.R, na.rm = TRUE), 2)
-[1] 185.93</code></pre>
+round(summary(pool(ajuste_solar))[, c(&quot;estimate&quot;, &quot;std.error&quot;)], 2)</code></pre>
+<pre><code>  estimate std.error
+1   184.72      7.51</code></pre>
+<pre class="r"><code>round(mean(aire$Solar.R, na.rm = TRUE), 2)</code></pre>
+<pre><code>[1] 185.93</code></pre>
 <p>La base <code>imputacion</code> ya contiene <code>Solar.R</code>. Las
 dos medias son parecidas, porque faltan pocos datos.</p>
 </details>
@@ -1461,14 +1463,14 @@ qué?</p>
 Ver solución
 </summary>
 <pre class="r"><code>falta_piso &lt;- is.na(viviendas$piso)
-round(100 * tapply(falta_piso, viviendas$zona, mean), 1)
- Zona Centro   Zona Norte   Zona Oeste Zona Oriente     Zona Sur 
-        44.4         40.7         32.8         40.7         26.7 
-tapply(viviendas$preciom, falta_piso, median)
-FALSE  TRUE 
-  320   350 
-mcar_test(numericas)
-# A tibble: 1 × 4
+round(100 * tapply(falta_piso, viviendas$zona, mean), 1)</code></pre>
+<pre><code> Zona Centro   Zona Norte   Zona Oeste Zona Oriente     Zona Sur 
+        44.4         40.7         32.8         40.7         26.7 </code></pre>
+<pre class="r"><code>tapply(viviendas$preciom, falta_piso, median)</code></pre>
+<pre><code>FALSE  TRUE 
+  320   350 </code></pre>
+<pre class="r"><code>mcar_test(numericas)</code></pre>
+<pre><code># A tibble: 1 × 4
   statistic    df p.value missing.patterns
       &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;            &lt;int&gt;
 1     1466.    17       0                4</code></pre>

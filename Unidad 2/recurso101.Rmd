@@ -1,0 +1,435 @@
+---
+title: <span style="color:#034a94"> **Enfoques y axiomas**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+La **probabilidad** es un número entre 0 y 1 que mide qué tan posible es que ocurra un evento. Un valor cercano a 0 indica que el evento casi nunca ocurre y uno cercano a 1, que ocurre casi siempre.
+
+Hay varias formas de asignar ese número. Esta página presenta los tres enfoques más usados, las reglas que debe cumplir cualquier probabilidad y la forma de estimar probabilidades con simulación en **R**. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué enfoques existen?**</span>
+
+| Enfoque | Cómo se asigna la probabilidad | Cuándo se usa |
+|:--------|:-------------------------------|:--------------|
+| **Clásico** | Casos favorables sobre casos posibles | Cuando todos los resultados tienen la misma probabilidad, como en un dado balanceado |
+| **Frecuentista** | Proporción de veces que ocurre el evento en muchas repeticiones | Cuando el experimento se puede repetir o hay registros históricos |
+| **Subjetivo** | Juicio de un experto | Cuando el evento es único o no hay datos suficientes |
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué dice el enfoque clásico?**</span>
+
+Si todos los resultados del espacio muestral tienen la misma probabilidad, la probabilidad de un evento $A$ se calcula con la **regla de Laplace**:
+
+$$
+P(A) = \frac{\text{número de resultados en } A}{\text{número de resultados en } \Omega}
+$$
+
+Por ejemplo, al lanzar dos monedas balanceadas, $\Omega = \{(c, c), (c, s), (s, c), (s, s)\}$ y la probabilidad de obtener dos caras es $1/4 = 0.25$. Al lanzar dos dados balanceados, la probabilidad de que la suma sea menor que 4 es $3/36 = 0.083$, porque solo los pares $(1, 1)$, $(1, 2)$ y $(2, 1)$ cumplen la condición.
+
+En **R**, con el espacio muestral de los dos dados, la regla de Laplace es la proporción de filas que cumplen la condición. La función `mean()` aplicada a una condición calcula esa proporción, porque cuenta cada `TRUE` como 1 y cada `FALSE` como 0:
+
+```{r}
+dados <- expand.grid(d1 = 1:6, d2 = 1:6)
+mean(dados$d1 + dados$d2 < 4)     # P(suma menor que 4)
+mean(dados$d1 + dados$d2 == 7)    # P(suma igual a 7)
+```
+
+La regla de Laplace solo vale si los resultados son igualmente probables. Si el dado está cargado, o si se registra la suma en lugar del par, los resultados no tienen la misma probabilidad y la regla da valores incorrectos.
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué dice el enfoque frecuentista?**</span>
+
+La probabilidad de un evento se estima con su **frecuencia relativa**: el número de veces que ocurre dividido por el número de repeticiones, $n$. Cuantas más repeticiones haya, más cerca estará la frecuencia relativa de la probabilidad.
+
+Un arquero quiere saber hacia dónde patea los penaltis un jugador. Divide el arco en nueve zonas y revisa los registros de cobros anteriores. La figura muestra las zonas, numeradas de abajo hacia arriba y de izquierda a derecha, vistas desde el punto del penalti.
+
+```{r, fig.width=8, fig.height=3.6, fig.cap="Las nueve zonas del arco. La zona 1, resaltada, es la parte baja izquierda.", fig.alt="Arco de fútbol dividido en una cuadrícula de 3 por 3 con las zonas numeradas del 1 al 9; la zona 1, abajo a la izquierda, está sombreada en azul", out.width="85%", fig.align="center"}
+par(mar = c(0.5, 0.5, 0.5, 0.5))
+plot(0, 0, type = "n", xlim = c(-0.4, 7.72), ylim = c(-0.3, 2.74), axes = FALSE, xlab = "", ylab = "", asp = 1)
+
+# zona 1 resaltada y cuadrícula de 3 x 3
+rect(0, 0, 7.32 / 3, 2.44 / 3, col = adjustcolor("#034A94", 0.3), border = NA)
+segments(7.32 * (1:2) / 3, 0, 7.32 * (1:2) / 3, 2.44, col = "gray60", lty = 2)
+segments(0, 2.44 * (1:2) / 3, 7.32, 2.44 * (1:2) / 3, col = "gray60", lty = 2)
+
+# postes, travesaño y línea de gol (un arco mide 7.32 m por 2.44 m)
+segments(c(0, 7.32, 0), c(0, 0, 2.44), c(0, 7.32, 7.32), c(2.44, 2.44, 2.44), lwd = 6)
+segments(-0.4, 0, 7.72, 0, lwd = 2, col = "darkgreen")
+
+# número y nombre de cada zona
+centro_x <- rep(7.32 * c(1, 3, 5) / 6, times = 3)
+centro_y <- rep(2.44 * c(1, 3, 5) / 6, each = 3)
+nombres <- paste(rep(c("Baja", "Media", "Alta"), each = 3), rep(c("izquierda", "centro", "derecha"), times = 3))
+text(centro_x, centro_y + 0.1, 1:9, font = 2, cex = 1.4)
+text(centro_x, centro_y - 0.18, nombres, cex = 0.8)
+```
+
+La probabilidad de que el jugador patee a la zona 1, la parte baja izquierda, se estima como el número de cobros a esa zona dividido por el total de cobros registrados. Con 10 cobros la estimación es poco confiable; con 200, es mucho mejor.
+
+En el siguiente gráfico interactivo, un jugador simulado patea penaltis. Sus probabilidades reales están ocultas: el reto es estimarlas con los cobros. Use los botones para patear y observe dos cosas. En el arco, cada zona muestra el número de cobros y, entre paréntesis, su frecuencia relativa; entre más oscura la zona, más cobros recibe. En la gráfica de la derecha, la línea azul muestra cómo cambia la frecuencia relativa de la zona 1 a medida que se acumulan cobros. Al final, marque la casilla para comparar con las probabilidades reales.
+
+```{=html}
+<div id="pen-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;">
+<div style="flex:1 1 360px;min-width:300px;">
+<svg id="pen-arco" viewBox="-10 -10 386 142" style="width:100%;height:auto;display:block;"></svg>
+<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+<button class="pen-btn" data-n="1">Patear 1</button>
+<button class="pen-btn" data-n="10">Patear 10</button>
+<button class="pen-btn" data-n="100">Patear 100</button>
+<button class="pen-btn" data-n="0">Reiniciar</button>
+</div>
+<label style="display:block;margin-top:8px;font-size:0.95em;"><input type="checkbox" id="pen-real"> Mostrar la probabilidad real de cada zona</label>
+</div>
+<div style="flex:1 1 300px;min-width:260px;">
+<div style="font-size:0.95em;margin-bottom:4px;"><b>Cobros registrados:</b> <span id="pen-n">0</span>. <b>Frecuencia relativa de la zona 1:</b> <span id="pen-f1">sin datos</span></div>
+<canvas id="pen-graf" width="420" height="230" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Línea azul: frecuencia relativa de la zona 1. Línea roja punteada: probabilidad real, 0.20.</div>
+</div>
+</div>
+</div>
+<style>
+.pen-btn{background:#034A94;color:#fff;border:none;border-radius:4px;padding:5px 12px;cursor:pointer;font-size:0.9em;}
+.pen-btn:hover{background:#02386f;}
+.pen-btn[data-n="0"]{background:#6c757d;}
+</style>
+<script>
+(function(){
+  var p = [0.20, 0.05, 0.15, 0.12, 0.03, 0.10, 0.15, 0.05, 0.15]; // zonas 1 a 9
+  var nombres = ["Baja izq.","Baja centro","Baja der.","Media izq.","Media centro","Media der.","Alta izq.","Alta centro","Alta der."];
+  var cuenta = [0,0,0,0,0,0,0,0,0], total = 0, historia = [];
+  var W = 366, H = 122, svg = document.getElementById("pen-arco"), ns = "http://www.w3.org/2000/svg";
+  function el(tag, at, txt){ var e = document.createElementNS(ns, tag); for (var k in at) e.setAttribute(k, at[k]); if (txt !== undefined) e.textContent = txt; svg.appendChild(e); return e; }
+  var celdas = [], textos = [];
+  for (var z = 0; z < 9; z++) {
+    var col = z % 3, fila = 2 - Math.floor(z / 3), x = col * W / 3, y = fila * H / 3;
+    celdas.push(el("rect", {x: x, y: y, width: W / 3, height: H / 3, fill: "#ffffff", stroke: "#aaa", "stroke-dasharray": "3,3"}));
+    el("text", {x: x + W / 6, y: y + 13, "text-anchor": "middle", "font-size": 9, fill: "#333"}, (z + 1) + ". " + nombres[z]);
+    textos.push(el("text", {x: x + W / 6, y: y + 30, "text-anchor": "middle", "font-size": 11, "font-weight": "bold", fill: "#000"}, ""));
+  }
+  el("path", {d: "M0," + H + " L0,0 L" + W + ",0 L" + W + "," + H, fill: "none", stroke: "#000", "stroke-width": 5});
+  el("line", {x1: -10, y1: H, x2: W + 10, y2: H, stroke: "darkgreen", "stroke-width": 2});
+  var balon = el("circle", {cx: -50, cy: -50, r: 5, fill: "#C0392B"});
+  function patear(){ var u = Math.random(), a = 0; for (var z = 0; z < 9; z++) { a += p[z]; if (u < a) return z; } return 8; }
+  function dibujar(ultimo){
+    var real = document.getElementById("pen-real").checked;
+    for (var z = 0; z < 9; z++) {
+      var f = total > 0 ? cuenta[z] / total : 0;
+      celdas[z].setAttribute("fill", "rgba(3,74,148," + (0.08 + 1.6 * f).toFixed(3) + ")");
+      var t = total > 0 ? cuenta[z] + " (" + f.toFixed(2) + ")" : "";
+      if (real) t += (t ? "  |  " : "") + "real " + p[z].toFixed(2);
+      textos[z].textContent = t;
+    }
+    if (ultimo !== undefined) {
+      var col = ultimo % 3, fila = 2 - Math.floor(ultimo / 3);
+      balon.setAttribute("cx", col * W / 3 + W / 6 + (Math.random() - 0.5) * 70);
+      balon.setAttribute("cy", fila * H / 3 + H / 6 + 6 + Math.random() * 10);
+    } else { balon.setAttribute("cx", -50); }
+    document.getElementById("pen-n").textContent = total;
+    document.getElementById("pen-f1").textContent = total > 0 ? (cuenta[0] / total).toFixed(3) : "sin datos";
+    grafico();
+  }
+  function grafico(){
+    var c = document.getElementById("pen-graf"), g = c.getContext("2d"), w = c.width, h = c.height;
+    var izq = 42, der = 12, arr = 10, abj = 30, n = Math.max(historia.length, 10);
+    g.clearRect(0, 0, w, h); g.font = "11px sans-serif"; g.fillStyle = "#333"; g.strokeStyle = "#ccc"; g.lineWidth = 1;
+    function X(i){ return izq + (w - izq - der) * i / n; } function Y(v){ return arr + (h - arr - abj) * (1 - v / 0.6); }
+    for (var v = 0; v <= 0.6001; v += 0.1) { g.beginPath(); g.moveTo(izq, Y(v)); g.lineTo(w - der, Y(v)); g.stroke(); g.fillText(v.toFixed(1), 8, Y(v) + 4); }
+    g.fillText("1", X(1) - 3, h - abj + 14); g.fillText(String(n), w - der - 8 * String(n).length, h - abj + 14);
+    g.fillText("Número de cobros", w / 2 - 45, h - 4);
+    g.strokeStyle = "#C0392B"; g.setLineDash([5, 4]); g.beginPath(); g.moveTo(izq, Y(0.2)); g.lineTo(w - der, Y(0.2)); g.stroke(); g.setLineDash([]);
+    if (historia.length > 0) {
+      g.strokeStyle = "#034A94"; g.lineWidth = 2; g.beginPath();
+      for (var i = 0; i < historia.length; i++) { var yy = Y(Math.min(historia[i], 0.6)); if (i === 0) g.moveTo(X(i + 1), yy); else g.lineTo(X(i + 1), yy); }
+      g.stroke();
+    }
+  }
+  var botones = document.querySelectorAll("#pen-app .pen-btn");
+  for (var b = 0; b < botones.length; b++) {
+    botones[b].addEventListener("click", function(){
+      var n = parseInt(this.getAttribute("data-n")), ultimo;
+      if (n === 0) { cuenta = [0,0,0,0,0,0,0,0,0]; total = 0; historia = []; dibujar(); return; }
+      for (var i = 0; i < n; i++) { ultimo = patear(); cuenta[ultimo]++; total++; historia.push(cuenta[0] / total); }
+      dibujar(ultimo);
+    });
+  }
+  document.getElementById("pen-real").addEventListener("change", function(){ dibujar(); });
+  dibujar();
+})();
+</script>
+```
+
+
+Con pocos cobros, la frecuencia relativa de la zona 1 salta mucho; con cientos de cobros, se mantiene cerca de 0.20. En **R**, la misma simulación se hace con `sample()`, que elige una zona en cada cobro según las probabilidades del argumento `prob`:
+
+```{r}
+set.seed(2026)
+prob_real <- c(0.20, 0.05, 0.15, 0.12, 0.03, 0.10, 0.15, 0.05, 0.15)   # zonas 1 a 9
+cobros <- sample(1:9, size = 2000, replace = TRUE, prob = prob_real)
+round(prop.table(table(cobros)), 3)   # frecuencia relativa de cada zona en 2000 cobros
+```
+
+Lo mismo ocurre con un dado. La función `sample()` lo lanza 5 000 veces y `cumsum()` acumula cuántos 6 han salido después de cada lanzamiento:
+
+```{r, fig.width=8, fig.height=4.2, fig.cap="Frecuencia relativa de obtener 6 al lanzar un dado. La línea roja es la probabilidad 1/6.", fig.alt="Línea azul que oscila mucho en los primeros lanzamientos y luego se mantiene cerca de la línea roja horizontal en 0.167", out.width="100%"}
+set.seed(2026)
+lanzamientos <- sample(1:6, size = 5000, replace = TRUE)
+frecuencia <- cumsum(lanzamientos == 6) / (1:5000)
+
+plot(frecuencia, type = "l", col = "#034A94", ylim = c(0, 0.5),
+     xlab = "Número de lanzamientos", ylab = "Frecuencia relativa de 6")
+abline(h = 1/6, col = "#C0392B", lty = 2)
+```
+
+```{r}
+frecuencia[c(10, 100, 1000, 5000)]   # frecuencia relativa con 10, 100, 1000 y 5000 lanzamientos
+```
+
+Con pocos lanzamientos la frecuencia relativa se aleja bastante de $1/6 = 0.167$. Con muchos, se mantiene cerca.
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué dice el enfoque subjetivo?**</span>
+
+La probabilidad la asigna un **experto** con base en su formación, su experiencia y el contexto. No se obtiene de una fórmula ni de frecuencias observadas.
+
+Por ejemplo, un médico epidemiólogo estima en 0.3 la probabilidad de que un paciente desarrolle complicaciones graves por una infección viral. No tiene datos de casos idénticos, pero integra lo que sabe de la enfermedad, del estado del paciente y de casos parecidos. Este enfoque es útil cuando hay que decidir sin datos suficientes. Su limitación es que dos expertos pueden asignar valores distintos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué reglas debe cumplir una probabilidad?**</span>
+
+Sin importar el enfoque, toda probabilidad cumple tres reglas básicas, llamadas **axiomas de Kolmogorov**:
+
+1. **No negatividad:** la probabilidad de cualquier evento es mayor o igual que cero, $P(A) \geq 0$.
+2. **Evento seguro:** la probabilidad del espacio muestral es uno, $P(\Omega) = 1$.
+3. **Aditividad:** si $A$ y $B$ son **mutuamente excluyentes**, es decir, no pueden ocurrir a la vez ($A \cap B = \emptyset$), entonces $P(A \cup B) = P(A) + P(B)$. La regla vale también para más de dos eventos excluyentes.
+
+Por ejemplo, con dos dados, los eventos "la suma es 7" y "la suma es 8" son excluyentes, así que $P(\text{suma 7 o suma 8}) = 6/36 + 5/36 = 11/36$.
+
+```{r}
+mean(dados$d1 + dados$d2 == 7 | dados$d1 + dados$d2 == 8)   # el símbolo | significa "o"
+11 / 36
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué otras reglas se obtienen?**</span>
+
+De los tres axiomas se obtienen las reglas que se usan en el resto del curso:
+
+| Regla | Fórmula | Significado |
+|:------|:--------|:------------|
+| Rango | $0 \leq P(A) \leq 1$ | Ninguna probabilidad es negativa ni mayor que 1 |
+| Evento imposible | $P(\emptyset) = 0$ | Lo que no puede ocurrir tiene probabilidad 0 |
+| Complemento | $P(A^c) = 1 - P(A)$ | La probabilidad de que $A$ **no** ocurra |
+| Unión de dos eventos | $P(A \cup B) = P(A) + P(B) - P(A \cap B)$ | La probabilidad de que ocurra $A$, $B$ o ambos |
+
+La regla del **complemento** es útil cuando es más fácil calcular lo contrario. Por ejemplo, la probabilidad de obtener **al menos un 6** al lanzar dos dados es uno menos la probabilidad de no obtener ningún 6: $1 - 25/36 = 11/36$.
+
+La regla de la **unión** resta la intersección porque, al sumar $P(A)$ y $P(B)$, los resultados que están en ambos eventos se cuentan dos veces. El diagrama de Venn de la figura siguiente lo muestra.
+
+```{r, fig.width=6, fig.height=3.6, fig.cap="Diagrama de Venn de dos eventos. La zona morada, la intersección, queda dentro de A y dentro de B.", fig.alt="Rectángulo con dos círculos que se cruzan, uno azul marcado A y otro rojo marcado B; la zona común se ve morada", out.width="70%", fig.align="center"}
+par(mar = c(0.5, 0.5, 0.5, 0.5))
+plot(0, 0, type = "n", xlim = c(0, 10), ylim = c(0, 6), axes = FALSE, xlab = "", ylab = "", asp = 1)
+rect(0.2, 0.2, 9.8, 5.8)
+symbols(c(3.8, 6.2), c(3, 3), circles = c(2.2, 2.2), add = TRUE, inches = FALSE,
+        bg = c(adjustcolor("#034A94", 0.35), adjustcolor("#C0392B", 0.35)))
+text(c(2.6, 7.4, 5, 0.7), c(3, 3, 3, 5.3), c("A", "B", "A ∩ B", "Ω"), cex = 1.2)
+```
+
+Con dos dados, sean $A$: el primer dado es 6, y $B$: el segundo dado es 6. Entonces $P(A) = P(B) = 6/36$ y $P(A \cap B) = 1/36$, porque solo el par $(6, 6)$ está en ambos:
+
+```{r}
+P_A  <- mean(dados$d1 == 6)
+P_B  <- mean(dados$d2 == 6)
+P_AB <- mean(dados$d1 == 6 & dados$d2 == 6)   # el símbolo & significa "y"
+P_A + P_B - P_AB                              # regla de la unión
+mean(dados$d1 == 6 | dados$d2 == 6)           # conteo directo
+1 - mean(dados$d1 != 6 & dados$d2 != 6)       # regla del complemento
+```
+
+Las tres formas dan $11/36 = 0.306$.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se estima una probabilidad con simulación?**</span>
+
+Cuando un cálculo es largo, se puede **simular** el experimento muchas veces en **R** y usar la frecuencia relativa como estimación, como en el enfoque frecuentista. Los pasos son:
+
+1. Escribir el experimento con `sample()`.
+2. Repetirlo muchas veces con `replicate()`.
+3. Calcular la proporción de veces que ocurre el evento con `mean()`.
+
+Por ejemplo, para estimar la probabilidad de que la suma de dos dados sea 7:
+
+```{r}
+set.seed(2026)
+suma_siete <- replicate(10000, sum(sample(1:6, size = 2, replace = TRUE)) == 7)
+mean(suma_siete)   # estimación por simulación
+6 / 36             # valor exacto
+```
+
+La función `set.seed()` fija el punto de partida de los números aleatorios. Así, quien ejecute el código obtiene el mismo resultado. La estimación no es exactamente igual al valor real, pero se acerca más cuantas más repeticiones se usen.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| $P(A \cup B)$ da más de 1 | Se sumó dos veces la intersección | Usar $P(A) + P(B) - P(A \cap B)$ |
+| Usar la regla de Laplace con un dado cargado | Los resultados no son igualmente probables | Usar frecuencias o el modelo correcto |
+| La simulación da un resultado distinto cada vez | No se fijó la semilla | Usar `set.seed()` antes de simular |
+| La estimación por simulación se aleja del valor real | Se usaron pocas repeticiones | Aumentar el número de repeticiones |
+| Confundir $P(A^c)$ con $P(A)$ | No se leyó bien el evento | Escribir el evento con palabras antes de calcular |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. ¿Qué enfoque se usa?**</span>
+
+Diga qué enfoque de probabilidad se usa en cada caso:
+
+a. Una aseguradora calcula la probabilidad de que un conductor de 20 años tenga un accidente con los registros de los últimos cinco años.
+b. La probabilidad de sacar un as de una baraja de 52 cartas es $4/52$.
+c. Un ingeniero estima en 0.8 la probabilidad de que un proyecto nuevo termine a tiempo.
+
+<details>
+<summary>Ver solución</summary>
+
+a. Frecuentista: usa la proporción observada en los registros.
+
+b. Clásico: las 52 cartas tienen la misma probabilidad de salir.
+
+c. Subjetivo: es el juicio del ingeniero sobre un proyecto único.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Regla de Laplace**</span>
+
+Se lanzan dos monedas balanceadas. Calcule la probabilidad de obtener al menos una cara, primero con la regla de Laplace y luego con el complemento.
+
+<details>
+<summary>Ver solución</summary>
+
+De los cuatro resultados, tres tienen al menos una cara: $(c, c)$, $(c, s)$ y $(s, c)$. Entonces $P = 3/4 = 0.75$. Con el complemento: el único resultado sin caras es $(s, s)$, así que $P = 1 - 1/4 = 0.75$.
+
+```{r}
+monedas <- expand.grid(m1 = c("c", "s"), m2 = c("c", "s"))
+mean(monedas$m1 == "c" | monedas$m2 == "c")
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Regla de la unión**</span>
+
+Con dos dados, sean $A$: la suma es 7, y $B$: el primer dado es par. Calcule $P(A \cup B)$ con la regla de la unión y compruébelo en **R**.
+
+<details>
+<summary>Ver solución</summary>
+
+$P(A) = 6/36$, $P(B) = 18/36$ y $P(A \cap B) = 3/36$, por los pares $(2, 5)$, $(4, 3)$ y $(6, 1)$. Entonces $P(A \cup B) = (6 + 18 - 3)/36 = 21/36 = 0.583$.
+
+```{r}
+A <- dados$d1 + dados$d2 == 7
+B <- dados$d1 %% 2 == 0         # %% es el residuo de la división: un número par tiene residuo 0
+mean(A) + mean(B) - mean(A & B)
+mean(A | B)
+```
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Más repeticiones, mejor estimación**</span>
+
+Estime por simulación la probabilidad de obtener al menos un 6 al lanzar dos dados, con 100 y con 10 000 repeticiones. Compare con el valor exacto, $11/36$.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+mean(replicate(100, any(sample(1:6, 2, replace = TRUE) == 6)))
+mean(replicate(10000, any(sample(1:6, 2, replace = TRUE) == 6)))
+11 / 36
+```
+
+La función `any()` devuelve `TRUE` si al menos un dado es 6. La estimación con 10 000 repeticiones queda más cerca de $0.306$.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. Cumpleaños en el curso**</span>
+
+En un curso de 30 estudiantes, ¿qué tan probable es que al menos dos cumplan años el mismo día? Haga una predicción antes de simular. Suponga 365 días igualmente probables.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+cumple_repetido <- replicate(10000, any(duplicated(sample(1:365, size = 30, replace = TRUE))))
+mean(cumple_repetido)
+```
+
+La función `duplicated()` marca las fechas repetidas. La probabilidad es cercana a 0.7, mucho más alta de lo que la mayoría espera, porque hay 435 parejas posibles de estudiantes que pueden coincidir.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/3-introduccion), capítulo 3, Temas de probabilidad. En español. Las secciones 3.1 y 3.3 tratan la terminología y las reglas de adición y multiplicación.
+- Grinstead, C. M. y Snell, J. L. (1997). [*Introduction to Probability*](https://chance.dartmouth.edu/book.html) (2.ª ed.). American Mathematical Society. Se descarga en PDF. El capítulo 1 explica la probabilidad con muchos ejemplos de simulación.
+- Blitzstein, J. K. y Hwang, J. (2019). [*Introduction to Probability*](http://probabilitybook.net) (2.ª ed.). Chapman & Hall/CRC. Versión gratuita para leer en línea, para quien quiera profundizar.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 2 trata los enfoques, los axiomas y las reglas de la probabilidad.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Grinstead, C. M. y Snell, J. L. (1997). *Introduction to Probability* (2.ª ed.). American Mathematical Society.
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+- R Core Team. Documentación de `sample()`, `replicate()`, `cumsum()` y `duplicated()`.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

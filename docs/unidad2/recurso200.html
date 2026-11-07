@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Variable aleatoria</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Variable aleatoria</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>¿Cuánto tiempo tarda un estudiante en llegar a la universidad?
+¿Cuántas botellas de agua venderá la cafetería esta semana? ¿Cuántos
+mensajes llegarán hoy por WhatsApp? ¿Cuánto durará la batería de un
+celular? Ninguna de estas preguntas tiene una única respuesta: el
+resultado cambia de una vez a otra.</p>
+<p>Una <strong>variable aleatoria</strong> describe con un número el
+resultado de un experimento aleatorio. Esta página presenta la
+definición, los dos tipos de variables aleatorias, discretas y
+continuas, y las funciones que describen cómo se reparte la probabilidad
+entre sus valores. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-una-variable-aleatoria" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una variable
+aleatoria?</strong></span></h2>
+<p>Una <strong>variable aleatoria</strong> <span
+class="math inline">\(X\)</span> es una regla que asigna un número a
+cada resultado del espacio muestral. El conjunto de números que puede
+tomar se llama <strong>rango</strong> de la variable y se escribe <span
+class="math inline">\(R_X\)</span>.</p>
+<p>Se lanza una moneda balanceada tres veces y se registra el orden de
+caras (<span class="math inline">\(c\)</span>) y sellos (<span
+class="math inline">\(s\)</span>). El espacio muestral tiene 8
+resultados:</p>
+<p><span class="math display">\[
+\Omega = \{sss,\ ssc,\ scs,\ scc,\ css,\ csc,\ ccs,\ ccc\}
+\]</span></p>
+<p>Si <span class="math inline">\(X\)</span> es el <strong>número de
+caras</strong>, la variable asigna a cada resultado un número entre 0 y
+3, así que <span class="math inline">\(R_X = \{0, 1, 2, 3\}\)</span>. La
+figura muestra la regla: cada resultado del espacio muestral va a un
+valor de <span class="math inline">\(X\)</span>, y cada valor de <span
+class="math inline">\(X\)</span> recibe una probabilidad.</p>
+<div class="figure" style="text-align: center">
+<img src="img/Figura301.png" alt="Tres óvalos. El primero tiene los 8 resultados de lanzar tres monedas; flechas los llevan a los valores 0, 1, 2 y 3 del segundo óvalo; de ahí, flechas llevan a las probabilidades 1/8, 3/8, 3/8 y 1/8 del tercero" width="70%" />
+<p class="caption">
+Relación entre el espacio muestral, el rango de la variable aleatoria y
+su función de probabilidad.
+</p>
+</div>
+<p>Como los 8 resultados son igualmente probables, la probabilidad de
+cada valor de <span class="math inline">\(X\)</span> se obtiene contando
+sus resultados:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Valor de <span class="math inline">\(X\)</span></th>
+<th align="left">Resultados</th>
+<th align="center"><span class="math inline">\(P(X = x)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="left"><span class="math inline">\(sss\)</span></td>
+<td align="center">1/8</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="left"><span class="math inline">\(ssc\)</span>, <span
+class="math inline">\(scs\)</span>, <span
+class="math inline">\(css\)</span></td>
+<td align="center">3/8</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="left"><span class="math inline">\(scc\)</span>, <span
+class="math inline">\(csc\)</span>, <span
+class="math inline">\(ccs\)</span></td>
+<td align="center">3/8</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="left"><span class="math inline">\(ccc\)</span></td>
+<td align="center">1/8</td>
+</tr>
+</tbody>
+</table>
+<p>En <strong>R</strong>, se construye el espacio muestral con
+<code>expand.grid()</code>, se cuenta el número de caras de cada
+resultado con <code>rowSums()</code> y se tabula:</p>
+<pre class="r"><code>monedas &lt;- expand.grid(m1 = c(&quot;c&quot;, &quot;s&quot;), m2 = c(&quot;c&quot;, &quot;s&quot;), m3 = c(&quot;c&quot;, &quot;s&quot;))
+X &lt;- rowSums(monedas == &quot;c&quot;)     # número de caras de cada resultado
+table(X) / nrow(monedas)         # P(X = x)</code></pre>
+<pre><code>X
+    0     1     2     3 
+0.125 0.375 0.375 0.125 </code></pre>
+<p><br/></p>
+</div>
+<div id="qué-tipos-de-variables-aleatorias-hay" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tipos de variables
+aleatorias hay?</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="13%" />
+<col width="39%" />
+<col width="26%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Valores que toma</th>
+<th align="left">Cómo surge</th>
+<th align="left">Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Discreta</strong></td>
+<td align="left">Valores que se pueden contar: <span
+class="math inline">\(0, 1, 2, \ldots\)</span></td>
+<td align="left">De un <strong>conteo</strong>: “número de…”</td>
+<td align="left">Número de llamadas a un conmutador en un día, número de
+hijos de una familia, número de quejas en una sucursal bancaria</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Continua</strong></td>
+<td align="left">Cualquier valor de un intervalo</td>
+<td align="left">De una <strong>medición</strong></td>
+<td align="left">Tiempo que tarda un examen, peso de un recién nacido,
+diámetro de una perforación, contenido de azúcar de un refresco</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cómo-se-describe-una-variable-discreta" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se describe una variable
+discreta?</strong></span></h2>
+<div id="función-de-probabilidad" class="section level3">
+<h3><span style="color:#034a94"><strong>Función de
+probabilidad</strong></span></h3>
+<p>La <strong>función de probabilidad</strong> de una variable discreta
+asigna a cada valor <span class="math inline">\(x\)</span> su
+probabilidad, <span class="math inline">\(f(x) = P(X = x)\)</span>.
+Cumple dos condiciones:</p>
+<ol style="list-style-type: decimal">
+<li>Ninguna probabilidad es negativa: <span class="math inline">\(f(x)
+\geq 0\)</span>.</li>
+<li>Las probabilidades de todos los valores suman 1: <span
+class="math inline">\(\sum_x f(x) = 1\)</span>.</li>
+</ol>
+<p>En el ejemplo de las monedas, <span class="math inline">\(1/8 + 3/8 +
+3/8 + 1/8 = 1\)</span>.</p>
+<p><br/></p>
+</div>
+<div id="función-de-distribución-acumulada" class="section level3">
+<h3><span style="color:#034a94"><strong>Función de distribución
+acumulada</strong></span></h3>
+<p>Sea <span class="math inline">\(X\)</span> una <strong>variable
+aleatoria discreta</strong> con función de probabilidad <span
+class="math inline">\(f_{X}(x)\)</span>. La <strong>función de
+distribución acumulada</strong> <span
+class="math inline">\(F_{X}(x)\)</span> se define como la probabilidad
+de que la variable aleatoria tome un valor menor o igual que <span
+class="math inline">\(x\)</span>:</p>
+<p><span class="math inline">\(F_{X}(x) = P(X \leq x) = \sum_{t \leq x}
+f_{X}(t)\)</span></p>
+<p>Propiedades de la función de distribución acumulada:</p>
+<ul>
+<li><strong>Monotonía:</strong> <span
+class="math inline">\(F_{X}(x)\)</span> es una función no decreciente,
+es decir, si <span class="math inline">\(a &lt; b\)</span>, entonces
+<span class="math inline">\(F_{X}(a) \leq F_{X}(b)\)</span>.</li>
+<li><strong>Rangos extremos:</strong> <span
+class="math inline">\(\lim_{x \to -\infty} F_{X}(x) = 0\)</span> y <span
+class="math inline">\(\lim_{x \to \infty} F_{X}(x) = 1\)</span>.</li>
+<li><strong>Incrementos por saltos:</strong> En el caso discreto, <span
+class="math inline">\(F_{X}(x)\)</span> es una función escalonada que
+aumenta en los valores donde <span class="math inline">\(X\)</span>
+tiene probabilidad no nula.</li>
+</ul>
+<p>Esta función es fundamental para caracterizar la distribución de
+probabilidad de variables discretas y para calcular probabilidades en
+intervalos específicos. Con <span
+class="math inline">\(F_{X}(x)\)</span> se calculan, por ejemplo, las
+siguientes probabilidades:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Probabilidad</th>
+<th align="left">Cómo se calcula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(P(X \leq a)\)</span></td>
+<td align="left"><span class="math inline">\(F(a)\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(P(X &gt; a)\)</span></td>
+<td align="left"><span class="math inline">\(1 - F(a)\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(P(a &lt; X \leq
+b)\)</span></td>
+<td align="left"><span class="math inline">\(F(b) - F(a)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="ejemplo-reservas-en-un-restaurante" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: reservas en un
+restaurante</strong></span></h3>
+<p>El restaurante <strong>Asados y algo más</strong> solo atiende con
+reserva y recibe 20 reservas por noche. Según sus registros de los
+últimos años, el 30 % de las personas que reservan no asisten, mientras
+que el 70 % sí asiste. Al dueño le interesa la variable</p>
+<center>
+<span class="math inline">\(X\)</span>: número de personas que asisten
+en una noche,
+</center>
+<p>porque de ella dependen la comida que debe preparar y los meseros que
+debe contratar. <span class="math inline">\(X\)</span> es una variable
+<strong>discreta</strong>: puede tomar los valores <span
+class="math inline">\(0, 1, 2, \ldots, 20\)</span>.</p>
+<p><strong>¿Por qué el modelo binomial?</strong> La situación cumple
+cuatro condiciones:</p>
+<ol style="list-style-type: decimal">
+<li>Hay un número fijo de <strong>ensayos</strong>: las 20
+reservas.</li>
+<li>Cada ensayo tiene solo dos resultados: la persona
+<strong>asiste</strong> (éxito) o <strong>no asiste</strong>
+(fracaso).</li>
+<li>La probabilidad de éxito es la misma en todos los ensayos: <span
+class="math inline">\(p = 0.7\)</span>.</li>
+<li>Los ensayos son <strong>independientes</strong>: que una persona
+asista no cambia la probabilidad de que asista otra.</li>
+</ol>
+<p>Cuando se cumplen estas condiciones, el número de éxitos sigue una
+<strong>distribución binomial</strong> con <span class="math inline">\(n
+= 20\)</span> y <span class="math inline">\(p = 0.7\)</span>, y su
+función de probabilidad es</p>
+<p><span class="math display">\[
+f_X(x) = \binom{20}{x}(0.7)^{x}(0.3)^{20 - x}, \qquad x = 0, 1, \ldots,
+20
+\]</span></p>
+<p>Cada parte de la fórmula tiene un significado:</p>
+<ul>
+<li><span class="math inline">\((0.7)^x\)</span> es la probabilidad de
+que asistan <span class="math inline">\(x\)</span> personas
+determinadas.</li>
+<li><span class="math inline">\((0.3)^{20 - x}\)</span> es la
+probabilidad de que las otras <span class="math inline">\(20 -
+x\)</span> no asistan.</li>
+<li><span class="math inline">\(\binom{20}{x}\)</span> cuenta de cuántas
+formas se puede escoger <strong>cuáles</strong> de las 20 personas son
+las que asisten.</li>
+</ul>
+<p><strong>Un cálculo a mano.</strong> La probabilidad de que asistan
+exactamente 14 personas es</p>
+<p><span class="math display">\[
+f_X(14) = \binom{20}{14}(0.7)^{14}(0.3)^{6} = 38\,760 \times 0.006782
+\times 0.000729 = 0.1916
+\]</span></p>
+<p>Hay 38 760 formas de escoger a las 14 personas que asisten, y cada
+una de esas formas tiene probabilidad <span
+class="math inline">\(0.006782 \times 0.000729\)</span>. En
+<strong>R</strong> se puede reproducir cada parte:</p>
+<pre class="r"><code>choose(20, 14)                          # formas de escoger a las 14 que asisten</code></pre>
+<pre><code>[1] 38760</code></pre>
+<pre class="r"><code>0.7^14 * 0.3^6                          # probabilidad de una de esas formas: 4.94e-06 = 0.00000494</code></pre>
+<pre><code>[1] 4.944246e-06</code></pre>
+<pre class="r"><code>choose(20, 14) * 0.7^14 * 0.3^6         # f(14)</code></pre>
+<pre><code>[1] 0.191639</code></pre>
+<p><strong>Toda la distribución en R.</strong> Calcular a mano las 21
+probabilidades sería largo. <strong>R</strong> lo hace con dos
+funciones, que se estudian en detalle en <a
+href="recurso203.html">Modelos discretos</a>:</p>
+<ul>
+<li><code>dbinom(x, size, prob)</code> calcula la función de
+probabilidad, <span class="math inline">\(f_X(x) = P(X =
+x)\)</span>.</li>
+<li><code>pbinom(x, size, prob)</code> calcula la función de
+distribución acumulada, <span class="math inline">\(F_X(x) = P(X \leq
+x)\)</span>.</li>
+</ul>
+<p>El argumento <code>size</code> es el número de ensayos (<span
+class="math inline">\(n = 20\)</span>) y <code>prob</code>, la
+probabilidad de éxito (<span class="math inline">\(p = 0.7\)</span>). El
+código siguiente:</p>
+<ol style="list-style-type: decimal">
+<li>Crea el vector <code>x</code> con los valores posibles, de 0 a
+20.</li>
+<li>Calcula <span class="math inline">\(f_X(x)\)</span> y <span
+class="math inline">\(F_X(x)\)</span> para todos esos valores a la
+vez.</li>
+<li>Comprueba que las 21 probabilidades suman 1.</li>
+<li>Muestra la tabla con los valores de 10 a 20, redondeados a cuatro
+decimales. Las filas 11 a 21 de la tabla corresponden a <span
+class="math inline">\(x = 10, \ldots, 20\)</span>, porque la primera
+fila es <span class="math inline">\(x = 0\)</span>.</li>
+</ol>
+<pre class="r"><code>x  &lt;- 0:20
+fx &lt;- dbinom(x, size = 20, prob = 0.7)   # f(x) = P(X = x)
+Fx &lt;- pbinom(x, size = 20, prob = 0.7)   # F(x) = P(X &lt;= x)
+sum(fx)                                  # las probabilidades suman 1</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>round(data.frame(x, fx, Fx)[11:21, ], 4) # valores de 10 a 20</code></pre>
+<pre><code>    x     fx     Fx
+11 10 0.0308 0.0480
+12 11 0.0654 0.1133
+13 12 0.1144 0.2277
+14 13 0.1643 0.3920
+15 14 0.1916 0.5836
+16 15 0.1789 0.7625
+17 16 0.1304 0.8929
+18 17 0.0716 0.9645
+19 18 0.0278 0.9924
+20 19 0.0068 0.9992
+21 20 0.0008 1.0000</code></pre>
+<p><strong>Cómo leer la tabla.</strong> Cada fila tiene un valor de
+<span class="math inline">\(x\)</span>, su probabilidad <span
+class="math inline">\(f_X(x)\)</span> y la probabilidad acumulada <span
+class="math inline">\(F_X(x)\)</span>:</p>
+<ul>
+<li>La columna <code>fx</code> muestra que los valores más probables
+están alrededor de 14: <span class="math inline">\(f_X(14) =
+0.1916\)</span> es la probabilidad más alta. Tiene sentido, porque el 70
+% de 20 es 14.</li>
+<li>La columna <code>Fx</code> se obtiene <strong>sumando</strong> la
+columna <code>fx</code> hasta cada fila. Por ejemplo, <span
+class="math inline">\(F_X(14) = F_X(13) + f_X(14) = 0.3920 + 0.1916 =
+0.5836\)</span>.</li>
+<li>Los valores de 0 a 9 no aparecen porque sus probabilidades son muy
+pequeñas: entre todos suman <span class="math inline">\(F_X(9) =
+0.0171\)</span>. La probabilidad de que no asista nadie, <span
+class="math inline">\(f_X(0)\)</span>, es menor que una en diez mil
+millones.</li>
+<li>La última fila confirma que <span class="math inline">\(F_X(20) =
+1\)</span>: es seguro que asistan 20 personas o menos.</li>
+</ul>
+<p>La figura muestra las dos funciones. En la de la izquierda, la altura
+de cada barra es <span class="math inline">\(f_X(x)\)</span>. En la de
+la derecha, cada escalón sube exactamente la altura de la barra
+correspondiente.</p>
+<pre class="r"><code>par(mfrow = c(1, 2), mar = c(4.5, 4.5, 1, 1))
+barplot(fx, names.arg = x, col = &quot;#FF7F00&quot;, ylim = c(0, 0.2),
+        xlab = &quot;Número de personas que asisten (x)&quot;, ylab = &quot;f(x)&quot;)
+plot(stepfun(x, c(0, Fx)), verticals = FALSE, pch = 19, col = &quot;#034A94&quot;,
+     xlim = c(0, 20), ylim = c(0, 1), main = &quot;&quot;,
+     xlab = &quot;Número de personas que asisten (x)&quot;, ylab = &quot;F(x)&quot;)</code></pre>
+<div class="figure">
+<img src="recurso200_files/figure-html/unnamed-chunk-5-1.png" alt="A la izquierda, barras naranjas con forma de montaña, con la más alta en 14. A la derecha, una escalera azul que sube desde 0 cerca de x = 9 hasta 1 en x = 20" width="100%" />
+<p class="caption">
+Función de probabilidad (izquierda) y función de distribución acumulada
+(derecha) del número de personas que asisten.
+</p>
+</div>
+<p>Algunas preguntas que se responden con estas funciones:</p>
+<ul>
+<li><strong>¿Qué tan probable es que asistan exactamente 14
+personas?</strong> <span class="math inline">\(f(14) =
+0.1916\)</span>.</li>
+<li><strong>¿Qué tan probable es que asistan 14 o menos?</strong> <span
+class="math inline">\(F(14) = 0.5836\)</span>.</li>
+<li><strong>¿Qué tan probable es que asistan más de 14?</strong> <span
+class="math inline">\(1 - F(14) = 0.4164\)</span>.</li>
+<li><strong>¿Qué tan probable es que asistan entre 12 y 16?</strong>
+<span class="math inline">\(F(16) - F(11) = 0.7796\)</span>. Se resta
+<span class="math inline">\(F(11)\)</span>, y no <span
+class="math inline">\(F(12)\)</span>, para incluir el 12.</li>
+</ul>
+<pre class="r"><code>dbinom(14, 20, 0.7)                        # P(X = 14)</code></pre>
+<pre><code>[1] 0.191639</code></pre>
+<pre class="r"><code>pbinom(14, 20, 0.7)                        # P(X &lt;= 14)</code></pre>
+<pre><code>[1] 0.5836292</code></pre>
+<pre class="r"><code>1 - pbinom(14, 20, 0.7)                    # P(X &gt; 14)</code></pre>
+<pre><code>[1] 0.4163708</code></pre>
+<pre class="r"><code>pbinom(16, 20, 0.7) - pbinom(11, 20, 0.7)  # P(12 &lt;= X &lt;= 16)</code></pre>
+<pre><code>[1] 0.7795817</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-se-describe-una-variable-continua" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se describe una variable
+continua?</strong></span></h2>
+<div id="función-de-densidad" class="section level3">
+<h3><span style="color:#034a94"><strong>Función de
+densidad</strong></span></h3>
+<p>Una variable continua puede tomar infinitos valores, así que no se
+puede hacer una lista de probabilidades. Se usa una <strong>función de
+densidad</strong>, <span class="math inline">\(f(x)\)</span>, cuya
+gráfica es una curva. La probabilidad de que <span
+class="math inline">\(X\)</span> esté entre <span
+class="math inline">\(a\)</span> y <span
+class="math inline">\(b\)</span> es el <strong>área bajo la
+curva</strong> entre esos dos valores:</p>
+<p><span class="math display">\[
+P(a \leq X \leq b) = \int_a^b f(x)\,dx
+\]</span></p>
+<p>La función de densidad cumple dos condiciones: nunca es negativa y el
+área total bajo la curva es 1.</p>
+</div>
+<div id="la-probabilidad-de-un-valor-exacto-es-cero"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>La probabilidad de un valor
+exacto es cero</strong></span></h3>
+<p>En una variable continua, <span class="math inline">\(P(X = a) =
+0\)</span> para cualquier valor <span class="math inline">\(a\)</span>:
+un solo punto no tiene área. Por eso, <span class="math inline">\(P(a
+\leq X \leq b)\)</span> y <span class="math inline">\(P(a &lt; X &lt;
+b)\)</span> son iguales. La altura <span
+class="math inline">\(f(x)\)</span> no es una probabilidad; solo el área
+lo es.</p>
+</div>
+<p><br/></p>
+<div id="función-de-distribución-acumulada-1" class="section level3">
+<h3><span style="color:#034a94"><strong>Función de distribución
+acumulada</strong></span></h3>
+<p>Igual que en el caso discreto, <span class="math inline">\(F(x) = P(X
+\leq x)\)</span>. Para una variable continua, es el área bajo la curva
+desde el extremo izquierdo hasta <span class="math inline">\(x\)</span>.
+Es una curva suave que empieza en 0, nunca baja y llega a 1. Las reglas
+para calcular probabilidades son las mismas de la tabla anterior.</p>
+<p><br/></p>
+</div>
+<div id="ejemplo-tiempo-hasta-una-reparación" class="section level3">
+<h3><span style="color:#034a94"><strong>Ejemplo: tiempo hasta una
+reparación</strong></span></h3>
+<p>Un fabricante de lavadoras sabe, por sus datos históricos, que el
+tiempo <span class="math inline">\(X\)</span> (en años) hasta que una
+lavadora necesita una reparación mayor tiene esta función de
+densidad:</p>
+<p><span class="math display">\[
+f(x) = \frac{1}{4}\,e^{-x/4}, \qquad x \geq 0
+\]</span></p>
+<p>y <span class="math inline">\(f(x) = 0\)</span> para <span
+class="math inline">\(x &lt; 0\)</span>. Al integrar se obtiene la
+función de distribución acumulada, <span class="math inline">\(F(x) = 1
+- e^{-x/4}\)</span> para <span class="math inline">\(x \geq
+0\)</span>.</p>
+<p>En <strong>R</strong>, la densidad se escribe como una función y la
+función <code>integrate()</code> calcula el área bajo la curva. Primero
+se comprueba que el área total es 1:</p>
+<pre class="r"><code>f &lt;- function(x) (1/4) * exp(-x/4)
+integrate(f, lower = 0, upper = Inf)</code></pre>
+<pre><code>1 with absolute error &lt; 2.7e-05</code></pre>
+<p>¿Cuál es la probabilidad de que la lavadora necesite una reparación
+mayor <strong>en los primeros 3 años</strong>? Es el área entre 0 y
+3:</p>
+<p><span class="math display">\[
+P(X \leq 3) = F(3) = 1 - e^{-3/4} = 0.5276
+\]</span></p>
+<p>¿Y <strong>entre 2 y 5 años</strong>?</p>
+<p><span class="math display">\[
+P(2 \leq X \leq 5) = F(5) - F(2) = e^{-2/4} - e^{-5/4} = 0.3200
+\]</span></p>
+<pre class="r"><code>F_acum &lt;- function(x) 1 - exp(-x/4)
+integrate(f, lower = 0, upper = 3)$value   # P(X &lt;= 3) como área</code></pre>
+<pre><code>[1] 0.5276334</code></pre>
+<pre class="r"><code>F_acum(3)                                  # P(X &lt;= 3) con la acumulada</code></pre>
+<pre><code>[1] 0.5276334</code></pre>
+<pre class="r"><code>F_acum(5) - F_acum(2)                      # P(2 &lt;= X &lt;= 5)</code></pre>
+<pre><code>[1] 0.3200259</code></pre>
+<pre class="r"><code>par(mfrow = c(1, 2), mar = c(4.5, 4.5, 1, 1))
+curve(f, from = 0, to = 20, col = &quot;#FF7F00&quot;, lwd = 2, ylim = c(0, 0.26),
+      xlab = &quot;Tiempo (años)&quot;, ylab = &quot;f(x)&quot;)
+xs &lt;- seq(2, 5, length.out = 100)
+polygon(c(2, xs, 5), c(0, f(xs), 0), col = adjustcolor(&quot;#034A94&quot;, 0.4), border = NA)
+curve(F_acum, from = 0, to = 20, col = &quot;#034A94&quot;, lwd = 2, ylim = c(0, 1),
+      xlab = &quot;Tiempo (años)&quot;, ylab = &quot;F(x)&quot;)</code></pre>
+<div class="figure">
+<img src="recurso200_files/figure-html/unnamed-chunk-9-1.png" alt="A la izquierda, una curva naranja que baja desde 0.25 en x = 0, con el área entre 2 y 5 sombreada en azul. A la derecha, una curva azul que sube desde 0 y se acerca a 1" width="100%" />
+<p class="caption">
+Función de densidad (izquierda), con el área sombreada que corresponde a
+P(2 ≤ X ≤ 5), y función de distribución acumulada (derecha) del tiempo
+hasta una reparación mayor.
+</p>
+</div>
+<p><br/></p>
+</div>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Confundir una variable discreta con una continua</td>
+<td align="left">No se identificó si la variable cuenta o mide</td>
+<td align="left">Preguntar si surge de un conteo (“número de…”) o de una
+medición</td>
+</tr>
+<tr class="even">
+<td align="left">Leer la altura de la densidad como una
+probabilidad</td>
+<td align="left">En una variable continua, la probabilidad es un
+área</td>
+<td align="left">Calcular el área entre dos valores</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(P(12 \leq X \leq
+16)\)</span> calculado como <span class="math inline">\(F(16) -
+F(12)\)</span> en una variable discreta</td>
+<td align="left">Se dejó por fuera el valor 12</td>
+<td align="left">Usar <span class="math inline">\(F(16) -
+F(11)\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(P(X &gt; a)\)</span>
+calculado como <span class="math inline">\(F(a)\)</span></td>
+<td align="left">Se confundió “mayor que” con “menor o igual que”</td>
+<td align="left">Usar <span class="math inline">\(1 - F(a)\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Las probabilidades de una tabla no suman 1</td>
+<td align="left">Falta un valor o hay un error de cálculo</td>
+<td align="left">Revisar con <code>sum()</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-discreta-o-continua"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. ¿Discreta o
+continua?</strong></span></h3>
+<p>Clasifique cada variable: (a) número de accidentes en una ciudad en
+un día; (b) tiempo de entrega de un domicilio; (c) número de huevos que
+produce una granja en un día; (d) proporción de cemento en una mezcla de
+concreto.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li>y (c) son discretas, porque surgen de conteos. (b) y (d) son
+continuas, porque surgen de mediciones y pueden tomar cualquier valor de
+un intervalo.</li>
+</ol>
+</details>
+</div>
+<div id="reto-2.-suma-de-dos-dados"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Suma de dos
+dados</strong></span></h3>
+<p>Se lanzan dos dados y <span class="math inline">\(X\)</span> es la
+suma. Construya su función de probabilidad en <strong>R</strong> y
+calcule <span class="math inline">\(P(X \leq 4)\)</span> y <span
+class="math inline">\(P(X &gt; 9)\)</span>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>dados &lt;- expand.grid(d1 = 1:6, d2 = 1:6)
+suma &lt;- dados$d1 + dados$d2
+fx_suma &lt;- table(suma) / 36
+round(fx_suma, 4)</code></pre>
+<pre><code>suma
+     2      3      4      5      6      7      8      9     10     11     12 
+0.0278 0.0556 0.0833 0.1111 0.1389 0.1667 0.1389 0.1111 0.0833 0.0556 0.0278 </code></pre>
+<pre class="r"><code>mean(suma &lt;= 4)   # P(X &lt;= 4) = 6/36</code></pre>
+<pre><code>[1] 0.1666667</code></pre>
+<pre class="r"><code>mean(suma &gt; 9)    # P(X &gt; 9) = 6/36</code></pre>
+<pre><code>[1] 0.1666667</code></pre>
+</details>
+</div>
+<div id="reto-3.-reservas" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3.
+Reservas</strong></span></h3>
+<p>En el ejemplo del restaurante, ¿cuál es la probabilidad de que
+asistan al menos 18 personas? ¿Y de que asistan menos de 10?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>1 - pbinom(17, 20, 0.7)   # P(X &gt;= 18) = 1 - F(17)</code></pre>
+<pre><code>[1] 0.03548313</code></pre>
+<pre class="r"><code>pbinom(9, 20, 0.7)        # P(X &lt; 10) = F(9)</code></pre>
+<pre><code>[1] 0.01714482</code></pre>
+<p>La probabilidad de que asistan al menos 18 es 0.0355 y la de que
+asistan menos de 10, 0.0171.</p>
+</details>
+</div>
+<div id="reto-4.-la-lavadora" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. La
+lavadora</strong></span></h3>
+<p>Con la densidad del ejemplo de las lavadoras, calcule la probabilidad
+de que una lavadora funcione más de 10 años sin una reparación mayor.
+¿Antes de cuántos años la necesita la mitad de las lavadoras?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(P(X &gt; 10) = 1 - F(10) = e^{-10/4} =
+0.0821\)</span>. Para la mitad se busca <span
+class="math inline">\(x\)</span> tal que <span
+class="math inline">\(F(x) = 0.5\)</span>: <span class="math inline">\(1
+- e^{-x/4} = 0.5\)</span>, de donde <span class="math inline">\(x = 4
+\ln 2 = 2.77\)</span> años.</p>
+<pre class="r"><code>1 - F_acum(10)</code></pre>
+<pre><code>[1] 0.082085</code></pre>
+<pre class="r"><code>4 * log(2)</code></pre>
+<pre><code>[1] 2.772589</code></pre>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/4-introduccion"><em>Introducción
+a la estadística</em></a>. En español. El capítulo 4 trata las variables
+aleatorias discretas y el capítulo 5, las continuas.</li>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <a
+href="https://chance.dartmouth.edu/book.html"><em>Introduction to
+Probability</em></a> (2.ª ed.). American Mathematical Society. Se
+descarga en PDF. Los capítulos 1 y 2 tratan las distribuciones discretas
+y continuas.</li>
+<li>Blitzstein, J. K. y Hwang, J. (2019). <a
+href="http://probabilitybook.net"><em>Introduction to
+Probability</em></a> (2.ª ed.). Chapman &amp; Hall/CRC. Versión gratuita
+para leer en línea, para quien quiera profundizar. Los capítulos 3 y 5
+tratan las variables aleatorias discretas y continuas.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 3 trata las variables aleatorias y sus
+distribuciones.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>R Core Team. Documentación de <code>dbinom()</code>,
+<code>pbinom()</code>, <code>integrate()</code> y
+<code>stepfun()</code>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

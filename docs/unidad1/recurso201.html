@@ -472,6 +472,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -516,8 +520,8 @@ variable?</strong></span></h2>
 <p>Antes de analizar una variable conviene contar sus valores. La
 función <code>table()</code> muestra las categorías, y el argumento
 <code>useNA = "ifany"</code> agrega los datos faltantes, si los hay:</p>
-<pre class="r"><code>table(vivienda_faltantes$tipo, useNA = &quot;ifany&quot;)
-
+<pre class="r"><code>table(vivienda_faltantes$tipo, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
 Apartamento APARTAMENTO        apto        casa        Casa        CASA 
        5032          61          13          14        3195          12 
        &lt;NA&gt; 
@@ -531,8 +535,8 @@ analizarían seis categorías en lugar de dos.</p>
 <pre class="r"><code>tipo &lt;- tolower(vivienda_faltantes$tipo)
 tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
 
-table(tipo, useNA = &quot;ifany&quot;)
-tipo
+table(tipo, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>tipo
 apartamento        casa        &lt;NA&gt; 
        5106        3221           3 </code></pre>
 <p><br/></p>
@@ -679,8 +683,8 @@ siguientes ejemplos:</p>
 }</code></pre>
 <p>Basta con entregarle una variable. Por ejemplo, para la categoría de
 los atletas, que es ordinal, se usan todas las columnas:</p>
-<pre class="r"><code>tabla_frecuencias(CarreraLuz22$categoria)
-           valor   ni    fi   Ni     Fi
+<pre class="r"><code>tabla_frecuencias(CarreraLuz22$categoria)</code></pre>
+<pre><code>           valor   ni    fi   Ni     Fi
 1     1. Juvenil   19  0.99   19   0.99
 2     2. Abierta 1179 61.34 1198  62.33
 3 3. Veteranos A  423 22.01 1621  84.34
@@ -688,14 +692,14 @@ los atletas, que es ordinal, se usan todas las columnas:</p>
 5 5. Veteranos C   74  3.85 1922 100.00</code></pre>
 <p>Para el sexo de los atletas, que es nominal, se dejan las tres
 primeras columnas, porque no se acumula:</p>
-<pre class="r"><code>tabla_frecuencias(CarreraLuz22$sex)[, 1:3]
-   valor   ni    fi
+<pre class="r"><code>tabla_frecuencias(CarreraLuz22$sex)[, 1:3]</code></pre>
+<pre><code>   valor   ni    fi
 1 Hombre 1178 61.29
 2  Mujer  744 38.71</code></pre>
 <p>Lo mismo se hace con la zona de las viviendas. La función omite los
 datos faltantes:</p>
-<pre class="r"><code>tabla_frecuencias(vivienda_faltantes$zona)[, 1:3]
-         valor   ni    fi
+<pre class="r"><code>tabla_frecuencias(vivienda_faltantes$zona)[, 1:3]</code></pre>
+<pre><code>         valor   ni    fi
 1  Zona Centro  124  1.49
 2   Zona Norte 1922 23.08
 3   Zona Oeste 1204 14.46
@@ -703,8 +707,8 @@ datos faltantes:</p>
 5     Zona Sur 4726 56.76</code></pre>
 <p>Con una variable numérica, como el estrato, cada valor forma una
 fila:</p>
-<pre class="r"><code>tabla_frecuencias(vivienda_faltantes$estrato)
-  valor   ni    fi   Ni     Fi
+<pre class="r"><code>tabla_frecuencias(vivienda_faltantes$estrato)</code></pre>
+<pre><code>  valor   ni    fi   Ni     Fi
 1     3 1453 17.45 1453  17.45
 2     4 2131 25.59 3584  43.04
 3     5 2751 33.04 6335  76.08
@@ -728,8 +732,8 @@ fi &lt;- 100 * prop.table(ni)
 
 mundial &lt;- data.frame(Confederación = confederacion, ni = ni, `fi (%)` = round(fi, 2),
                       check.names = FALSE)
-sum(ni)
-[1] 32</code></pre>
+sum(ni)</code></pre>
+<pre><code>[1] 32</code></pre>
 <table>
 <caption>Equipos del Mundial de Catar 2022 por confederación</caption>
 <thead>
@@ -967,8 +971,8 @@ n &lt;- length(tiempo)
 rango &lt;- max(tiempo) - min(tiempo)
 k &lt;- nclass.Sturges(tiempo)
 
-c(n = n, rango = rango, k = k, amplitud = rango / k)
-       n    rango        k amplitud 
+c(n = n, rango = rango, k = k, amplitud = rango / k)</code></pre>
+<pre><code>       n    rango        k amplitud 
 1922.000  132.900   12.000   11.075 </code></pre>
 <p>La amplitud obtenida se redondea a 10 minutos, porque es más fácil de
 leer. Como casi todos los tiempos están por debajo de 120 minutos y el
@@ -1382,8 +1386,8 @@ respuestas &lt;- data.frame(
   Ni = cumsum(ni),
   Fi = round(100 * cumsum(ni) / sum(ni), 2)
 )
-respuestas
-        nivel    ni    fi     Ni     Fi
+respuestas</code></pre>
+<pre><code>        nivel    ni    fi     Ni     Fi
 1 Muy regular 12837 12.35  12837  12.35
 2     Regular 21988 21.16  34825  33.52
 3       Bueno 22300 21.46  57125  54.98
@@ -1423,8 +1427,8 @@ Ver solución
 <pre class="r"><code>tipo &lt;- tolower(vivienda_faltantes$tipo)
 tipo[tipo == &quot;apto&quot;] &lt;- &quot;apartamento&quot;
 
-round(100 * prop.table(table(tipo)), 2)
-tipo
+round(100 * prop.table(table(tipo)), 2)</code></pre>
+<pre><code>tipo
 apartamento        casa 
       61.32       38.68 </code></pre>
 </details>
@@ -1442,8 +1446,8 @@ porcentaje de atletas tiene 40 años o menos?</p>
 Ver solución
 </summary>
 <pre class="r"><code>clases_edad &lt;- cut(CarreraLuz22$edad, breaks = seq(10, 80, by = 10))
-tabla_frecuencias(clases_edad)
-    valor  ni    fi   Ni     Fi
+tabla_frecuencias(clases_edad)</code></pre>
+<pre><code>    valor  ni    fi   Ni     Fi
 1 (10,20]  48  2.50   48   2.50
 2 (20,30] 497 25.86  545  28.36
 3 (30,40] 719 37.41 1264  65.76
@@ -1467,8 +1471,8 @@ class="math inline">\(n = 32\)</span>. ¿Qué concluye?</p>
 <summary>
 Ver solución
 </summary>
-<pre class="r"><code>sum(c(5, 5, 13, 4, 0, 4))
-[1] 31</code></pre>
+<pre class="r"><code>sum(c(5, 5, 13, 4, 0, 4))</code></pre>
+<pre><code>[1] 31</code></pre>
 <p>La suma es 31, así que falta un equipo. En la tabla correcta, Asia
 tiene 6 equipos, no 5. Por eso conviene comprobar siempre esa suma.</p>
 </details>

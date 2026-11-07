@@ -52,3 +52,7 @@ Las notas van en cajas `content-box-gray`. Las figuras se hacen en R y muestran 
 - `style.css`: estilos del sitio.
 - `_site.yml`: menú del sitio.
 - `docs/`: HTML generados. No se editan a mano.
+
+## Código y salidas
+
+El código y las salidas de **R** van en bloques separados (`collapse = FALSE` en el bloque `setup` de cada página). `style.css` los distingue con las etiquetas Código R y Salida.

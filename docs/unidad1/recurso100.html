@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -844,10 +848,10 @@ Ver solución
 <p><code>trim</code> indica la fracción de observaciones que se elimina
 en cada extremo antes de calcular la media. Aquí se quitan el 1 y el
 100:</p>
-<pre class="r"><code>mean(c(1, 2, 3, 100), trim = 0.25)
-[1] 2.5
-mean(c(1, 2, 3, 100))
-[1] 26.5</code></pre>
+<pre class="r"><code>mean(c(1, 2, 3, 100), trim = 0.25)</code></pre>
+<pre><code>[1] 2.5</code></pre>
+<pre class="r"><code>mean(c(1, 2, 3, 100))</code></pre>
+<pre><code>[1] 26.5</code></pre>
 <p>La media sin ese argumento se ve afectada por el valor 100.</p>
 </details>
 </div>

@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -536,8 +540,8 @@ suma_dos_numeros &lt;- function(x, y) {
 }
 
 # Uso de la función
-suma_dos_numeros(3, 5)
-[1] 8</code></pre>
+suma_dos_numeros(3, 5)</code></pre>
+<pre><code>[1] 8</code></pre>
 <p>La función <code>suma_divide</code> recibe un vector numérico, suma
 el primer y el último elemento, y divide esa suma entre 4:</p>
 <pre class="r"><code># Definición de la función
@@ -552,8 +556,8 @@ suma_divide &lt;- function(vec) {
 mi_vector &lt;- c(5, 8, 12, 20)
 
 # Aplicar la función
-suma_divide(mi_vector)
-[1] 6.25</code></pre>
+suma_divide(mi_vector)</code></pre>
+<pre><code>[1] 6.25</code></pre>
 <p><br/></p>
 </div>
 <div id="por-qué-las-funciones-son-objetos" class="section level2">
@@ -566,18 +570,17 @@ llaves las instrucciones. Por ejemplo, para</p>
 <pre class="r"><code>fx &lt;- function(x) {
   1 / (x - 1)^2
 }
-fx(4.5)
-[1] 0.08163265
-
-x &lt;- seq(from = 2, to = 10, by = 0.01)
+fx(4.5)</code></pre>
+<pre><code>[1] 0.08163265</code></pre>
+<pre class="r"><code>x &lt;- seq(from = 2, to = 10, by = 0.01)
 plot(x, fx(x), type = &quot;l&quot;, col = &quot;#FF7F00&quot;, lwd = 2, las = 1, ylab = &quot;f(x)&quot;)</code></pre>
 <p><img src="recurso106_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Como son objetos, se pueden pasar como argumento de otra función:</p>
-<pre class="r"><code>sapply(iris[, 1:4], mean)
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
-    5.843333     3.057333     3.758000     1.199333 
-sapply(iris[, 1:4], sd)
-Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+<pre class="r"><code>sapply(iris[, 1:4], mean)</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+    5.843333     3.057333     3.758000     1.199333 </code></pre>
+<pre class="r"><code>sapply(iris[, 1:4], sd)</code></pre>
+<pre><code>Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
    0.8280661    0.4358663    1.7652982    0.7622377 </code></pre>
 <p>El siguiente ejemplo define una función para hacer un gráfico. Sus
 valores de entrada son unos datos y un color.</p>
@@ -656,8 +659,8 @@ Ver solución
   return(resultado)
 }
 
-rango_vector(c(4, 9, 2, 7))
-[1] 7</code></pre>
+rango_vector(c(4, 9, 2, 7))</code></pre>
+<pre><code>[1] 7</code></pre>
 </details>
 </div>
 <div id="reto-2.-coeficiente-de-variación"
@@ -674,8 +677,8 @@ Ver solución
   return(100 * sd(x) / mean(x))
 }
 
-round(coef_variacion(iris$Sepal.Length), 1)
-[1] 14.2</code></pre>
+round(coef_variacion(iris$Sepal.Length), 1)</code></pre>
+<pre><code>[1] 14.2</code></pre>
 </details>
 </div>
 <p><br/></p>

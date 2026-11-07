@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Tipos de probabilidad</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>Tipos
+de probabilidad</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Muchas preguntas de probabilidad involucran dos características a la
+vez. ¿Qué proporción de los clientes compra y además es nuevo? ¿Qué tan
+probable es que un paciente tenga dengue si su prueba salió positiva?
+Para responderlas se usan tres tipos de probabilidad:
+<strong>marginal</strong>, <strong>conjunta</strong> y
+<strong>condicional</strong>.</p>
+<p>Esta página los presenta con una tabla de contingencia y un diagrama
+de árbol, y termina con la regla de la multiplicación. Los bloques de
+código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-una-tabla-de-contingencia" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una tabla de
+contingencia?</strong></span></h2>
+<p>Una <strong>tabla de contingencia</strong> cruza dos características
+y muestra cuántas veces aparece cada combinación. Es la forma más
+sencilla de organizar la información para calcular probabilidades.</p>
+<p>En un evento tecnológico se encuestó a 900 personas. Se registró si
+preferían laptop o tableta y si asistieron a la conferencia principal
+sobre inteligencia artificial. Se definen los eventos:</p>
+<ul>
+<li><span class="math inline">\(A\)</span>: la persona prefiere laptop.
+Su complemento, <span class="math inline">\(A^c\)</span>, es que
+prefiere tableta.</li>
+<li><span class="math inline">\(B\)</span>: la persona asistió a la
+conferencia. Su complemento, <span class="math inline">\(B^c\)</span>,
+es que no asistió.</li>
+</ul>
+<p>En <strong>R</strong>, la tabla se construye con
+<code>matrix()</code>. El argumento <code>dimnames</code> les pone
+nombre a las filas y a las columnas, y <code>addmargins()</code> agrega
+los totales:</p>
+<pre class="r"><code>encuesta &lt;- matrix(c(460,  40,
+                     140, 260),
+                   nrow = 2, byrow = TRUE,
+                   dimnames = list(Conferencia = c(&quot;Asistió&quot;, &quot;No asistió&quot;),
+                                   Dispositivo = c(&quot;Laptop&quot;, &quot;Tableta&quot;)))
+addmargins(encuesta)</code></pre>
+<pre><code>            Dispositivo
+Conferencia  Laptop Tableta Sum
+  Asistió       460      40 500
+  No asistió    140     260 400
+  Sum           600     300 900</code></pre>
+<p>Si se divide cada celda por el total, 900, se obtiene la tabla en
+términos de probabilidades. La función <code>prop.table()</code> hace
+esa división:</p>
+<pre class="r"><code>round(addmargins(prop.table(encuesta)), 4)</code></pre>
+<pre><code>            Dispositivo
+Conferencia  Laptop Tableta    Sum
+  Asistió    0.5111  0.0444 0.5556
+  No asistió 0.1556  0.2889 0.4444
+  Sum        0.6667  0.3333 1.0000</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-son-la-probabilidad-marginal-y-la-conjunta"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son la probabilidad
+marginal y la conjunta?</strong></span></h2>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="20%" />
+<col width="48%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Qué mide</th>
+<th align="left">Dónde está en la tabla</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Marginal</strong></td>
+<td align="left">La probabilidad de un solo evento, sin tener en cuenta
+el otro</td>
+<td align="left">En los totales (márgenes)</td>
+<td align="left"><span class="math inline">\(P(A) = 600/900 =
+0.6667\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Conjunta</strong></td>
+<td align="left">La probabilidad de que ocurran dos eventos a la
+vez</td>
+<td align="left">En las celdas internas</td>
+<td align="left"><span class="math inline">\(P(A \cap B) = 460/900 =
+0.5111\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Las dos se relacionan: cada probabilidad marginal es la suma de las
+conjuntas de su fila o columna. Por ejemplo,</p>
+<p><span class="math display">\[
+P(A) = P(A \cap B) + P(A \cap B^c) = 0.5111 + 0.1556 = 0.6667
+\]</span></p>
+<p>y las cuatro probabilidades conjuntas suman 1.</p>
+<pre class="r"><code>p &lt;- prop.table(encuesta)
+p[&quot;Asistió&quot;, &quot;Laptop&quot;] + p[&quot;No asistió&quot;, &quot;Laptop&quot;]   # P(A)</code></pre>
+<pre><code>[1] 0.6666667</code></pre>
+<pre class="r"><code>sum(p)                                                # suma de las conjuntas</code></pre>
+<pre><code>[1] 1</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-es-la-probabilidad-condicional" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es la probabilidad
+condicional?</strong></span></h2>
+<p>A veces se sabe que un evento ya ocurrió y se quiere la probabilidad
+de otro. La <strong>probabilidad condicional</strong> de <span
+class="math inline">\(B\)</span> dado <span
+class="math inline">\(A\)</span> es</p>
+<p><span class="math display">\[
+P(B \mid A) = \frac{P(A \cap B)}{P(A)}, \qquad P(A) &gt; 0
+\]</span></p>
+<p>y se lee “probabilidad de <span class="math inline">\(B\)</span> dado
+<span class="math inline">\(A\)</span>” o “probabilidad de que ocurra
+<span class="math inline">\(B\)</span> si se sabe que ocurrió <span
+class="math inline">\(A\)</span>”.</p>
+<p>Saber que ocurrió <span class="math inline">\(A\)</span>
+<strong>reduce el espacio muestral</strong>: ya no se consideran las 900
+personas, sino solo las 600 que prefieren laptop. Dentro de ese grupo,
+460 asistieron a la conferencia:</p>
+<p><span class="math display">\[
+P(B \mid A) = \frac{460/900}{600/900} = \frac{460}{600} = 0.7667
+\]</span></p>
+<p>Del mismo modo, entre las 300 personas que prefieren tableta, 260 no
+asistieron: <span class="math inline">\(P(B^c \mid A^c) = 260/300 =
+0.8667\)</span>.</p>
+<p>En <strong>R</strong>, <code>prop.table(encuesta, margin = 2)</code>
+divide cada celda por el total de su <strong>columna</strong>, así que
+da las probabilidades condicionales dado el dispositivo:</p>
+<pre class="r"><code>round(prop.table(encuesta, margin = 2), 4)</code></pre>
+<pre><code>            Dispositivo
+Conferencia  Laptop Tableta
+  Asistió    0.7667  0.1333
+  No asistió 0.2333  0.8667</code></pre>
+<p>Cada columna suma 1: entre quienes prefieren laptop, el 76.67 %
+asistió y el 23.33 % no.</p>
+<div id="pa-mid-b-no-es-lo-mismo-que-pb-mid-a"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong><span class="math inline">\(P(A
+\mid B)\)</span> no es lo mismo que <span class="math inline">\(P(B \mid
+A)\)</span></strong></span></h3>
+<p><span class="math inline">\(P(B \mid A)\)</span> es la proporción de
+asistentes <strong>entre quienes prefieren laptop</strong>: 0.7667.
+<span class="math inline">\(P(A \mid B)\)</span> es la proporción de
+personas con laptop <strong>entre quienes asistieron</strong>: <span
+class="math inline">\(460/500 = 0.92\)</span>. Son preguntas distintas y
+dan números distintos. Con <code>margin = 1</code>,
+<code>prop.table()</code> divide por el total de cada
+<strong>fila</strong> y da <span class="math inline">\(P(A \mid
+B)\)</span>:</p>
+<pre class="r"><code>round(prop.table(encuesta, margin = 1), 4)</code></pre>
+<pre><code>            Dispositivo
+Conferencia  Laptop Tableta
+  Asistió      0.92    0.08
+  No asistió   0.35    0.65</code></pre>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-es-un-diagrama-de-árbol" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un diagrama de
+árbol?</strong></span></h2>
+<p>Un <strong>diagrama de árbol</strong> muestra los eventos por etapas.
+Las primeras ramas tienen las probabilidades marginales del primer
+evento y las segundas, las probabilidades condicionales del segundo
+evento. Al final de cada camino se multiplica lo que hay en sus ramas y
+se obtiene una probabilidad conjunta.</p>
+<pre class="r"><code>par(mar = c(0.5, 0.5, 0.5, 0.5))
+plot(0, 0, type = &quot;n&quot;, xlim = c(0, 10), ylim = c(0, 10), axes = FALSE, xlab = &quot;&quot;, ylab = &quot;&quot;)
+
+# primeras ramas: dispositivo
+segments(0.5, 5, 3.5, c(7.5, 2.5), col = &quot;#034A94&quot;, lwd = 2)
+text(c(1.6, 1.6), c(6.8, 3.2), c(&quot;0.6667&quot;, &quot;0.3333&quot;), col = &quot;#034A94&quot;)
+text(c(4.2, 4.2), c(7.5, 2.5), c(&quot;Laptop&quot;, &quot;Tableta&quot;), font = 2)
+
+# segundas ramas: conferencia, dado el dispositivo
+segments(4.9, rep(c(7.5, 2.5), each = 2), 7.2, c(9, 6, 4, 1), col = &quot;#C0392B&quot;, lwd = 2)
+text(5.9, c(8.8, 6.2, 3.8, 1.2), c(&quot;0.7667&quot;, &quot;0.2333&quot;, &quot;0.1333&quot;, &quot;0.8667&quot;), col = &quot;#C0392B&quot;)
+text(8, c(9, 6, 4, 1), c(&quot;Asistió&quot;, &quot;No asistió&quot;, &quot;Asistió&quot;, &quot;No asistió&quot;))
+
+# probabilidades conjuntas
+text(9.5, c(9, 6, 4, 1), c(&quot;0.5111&quot;, &quot;0.1556&quot;, &quot;0.0444&quot;, &quot;0.2889&quot;), font = 3)</code></pre>
+<div class="figure">
+<img src="recurso102_files/figure-html/unnamed-chunk-6-1.png" alt="Árbol con dos ramas iniciales, Laptop 0.6667 y Tableta 0.3333, cada una dividida en Asistió y No asistió con sus probabilidades condicionales; a la derecha, las cuatro probabilidades conjuntas" width="100%" />
+<p class="caption">
+Diagrama de árbol de la encuesta. Al final de cada camino está la
+probabilidad conjunta.
+</p>
+</div>
+<p>Las probabilidades que salen de un mismo punto suman 1: <span
+class="math inline">\(0.7667 + 0.2333 = 1\)</span>. Por ejemplo, el
+camino de arriba da <span class="math inline">\(P(A \cap B) = 0.6667
+\times 0.7667 = 0.5111\)</span>, el mismo valor de la tabla.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-la-regla-de-la-multiplicación" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es la regla de la
+multiplicación?</strong></span></h2>
+<p>Al despejar la intersección en la fórmula de la probabilidad
+condicional se obtiene la <strong>regla de la
+multiplicación</strong>:</p>
+<p><span class="math display">\[
+P(A \cap B) = P(A)\,P(B \mid A) = P(B)\,P(A \mid B)
+\]</span></p>
+<p>Es lo que se hace al recorrer un camino del árbol. Sirve para
+experimentos por etapas. Por ejemplo, un lote tiene 20 unidades, de las
+cuales 3 son defectuosas, y se sacan 2 sin reemplazo. La probabilidad de
+que la primera sea defectuosa es <span
+class="math inline">\(3/20\)</span>. Si la primera fue defectuosa,
+quedan 2 defectuosas entre 19, así que la probabilidad de que la segunda
+también lo sea es <span class="math inline">\(2/19\)</span>.
+Entonces</p>
+<p><span class="math display">\[
+P(\text{las dos defectuosas}) = \frac{3}{20} \times \frac{2}{19} =
+0.0158
+\]</span></p>
+<pre class="r"><code>(3 / 20) * (2 / 19)</code></pre>
+<pre><code>[1] 0.01578947</code></pre>
+<p>Se puede comprobar con simulación. La función <code>sample()</code>
+sin reemplazo saca 2 unidades del lote:</p>
+<pre class="r"><code>set.seed(2026)
+lote &lt;- c(rep(&quot;defectuosa&quot;, 3), rep(&quot;buena&quot;, 17))
+dos_defectuosas &lt;- replicate(20000, all(sample(lote, size = 2) == &quot;defectuosa&quot;))
+mean(dos_defectuosas)</code></pre>
+<pre><code>[1] 0.0147</code></pre>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Una probabilidad condicional da igual a la
+conjunta</td>
+<td align="left">Se dividió por el total general</td>
+<td align="left">Dividir por el total del evento que se sabe que
+ocurrió</td>
+</tr>
+<tr class="even">
+<td align="left">Se confunde <span class="math inline">\(P(A \mid
+B)\)</span> con <span class="math inline">\(P(B \mid A)\)</span></td>
+<td align="left">Se leyó mal la condición</td>
+<td align="left">Identificar qué se sabe (lo que va después de la
+barra)</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>prop.table()</code> da condicionales en la
+dirección equivocada</td>
+<td align="left">Se usó <code>margin = 1</code> en lugar de
+<code>margin = 2</code>, o al revés</td>
+<td align="left"><code>margin = 1</code> divide por filas y
+<code>margin = 2</code> por columnas</td>
+</tr>
+<tr class="even">
+<td align="left">Las ramas de un árbol no suman 1</td>
+<td align="left">Falta una rama o una probabilidad está mal</td>
+<td align="left">Revisar que cada punto tenga todos sus resultados</td>
+</tr>
+<tr class="odd">
+<td align="left">En extracciones sin reemplazo se usa la misma
+probabilidad en cada etapa</td>
+<td align="left">Se olvidó que el lote cambia</td>
+<td align="left">Actualizar el número de unidades en cada etapa</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-lea-la-tabla"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Lea la
+tabla</strong></span></h3>
+<p>Con la tabla de la encuesta, calcule: (a) la probabilidad de que una
+persona prefiera tableta y haya asistido; (b) la probabilidad de que
+haya asistido, si prefiere tableta; (c) la probabilidad de que prefiera
+tableta, si asistió. Diga qué tipo de probabilidad es cada una.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p>Conjunta: <span class="math inline">\(P(A^c \cap B) = 40/900 =
+0.0444\)</span>.</p></li>
+<li><p>Condicional: <span class="math inline">\(P(B \mid A^c) = 40/300 =
+0.1333\)</span>.</p></li>
+<li><p>Condicional: <span class="math inline">\(P(A^c \mid B) = 40/500 =
+0.08\)</span>.</p></li>
+</ol>
+<pre class="r"><code>encuesta[&quot;Asistió&quot;, &quot;Tableta&quot;] / sum(encuesta)</code></pre>
+<pre><code>[1] 0.04444444</code></pre>
+<pre class="r"><code>encuesta[&quot;Asistió&quot;, &quot;Tableta&quot;] / sum(encuesta[, &quot;Tableta&quot;])</code></pre>
+<pre><code>[1] 0.1333333</code></pre>
+<pre class="r"><code>encuesta[&quot;Asistió&quot;, &quot;Tableta&quot;] / sum(encuesta[&quot;Asistió&quot;, ])</code></pre>
+<pre><code>[1] 0.08</code></pre>
+</details>
+</div>
+<div id="reto-2.-supervivencia-en-el-titanic"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Supervivencia en el
+Titanic</strong></span></h3>
+<p>La tabla <code>Titanic</code>, que viene con <strong>R</strong>,
+tiene el número de pasajeros y tripulantes según clase, sexo, edad y
+supervivencia. Con <code>apply(Titanic, c(2, 4), sum)</code> se obtiene
+la tabla de sexo por supervivencia. Calcule la probabilidad de
+sobrevivir para hombres y para mujeres. ¿Qué proporción de los
+sobrevivientes eran mujeres?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>sexo_superv &lt;- apply(Titanic, c(2, 4), sum)
+sexo_superv</code></pre>
+<pre><code>        Survived
+Sex        No Yes
+  Male   1364 367
+  Female  126 344</code></pre>
+<pre class="r"><code>round(prop.table(sexo_superv, margin = 1), 3)   # P(supervivencia | sexo)</code></pre>
+<pre><code>        Survived
+Sex         No   Yes
+  Male   0.788 0.212
+  Female 0.268 0.732</code></pre>
+<pre class="r"><code>round(prop.table(sexo_superv, margin = 2), 3)   # P(sexo | supervivencia)</code></pre>
+<pre><code>        Survived
+Sex         No   Yes
+  Male   0.915 0.516
+  Female 0.085 0.484</code></pre>
+<p>Sobrevivió el 21.2 % de los hombres y el 73.2 % de las mujeres. Entre
+los sobrevivientes, el 48.4 % eran mujeres. Las dos últimas cifras
+responden preguntas distintas: <span
+class="math inline">\(P(\text{sobrevivir} \mid \text{mujer})\)</span> y
+<span class="math inline">\(P(\text{mujer} \mid
+\text{sobrevivir})\)</span>.</p>
+</details>
+</div>
+<div id="reto-3.-regla-de-la-multiplicación"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Regla de la
+multiplicación</strong></span></h3>
+<p>Del lote de 20 unidades con 3 defectuosas se sacan 2 sin reemplazo.
+¿Cuál es la probabilidad de que la primera sea buena y la segunda
+defectuosa?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(P = \dfrac{17}{20} \times \dfrac{3}{19} =
+0.1342\)</span>. Después de sacar una buena quedan 19 unidades, y las 3
+defectuosas siguen en el lote.</p>
+<pre class="r"><code>(17 / 20) * (3 / 19)</code></pre>
+<pre><code>[1] 0.1342105</code></pre>
+</details>
+</div>
+<div id="reto-4.-construya-el-árbol"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 4. Construya el
+árbol</strong></span></h3>
+<p>El 70 % de los estudiantes de un curso estudia para el examen. De
+quienes estudian, aprueba el 90 %; de quienes no estudian, aprueba el 40
+%. Construya el diagrama de árbol y calcule la probabilidad de que un
+estudiante estudie y apruebe, y la de que no estudie y apruebe.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Las primeras ramas son Estudia (0.7) y No estudia (0.3). De Estudia
+salen Aprueba (0.9) y Reprueba (0.1); de No estudia, Aprueba (0.4) y
+Reprueba (0.6).</p>
+<pre class="r"><code>0.7 * 0.9   # estudia y aprueba</code></pre>
+<pre><code>[1] 0.63</code></pre>
+<pre class="r"><code>0.3 * 0.4   # no estudia y aprueba</code></pre>
+<pre><code>[1] 0.12</code></pre>
+<p>Si se suman los dos caminos que terminan en Aprueba, <span
+class="math inline">\(0.63 + 0.12 = 0.75\)</span>, se obtiene la
+probabilidad de aprobar. Esa suma es la ley de probabilidad total, que
+se presenta en <a href="recurso104.html">Teorema de Bayes</a>.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>OpenStax. <a
+href="https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/3-introduccion"><em>Introducción
+a la estadística</em></a>, capítulo 3, Temas de probabilidad. En
+español. Las secciones 3.4 y 3.5 tratan las tablas de contingencia y los
+diagramas de árbol y de Venn.</li>
+<li>Grinstead, C. M. y Snell, J. L. (1997). <a
+href="https://chance.dartmouth.edu/book.html"><em>Introduction to
+Probability</em></a> (2.ª ed.). American Mathematical Society. Se
+descarga en PDF. El capítulo 4 trata la probabilidad condicional.</li>
+<li>Blitzstein, J. K. y Hwang, J. (2019). <a
+href="http://probabilitybook.net"><em>Introduction to
+Probability</em></a> (2.ª ed.). Chapman &amp; Hall/CRC. Versión gratuita
+para leer en línea, para quien quiera profundizar. El capítulo 2 trata
+la probabilidad condicional.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson. El capítulo 2 trata la probabilidad condicional y la
+regla de la multiplicación.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>OpenStax. <em>Introducción a la estadística</em>. Rice
+University.</li>
+<li>Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012).
+<em>Probabilidad y estadística para ingeniería y ciencias</em> (9.ª
+ed.). Pearson.</li>
+<li>R Core Team. Documentación de <code>matrix()</code>,
+<code>addmargins()</code>, <code>prop.table()</code> y de la tabla
+<code>Titanic</code>.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

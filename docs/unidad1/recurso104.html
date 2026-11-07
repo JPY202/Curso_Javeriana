@@ -470,6 +470,10 @@ div.tocify {
     <li>
       <a href="recurso52a.html">Informe</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../actividad1/index.html">Actividad 1</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -697,8 +701,8 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length)) +
 </table>
 <p>Si el paquete no está instalado, <code>library()</code> genera un
 error:</p>
-<pre class="r"><code>library(paquetequenoexiste)
-Error in library(paquetequenoexiste): there is no package called &#39;paquetequenoexiste&#39;</code></pre>
+<pre class="r"><code>library(paquetequenoexiste)</code></pre>
+<pre><code>Error in library(paquetequenoexiste): there is no package called &#39;paquetequenoexiste&#39;</code></pre>
 <div id="usar-una-función-sin-cargar-el-paquete" class="section level3">
 <h3><span style="color:#034a94"><strong>Usar una función sin cargar el
 paquete</strong></span></h3>
@@ -748,20 +752,20 @@ usa la del último paquete cargado</a>, y la otra queda
 <strong>enmascarada</strong> (<em>masked</em>). <strong>R</strong> lo
 advierte con un mensaje. Por ejemplo, <code>dplyr</code> tiene una
 función <code>filter()</code>, y <code>stats</code> también:</p>
-<pre class="r"><code>library(dplyr)
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
 
-Attaching package: &#39;dplyr&#39;
-The following objects are masked from &#39;package:stats&#39;:
-
-    filter, lag
-The following objects are masked from &#39;package:base&#39;:
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union</code></pre>
 <p>Este mensaje no es un error. Indica que, desde ahora,
 <code>filter()</code> será la de <code>dplyr</code>. Para usar una
 versión específica se escribe el nombre del paquete:</p>
-<pre class="r"><code>dplyr::filter(iris, Sepal.Length &gt; 7.6)
-  Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+<pre class="r"><code>dplyr::filter(iris, Sepal.Length &gt; 7.6)</code></pre>
+<pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
 1          7.7         3.8          6.7         2.2 virginica
 2          7.7         2.6          6.9         2.3 virginica
 3          7.7         2.8          6.7         2.0 virginica
@@ -1281,8 +1285,8 @@ Ver solución
 <p>Se está usando <code>stats::filter()</code>, que sirve para series de
 tiempo. Hay que usar la de <code>dplyr</code>, con
 <code>library(dplyr)</code> o escribiendo el nombre del paquete:</p>
-<pre class="r"><code>head(dplyr::filter(iris, Species == &quot;setosa&quot;), 2)
-  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+<pre class="r"><code>head(dplyr::filter(iris, Species == &quot;setosa&quot;), 2)</code></pre>
+<pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 1          5.1         3.5          1.4         0.2  setosa
 2          4.9         3.0          1.4         0.2  setosa</code></pre>
 </details>

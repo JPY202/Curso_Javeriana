@@ -1,0 +1,229 @@
+---
+title: <span style="color:#034a94"> **Espacio muestral y eventos**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+Un laboratorio procesa muestras de pacientes con fiebre, una tienda en línea registra si cada visitante compra o no, y un ingeniero mide cuántas horas dura un componente antes de fallar. En los tres casos se conoce el conjunto de resultados posibles, pero no cuál va a ocurrir. La **probabilidad** es el lenguaje matemático para describir esa incertidumbre.
+
+Antes de asignar probabilidades hay que responder una pregunta: ¿cuáles son los resultados posibles? Esta página define el experimento aleatorio, el espacio muestral y los eventos, y muestra cómo representarlos en **R**. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un experimento aleatorio?**</span>
+
+Un **experimento aleatorio** es un proceso que cumple tres condiciones:
+
+1. Se conocen todos los resultados posibles antes de realizarlo.
+2. No se sabe con certeza cuál de ellos va a ocurrir.
+3. Se puede repetir, al menos en principio, en condiciones similares.
+
+La tercera condición es la que permite interpretar la probabilidad como frecuencia, como se verá en [Enfoques y axiomas](recurso101.html). Hay situaciones que no se pueden repetir, como el resultado de una elección; para ellas se usa la interpretación subjetiva.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el espacio muestral?**</span>
+
+El **espacio muestral** $\Omega$ (en algunos textos, $S$) es el conjunto de todos los resultados posibles de un experimento. Según el tipo de resultados, puede ser **finito**, si tiene un número limitado de resultados; **infinito numerable**, si los resultados se pueden enumerar $0, 1, 2, \ldots$ sin un final; o **continuo** (infinito no numerable), si el resultado puede ser cualquier valor de un intervalo, como un tiempo o un peso.
+
+| Experimento | Espacio muestral | Tipo |
+|:------------|:-----------------|:-----|
+| Resultado de una prueba rápida de dengue | $\Omega = \{+, -\}$ | Finito |
+| Lanzar dos dados | $\Omega = \{(i, j) : i, j = 1, \ldots, 6\}$, 36 resultados | Finito |
+| Número de visitantes de una página en una hora | $\Omega = \{0, 1, 2, \ldots\}$ | Infinito numerable |
+| Número de intentos hasta la primera venta | $\Omega = \{1, 2, 3, \ldots\}$ | Infinito numerable |
+| Horas hasta la falla de un componente | $\Omega = [0, \infty)$ | Continuo |
+
+El espacio muestral no es único: depende de qué se decide registrar. Al lanzar dos dados se puede registrar el par $(i, j)$ o solo la suma, con $\Omega = \{2, \ldots, 12\}$. El primero es más útil, porque sus 36 resultados son igualmente probables y los 11 de la suma no.
+
+En **R**, un espacio muestral finito se puede construir con `expand.grid()`, que genera todas las combinaciones de sus argumentos:
+
+```{r}
+dados <- expand.grid(d1 = 1:6, d2 = 1:6)
+nrow(dados)
+head(dados, 4)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un evento?**</span>
+
+Un **evento** es un subconjunto del espacio muestral. Se dice que el evento $A$ **ocurre** si el resultado del experimento pertenece a $A$. El conjunto vacío $\emptyset$ es el evento imposible y $\Omega$ es el evento seguro.
+
+Con los dos dados, sean $A$: la suma es 7, y $B$: el primer dado es par.
+
+```{r}
+A <- which(dados$d1 + dados$d2 == 7)   # filas de dados que forman A
+B <- which(dados$d1 %% 2 == 0)
+length(A)
+length(B)
+```
+
+### <span style="color:#034a94">**¿Qué operaciones hay entre eventos?**</span>
+
+| Operación | Notación | Ocurre cuando | En R |
+|:----------|:---------|:--------------|:-----|
+| Unión | $A \cup B$ | Ocurre $A$, $B$ o ambos | `union(A, B)` |
+| Intersección | $A \cap B$ | Ocurren $A$ y $B$ | `intersect(A, B)` |
+| Complemento | $A^c$ | No ocurre $A$ | `setdiff(1:36, A)` |
+| Diferencia | $A \setminus B = A \cap B^c$ | Ocurre $A$ y no $B$ | `setdiff(A, B)` |
+
+```{r}
+length(union(A, B))
+dados[intersect(A, B), ]
+```
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Asignar probabilidad $1/11$ a cada suma de dos dados | Se usó un espacio muestral cuyos resultados no son igualmente probables | Usar los 36 pares $(i, j)$ |
+| Escribir "mayor a 15" como $\{15, 16, \ldots\}$ | Confundir $>$ con $\geq$ | Mayor a 15 es $\{16, 17, \ldots\}$ |
+| `expand.grid()` agota la memoria | El espacio muestral es demasiado grande para listarlo | Usar la simulación, que se presenta en la página siguiente |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. ¿Es un experimento aleatorio?**</span>
+
+Para cada situación, diga si es un experimento aleatorio. Revise las tres condiciones de la definición.
+
+a. Contar cuántos pacientes con fiebre llegan a urgencias de un hospital un lunes.
+b. Calcular el área de un círculo de 2 cm de radio.
+c. Medir el tiempo de respuesta de un servidor web a una consulta.
+d. Registrar quién gana la final de un torneo deportivo de este año.
+
+<details>
+<summary>Ver solución</summary>
+
+a. Sí: se conocen los resultados posibles ($0, 1, 2, \ldots$), no se sabe cuál ocurrirá y se puede repetir cada lunes en condiciones similares.
+
+b. No: el resultado, $4\pi$ cm², se conoce con certeza antes de calcularlo.
+
+c. Sí: el tiempo varía de una consulta a otra y la medición se puede repetir muchas veces.
+
+d. No cumple la tercera condición: esa final no se puede repetir. Se le puede asignar una probabilidad con la interpretación subjetiva, como se verá en [Enfoques y axiomas](recurso101.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Construya el espacio muestral**</span>
+
+Se lanza una moneda hasta obtener la primera cara. Escriba el espacio muestral. ¿Es finito, infinito numerable o continuo? Escriba como subconjunto el evento: se necesitan más de 3 lanzamientos.
+
+<details>
+<summary>Ver solución</summary>
+
+Si se registra el número de lanzamientos, $\Omega = \{1, 2, 3, \ldots\}$, que es infinito numerable. El evento es $\{4, 5, 6, \ldots\}$. También se puede registrar la secuencia: $\Omega = \{C, SC, SSC, \ldots\}$.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Dos pruebas diagnósticas**</span>
+
+A un paciente con fiebre se le aplican dos pruebas para dengue, una rápida y una de laboratorio. Cada una puede dar positivo ($+$) o negativo ($-$). Construya el espacio muestral con `expand.grid()` y escriba los eventos $E$: al menos una prueba es positiva, y $G$: las dos pruebas no coinciden. ¿Cuál es $E \cap G$? ¿Es $G$ un subconjunto de $E$?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+pruebas <- expand.grid(rapida = c("+", "-"), laboratorio = c("+", "-"))
+pruebas
+E <- which(pruebas$rapida == "+" | pruebas$laboratorio == "+")
+G <- which(pruebas$rapida != pruebas$laboratorio)
+pruebas[E, ]
+pruebas[intersect(E, G), ]
+all(G %in% E)
+```
+
+$\Omega = \{(+,+), (-,+), (+,-), (-,-)\}$. El evento $E$ tiene tres resultados y $G = \{(-,+), (+,-)\}$. Como los dos resultados de $G$ tienen al menos un positivo, $G \subseteq E$ y $E \cap G = G$.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 4. Operaciones entre eventos**</span>
+
+Con los dos dados, sean $C$: los dos dados son iguales, y $D$: la suma es mayor que 9. Encuentre en **R** los resultados de $C \cap D$ y el número de resultados de $C \cup D$, $D^c$ y $C \setminus D$. Describa cada evento con palabras.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+C <- which(dados$d1 == dados$d2)
+D <- which(dados$d1 + dados$d2 > 9)
+dados[intersect(C, D), ]
+length(union(C, D))
+length(setdiff(1:36, D))
+length(setdiff(C, D))
+```
+
+$C \cap D = \{(5, 5), (6, 6)\}$: dados iguales con suma mayor que 9. $C \cup D$ tiene 10 resultados: los 6 pares iguales más los 4 de suma mayor que 9 que no son iguales. $D^c$ tiene 30 resultados: la suma es 9 o menos. $C \setminus D$ tiene 4: dados iguales con suma de 9 o menos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 5. ¿Qué espacio muestral conviene?**</span>
+
+Un estudiante registra solo la suma de dos dados, con $\Omega = \{2, \ldots, 12\}$, y concluye que la probabilidad de que la suma sea 7 es $1/11$. Use la tabla `dados` para mostrar cuántos pares $(i, j)$ dan cada suma y explique el error.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+table(dados$d1 + dados$d2)
+```
+
+La suma 7 se obtiene con 6 de los 36 pares, y las sumas 2 y 12 con uno solo. Los 11 resultados de la suma no son igualmente probables, así que no se puede asignar $1/11$ a cada uno. Con los 36 pares, que sí lo son, la probabilidad de que la suma sea 7 es $6/36 = 1/6$.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- OpenStax. [*Introducción a la estadística*](https://openstax.org/books/introducci%C3%B3n-estad%C3%ADstica/pages/3-introduccion), capítulo 3, Temas de probabilidad. En español. La sección 3.1 trata la terminología: experimento, espacio muestral y eventos.
+- Grinstead, C. M. y Snell, J. L. (1997). [*Introduction to Probability*](https://chance.dartmouth.edu/book.html) (2.ª ed.). American Mathematical Society. Se descarga en PDF.
+- Blitzstein, J. K. y Hwang, J. (2019). [*Introduction to Probability*](http://probabilitybook.net) (2.ª ed.). Chapman & Hall/CRC. Versión gratuita para leer en línea, para quien quiera profundizar. La sección 1.2 trata espacios muestrales y eventos.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson. El capítulo 2 trata el espacio muestral, los eventos y sus operaciones.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- OpenStax. *Introducción a la estadística*. Rice University.
+- Walpole, R. E., Myers, R. H., Myers, S. L. y Ye, K. (2012). *Probabilidad y estadística para ingeniería y ciencias* (9.ª ed.). Pearson.
+- R Core Team. Documentación de `expand.grid()` y de las funciones de conjuntos (`union()`, `intersect()`, `setdiff()`).
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>
