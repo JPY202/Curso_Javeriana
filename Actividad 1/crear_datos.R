@@ -11,7 +11,10 @@
 #    vino no se puede recuperar restando.
 # 3. El ingreso pasa a pesos colombianos por mes (se multiplica por 10).
 # 4. Los gastos de los últimos 2 años pasan a pesos colombianos (se multiplican por 10,000).
-# 5. Las variables se renombran en español y se ordenan por tema.
+# 5. Las variables se renombran en español y se ordenan por tema. El nivel
+#    "2n Cycle" de la fuente se define para este caso como educación media
+#    (bachillerato), según la tabla de variables de la versión anterior de la
+#    actividad, que lo describía como secondary education.
 #
 # Se conservan, a propósito, las inconsistencias de la base original:
 # edad de 240 años, marital_Divorced igual a 100 y gasto regular negativo.
@@ -73,7 +76,7 @@ nombres <- c(
   ec_divorciado            = "marital_Divorced",
   ec_viudo                 = "marital_Widow",
   educ_basica              = "education_Basic",
-  educ_segundo_ciclo       = "education_2n Cycle",
+  educ_media               = "education_2n Cycle",
   educ_pregrado            = "education_Graduation",
   educ_maestria            = "education_Master",
   educ_doctorado           = "education_PhD",

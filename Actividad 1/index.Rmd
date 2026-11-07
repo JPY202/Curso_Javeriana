@@ -56,7 +56,7 @@ Los valores en dinero están en **pesos colombianos**. El ingreso es mensual, y 
 | `ec_divorciado`            | El cliente es divorciado                                                     | 1 = sí, 0 = no        |
 | `ec_viudo`                 | El cliente es viudo                                                          | 1 = sí, 0 = no        |
 | `educ_basica`              | El nivel educativo del cliente es básica                                     | 1 = sí, 0 = no        |
-| `educ_segundo_ciclo`       | El nivel educativo del cliente es segundo ciclo                              | 1 = sí, 0 = no        |
+| `educ_media`               | El nivel educativo del cliente es media (bachillerato)                       | 1 = sí, 0 = no        |
 | `educ_pregrado`            | El nivel educativo del cliente es pregrado                                   | 1 = sí, 0 = no        |
 | `educ_maestria`            | El nivel educativo del cliente es maestría                                   | 1 = sí, 0 = no        |
 | `educ_doctorado`           | El nivel educativo del cliente es doctorado                                  | 1 = sí, 0 = no        |
@@ -148,28 +148,26 @@ El informe debe incluir lo siguiente:
 
 1. La actividad es **individual**.
 
-2. **Fecha de entrega:** por definir. **Peso en la nota del curso:** por definir.
+2. Se entrega por la plataforma **Bspace**, antes de la fecha límite.
 
-3. Se entrega por la plataforma **Bspace**, antes de la fecha límite.
-
-4. Se entrega un proyecto de **R** en un archivo comprimido **.zip**, que contenga:
+3. Se entrega un proyecto de **R** en un archivo comprimido **.zip**, que contenga:
     - El archivo de datos.
     - El archivo **.Rproj** del proyecto.
     - Los archivos **.Rmd** con cada paso del análisis.
     - Los archivos **HTML** generados a partir de los **.Rmd**.
 
-5. Antes de entregar, compruebe que el proyecto cumple los requisitos de [Proyecto en RStudio](../unidad1/recurso103.html): abre con doble clic en el **.Rproj**, no usa rutas absolutas ni `setwd()`, y cada **.Rmd** se genera con **Knit** después de reiniciar **R**.
+4. Antes de entregar, compruebe que el proyecto cumple los requisitos de [Proyecto en RStudio](../unidad1/recurso103.html): abre con doble clic en el **.Rproj**, no usa rutas absolutas ni `setwd()`, y cada **.Rmd** se genera con **Knit** después de reiniciar **R**.
 
-6. **Tablas y gráficos:**
+5. **Tablas y gráficos:**
     - Todos se numeran (Tabla 1, Figura 1...) en su título, con `caption` en `kable()` o con `fig.cap` en el bloque de código.
     - Cada uno se cita en el texto con su número y se interpreta.
     - Los ejes tienen títulos claros, con unidades, y las leyendas son legibles.
 
-7. **Extensión:** el cuerpo del informe tiene como máximo 5,000 palabras. Los Anexos, con el código comentado de todo el procesamiento, y las Referencias no se cuentan.
+6. **Extensión:** el cuerpo del informe tiene como máximo 5,000 palabras. Los Anexos, con el código comentado de todo el procesamiento, y las Referencias no se cuentan.
 
-8. **Uso de inteligencia artificial:** se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Si la usó, indique en los Anexos qué herramienta usó y para qué. Cada cifra del informe debe salir de su propio código.
+7. **Uso de inteligencia artificial:** se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Si la usó, indique en los Anexos qué herramienta usó y para qué. Cada cifra del informe debe salir de su propio código.
 
-9. **Paquetes:** puede usar los paquetes vistos en el curso y otros de CRAN, si explica en el informe para qué usa cada uno.
+8. **Paquetes:** puede usar los paquetes vistos en el curso y otros de CRAN, si explica en el informe para qué usa cada uno.
 
 <br/>
 
