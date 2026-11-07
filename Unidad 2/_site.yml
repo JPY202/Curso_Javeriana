@@ -43,3 +43,5 @@ navbar:
           href: recurso303.html
         - text: "Métodos de estimación"
           href: recurso304.html
+        - text: "Bootstrap"
+          href: recurso305.html

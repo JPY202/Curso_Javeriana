@@ -405,6 +405,9 @@ div.tocify {
     <li>
       <a href="recurso304.html">Métodos de estimación</a>
     </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -507,6 +510,34 @@ el <a href="recurso302.html">teorema del límite central</a>.</p>
 <pre><code>[1] 0.118</code></pre>
 <p><br/></p>
 </div>
+<div id="y-si-no-se-conoce-σ" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Y si no se conoce
+σ?</strong></span></h3>
+<p>La fórmula <span class="math inline">\(\sigma/\sqrt{n}\)</span> usa
+la desviación estándar de la <strong>población</strong>, que casi nunca
+se conoce. En la práctica se reemplaza por la de la muestra, <span
+class="math inline">\(s\)</span>, y se obtiene el <strong>error estándar
+estimado</strong>:</p>
+<p><span class="math display">\[
+\widehat{EE}(\bar{X}) = \frac{s}{\sqrt{n}}
+\]</span></p>
+<p>Con la muestra de 100 llamadas de <a href="recurso300.html">Conceptos
+básicos</a>:</p>
+<pre class="r"><code>set.seed(2026)
+llamadas &lt;- rexp(100, rate = 1/5)
+sd(llamadas) / sqrt(100)    # error estándar estimado</code></pre>
+<pre><code>[1] 0.6200857</code></pre>
+<pre class="r"><code>5 / sqrt(100)               # error estándar real, que aquí se conoce porque la población es simulada</code></pre>
+<pre><code>[1] 0.5</code></pre>
+<p>El error estándar estimado, 0.62, es a su vez una estimación: con
+otra muestra daría otro valor. Usar <span
+class="math inline">\(s\)</span> en lugar de <span
+class="math inline">\(\sigma\)</span> agrega incertidumbre, y por eso
+aparece la distribución t de Student, que se presenta más abajo. Para
+estimadores sin fórmula, como la mediana, el error estándar se estima
+con el <a href="recurso305.html">bootstrap</a>.</p>
+<p><br/></p>
+</div>
 <div id="y-si-la-población-es-normal" class="section level3">
 <h3><span style="color:#034a94"><strong>¿Y si la población es
 normal?</strong></span></h3>
@@ -552,7 +583,7 @@ curve(dchisq(x, df = 2), 0, 40, col = colores[1], lwd = 2, ylim = c(0, 0.5), xla
 for (i in 2:4) curve(dchisq(x, df = gl[i]), add = TRUE, col = colores[i], lwd = 2)
 legend(&quot;topright&quot;, paste(&quot;ν =&quot;, gl), col = colores, lwd = 2, bty = &quot;n&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="recurso301_files/figure-html/unnamed-chunk-5-1.png" alt="Cuatro curvas. Con 2 grados de libertad baja desde el eje vertical; con 5, 10 y 20 suben y bajan, cada vez más a la derecha y más simétricas" width="85%" />
+<img src="recurso301_files/figure-html/unnamed-chunk-6-1.png" alt="Cuatro curvas. Con 2 grados de libertad baja desde el eje vertical; con 5, 10 y 20 suben y bajan, cada vez más a la derecha y más simétricas" width="85%" />
 <p class="caption">
 Densidades chi-cuadrado con distintos grados de libertad.
 </p>
@@ -608,7 +639,7 @@ curve(dt(x, df = 10), add = TRUE, col = &quot;#034A94&quot;, lwd = 2)
 legend(&quot;topright&quot;, c(&quot;Normal estándar&quot;, &quot;t con 2 gl&quot;, &quot;t con 10 gl&quot;),
        col = c(&quot;black&quot;, &quot;#FF7F00&quot;, &quot;#034A94&quot;), lwd = 2, bty = &quot;n&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="recurso301_files/figure-html/unnamed-chunk-8-1.png" alt="Tres campanas centradas en 0. La normal estándar, en negro, es la más alta en el centro; la t con 2 grados de libertad, en naranja, es la más baja en el centro y la más alta en las colas" width="85%" />
+<img src="recurso301_files/figure-html/unnamed-chunk-9-1.png" alt="Tres campanas centradas en 0. La normal estándar, en negro, es la más alta en el centro; la t con 2 grados de libertad, en naranja, es la más baja en el centro y la más alta en las colas" width="85%" />
 <p class="caption">
 Densidades t de Student con 2 y 10 grados de libertad, y la normal
 estándar.
@@ -621,6 +652,85 @@ la cola derecha es mayor para la t que para la normal, y se acerca a
 <pre><code>[1] 2.571 2.228 2.042 1.984</code></pre>
 <pre class="r"><code>round(qnorm(0.975), 3)</code></pre>
 <pre><code>[1] 1.96</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-revisa-si-los-datos-vienen-de-una-normal"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se revisa si los datos
+vienen de una normal?</strong></span></h2>
+<p>La chi-cuadrado, la t y la F suponen que la población es normal.
+Antes de usarlas conviene revisar los datos. La herramienta más útil es
+el <strong>gráfico cuantil-cuantil</strong> (Q-Q): compara los datos
+ordenados con los valores que se esperarían si vinieran de una normal.
+Si los datos son normales, los puntos quedan cerca de una línea
+recta.</p>
+<p>En <strong>R</strong>, <code>qqnorm()</code> dibuja los puntos y
+<code>qqline()</code> agrega la línea de referencia. La figura compara
+50 datos de una normal con 50 de una exponencial:</p>
+<pre class="r"><code>set.seed(2026)
+datos_normal &lt;- rnorm(50, mean = 20, sd = 5)
+datos_expo   &lt;- rexp(50, rate = 1/5)
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 2.5, 1))
+qqnorm(datos_normal, main = &quot;Población normal&quot;, pch = 19, col = &quot;#034A94&quot;,
+       xlab = &quot;Cuantiles teóricos de la normal&quot;, ylab = &quot;Cuantiles de los datos&quot;)
+qqline(datos_normal, col = &quot;#C0392B&quot;, lwd = 2)
+qqnorm(datos_expo, main = &quot;Población exponencial&quot;, pch = 19, col = &quot;#034A94&quot;,
+       xlab = &quot;Cuantiles teóricos de la normal&quot;, ylab = &quot;Cuantiles de los datos&quot;)
+qqline(datos_expo, col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
+<div class="figure">
+<img src="recurso301_files/figure-html/unnamed-chunk-11-1.png" alt="A la izquierda, puntos azules alineados sobre la línea roja. A la derecha, puntos que forman una curva: por encima de la línea a la izquierda, por debajo en el centro y muy por encima a la derecha" width="100%" />
+<p class="caption">
+Gráficos cuantil-cuantil de 50 datos de una población normal (izquierda)
+y de una exponencial (derecha).
+</p>
+</div>
+<table>
+<colgroup>
+<col width="72%" />
+<col width="27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Lo que se ve en el gráfico Q-Q</th>
+<th align="left">Qué indica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Puntos cerca de la línea</td>
+<td align="left">Los datos son compatibles con una normal</td>
+</tr>
+<tr class="even">
+<td align="left">Puntos que forman una curva hacia arriba en el extremo
+derecho</td>
+<td align="left">Asimetría a la derecha, como en la exponencial</td>
+</tr>
+<tr class="odd">
+<td align="left">Puntos que se alejan de la línea en los dos
+extremos</td>
+<td align="left">Colas más pesadas que las de la normal, o valores
+extremos</td>
+</tr>
+<tr class="even">
+<td align="left">Unos pocos puntos muy alejados</td>
+<td align="left">Posibles valores atípicos o errores de digitación</td>
+</tr>
+</tbody>
+</table>
+<div id="cuidado-con-las-pruebas-de-normalidad"
+class="section level3 content-box-gray">
+<h3><span style="color:#686868"><strong>Cuidado con las pruebas de
+normalidad</strong></span></h3>
+<p>Existen pruebas de normalidad, como la de Shapiro-Wilk
+(<code>shapiro.test()</code>), pero hay que interpretarlas con cuidado.
+Con muestras pequeñas casi nunca rechazan, aunque los datos no sean
+normales; con muestras grandes rechazan por diferencias mínimas que no
+afectan los resultados. Además, que una prueba <strong>no
+rechace</strong> no <strong>confirma</strong> que los datos sean
+normales: solo indica que no hay evidencia suficiente en contra. Por eso
+el gráfico Q-Q, junto con el conocimiento del fenómeno, suele ser más
+útil que la prueba sola.</p>
+</div>
 <p><br/></p>
 </div>
 <div id="qué-es-la-distribución-f" class="section level2">

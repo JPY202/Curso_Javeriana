@@ -1,0 +1,217 @@
+---
+title: <span style="color:#034a94"> **Bootstrap**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+```
+
+<br/>
+
+En las páginas anteriores, la distribución muestral se estudió de dos formas: con fórmulas, como $\sigma/\sqrt{n}$ para la media, o simulando muchas muestras de una población **conocida**. En la práctica no se conoce la población: solo se tiene **una** muestra. Y para muchos estimadores, como la mediana, no hay una fórmula sencilla para su error estándar.
+
+El **bootstrap**, propuesto por Bradley Efron en 1979, resuelve este problema con simulación: usa la muestra como si fuera la población y toma muchas muestras **de la muestra**. Esta página explica la idea, muestra cómo hacerlo en **R** y señala sus limitaciones. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuál es la idea del bootstrap?**</span>
+
+Si la muestra fue elegida al azar, se parece a la población. Entonces, tomar muestras de la muestra debería parecerse a tomar muestras de la población. El procedimiento es:
+
+1. Tomar una **muestra bootstrap**: $n$ datos elegidos al azar **con reemplazo** de la muestra original. Algunos datos salen repetidos y otros no salen.
+2. Calcular el estimador en esa muestra bootstrap.
+3. Repetir los pasos 1 y 2 muchas veces, por ejemplo $B = 5\,000$.
+4. La distribución de las $B$ estimaciones es la **distribución bootstrap**. Su desviación estándar es el **error estándar bootstrap** del estimador.
+
+El reemplazo es la clave: sin él, cada muestra bootstrap sería la misma muestra original en otro orden.
+
+En **R**, una muestra bootstrap se toma con `sample(x, replace = TRUE)`. Con una muestra pequeña de 5 datos se ve cómo funciona:
+
+```{r}
+x <- c(12, 15, 9, 20, 14)
+set.seed(2026)
+sample(x, replace = TRUE)   # una muestra bootstrap
+sample(x, replace = TRUE)   # otra muestra bootstrap
+```
+
+En la primera muestra bootstrap, el 12 y el 14 salen dos veces y el 15 y el 20 no salen.
+
+<br/>
+
+## <span style="color:#034a94">**Ejemplo: el error estándar de la media**</span>
+
+Se retoma la muestra de 100 llamadas de [Conceptos básicos](recurso300.html). Para la media existe una fórmula: el error estándar estimado es $s/\sqrt{n}$. El bootstrap debería dar un valor parecido.
+
+```{r}
+set.seed(2026)
+llamadas <- rexp(100, rate = 1/5)
+mean(llamadas)
+sd(llamadas) / sqrt(100)    # error estándar con la fórmula
+```
+
+```{r}
+set.seed(2026)
+medias_boot <- replicate(5000, mean(sample(llamadas, replace = TRUE)))
+sd(medias_boot)             # error estándar bootstrap
+```
+
+Los dos métodos dan casi lo mismo: 0.620 con la fórmula y 0.612 con el bootstrap.
+
+```{r, fig.width=8, fig.height=3.6, fig.cap="Distribución bootstrap de la media de las llamadas, con 5 000 muestras bootstrap. La línea roja es la media de la muestra original.", fig.alt="Histograma con forma de campana centrado cerca de 5.65, entre 3.5 y 8, con una línea roja vertical en 5.65", out.width="85%", fig.align="center"}
+hist(medias_boot, breaks = 40, freq = FALSE, col = "#BDD7EE", border = "white",
+     main = "", xlab = "Media de la muestra bootstrap (minutos)", ylab = "Densidad")
+abline(v = mean(llamadas), col = "#C0392B", lwd = 2)
+```
+
+La distribución bootstrap está centrada en la media de la muestra, 5.65, y no en la de la población, 5: el bootstrap no corrige la estimación, sino que mide **cuánto variaría** de una muestra a otra.
+
+<br/>
+
+## <span style="color:#034a94">**Ejemplo: el error estándar de la mediana**</span>
+
+Para la mediana no hay una fórmula sencilla del error estándar, pero el bootstrap se aplica exactamente igual: solo se cambia `mean()` por `median()`.
+
+```{r}
+median(llamadas)
+set.seed(2026)
+medianas_boot <- replicate(5000, median(sample(llamadas, replace = TRUE)))
+sd(medianas_boot)           # error estándar bootstrap de la mediana
+```
+
+La mediana de las llamadas es 4.04 minutos, con un error estándar bootstrap de 0.80 minutos. La misma idea sirve para cualquier estadístico: un percentil, una correlación, el cociente de dos medias.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tiene de especial este método?**</span>
+
+| Enfoque | Qué necesita | Ejemplo |
+|:--------|:-------------|:--------|
+| Fórmula | Un resultado teórico para ese estimador y, a veces, suponer un modelo como la normal | $s/\sqrt{n}$ para la media |
+| Simulación de la población | Conocer la población, lo que casi nunca ocurre | Las simulaciones de [Distribución muestral](recurso301.html) |
+| Bootstrap | Solo la muestra | Cualquier estimador, incluso sin fórmula |
+
+Por eso el bootstrap es una de las herramientas más usadas de la estadística moderna. En la pestaña de intervalos de confianza se usará para construir intervalos sin suponer normalidad.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuándo puede fallar?**</span>
+
+El bootstrap no hace milagros: todo lo que sabe de la población lo saca de **una** muestra.
+
+- **Muestras pequeñas.** Con pocos datos, la muestra puede parecerse poco a la población, y la distribución bootstrap hereda ese error.
+- **Muestras que no son aleatorias.** Si la muestra está sesgada, las muestras bootstrap también lo están.
+- **Datos dependientes.** El remuestreo simple supone observaciones independientes; para datos en el tiempo se usan variantes del método.
+- **Estadísticos de los extremos.** Para el máximo o el mínimo, el bootstrap funciona mal, porque una muestra bootstrap nunca puede superar el máximo de la muestra original.
+- **Estadísticos poco suaves, como la mediana.** El bootstrap funciona, pero con menos precisión. En el ejemplo de la mediana, la población se conoce porque es simulada: el error estándar real de la mediana es cercano a 0.50, y el bootstrap, con esta muestra, dio 0.80. El error estándar bootstrap también es una estimación.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Todas las muestras bootstrap salen iguales a la original | Se olvidó `replace = TRUE` | Remuestrear con reemplazo |
+| Tomar muestras bootstrap de tamaño distinto a $n$ | Se cambió el tamaño en `sample()` | Cada muestra bootstrap tiene el mismo tamaño de la original |
+| Creer que la media de la distribución bootstrap corrige la estimación | El bootstrap se centra en la muestra, no en la población | Usar el bootstrap para medir variabilidad, no para mejorar la estimación |
+| El resultado cambia cada vez que se ejecuta | No se fijó la semilla | Usar `set.seed()` y un número de repeticiones grande, como 5 000 |
+| Usar el bootstrap con datos que no fueron elegidos al azar | El método supone que la muestra representa a la población | Revisar cómo se obtuvo la muestra |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Una proporción**</span>
+
+Con la muestra `llamadas`, estime la proporción de llamadas que duran más de 10 minutos y su error estándar bootstrap. Compárelo con la fórmula $\sqrt{\hat{p}(1 - \hat{p})/n}$.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+p_hat <- mean(llamadas > 10)
+p_hat
+sqrt(p_hat * (1 - p_hat) / 100)                                      # fórmula
+set.seed(2026)
+sd(replicate(5000, mean(sample(llamadas, replace = TRUE) > 10)))    # bootstrap
+```
+
+Los dos dan cerca de 0.036.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. La desviación estándar**</span>
+
+Estime el error estándar bootstrap de la desviación estándar de `llamadas`. ¿Es grande comparado con la desviación estándar estimada?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+sd(llamadas)
+set.seed(2026)
+sd(replicate(5000, sd(sample(llamadas, replace = TRUE))))
+```
+
+La desviación estándar estimada es 6.2 minutos, con un error estándar bootstrap cercano a 0.8. En poblaciones asimétricas, la desviación estándar se estima con bastante incertidumbre, aun con 100 datos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. El bootstrap con el máximo**</span>
+
+Calcule la distribución bootstrap del máximo de `llamadas` y haga una tabla de sus valores con `table()`. ¿Por qué no es una buena aproximación de la distribución del máximo en la población?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+maximos_boot <- replicate(5000, max(sample(llamadas, replace = TRUE)))
+round(prop.table(table(round(maximos_boot, 2))), 3)
+```
+
+Solo aparecen unos pocos valores, todos tomados de los datos más grandes de la muestra, y ninguno puede superar el máximo observado, 32.32. En la población, el máximo de 100 llamadas puede ser mayor que ese valor. Es uno de los casos en que el bootstrap falla.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Çetinkaya-Rundel, M. y Hardin, J. [*Introduction to Modern Statistics*](https://www.openintro.org/book/ims/) (2.ª ed.). OpenIntro. Versión gratuita en línea, enlazada desde el sitio de la editorial. La parte de fundamentos de la inferencia trata el bootstrap con ejemplos y simulaciones.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Efron, B. y Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Chapman & Hall/CRC. Es la referencia clásica del método, escrita por su creador.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Çetinkaya-Rundel, M. y Hardin, J. *Introduction to Modern Statistics* (2.ª ed.). OpenIntro.
+- Efron, B. (1979). Bootstrap methods: another look at the jackknife. *The Annals of Statistics*, 7(1), 1-26.
+- Efron, B. y Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Chapman & Hall/CRC.
+
+<br/>
+
+*Última revisión: 7 de noviembre de 2026.*
+
+<br/><br/>

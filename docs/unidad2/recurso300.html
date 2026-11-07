@@ -405,6 +405,9 @@ div.tocify {
     <li>
       <a href="recurso304.html">Métodos de estimación</a>
     </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -528,6 +531,118 @@ es lo que hacen los intervalos de confianza y las pruebas de
 hipótesis.</p>
 </div>
 <p><br/></p>
+<div id="qué-tipos-de-muestreo-existen" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué tipos de muestreo
+existen?</strong></span></h3>
+<p>El muestreo aleatorio simple no es la única forma de elegir al azar.
+En la práctica se usan otros diseños, más baratos o más precisos:</p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="60%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Diseño</th>
+<th align="left">Cómo se elige la muestra</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Aleatorio simple</strong></td>
+<td align="left">Se sortean <span class="math inline">\(n\)</span>
+unidades de la lista completa de la población</td>
+<td align="left">Se sortean 200 de los 5 000 clientes de una
+empresa</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Sistemático</strong></td>
+<td align="left">Se elige al azar un punto de partida y luego una unidad
+cada <span class="math inline">\(k\)</span></td>
+<td align="left">Se revisa una de cada 25 facturas, empezando en una
+elegida al azar entre las primeras 25</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Estratificado</strong></td>
+<td align="left">Se divide la población en grupos parecidos por dentro
+(estratos) y se toma una muestra aleatoria en cada uno</td>
+<td align="left">Se toma una muestra de clientes en cada ciudad, para
+que todas estén representadas</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Por conglomerados</strong></td>
+<td align="left">Se sortean grupos completos (conglomerados) y se
+observan todas o parte de sus unidades</td>
+<td align="left">Se sortean 10 barrios y se encuestan los hogares de
+esos barrios</td>
+</tr>
+</tbody>
+</table>
+<p>Cada diseño necesita fórmulas propias para el error estándar. Las
+fórmulas de este curso corresponden al muestreo aleatorio simple o al
+modelo i.i.d. En <strong>R</strong>, una muestra aleatoria simple de 200
+clientes, identificados del 1 al 5 000, se sortea con
+<code>sample()</code>:</p>
+<pre class="r"><code>set.seed(2026)
+clientes &lt;- sample(1:5000, size = 200)   # sin reemplazo: ningún cliente sale dos veces
+head(sort(clientes), 10)</code></pre>
+<pre><code> [1]  33  79 107 143 164 191 234 253 259 274</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-sesgos-pueden-tener-los-datos" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué sesgos pueden tener los
+datos?</strong></span></h3>
+<p>Una muestra grande no corrige una muestra mal elegida. Los problemas
+más comunes son:</p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="38%" />
+<col width="34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Sesgo</th>
+<th align="left">Qué pasa</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>De selección o cobertura</strong></td>
+<td align="left">Una parte de la población no puede quedar en la
+muestra</td>
+<td align="left">Una encuesta por internet deja por fuera a quienes no
+tienen conexión</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Por no respuesta</strong></td>
+<td align="left">Las personas que no responden son distintas de las que
+sí</td>
+<td align="left">Los clientes más insatisfechos no contestan la encuesta
+de satisfacción</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Por voluntarios</strong></td>
+<td align="left">Solo participan quienes quieren</td>
+<td align="left">Las calificaciones en línea vienen sobre todo de
+clientes muy contentos o muy molestos</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>De medición</strong></td>
+<td align="left">La forma de preguntar o de medir desvía los datos</td>
+<td align="left">Una pregunta que sugiere la respuesta, o una balanza
+mal calibrada</td>
+</tr>
+</tbody>
+</table>
+<p>Estos sesgos no se reducen aumentando el tamaño de la muestra: si se
+encuesta a más voluntarios, la estimación sigue sesgada, solo que con
+menos variabilidad.</p>
+<p><br/></p>
+</div>
 <div id="ejemplo-duración-de-las-llamadas" class="section level3">
 <h3><span style="color:#034a94"><strong>Ejemplo: duración de las
 llamadas</strong></span></h3>
@@ -554,7 +669,7 @@ round(head(llamadas, 10), 2)   # las primeras 10 duraciones, en minutos</code></
      main = &quot;&quot;, xlab = &quot;Duración de la llamada (minutos)&quot;, ylab = &quot;Densidad&quot;, ylim = c(0, 0.2))
 curve(dexp(x, rate = 1/5), add = TRUE, col = &quot;#FF7F00&quot;, lwd = 2)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="recurso300_files/figure-html/unnamed-chunk-2-1.png" alt="Histograma azul con muchas llamadas cortas y pocas largas, que sigue de cerca una curva naranja que decrece desde 0.2" width="90%" />
+<img src="recurso300_files/figure-html/unnamed-chunk-3-1.png" alt="Histograma azul con muchas llamadas cortas y pocas largas, que sigue de cerca una curva naranja que decrece desde 0.2" width="90%" />
 <p class="caption">
 Histograma de la muestra de 100 llamadas. La curva naranja es la
 densidad de la población, Exp(1/5).
@@ -694,7 +809,7 @@ for (j in 1:12) {
   abline(v = medias[j], col = &quot;#C0392B&quot;, lwd = 2)
 }</code></pre>
 <div class="figure">
-<img src="recurso300_files/figure-html/unnamed-chunk-5-1.png" alt="Doce histogramas pequeños con formas parecidas pero no iguales; la línea roja vertical de cada uno está entre 4.6 y 5.7" width="100%" />
+<img src="recurso300_files/figure-html/unnamed-chunk-6-1.png" alt="Doce histogramas pequeños con formas parecidas pero no iguales; la línea roja vertical de cada uno está entre 4.6 y 5.7" width="100%" />
 <p class="caption">
 Histogramas de 12 muestras de 100 llamadas de la misma población. La
 línea roja es la media muestral de cada una.

@@ -95,6 +95,26 @@ Un estimador con un sesgo pequeño y una varianza mucho menor puede tener menor 
 
 <br/>
 
+## <span style="color:#034a94">**¿Qué dice la ley de los grandes números?**</span>
+
+La **ley de los grandes números** dice que, si $X_1, X_2, \ldots$ son i.i.d. con media $\mu$, la media muestral $\bar{X}$ se acerca a $\mu$ a medida que crece $n$. Más precisamente: para cualquier margen, por pequeño que sea, la probabilidad de que $\bar{X}$ quede a más de ese margen de $\mu$ se acerca a cero cuando $n$ crece.
+
+Es la misma idea del enfoque frecuentista de [Enfoques y axiomas](recurso101.html): allí, la frecuencia relativa de un evento, que es la media de datos que valen 1 o 0, se acercaba a su probabilidad. La figura muestra la media acumulada de tres secuencias de llamadas: las tres oscilan al principio y luego se acercan a 5.
+
+```{r, fig.width=8, fig.height=3.8, fig.cap="Media acumulada de la duración de las llamadas en tres secuencias de 2 000 llamadas. La línea roja es la media de la población, 5 minutos.", fig.alt="Tres líneas de colores que oscilan mucho en las primeras llamadas y luego se estabilizan cerca de la línea roja horizontal en 5", out.width="85%", fig.align="center"}
+set.seed(2026)
+medias_acum <- sapply(1:3, function(k) cumsum(rexp(2000, rate = 1/5)) / (1:2000))   # una columna por secuencia
+colores <- c("#034A94", "#FF7F00", "#2E8B57")
+matplot(1:2000, medias_acum, type = "l", lty = 1, lwd = 1.5, col = colores, log = "x",
+        ylim = range(medias_acum),
+        xlab = "Número de llamadas (escala logarítmica)", ylab = "Media acumulada (minutos)")
+abline(h = 5, col = "#C0392B", lty = 2, lwd = 2)
+```
+
+La ley de los grandes números dice **que** la media se acerca a $\mu$; el teorema del límite central dice **cómo** se distribuyen sus errores alrededor de $\mu$. Y es la razón por la que la media muestral es un estimador consistente, como se verá a continuación.
+
+<br/>
+
 ## <span style="color:#034a94">**¿Qué es la consistencia?**</span>
 
 Un estimador es **consistente** si, al aumentar el tamaño de la muestra, sus estimaciones se concentran cada vez más alrededor del parámetro. Una forma práctica de comprobarlo es ver que su ECM se acerca a cero cuando $n$ crece: eso ocurre si el sesgo y la varianza se acercan a cero.

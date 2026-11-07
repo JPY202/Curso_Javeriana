@@ -50,6 +50,7 @@ Esta unidad presenta las bases de la inferencia estadística: la probabilidad, l
     - [Teorema del límite central](recurso302.html)
     - [Propiedades de los estimadores](recurso303.html)
     - [Métodos de estimación](recurso304.html)
+    - [Bootstrap](recurso305.html)
 
     <br/>
 

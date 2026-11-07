@@ -405,6 +405,9 @@ div.tocify {
     <li>
       <a href="recurso304.html">Métodos de estimación</a>
     </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -564,6 +567,47 @@ tener menor ECM que uno insesgado. Si el estimador es insesgado, su ECM
 es igual a su varianza.</p>
 <p><br/></p>
 </div>
+<div id="qué-dice-la-ley-de-los-grandes-números" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué dice la ley de los grandes
+números?</strong></span></h2>
+<p>La <strong>ley de los grandes números</strong> dice que, si <span
+class="math inline">\(X_1, X_2, \ldots\)</span> son i.i.d. con media
+<span class="math inline">\(\mu\)</span>, la media muestral <span
+class="math inline">\(\bar{X}\)</span> se acerca a <span
+class="math inline">\(\mu\)</span> a medida que crece <span
+class="math inline">\(n\)</span>. Más precisamente: para cualquier
+margen, por pequeño que sea, la probabilidad de que <span
+class="math inline">\(\bar{X}\)</span> quede a más de ese margen de
+<span class="math inline">\(\mu\)</span> se acerca a cero cuando <span
+class="math inline">\(n\)</span> crece.</p>
+<p>Es la misma idea del enfoque frecuentista de <a
+href="recurso101.html">Enfoques y axiomas</a>: allí, la frecuencia
+relativa de un evento, que es la media de datos que valen 1 o 0, se
+acercaba a su probabilidad. La figura muestra la media acumulada de tres
+secuencias de llamadas: las tres oscilan al principio y luego se acercan
+a 5.</p>
+<pre class="r"><code>set.seed(2026)
+medias_acum &lt;- sapply(1:3, function(k) cumsum(rexp(2000, rate = 1/5)) / (1:2000))   # una columna por secuencia
+colores &lt;- c(&quot;#034A94&quot;, &quot;#FF7F00&quot;, &quot;#2E8B57&quot;)
+matplot(1:2000, medias_acum, type = &quot;l&quot;, lty = 1, lwd = 1.5, col = colores, log = &quot;x&quot;,
+        ylim = range(medias_acum),
+        xlab = &quot;Número de llamadas (escala logarítmica)&quot;, ylab = &quot;Media acumulada (minutos)&quot;)
+abline(h = 5, col = &quot;#C0392B&quot;, lty = 2, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso303_files/figure-html/unnamed-chunk-2-1.png" alt="Tres líneas de colores que oscilan mucho en las primeras llamadas y luego se estabilizan cerca de la línea roja horizontal en 5" width="85%" />
+<p class="caption">
+Media acumulada de la duración de las llamadas en tres secuencias de 2
+000 llamadas. La línea roja es la media de la población, 5 minutos.
+</p>
+</div>
+<p>La ley de los grandes números dice <strong>que</strong> la media se
+acerca a <span class="math inline">\(\mu\)</span>; el teorema del límite
+central dice <strong>cómo</strong> se distribuyen sus errores alrededor
+de <span class="math inline">\(\mu\)</span>. Y es la razón por la que la
+media muestral es un estimador consistente, como se verá a
+continuación.</p>
+<p><br/></p>
+</div>
 <div id="qué-es-la-consistencia" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Qué es la
 consistencia?</strong></span></h2>
@@ -668,7 +712,7 @@ hist(est_30[2, ], breaks = cortes, freq = FALSE, col = &quot;#FF7F00&quot;, bord
      main = &quot;Primer dato&quot;, xlab = &quot;Estimación de la media&quot;, ylab = &quot;Densidad&quot;)
 abline(v = 5, col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
 <div class="figure">
-<img src="recurso303_files/figure-html/unnamed-chunk-3-1.png" alt="Dos histogramas con la misma escala. El de la media muestral es angosto y centrado en 5. El del primer dato es exponencial, con valores desde 0 hasta más de 30" width="100%" />
+<img src="recurso303_files/figure-html/unnamed-chunk-4-1.png" alt="Dos histogramas con la misma escala. El de la media muestral es angosto y centrado en 5. El del primer dato es exponencial, con valores desde 0 hasta más de 30" width="100%" />
 <p class="caption">
 Distribución de 10 000 estimaciones de la media con la media muestral y
 con el primer dato, para muestras de 30 llamadas. La línea roja es la

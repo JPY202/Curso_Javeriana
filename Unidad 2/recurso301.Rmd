@@ -75,6 +75,27 @@ mean(medias_36 > 6)
 
 <br/>
 
+### <span style="color:#034a94">**¿Y si no se conoce σ?**</span>
+
+La fórmula $\sigma/\sqrt{n}$ usa la desviación estándar de la **población**, que casi nunca se conoce. En la práctica se reemplaza por la de la muestra, $s$, y se obtiene el **error estándar estimado**:
+
+$$
+\widehat{EE}(\bar{X}) = \frac{s}{\sqrt{n}}
+$$
+
+Con la muestra de 100 llamadas de [Conceptos básicos](recurso300.html):
+
+```{r}
+set.seed(2026)
+llamadas <- rexp(100, rate = 1/5)
+sd(llamadas) / sqrt(100)    # error estándar estimado
+5 / sqrt(100)               # error estándar real, que aquí se conoce porque la población es simulada
+```
+
+El error estándar estimado, 0.62, es a su vez una estimación: con otra muestra daría otro valor. Usar $s$ en lugar de $\sigma$ agrega incertidumbre, y por eso aparece la distribución t de Student, que se presenta más abajo. Para estimadores sin fórmula, como la mediana, el error estándar se estima con el [bootstrap](recurso305.html).
+
+<br/>
+
 ### <span style="color:#034a94">**¿Y si la población es normal?**</span>
 
 Si la población es normal, la media muestral es **exactamente** normal para cualquier $n$:
@@ -159,6 +180,40 @@ Los cuantiles muestran las colas pesadas. El valor que deja 2.5 % en la cola der
 round(qt(0.975, df = c(5, 10, 30, 100)), 3)
 round(qnorm(0.975), 3)
 ```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se revisa si los datos vienen de una normal?**</span>
+
+La chi-cuadrado, la t y la F suponen que la población es normal. Antes de usarlas conviene revisar los datos. La herramienta más útil es el **gráfico cuantil-cuantil** (Q-Q): compara los datos ordenados con los valores que se esperarían si vinieran de una normal. Si los datos son normales, los puntos quedan cerca de una línea recta.
+
+En **R**, `qqnorm()` dibuja los puntos y `qqline()` agrega la línea de referencia. La figura compara 50 datos de una normal con 50 de una exponencial:
+
+```{r, fig.width=9, fig.height=4, fig.cap="Gráficos cuantil-cuantil de 50 datos de una población normal (izquierda) y de una exponencial (derecha).", fig.alt="A la izquierda, puntos azules alineados sobre la línea roja. A la derecha, puntos que forman una curva: por encima de la línea a la izquierda, por debajo en el centro y muy por encima a la derecha", out.width="100%"}
+set.seed(2026)
+datos_normal <- rnorm(50, mean = 20, sd = 5)
+datos_expo   <- rexp(50, rate = 1/5)
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 2.5, 1))
+qqnorm(datos_normal, main = "Población normal", pch = 19, col = "#034A94",
+       xlab = "Cuantiles teóricos de la normal", ylab = "Cuantiles de los datos")
+qqline(datos_normal, col = "#C0392B", lwd = 2)
+qqnorm(datos_expo, main = "Población exponencial", pch = 19, col = "#034A94",
+       xlab = "Cuantiles teóricos de la normal", ylab = "Cuantiles de los datos")
+qqline(datos_expo, col = "#C0392B", lwd = 2)
+```
+
+| Lo que se ve en el gráfico Q-Q | Qué indica |
+|:-------------------------------|:-----------|
+| Puntos cerca de la línea | Los datos son compatibles con una normal |
+| Puntos que forman una curva hacia arriba en el extremo derecho | Asimetría a la derecha, como en la exponencial |
+| Puntos que se alejan de la línea en los dos extremos | Colas más pesadas que las de la normal, o valores extremos |
+| Unos pocos puntos muy alejados | Posibles valores atípicos o errores de digitación |
+
+<div class="content-box-gray">
+### <span style="color:#686868">**Cuidado con las pruebas de normalidad**</span>
+
+Existen pruebas de normalidad, como la de Shapiro-Wilk (`shapiro.test()`), pero hay que interpretarlas con cuidado. Con muestras pequeñas casi nunca rechazan, aunque los datos no sean normales; con muestras grandes rechazan por diferencias mínimas que no afectan los resultados. Además, que una prueba **no rechace** no **confirma** que los datos sean normales: solo indica que no hay evidencia suficiente en contra. Por eso el gráfico Q-Q, junto con el conocimiento del fenómeno, suele ser más útil que la prueba sola.
+</div>
 
 <br/>
 

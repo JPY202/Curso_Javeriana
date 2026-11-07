@@ -58,6 +58,42 @@ Elegir al azar evita que la muestra favorezca sistemáticamente a algún grupo, 
 
 <br/>
 
+### <span style="color:#034a94">**¿Qué tipos de muestreo existen?**</span>
+
+El muestreo aleatorio simple no es la única forma de elegir al azar. En la práctica se usan otros diseños, más baratos o más precisos:
+
+| Diseño | Cómo se elige la muestra | Ejemplo |
+|:-------|:-------------------------|:--------|
+| **Aleatorio simple** | Se sortean $n$ unidades de la lista completa de la población | Se sortean 200 de los 5 000 clientes de una empresa |
+| **Sistemático** | Se elige al azar un punto de partida y luego una unidad cada $k$ | Se revisa una de cada 25 facturas, empezando en una elegida al azar entre las primeras 25 |
+| **Estratificado** | Se divide la población en grupos parecidos por dentro (estratos) y se toma una muestra aleatoria en cada uno | Se toma una muestra de clientes en cada ciudad, para que todas estén representadas |
+| **Por conglomerados** | Se sortean grupos completos (conglomerados) y se observan todas o parte de sus unidades | Se sortean 10 barrios y se encuestan los hogares de esos barrios |
+
+Cada diseño necesita fórmulas propias para el error estándar. Las fórmulas de este curso corresponden al muestreo aleatorio simple o al modelo i.i.d. En **R**, una muestra aleatoria simple de 200 clientes, identificados del 1 al 5 000, se sortea con `sample()`:
+
+```{r}
+set.seed(2026)
+clientes <- sample(1:5000, size = 200)   # sin reemplazo: ningún cliente sale dos veces
+head(sort(clientes), 10)
+```
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué sesgos pueden tener los datos?**</span>
+
+Una muestra grande no corrige una muestra mal elegida. Los problemas más comunes son:
+
+| Sesgo | Qué pasa | Ejemplo |
+|:------|:---------|:--------|
+| **De selección o cobertura** | Una parte de la población no puede quedar en la muestra | Una encuesta por internet deja por fuera a quienes no tienen conexión |
+| **Por no respuesta** | Las personas que no responden son distintas de las que sí | Los clientes más insatisfechos no contestan la encuesta de satisfacción |
+| **Por voluntarios** | Solo participan quienes quieren | Las calificaciones en línea vienen sobre todo de clientes muy contentos o muy molestos |
+| **De medición** | La forma de preguntar o de medir desvía los datos | Una pregunta que sugiere la respuesta, o una balanza mal calibrada |
+
+Estos sesgos no se reducen aumentando el tamaño de la muestra: si se encuesta a más voluntarios, la estimación sigue sesgada, solo que con menos variabilidad.
+
+<br/>
+
 ### <span style="color:#034a94">**Ejemplo: duración de las llamadas**</span>
 
 La duración de las llamadas de un centro de atención en Bogotá sigue un modelo exponencial con media de 5 minutos. Como en la exponencial la media es $1/\lambda$, la tasa es $\lambda = 1/5$, y la varianza es $1/\lambda^2 = 25$ minutos².

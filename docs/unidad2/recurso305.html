@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Bootstrap</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Probabilidad
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Espacio muestral y eventos</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Enfoques y axiomas</a>
+    </li>
+    <li>
+      <a href="recurso102.html">Tipos de probabilidad</a>
+    </li>
+    <li>
+      <a href="recurso103.html">Independencia</a>
+    </li>
+    <li>
+      <a href="recurso104.html">Teorema de Bayes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables aleatorias
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Variable aleatoria</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Valor esperado y varianza</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Variables conjuntas</a>
+    </li>
+    <li>
+      <a href="recurso203.html">Modelos discretos</a>
+    </li>
+    <li>
+      <a href="recurso204.html">Modelos continuos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia estadística
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Conceptos básicos</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Distribución muestral</a>
+    </li>
+    <li>
+      <a href="recurso302.html">Teorema del límite central</a>
+    </li>
+    <li>
+      <a href="recurso303.html">Propiedades de los estimadores</a>
+    </li>
+    <li>
+      <a href="recurso304.html">Métodos de estimación</a>
+    </li>
+    <li>
+      <a href="recurso305.html">Bootstrap</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Bootstrap</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>En las páginas anteriores, la distribución muestral se estudió de dos
+formas: con fórmulas, como <span
+class="math inline">\(\sigma/\sqrt{n}\)</span> para la media, o
+simulando muchas muestras de una población <strong>conocida</strong>. En
+la práctica no se conoce la población: solo se tiene
+<strong>una</strong> muestra. Y para muchos estimadores, como la
+mediana, no hay una fórmula sencilla para su error estándar.</p>
+<p>El <strong>bootstrap</strong>, propuesto por Bradley Efron en 1979,
+resuelve este problema con simulación: usa la muestra como si fuera la
+población y toma muchas muestras <strong>de la muestra</strong>. Esta
+página explica la idea, muestra cómo hacerlo en <strong>R</strong> y
+señala sus limitaciones. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="cuál-es-la-idea-del-bootstrap" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál es la idea del
+bootstrap?</strong></span></h2>
+<p>Si la muestra fue elegida al azar, se parece a la población.
+Entonces, tomar muestras de la muestra debería parecerse a tomar
+muestras de la población. El procedimiento es:</p>
+<ol style="list-style-type: decimal">
+<li>Tomar una <strong>muestra bootstrap</strong>: <span
+class="math inline">\(n\)</span> datos elegidos al azar <strong>con
+reemplazo</strong> de la muestra original. Algunos datos salen repetidos
+y otros no salen.</li>
+<li>Calcular el estimador en esa muestra bootstrap.</li>
+<li>Repetir los pasos 1 y 2 muchas veces, por ejemplo <span
+class="math inline">\(B = 5\,000\)</span>.</li>
+<li>La distribución de las <span class="math inline">\(B\)</span>
+estimaciones es la <strong>distribución bootstrap</strong>. Su
+desviación estándar es el <strong>error estándar bootstrap</strong> del
+estimador.</li>
+</ol>
+<p>El reemplazo es la clave: sin él, cada muestra bootstrap sería la
+misma muestra original en otro orden.</p>
+<p>En <strong>R</strong>, una muestra bootstrap se toma con
+<code>sample(x, replace = TRUE)</code>. Con una muestra pequeña de 5
+datos se ve cómo funciona:</p>
+<pre class="r"><code>x &lt;- c(12, 15, 9, 20, 14)
+set.seed(2026)
+sample(x, replace = TRUE)   # una muestra bootstrap</code></pre>
+<pre><code>[1] 14 12 12 14  9</code></pre>
+<pre class="r"><code>sample(x, replace = TRUE)   # otra muestra bootstrap</code></pre>
+<pre><code>[1] 20 20 14 20 15</code></pre>
+<p>En la primera muestra bootstrap, el 12 y el 14 salen dos veces y el
+15 y el 20 no salen.</p>
+<p><br/></p>
+</div>
+<div id="ejemplo-el-error-estándar-de-la-media" class="section level2">
+<h2><span style="color:#034a94"><strong>Ejemplo: el error estándar de la
+media</strong></span></h2>
+<p>Se retoma la muestra de 100 llamadas de <a
+href="recurso300.html">Conceptos básicos</a>. Para la media existe una
+fórmula: el error estándar estimado es <span
+class="math inline">\(s/\sqrt{n}\)</span>. El bootstrap debería dar un
+valor parecido.</p>
+<pre class="r"><code>set.seed(2026)
+llamadas &lt;- rexp(100, rate = 1/5)
+mean(llamadas)</code></pre>
+<pre><code>[1] 5.649233</code></pre>
+<pre class="r"><code>sd(llamadas) / sqrt(100)    # error estándar con la fórmula</code></pre>
+<pre><code>[1] 0.6200857</code></pre>
+<pre class="r"><code>set.seed(2026)
+medias_boot &lt;- replicate(5000, mean(sample(llamadas, replace = TRUE)))
+sd(medias_boot)             # error estándar bootstrap</code></pre>
+<pre><code>[1] 0.6119102</code></pre>
+<p>Los dos métodos dan casi lo mismo: 0.620 con la fórmula y 0.612 con
+el bootstrap.</p>
+<pre class="r"><code>hist(medias_boot, breaks = 40, freq = FALSE, col = &quot;#BDD7EE&quot;, border = &quot;white&quot;,
+     main = &quot;&quot;, xlab = &quot;Media de la muestra bootstrap (minutos)&quot;, ylab = &quot;Densidad&quot;)
+abline(v = mean(llamadas), col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso305_files/figure-html/unnamed-chunk-4-1.png" alt="Histograma con forma de campana centrado cerca de 5.65, entre 3.5 y 8, con una línea roja vertical en 5.65" width="85%" />
+<p class="caption">
+Distribución bootstrap de la media de las llamadas, con 5 000 muestras
+bootstrap. La línea roja es la media de la muestra original.
+</p>
+</div>
+<p>La distribución bootstrap está centrada en la media de la muestra,
+5.65, y no en la de la población, 5: el bootstrap no corrige la
+estimación, sino que mide <strong>cuánto variaría</strong> de una
+muestra a otra.</p>
+<p><br/></p>
+</div>
+<div id="ejemplo-el-error-estándar-de-la-mediana"
+class="section level2">
+<h2><span style="color:#034a94"><strong>Ejemplo: el error estándar de la
+mediana</strong></span></h2>
+<p>Para la mediana no hay una fórmula sencilla del error estándar, pero
+el bootstrap se aplica exactamente igual: solo se cambia
+<code>mean()</code> por <code>median()</code>.</p>
+<pre class="r"><code>median(llamadas)</code></pre>
+<pre><code>[1] 4.040946</code></pre>
+<pre class="r"><code>set.seed(2026)
+medianas_boot &lt;- replicate(5000, median(sample(llamadas, replace = TRUE)))
+sd(medianas_boot)           # error estándar bootstrap de la mediana</code></pre>
+<pre><code>[1] 0.8009596</code></pre>
+<p>La mediana de las llamadas es 4.04 minutos, con un error estándar
+bootstrap de 0.80 minutos. La misma idea sirve para cualquier
+estadístico: un percentil, una correlación, el cociente de dos
+medias.</p>
+<p><br/></p>
+</div>
+<div id="qué-tiene-de-especial-este-método" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tiene de especial este
+método?</strong></span></h2>
+<table>
+<colgroup>
+<col width="28%" />
+<col width="43%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Enfoque</th>
+<th align="left">Qué necesita</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fórmula</td>
+<td align="left">Un resultado teórico para ese estimador y, a veces,
+suponer un modelo como la normal</td>
+<td align="left"><span class="math inline">\(s/\sqrt{n}\)</span> para la
+media</td>
+</tr>
+<tr class="even">
+<td align="left">Simulación de la población</td>
+<td align="left">Conocer la población, lo que casi nunca ocurre</td>
+<td align="left">Las simulaciones de <a
+href="recurso301.html">Distribución muestral</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Bootstrap</td>
+<td align="left">Solo la muestra</td>
+<td align="left">Cualquier estimador, incluso sin fórmula</td>
+</tr>
+</tbody>
+</table>
+<p>Por eso el bootstrap es una de las herramientas más usadas de la
+estadística moderna. En la pestaña de intervalos de confianza se usará
+para construir intervalos sin suponer normalidad.</p>
+<p><br/></p>
+</div>
+<div id="cuándo-puede-fallar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuándo puede
+fallar?</strong></span></h2>
+<p>El bootstrap no hace milagros: todo lo que sabe de la población lo
+saca de <strong>una</strong> muestra.</p>
+<ul>
+<li><strong>Muestras pequeñas.</strong> Con pocos datos, la muestra
+puede parecerse poco a la población, y la distribución bootstrap hereda
+ese error.</li>
+<li><strong>Muestras que no son aleatorias.</strong> Si la muestra está
+sesgada, las muestras bootstrap también lo están.</li>
+<li><strong>Datos dependientes.</strong> El remuestreo simple supone
+observaciones independientes; para datos en el tiempo se usan variantes
+del método.</li>
+<li><strong>Estadísticos de los extremos.</strong> Para el máximo o el
+mínimo, el bootstrap funciona mal, porque una muestra bootstrap nunca
+puede superar el máximo de la muestra original.</li>
+<li><strong>Estadísticos poco suaves, como la mediana.</strong> El
+bootstrap funciona, pero con menos precisión. En el ejemplo de la
+mediana, la población se conoce porque es simulada: el error estándar
+real de la mediana es cercano a 0.50, y el bootstrap, con esta muestra,
+dio 0.80. El error estándar bootstrap también es una estimación.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Todas las muestras bootstrap salen iguales a la
+original</td>
+<td align="left">Se olvidó <code>replace = TRUE</code></td>
+<td align="left">Remuestrear con reemplazo</td>
+</tr>
+<tr class="even">
+<td align="left">Tomar muestras bootstrap de tamaño distinto a <span
+class="math inline">\(n\)</span></td>
+<td align="left">Se cambió el tamaño en <code>sample()</code></td>
+<td align="left">Cada muestra bootstrap tiene el mismo tamaño de la
+original</td>
+</tr>
+<tr class="odd">
+<td align="left">Creer que la media de la distribución bootstrap corrige
+la estimación</td>
+<td align="left">El bootstrap se centra en la muestra, no en la
+población</td>
+<td align="left">Usar el bootstrap para medir variabilidad, no para
+mejorar la estimación</td>
+</tr>
+<tr class="even">
+<td align="left">El resultado cambia cada vez que se ejecuta</td>
+<td align="left">No se fijó la semilla</td>
+<td align="left">Usar <code>set.seed()</code> y un número de
+repeticiones grande, como 5 000</td>
+</tr>
+<tr class="odd">
+<td align="left">Usar el bootstrap con datos que no fueron elegidos al
+azar</td>
+<td align="left">El método supone que la muestra representa a la
+población</td>
+<td align="left">Revisar cómo se obtuvo la muestra</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-una-proporción"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Una
+proporción</strong></span></h3>
+<p>Con la muestra <code>llamadas</code>, estime la proporción de
+llamadas que duran más de 10 minutos y su error estándar bootstrap.
+Compárelo con la fórmula <span class="math inline">\(\sqrt{\hat{p}(1 -
+\hat{p})/n}\)</span>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>p_hat &lt;- mean(llamadas &gt; 10)
+p_hat</code></pre>
+<pre><code>[1] 0.16</code></pre>
+<pre class="r"><code>sqrt(p_hat * (1 - p_hat) / 100)                                      # fórmula</code></pre>
+<pre><code>[1] 0.03666061</code></pre>
+<pre class="r"><code>set.seed(2026)
+sd(replicate(5000, mean(sample(llamadas, replace = TRUE) &gt; 10)))    # bootstrap</code></pre>
+<pre><code>[1] 0.03587771</code></pre>
+<p>Los dos dan cerca de 0.036.</p>
+</details>
+</div>
+<div id="reto-2.-la-desviación-estándar"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. La desviación
+estándar</strong></span></h3>
+<p>Estime el error estándar bootstrap de la desviación estándar de
+<code>llamadas</code>. ¿Es grande comparado con la desviación estándar
+estimada?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>sd(llamadas)</code></pre>
+<pre><code>[1] 6.200857</code></pre>
+<pre class="r"><code>set.seed(2026)
+sd(replicate(5000, sd(sample(llamadas, replace = TRUE))))</code></pre>
+<pre><code>[1] 0.7828883</code></pre>
+<p>La desviación estándar estimada es 6.2 minutos, con un error estándar
+bootstrap cercano a 0.8. En poblaciones asimétricas, la desviación
+estándar se estima con bastante incertidumbre, aun con 100 datos.</p>
+</details>
+</div>
+<div id="reto-3.-el-bootstrap-con-el-máximo"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. El bootstrap con el
+máximo</strong></span></h3>
+<p>Calcule la distribución bootstrap del máximo de <code>llamadas</code>
+y haga una tabla de sus valores con <code>table()</code>. ¿Por qué no es
+una buena aproximación de la distribución del máximo en la
+población?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+maximos_boot &lt;- replicate(5000, max(sample(llamadas, replace = TRUE)))
+round(prop.table(table(round(maximos_boot, 2))), 3)</code></pre>
+<pre><code>
+14.61 16.21 17.12  17.5 17.86 20.37 26.22 26.85 32.32 
+0.000 0.000 0.002 0.004 0.011 0.029 0.082 0.224 0.647 </code></pre>
+<p>Solo aparecen unos pocos valores, todos tomados de los datos más
+grandes de la muestra, y ninguno puede superar el máximo observado,
+32.32. En la población, el máximo de 100 llamadas puede ser mayor que
+ese valor. Es uno de los casos en que el bootstrap falla.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Çetinkaya-Rundel, M. y Hardin, J. <a
+href="https://www.openintro.org/book/ims/"><em>Introduction to Modern
+Statistics</em></a> (2.ª ed.). OpenIntro. Versión gratuita en línea,
+enlazada desde el sitio de la editorial. La parte de fundamentos de la
+inferencia trata el bootstrap con ejemplos y simulaciones.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Efron, B. y Tibshirani, R. J. (1993). <em>An Introduction to the
+Bootstrap</em>. Chapman &amp; Hall/CRC. Es la referencia clásica del
+método, escrita por su creador.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Çetinkaya-Rundel, M. y Hardin, J. <em>Introduction to Modern
+Statistics</em> (2.ª ed.). OpenIntro.</li>
+<li>Efron, B. (1979). Bootstrap methods: another look at the jackknife.
+<em>The Annals of Statistics</em>, 7(1), 1-26.</li>
+<li>Efron, B. y Tibshirani, R. J. (1993). <em>An Introduction to the
+Bootstrap</em>. Chapman &amp; Hall/CRC.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 7 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
