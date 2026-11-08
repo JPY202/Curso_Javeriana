@@ -1,0 +1,274 @@
+---
+title: <span style="color:#034a94"> **Unidad 2. Probabilidad e inferencia**</span>
+output:
+  html_document:
+    toc: no
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = NA)
+```
+
+```{r, out.width="100%", fig.align="center", fig.alt="Banner de Métodos y Simulación Estadística"}
+knitr::include_graphics("img/banner_presentacion.jpg")
+```
+
+<br/>
+
+Esta unidad presenta las bases de la inferencia estadística: la probabilidad, las variables aleatorias, las distribuciones muestrales, la estimación y las pruebas de hipótesis. Cada tema se explica con ejemplos y se acompaña de código en **R** para calcular y simular.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se organiza el trabajo en 4 semanas?**</span>
+
+| Semana | Tema | Páginas |
+|:------:|:-----|:-------:|
+| 1 | Probabilidad | 5 |
+| 2 | Variables aleatorias | 5 |
+| 3 | Inferencia estadística | 6 |
+| 4 | Intervalos de confianza, pruebas de hipótesis y caso integrador | 6 |
+
+Cada página tiene ejemplos con código en **R**, errores frecuentes y retos con solución. Se recomienda leer las páginas en orden y resolver los retos antes de abrir la solución.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se necesita saber antes de empezar?**</span>
+
+La unidad no exige cálculo diferencial ni integral: R hace las cuentas difíciles. Sí exige manejar con soltura algunos temas de matemáticas básicas, la estadística descriptiva de la Unidad 1 y un R elemental. Antes de la primera semana, revise esta lista y resuelva el diagnóstico.
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué temas conviene repasar?**</span>
+
+| Tema | Dónde se usa en la unidad | Dónde repasar |
+|:-----|:--------------------------|:--------------|
+| Fracciones, decimales y porcentajes | En todas las páginas | Matemáticas de bachillerato |
+| Unión, intersección y complemento de conjuntos | Probabilidad (semana 1) | [Espacio muestral y eventos](recurso100.html) |
+| Sumatoria ($\sum$) y subíndices ($x_1, \ldots, x_n$) | Valor esperado, media muestral | [Indicadores de centro](../unidad1/recurso203.html) |
+| Factorial y combinaciones | Binomial e hipergeométrica | [Grinstead y Snell](https://chance.dartmouth.edu/book.html), capítulo 3 |
+| Potencias, raíces y el número $e$ | Poisson, exponencial, error estándar | Matemáticas de bachillerato |
+| Área bajo una curva (idea gráfica) | Variables continuas, normal | [Variable aleatoria](recurso200.html) |
+| Tipos de variable | Variables discretas y continuas | [Conceptos básicos](../unidad1/recurso200.html) |
+| Media, mediana, varianza y desviación estándar | Error estándar, intervalos, pruebas | [Indicadores de dispersión](../unidad1/recurso205.html) |
+| Tablas de doble entrada y proporciones | Probabilidad condicional, chi-cuadrado | [Tablas de frecuencia](../unidad1/recurso201.html) |
+| Gráfico de dispersión y correlación | Variables conjuntas, caso integrador | [Relaciones y cambios en el tiempo](../unidad1/recurso304.html) |
+| Vectores, `sum()`, `mean()`, `table()` y condiciones lógicas en R | Todas las simulaciones | [Objetos en R](../unidad1/recurso101.html) y [Funciones en R](../unidad1/recurso106.html) |
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué notación se usa?**</span>
+
+Muchas dificultades vienen de la notación y no del concepto. Estos son los símbolos que aparecen con más frecuencia:
+
+| Símbolo | Se lee | Significado en la unidad |
+|:-------:|:-------|:-------------------------|
+| $\mu$ | mu | Media de la población |
+| $\sigma$, $\sigma^2$ | sigma, sigma cuadrado | Desviación estándar y varianza de la población |
+| $p$ | p | Proporción de la población |
+| $\bar{x}$, $s$, $\hat{p}$ | x barra, s, p gorro | Media, desviación estándar y proporción de la muestra |
+| $\lambda$ | lambda | Tasa promedio (Poisson y exponencial) |
+| $\theta$ | theta | Un parámetro cualquiera |
+| $\alpha$ | alfa | Nivel de significancia de una prueba |
+| $\rho$ | rho | Correlación de la población |
+| $\sum$ | sumatoria | Suma de varios términos |
+
+<br/>
+
+### <span style="color:#034a94">**¿Está listo para empezar?**</span>
+
+Resuelva estos seis ejercicios sin abrir la solución. Si falla uno, repase el tema indicado antes de la primera semana.
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 1. Porcentajes**</span>
+
+En un curso de 40 estudiantes, 12 reprobaron el primer parcial. Exprese esa cantidad como fracción, como decimal y como porcentaje. Si la proporción se mantiene, ¿cuántos reprobarían en un grupo de 150?
+
+<details>
+<summary>Ver solución</summary>
+
+$12/40 = 3/10 = 0.3 = 30\,\%$. En un grupo de 150 se esperan $0.3 \times 150 = 45$ estudiantes.
+
+**Si tuvo dificultad**, repase fracciones y porcentajes: aparecen en todas las páginas de la unidad.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 2. Sumatoria**</span>
+
+Una variable toma los valores $x_1 = 0$, $x_2 = 1$, $x_3 = 2$ y $x_4 = 3$ con pesos $p_1 = 0.1$, $p_2 = 0.3$, $p_3 = 0.4$ y $p_4 = 0.2$. Calcule $\sum_{i=1}^{4} x_i \, p_i$ a mano y con R.
+
+<details>
+<summary>Ver solución</summary>
+
+$0(0.1) + 1(0.3) + 2(0.4) + 3(0.2) = 0 + 0.3 + 0.8 + 0.6 = 1.7$
+
+```{r, echo=TRUE}
+x <- c(0, 1, 2, 3)
+p <- c(0.1, 0.3, 0.4, 0.2)
+sum(x * p)
+```
+
+Esta suma es el valor esperado de la semana 2. **Si tuvo dificultad**, repase la notación de sumatoria en [Indicadores de centro](../unidad1/recurso203.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 3. Combinaciones**</span>
+
+¿De cuántas formas se puede elegir un comité de 3 estudiantes entre 10? El orden no importa.
+
+<details>
+<summary>Ver solución</summary>
+
+$$\binom{10}{3} = \frac{10!}{3!\,7!} = \frac{10 \times 9 \times 8}{3 \times 2 \times 1} = 120$$
+
+```{r, echo=TRUE}
+choose(10, 3)
+```
+
+Las combinaciones aparecen en la distribución binomial. **Si tuvo dificultad**, repase el capítulo 3 de [Grinstead y Snell](https://chance.dartmouth.edu/book.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 4. Indicadores en R**</span>
+
+Los tiempos de espera (minutos) de cinco clientes fueron 12, 15, 9, 20 y 14.
+
+a. Calcule la media, la mediana y la desviación estándar con R.
+b. Antes de ejecutarlo, diga qué devuelve `sum(tiempos > 13)` y qué devuelve `mean(tiempos > 13)`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, echo=TRUE}
+tiempos <- c(12, 15, 9, 20, 14)
+mean(tiempos)
+median(tiempos)
+sd(tiempos)
+sum(tiempos > 13)
+mean(tiempos > 13)
+```
+
+La media y la mediana son 14 minutos, y la desviación estándar es 4.06 minutos. `tiempos > 13` es un vector de `TRUE` y `FALSE`: `sum()` cuenta cuántos `TRUE` hay (3) y `mean()` da la proporción (0.6). Este truco se usa en todas las simulaciones de la unidad para estimar probabilidades.
+
+**Si tuvo dificultad**, repase [Indicadores de dispersión](../unidad1/recurso205.html) y [Objetos en R](../unidad1/recurso101.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 5. Tablas de doble entrada**</span>
+
+En una encuesta a 200 personas se registró el sexo y si fuman:
+
+| | Mujer | Hombre | Total |
+|:--|:--:|:--:|:--:|
+| Fuma | 20 | 30 | 50 |
+| No fuma | 80 | 70 | 150 |
+| Total | 100 | 100 | 200 |
+
+a. ¿Qué proporción de las mujeres fuma?
+b. ¿Qué proporción de los fumadores son mujeres?
+
+<details>
+<summary>Ver solución</summary>
+
+a. $20/100 = 0.20$: se divide por el total de mujeres (columna).
+
+b. $20/50 = 0.40$: se divide por el total de fumadores (fila).
+
+```{r, echo=TRUE}
+tabla <- matrix(c(20, 80, 30, 70), nrow = 2,
+                dimnames = list(Habito = c("Fuma", "No fuma"),
+                                Sexo = c("Mujer", "Hombre")))
+prop.table(tabla, margin = 2)   # proporciones por columna
+prop.table(tabla, margin = 1)   # proporciones por fila
+```
+
+Las dos preguntas parecen iguales, pero tienen respuestas distintas. Esta diferencia es la base de la probabilidad condicional. **Si tuvo dificultad**, repase [Tablas de frecuencia](../unidad1/recurso201.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 6. Área bajo una curva**</span>
+
+El tiempo de espera de un bus está entre 0 y 10 minutos y todos los valores son igual de posibles. La curva de la figura tiene altura 0.1 en ese intervalo. ¿Cuánto vale el área sombreada, entre 2 y 5 minutos? ¿Cuánto vale el área total?
+
+```{r, echo=TRUE, fig.width=6, fig.height=3, fig.cap="Curva de altura constante entre 0 y 10 minutos", fig.alt="Rectángulo de altura 0.1 entre 0 y 10 con la franja entre 2 y 5 sombreada"}
+plot(NULL, xlim = c(-1, 11), ylim = c(0, 0.15), xlab = "Tiempo de espera (minutos)",
+     ylab = "Altura", las = 1)
+polygon(c(2, 5, 5, 2), c(0, 0, 0.1, 0.1), col = "#BDD7EE", border = NA)
+segments(0, 0.1, 10, 0.1, lwd = 2, col = "#034a94")
+segments(c(0, 10), 0, c(0, 10), 0.1, lty = 2)
+```
+
+<details>
+<summary>Ver solución</summary>
+
+El área sombreada es un rectángulo: base $5 - 2 = 3$ por altura $0.1$, que da $0.3$. El área total es $10 \times 0.1 = 1$.
+
+En la semana 2 esta área será la probabilidad de esperar entre 2 y 5 minutos, y el área total siempre vale 1. **Si tuvo dificultad**, no se preocupe: la idea se explica en [Variable aleatoria](recurso200.html), pero conviene recordar cómo se calcula el área de un rectángulo.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Contenido de la unidad**</span>
+
+1.  **Probabilidad**
+
+    - [Espacio muestral y eventos](recurso100.html)
+    - [Enfoques y axiomas](recurso101.html)
+    - [Tipos de probabilidad](recurso102.html)
+    - [Independencia](recurso103.html)
+    - [Teorema de Bayes](recurso104.html)
+
+    <br/>
+
+2.  **Variables aleatorias**
+
+    - [Variable aleatoria](recurso200.html)
+    - [Valor esperado y varianza](recurso201.html)
+    - [Variables conjuntas](recurso202.html)
+    - [Modelos discretos](recurso203.html)
+    - [Modelos continuos](recurso204.html)
+
+    <br/>
+
+3.  **Inferencia estadística**
+
+    - [Conceptos básicos](recurso300.html)
+    - [Distribución muestral](recurso301.html)
+    - [Teorema del límite central](recurso302.html)
+    - [Propiedades de los estimadores](recurso303.html)
+    - [Métodos de estimación](recurso304.html)
+    - [Bootstrap](recurso305.html)
+
+    <br/>
+
+4.  **Intervalos de confianza**
+
+    - [Intervalos para una población](recurso400.html)
+    - [Intervalos para dos poblaciones](recurso401.html)
+
+    <br/>
+
+5.  **Pruebas de hipótesis**
+
+    - [Conceptos de las pruebas de hipótesis](recurso500.html)
+    - [Pruebas para medias y proporciones](recurso501.html)
+    - [Pruebas no paramétricas y para tablas](recurso502.html)
+
+    <br/>
+
+6.  **[Caso integrador](recurso600.html)**
+
+<br/><br/>

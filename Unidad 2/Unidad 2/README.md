@@ -1,0 +1,59 @@
+# Métodos y Simulación Estadística: Unidad 2
+
+Unidad 2 en R Markdown. Cada archivo `.Rmd` genera una página HTML en la carpeta `../docs/unidad2/`.
+
+## Cómo generar los HTML
+
+1. Abra `Unidad2.Rproj` en RStudio.
+2. Instale el paquete una sola vez: `install.packages("rmarkdown")`. Las páginas solo usan **R** base y las tablas `Titanic` y `mtcars`, que vienen con **R**.
+3. Use **Build > Render Website** o ejecute `source("render.R")`.
+4. Abra `../docs/unidad2/index.html` en el navegador.
+
+## Estructura de cada página
+
+Igual a la de la Unidad 1:
+
+1. Encabezado YAML y primer bloque `setup`, iguales en todas las páginas.
+2. Introducción sin título: qué es el tema y qué problema resuelve.
+3. Secciones del tema con `##`, escritas como preguntas, con signos ¿?, y separadas con `<br/>`.
+4. `## Errores frecuentes`: tabla con Problema, Causa y Solución.
+5. `## Retos`: cajas `content-box-yellow`, tituladas Reto 1, Reto 2, etc., con la solución oculta en `<details>`.
+6. `## Libros y recursos`, con libros que se leen o descargan gratis desde su fuente oficial.
+7. `## Referencias`.
+8. Fecha de la última revisión.
+
+Las páginas siguen el nivel del sitio original de la Unidad 2 (metodosySIM2_V2): definiciones con ejemplos, sin demostraciones, y código en **R** sencillo. Toda simulación usa `set.seed(2026)`. El código y las salidas de **R** van en bloques separados (`collapse = FALSE` en el bloque `setup`); `style.css` los distingue con las etiquetas Código R y Salida.
+
+## Contenido
+
+La unidad se trabaja en 4 semanas: Probabilidad (semana 1), Variables aleatorias (semana 2), Inferencia estadística (semana 3) e Intervalos, Pruebas y Caso integrador (semana 4).
+
+El índice incluye la sección *¿Qué se necesita saber antes de empezar?*: una tabla de temas previos con enlaces de repaso (Unidad 1 y Grinstead y Snell), una tabla de notación y un diagnóstico de seis ejercicios con solución.
+
+
+- `index.Rmd`: portada con el contenido de la unidad.
+- `recurso100.Rmd`: Espacio muestral y eventos.
+- `recurso101.Rmd`: Enfoques y axiomas.
+- `recurso102.Rmd`: Tipos de probabilidad (marginal, conjunta y condicional).
+- `recurso103.Rmd`: Independencia.
+- `recurso104.Rmd`: Teorema de Bayes.
+- `recurso200.Rmd`: Variable aleatoria (discreta y continua, función de probabilidad, densidad y acumulada).
+- `recurso201.Rmd`: Valor esperado y varianza.
+- `recurso202.Rmd`: Variables conjuntas (marginales, condicionales, independencia, covarianza y correlación).
+- `recurso203.Rmd`: Modelos discretos (Bernoulli, binomial, Poisson, hipergeométrico, geométrico y binomial negativo), con un gráfico interactivo.
+- `recurso204.Rmd`: Modelos continuos (uniforme, normal, exponencial, gamma y Weibull), con un gráfico interactivo.
+- `recurso300.Rmd`: Conceptos básicos de inferencia (población, muestra, tipos de muestreo, sesgos, parámetro, estimador y estimación).
+- `recurso301.Rmd`: Distribución muestral (media muestral, error estándar estimado, chi-cuadrado, t de Student, gráfico Q-Q y F).
+- `recurso302.Rmd`: Teorema del límite central, con un gráfico interactivo.
+- `recurso303.Rmd`: Propiedades de los estimadores (sesgo, eficiencia, error cuadrático medio, ley de los grandes números y consistencia).
+- `recurso304.Rmd`: Métodos de estimación (momentos y máxima verosimilitud).
+- `recurso305.Rmd`: Bootstrap (error estándar por remuestreo).
+- `recurso400.Rmd`: Intervalos para una población (media, proporción, varianza, tamaño de muestra y bootstrap).
+- `recurso401.Rmd`: Intervalos para dos poblaciones (muestras independientes y pareadas, dos proporciones y cociente de varianzas).
+- `recurso500.Rmd`: Conceptos de las pruebas de hipótesis (valor p, errores, potencia y relación con los intervalos).
+- `recurso501.Rmd`: Pruebas para medias y proporciones (una y dos muestras, pareadas y tamaño del efecto).
+- `recurso502.Rmd`: Pruebas no paramétricas y para tablas (chi-cuadrado, Wilcoxon y Mann-Whitney).
+- `recurso600.Rmd`: Caso integrador con la tabla `mtcars`.
+- `img/`: imágenes.
+- `style.css`: estilos del sitio, copiados de la Unidad 1.
+- `_site.yml`: menú del sitio.
