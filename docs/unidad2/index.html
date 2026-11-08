@@ -435,6 +435,389 @@ frecuentes y retos con solución. Se recomienda leer las páginas en orden
 y resolver los retos antes de abrir la solución.</p>
 <p><br/></p>
 </div>
+<div id="qué-se-necesita-saber-antes-de-empezar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se necesita saber antes de
+empezar?</strong></span></h2>
+<p>La unidad no exige cálculo diferencial ni integral: R hace las
+cuentas difíciles. Sí exige manejar con soltura algunos temas de
+matemáticas básicas, la estadística descriptiva de la Unidad 1 y un R
+elemental. Antes de la primera semana, revise esta lista y resuelva el
+diagnóstico.</p>
+<p><br/></p>
+<div id="qué-temas-conviene-repasar" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué temas conviene
+repasar?</strong></span></h3>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="56%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tema</th>
+<th align="left">Dónde se usa en la unidad</th>
+<th align="left">Dónde repasar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fracciones, decimales y porcentajes</td>
+<td align="left">En todas las páginas</td>
+<td align="left">Matemáticas de bachillerato</td>
+</tr>
+<tr class="even">
+<td align="left">Unión, intersección y complemento de conjuntos</td>
+<td align="left">Probabilidad (semana 1)</td>
+<td align="left"><a href="recurso100.html">Espacio muestral y
+eventos</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Sumatoria (<span class="math inline">\(\sum\)</span>) y
+subíndices (<span class="math inline">\(x_1, \ldots, x_n\)</span>)</td>
+<td align="left">Valor esperado, media muestral</td>
+<td align="left"><a href="../unidad1/recurso203.html">Indicadores de
+centro</a></td>
+</tr>
+<tr class="even">
+<td align="left">Factorial y combinaciones</td>
+<td align="left">Binomial e hipergeométrica</td>
+<td align="left"><a
+href="https://chance.dartmouth.edu/book.html">Grinstead y Snell</a>,
+capítulo 3</td>
+</tr>
+<tr class="odd">
+<td align="left">Potencias, raíces y el número <span
+class="math inline">\(e\)</span></td>
+<td align="left">Poisson, exponencial, error estándar</td>
+<td align="left">Matemáticas de bachillerato</td>
+</tr>
+<tr class="even">
+<td align="left">Área bajo una curva (idea gráfica)</td>
+<td align="left">Variables continuas, normal</td>
+<td align="left"><a href="recurso200.html">Variable aleatoria</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Tipos de variable</td>
+<td align="left">Variables discretas y continuas</td>
+<td align="left"><a href="../unidad1/recurso200.html">Conceptos
+básicos</a></td>
+</tr>
+<tr class="even">
+<td align="left">Media, mediana, varianza y desviación estándar</td>
+<td align="left">Error estándar, intervalos, pruebas</td>
+<td align="left"><a href="../unidad1/recurso205.html">Indicadores de
+dispersión</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Tablas de doble entrada y proporciones</td>
+<td align="left">Probabilidad condicional, chi-cuadrado</td>
+<td align="left"><a href="../unidad1/recurso201.html">Tablas de
+frecuencia</a></td>
+</tr>
+<tr class="even">
+<td align="left">Gráfico de dispersión y correlación</td>
+<td align="left">Variables conjuntas, caso integrador</td>
+<td align="left"><a href="../unidad1/recurso304.html">Relaciones y
+cambios en el tiempo</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Vectores, <code>sum()</code>, <code>mean()</code>,
+<code>table()</code> y condiciones lógicas en R</td>
+<td align="left">Todas las simulaciones</td>
+<td align="left"><a href="../unidad1/recurso101.html">Objetos en R</a> y
+<a href="../unidad1/recurso106.html">Funciones en R</a></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="qué-notación-se-usa" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué notación se
+usa?</strong></span></h3>
+<p>Muchas dificultades vienen de la notación y no del concepto. Estos
+son los símbolos que aparecen con más frecuencia:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="18%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Símbolo</th>
+<th align="left">Se lee</th>
+<th align="left">Significado en la unidad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\mu\)</span></td>
+<td align="left">mu</td>
+<td align="left">Media de la población</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\sigma\)</span>, <span
+class="math inline">\(\sigma^2\)</span></td>
+<td align="left">sigma, sigma cuadrado</td>
+<td align="left">Desviación estándar y varianza de la población</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(p\)</span></td>
+<td align="left">p</td>
+<td align="left">Proporción de la población</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\bar{x}\)</span>, <span
+class="math inline">\(s\)</span>, <span
+class="math inline">\(\hat{p}\)</span></td>
+<td align="left">x barra, s, p gorro</td>
+<td align="left">Media, desviación estándar y proporción de la
+muestra</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\lambda\)</span></td>
+<td align="left">lambda</td>
+<td align="left">Tasa promedio (Poisson y exponencial)</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\theta\)</span></td>
+<td align="left">theta</td>
+<td align="left">Un parámetro cualquiera</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\alpha\)</span></td>
+<td align="left">alfa</td>
+<td align="left">Nivel de significancia de una prueba</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\rho\)</span></td>
+<td align="left">rho</td>
+<td align="left">Correlación de la población</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\sum\)</span></td>
+<td align="left">sumatoria</td>
+<td align="left">Suma de varios términos</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="está-listo-para-empezar" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Está listo para
+empezar?</strong></span></h3>
+<p>Resuelva estos seis ejercicios sin abrir la solución. Si falla uno,
+repase el tema indicado antes de la primera semana.</p>
+</div>
+<div id="ejercicio-1.-porcentajes"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 1.
+Porcentajes</strong></span></h3>
+<p>En un curso de 40 estudiantes, 12 reprobaron el primer parcial.
+Exprese esa cantidad como fracción, como decimal y como porcentaje. Si
+la proporción se mantiene, ¿cuántos reprobarían en un grupo de 150?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(12/40 = 3/10 = 0.3 = 30\,\%\)</span>. En
+un grupo de 150 se esperan <span class="math inline">\(0.3 \times 150 =
+45\)</span> estudiantes.</p>
+<p><strong>Si tuvo dificultad</strong>, repase fracciones y porcentajes:
+aparecen en todas las páginas de la unidad.</p>
+</details>
+</div>
+<div id="ejercicio-2.-sumatoria"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 2.
+Sumatoria</strong></span></h3>
+<p>Una variable toma los valores <span class="math inline">\(x_1 =
+0\)</span>, <span class="math inline">\(x_2 = 1\)</span>, <span
+class="math inline">\(x_3 = 2\)</span> y <span class="math inline">\(x_4
+= 3\)</span> con pesos <span class="math inline">\(p_1 = 0.1\)</span>,
+<span class="math inline">\(p_2 = 0.3\)</span>, <span
+class="math inline">\(p_3 = 0.4\)</span> y <span
+class="math inline">\(p_4 = 0.2\)</span>. Calcule <span
+class="math inline">\(\sum_{i=1}^{4} x_i \, p_i\)</span> a mano y con
+R.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math inline">\(0(0.1) + 1(0.3) + 2(0.4) + 3(0.2) = 0 +
+0.3 + 0.8 + 0.6 = 1.7\)</span></p>
+<pre class="r"><code>x &lt;- c(0, 1, 2, 3)
+p &lt;- c(0.1, 0.3, 0.4, 0.2)
+sum(x * p)</code></pre>
+<pre><code>[1] 1.7</code></pre>
+<p>Esta suma es el valor esperado de la semana 2. <strong>Si tuvo
+dificultad</strong>, repase la notación de sumatoria en <a
+href="../unidad1/recurso203.html">Indicadores de centro</a>.</p>
+</details>
+</div>
+<div id="ejercicio-3.-combinaciones"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 3.
+Combinaciones</strong></span></h3>
+<p>¿De cuántas formas se puede elegir un comité de 3 estudiantes entre
+10? El orden no importa.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p><span class="math display">\[\binom{10}{3} = \frac{10!}{3!\,7!} =
+\frac{10 \times 9 \times 8}{3 \times 2 \times 1} = 120\]</span></p>
+<pre class="r"><code>choose(10, 3)</code></pre>
+<pre><code>[1] 120</code></pre>
+<p>Las combinaciones aparecen en la distribución binomial. <strong>Si
+tuvo dificultad</strong>, repase el capítulo 3 de <a
+href="https://chance.dartmouth.edu/book.html">Grinstead y Snell</a>.</p>
+</details>
+</div>
+<div id="ejercicio-4.-indicadores-en-r"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 4. Indicadores en
+R</strong></span></h3>
+<p>Los tiempos de espera (minutos) de cinco clientes fueron 12, 15, 9,
+20 y 14.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Calcule la media, la mediana y la desviación estándar con R.</li>
+<li>Antes de ejecutarlo, diga qué devuelve
+<code>sum(tiempos &gt; 13)</code> y qué devuelve
+<code>mean(tiempos &gt; 13)</code>.</li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>tiempos &lt;- c(12, 15, 9, 20, 14)
+mean(tiempos)</code></pre>
+<pre><code>[1] 14</code></pre>
+<pre class="r"><code>median(tiempos)</code></pre>
+<pre><code>[1] 14</code></pre>
+<pre class="r"><code>sd(tiempos)</code></pre>
+<pre><code>[1] 4.062019</code></pre>
+<pre class="r"><code>sum(tiempos &gt; 13)</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>mean(tiempos &gt; 13)</code></pre>
+<pre><code>[1] 0.6</code></pre>
+<p>La media y la mediana son 14 minutos, y la desviación estándar es
+4.06 minutos. <code>tiempos &gt; 13</code> es un vector de
+<code>TRUE</code> y <code>FALSE</code>: <code>sum()</code> cuenta
+cuántos <code>TRUE</code> hay (3) y <code>mean()</code> da la proporción
+(0.6). Este truco se usa en todas las simulaciones de la unidad para
+estimar probabilidades.</p>
+<p><strong>Si tuvo dificultad</strong>, repase <a
+href="../unidad1/recurso205.html">Indicadores de dispersión</a> y <a
+href="../unidad1/recurso101.html">Objetos en R</a>.</p>
+</details>
+</div>
+<div id="ejercicio-5.-tablas-de-doble-entrada"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 5. Tablas de doble
+entrada</strong></span></h3>
+<p>En una encuesta a 200 personas se registró el sexo y si fuman:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">Mujer</th>
+<th align="center">Hombre</th>
+<th align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fuma</td>
+<td align="center">20</td>
+<td align="center">30</td>
+<td align="center">50</td>
+</tr>
+<tr class="even">
+<td align="left">No fuma</td>
+<td align="center">80</td>
+<td align="center">70</td>
+<td align="center">150</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="center">100</td>
+<td align="center">100</td>
+<td align="center">200</td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: lower-alpha">
+<li>¿Qué proporción de las mujeres fuma?</li>
+<li>¿Qué proporción de los fumadores son mujeres?</li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p><span class="math inline">\(20/100 = 0.20\)</span>: se divide por
+el total de mujeres (columna).</p></li>
+<li><p><span class="math inline">\(20/50 = 0.40\)</span>: se divide por
+el total de fumadores (fila).</p></li>
+</ol>
+<pre class="r"><code>tabla &lt;- matrix(c(20, 80, 30, 70), nrow = 2,
+                dimnames = list(Habito = c(&quot;Fuma&quot;, &quot;No fuma&quot;),
+                                Sexo = c(&quot;Mujer&quot;, &quot;Hombre&quot;)))
+prop.table(tabla, margin = 2)   # proporciones por columna</code></pre>
+<pre><code>         Sexo
+Habito    Mujer Hombre
+  Fuma      0.2    0.3
+  No fuma   0.8    0.7</code></pre>
+<pre class="r"><code>prop.table(tabla, margin = 1)   # proporciones por fila</code></pre>
+<pre><code>         Sexo
+Habito        Mujer    Hombre
+  Fuma    0.4000000 0.6000000
+  No fuma 0.5333333 0.4666667</code></pre>
+<p>Las dos preguntas parecen iguales, pero tienen respuestas distintas.
+Esta diferencia es la base de la probabilidad condicional. <strong>Si
+tuvo dificultad</strong>, repase <a
+href="../unidad1/recurso201.html">Tablas de frecuencia</a>.</p>
+</details>
+</div>
+<div id="ejercicio-6.-área-bajo-una-curva"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 6. Área bajo una
+curva</strong></span></h3>
+<p>El tiempo de espera de un bus está entre 0 y 10 minutos y todos los
+valores son igual de posibles. La curva de la figura tiene altura 0.1 en
+ese intervalo. ¿Cuánto vale el área sombreada, entre 2 y 5 minutos?
+¿Cuánto vale el área total?</p>
+<pre class="r"><code>plot(NULL, xlim = c(-1, 11), ylim = c(0, 0.15), xlab = &quot;Tiempo de espera (minutos)&quot;,
+     ylab = &quot;Altura&quot;, las = 1)
+polygon(c(2, 5, 5, 2), c(0, 0, 0.1, 0.1), col = &quot;#BDD7EE&quot;, border = NA)
+segments(0, 0.1, 10, 0.1, lwd = 2, col = &quot;#034a94&quot;)
+segments(c(0, 10), 0, c(0, 10), 0.1, lty = 2)</code></pre>
+<div class="figure">
+<img src="index_files/figure-html/unnamed-chunk-6-1.png" alt="Rectángulo de altura 0.1 entre 0 y 10 con la franja entre 2 y 5 sombreada" width="576" />
+<p class="caption">
+Curva de altura constante entre 0 y 10 minutos
+</p>
+</div>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>El área sombreada es un rectángulo: base <span
+class="math inline">\(5 - 2 = 3\)</span> por altura <span
+class="math inline">\(0.1\)</span>, que da <span
+class="math inline">\(0.3\)</span>. El área total es <span
+class="math inline">\(10 \times 0.1 = 1\)</span>.</p>
+<p>En la semana 2 esta área será la probabilidad de esperar entre 2 y 5
+minutos, y el área total siempre vale 1. <strong>Si tuvo
+dificultad</strong>, no se preocupe: la idea se explica en <a
+href="recurso200.html">Variable aleatoria</a>, pero conviene recordar
+cómo se calcula el área de un rectángulo.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
 <div id="contenido-de-la-unidad" class="section level2">
 <h2><span style="color:#034a94"><strong>Contenido de la
 unidad</strong></span></h2>
@@ -484,7 +867,13 @@ tablas</a></li>
 </ul>
 <p><br/></p></li>
 <li><p><strong><a href="recurso600.html">Caso
-integrador</a></strong></p></li>
+integrador</a></strong></p>
+<p><br/></p></li>
+<li><p><strong>Actividad evaluativa</strong></p>
+<ul>
+<li><a href="../actividad2/index.html">Actividad 2. Decisiones con
+probabilidad, simulación e inferencia</a></li>
+</ul></li>
 </ol>
 <p><br/><br/></p>
 </div>

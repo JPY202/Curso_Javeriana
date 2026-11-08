@@ -1,0 +1,191 @@
+---
+title: <span style="color:#034a94"> **Actividad 2. Decisiones con probabilidad, simulación e inferencia**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = NA)
+```
+
+<br/>
+
+Un científico de datos no solo calcula: usa la probabilidad, la simulación y la inferencia para tomar decisiones con información incompleta. Esta actividad presenta cuatro decisiones de una empresa de domicilios. Cada una se resuelve con los métodos de la Unidad 2 y termina en una recomendación para la empresa.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuál es el caso?**</span>
+
+Una empresa de domicilios de Cali conecta restaurantes, repartidores y clientes por medio de una aplicación. El equipo de analítica debe responder cuatro preguntas de la gerencia:
+
+1. ¿Cuántas de las alertas de fraude son fraude de verdad?
+2. ¿Cuántos repartidores programar el viernes en la noche?
+3. ¿La aplicación cumple la promesa de entregar en 30 minutos en promedio?
+4. ¿La nueva pantalla de pago reduce los pedidos cancelados?
+
+El caso y los datos son ficticios.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué datos se usan?**</span>
+
+Los datos están en el archivo [datos_actividad2.xlsx](data/datos_actividad2.xlsx), que tiene tres hojas. El problema 1 no usa datos: trabaja con la información del enunciado.
+
+| Hoja | Problema | Cada fila es | Variables |
+|:-----|:--------:|:-------------|:----------|
+| `pedidos_viernes` | 2 | Un viernes | `viernes`: número del viernes, de 1 a 40.<br/>`pedidos`: pedidos recibidos en la zona sur entre las 7 y las 8 p. m. |
+| `tiempos_entrega` | 3 | Un pedido | `pedido`: código del pedido.<br/>`tiempo`: tiempo de entrega, en minutos. |
+| `prueba_ab` | 4 | Un pedido | `pedido`: código del pedido.<br/>`version`: pantalla de pago que vio el cliente, `A` (actual) o `B` (nueva).<br/>`cancelado`: 1 si el pedido se canceló, 0 si no. |
+
+Para leer una hoja se usa `readxl::read_excel("data/datos_actividad2.xlsx", sheet = "pedidos_viernes")`.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se debe hacer?**</span>
+
+Cada inciso se responde con el código, los resultados y su interpretación en el contexto del caso. Cada afirmación se apoya en una cifra: en lugar de "la mayoría de las alertas son falsas", se escribe el porcentaje.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 1. ¿Cuántas alertas de fraude son fraude de verdad?**</span>
+
+La empresa usa un modelo que marca como sospechosos algunos pedidos pagados con tarjeta. Según el área de riesgo:
+
+- El 2 % de los pedidos pagados con tarjeta son fraudulentos.
+- El modelo marca el 92 % de los pedidos fraudulentos (sensibilidad).
+- El modelo deja sin marcar el 95 % de los pedidos legítimos (especificidad).
+
+a. Construya una tabla de doble entrada para 10,000 pedidos, con las filas fraude y legítimo y las columnas con alerta y sin alerta. Con la tabla, calcule la probabilidad de que un pedido con alerta sea fraude, la probabilidad de que un pedido sin alerta sea legítimo y la exactitud del modelo (la proporción de pedidos bien clasificados).
+
+b. Compruebe por simulación la probabilidad de que un pedido con alerta sea fraude: genere 100,000 pedidos, decida al azar cuáles son fraude y cuáles reciben alerta según la sensibilidad y la especificidad, y calcule la proporción de fraudes entre los pedidos con alerta. Compare con el resultado de (a).
+
+c. Grafique la probabilidad de que un pedido con alerta sea fraude cuando el porcentaje de fraude va de 0.5 % a 20 %. ¿Qué pasa cuando el fraude es poco frecuente?
+
+d. El área de riesgo propone cancelar automáticamente todo pedido con alerta. La empresa recibe 5,000 pedidos con tarjeta al día. ¿Cuántos pedidos legítimos se cancelarían al día? ¿Recomendaría la propuesta? Proponga una alternativa.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 2. ¿Cuántos repartidores programar el viernes en la noche?**</span>
+
+La empresa debe decidir cuántos repartidores programar en la zona sur los viernes entre las 7 y las 8 p. m. Cada repartidor entrega 3 pedidos en esa hora. Si llegan más pedidos de los que se pueden atender, los sobrantes se retrasan. La meta es que eso ocurra en menos del 5 % de los viernes.
+
+La hoja `pedidos_viernes` tiene el número de pedidos recibidos en esa hora durante los últimos 40 viernes. Suponga que el número de pedidos en una hora sigue una distribución de Poisson con media $\lambda$.
+
+a. Estime $\lambda$ con el estimador de máxima verosimilitud y calcule un intervalo de confianza del 95 % para $\lambda$. Compare la media y la varianza de los datos: ¿se parecen, como lo espera el modelo de Poisson?
+
+b. Con el $\lambda$ estimado, calcule con `ppois()` la probabilidad de que los pedidos superen la capacidad con 6, 7, 8, 9 y 10 repartidores. Presente los resultados en una tabla.
+
+c. Estime por simulación la misma probabilidad para 9 repartidores, con 100, 1,000, 10,000 y 100,000 horas simuladas con `rpois()`. Grafique la estimación según el número de horas simuladas, con una línea horizontal en el valor exacto de (b). ¿Qué resultado de la unidad explica lo que observa?
+
+d. ¿Cuántos repartidores recomienda programar? Repita el cálculo de (b) con el límite superior del intervalo de (a) y discuta si cambia la recomendación.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 3. ¿La aplicación cumple la promesa de 30 minutos?**</span>
+
+La aplicación anuncia que el tiempo promedio de entrega es de 30 minutos. La hoja `tiempos_entrega` tiene el tiempo de entrega de 60 pedidos elegidos al azar el último mes.
+
+a. Describa los tiempos con indicadores, un histograma y un gráfico Q-Q. ¿Parecen venir de una distribución normal? ¿Se puede usar el intervalo t con esta muestra? Justifique con el teorema del límite central.
+
+b. Calcule un intervalo de confianza del 95 % para la media con la distribución t y otro con bootstrap percentil. Calcule también un intervalo bootstrap para la mediana. Compare los intervalos. ¿Qué medida describe mejor el tiempo típico de entrega? ¿Por qué?
+
+c. Plantee las hipótesis y realice una prueba para decidir si el tiempo promedio de entrega es mayor que 30 minutos. Interprete el valor p. Luego calcule:
+    - La potencia que tenía la prueba para detectar un retraso de 3 minutos, es decir, una media real de 33 minutos.
+    - El tamaño de muestra necesario para que esa potencia sea del 80 %.
+
+    Con estos resultados, ¿se puede afirmar que la aplicación cumple su promesa?
+
+d. Un pedido llega tarde si tarda más de 45 minutos. Estime la proporción de pedidos que llegan tarde, con un intervalo de confianza del 95 %.
+
+e. Al pedirle a una herramienta de inteligencia artificial que interpretara el intervalo t de (b), respondió: *"Hay un 95 % de probabilidad de que el tiempo promedio esté en el intervalo, y el 95 % de los pedidos se entregan en ese rango de minutos"*. Señale los dos errores de esta interpretación y escríbala de forma correcta.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 4. ¿La nueva pantalla de pago reduce las cancelaciones?**</span>
+
+La empresa probó una pantalla de pago nueva (B) frente a la actual (A). Durante dos semanas, cada pedido se asignó al azar a una de las dos versiones. La hoja `prueba_ab` tiene la versión que vio cada cliente y si el pedido se canceló.
+
+a. Calcule el porcentaje de pedidos cancelados en cada versión y preséntelo en una tabla y un gráfico.
+
+b. Realice una prueba de hipótesis para comparar las dos proporciones y calcule un intervalo de confianza del 95 % para la diferencia. Interprete los dos resultados.
+
+c. Cada cancelación hace perder 9,000 pesos de margen, la empresa recibe 5,000 pedidos al día y la pantalla B cuesta 8 millones de pesos al mes en licencias. Calcule el ahorro mensual (30 días) de pasar a la versión B con la diferencia estimada y con los dos límites del intervalo de (b). ¿Recomendaría el cambio? Distinga entre una diferencia estadísticamente significativa y una diferencia que vale la pena para el negocio.
+
+<br/>
+
+### <span style="color:#034a94">**Resumen para la gerencia**</span>
+
+Al inicio del informe, escriba un resumen de máximo una página con la respuesta a cada una de las cuatro preguntas de la gerencia. Escríbalo para personas que no conocen estadística: sin fórmulas ni código, con las cifras que sustentan cada recomendación y con la incertidumbre que tiene cada una.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué páginas del curso sirven?**</span>
+
+| Problema | Páginas de la Unidad 2 |
+|:---------|:-----------------------|
+| 1 | [Tipos de probabilidad](../unidad2/recurso102.html), [Teorema de Bayes](../unidad2/recurso104.html) y [Enfoques y axiomas](../unidad2/recurso101.html) (simulación) |
+| 2 | [Modelos discretos](../unidad2/recurso203.html), [Métodos de estimación](../unidad2/recurso304.html), [Intervalos para una población](../unidad2/recurso400.html) y [Propiedades de los estimadores](../unidad2/recurso303.html) (ley de los grandes números) |
+| 3 | [Distribución muestral](../unidad2/recurso301.html), [Teorema del límite central](../unidad2/recurso302.html), [Bootstrap](../unidad2/recurso305.html), [Intervalos para una población](../unidad2/recurso400.html), [Conceptos de las pruebas](../unidad2/recurso500.html) y [Pruebas para medias y proporciones](../unidad2/recurso501.html) |
+| 4 | [Intervalos para dos poblaciones](../unidad2/recurso401.html), [Conceptos de las pruebas](../unidad2/recurso500.html) y [Pruebas para medias y proporciones](../unidad2/recurso501.html) |
+| Resumen | [Caso integrador](../unidad2/recurso600.html) |
+| Entrega | [Proyecto en RStudio](../unidad1/recurso103.html) y [RMarkdown](../unidad1/recurso102.html), de la Unidad 1 |
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se entrega?**</span>
+
+1. La actividad es **individual**.
+
+2. Se entrega por la plataforma **Bspace**, antes de la fecha límite.
+
+3. Se entrega un proyecto de **R** en un archivo comprimido **.zip**, que contenga:
+    - El archivo de datos `datos_actividad2.xlsx`.
+    - El archivo **.Rproj** del proyecto.
+    - El archivo **.Rmd** con el resumen para la gerencia y los cuatro problemas, en ese orden.
+    - El archivo **HTML** generado a partir del **.Rmd**.
+
+4. Antes de entregar, compruebe que el proyecto cumple los requisitos de [Proyecto en RStudio](../unidad1/recurso103.html): abre con doble clic en el **.Rproj**, no usa rutas absolutas ni `setwd()`, y el **.Rmd** se genera con **Knit** después de reiniciar **R**.
+
+5. **Semilla:** en las simulaciones y en el bootstrap use `set.seed()` con su código de estudiante, por ejemplo `set.seed(8945123)`. Por eso algunos resultados cambian de un estudiante a otro; lo que se evalúa es la interpretación.
+
+6. **Código:** cada bloque tiene comentarios que explican qué hace. El código se muestra en el informe, separado de las salidas.
+
+7. **Tablas y gráficos:**
+    - Todos se numeran (Tabla 1, Figura 1...) en su título, con `caption` en `kable()` o con `fig.cap` en el bloque de código.
+    - Cada uno se cita en el texto con su número y se interpreta.
+    - Los ejes tienen títulos claros, con unidades, y las leyendas son legibles.
+
+8. **Uso de inteligencia artificial:** se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Si la usó, indique al final del informe qué herramienta usó y para qué. Cada cifra del informe debe salir de su propio código.
+
+9. **Paquetes:** todo se puede resolver con **R** base y `readxl`. Puede usar otros paquetes de CRAN, si explica para qué usa cada uno.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se evalúa?**</span>
+
+Se evalúa la aplicación correcta de los métodos, la precisión de las interpretaciones, la calidad de las recomendaciones, la claridad de la comunicación y la reproducibilidad del proyecto.
+
+Cada criterio recibe entre 0 y 30 puntos, para un máximo de 180. La nota es $5 \times \text{puntos} / 180$.
+
+| Criterio | Muy alto (30) | Alto (25) | Medio (20) | Bajo (15) | Muy bajo (10) | No se presenta (0) |
+|:---------|:--------------|:----------|:-----------|:----------|:--------------|:-------------------|
+| **1. Problema 1: alertas de fraude** | Tabla y probabilidades correctas, simulación que coincide con el cálculo, gráfico bien interpretado y recomendación justificada con el número de pedidos cancelados | Cálculos correctos, con la simulación, el gráfico o la recomendación poco desarrollados | Calcula las probabilidades, pero confunde alguna condicional o no interpreta el gráfico | Confunde $P(\text{fraude} \mid \text{alerta})$ con la sensibilidad | Cálculos incorrectos o sin interpretación | No se presenta |
+| **2. Problema 2: repartidores** | Estima $\lambda$ con su intervalo, revisa el supuesto de Poisson, calcula bien las probabilidades, explica la simulación con la ley de los grandes números y justifica la recomendación considerando la incertidumbre de $\lambda$ | Todo correcto, con la discusión del supuesto o de la incertidumbre incompleta | Probabilidades correctas, pero sin intervalo para $\lambda$ o sin explicar la simulación | Errores en `ppois()` (por ejemplo, $P(X \geq c)$ en lugar de $P(X > c)$) o recomendación sin sustento | Cálculos incorrectos | No se presenta |
+| **3. Problema 3: tiempo de entrega** | Describe la forma de los datos, justifica el intervalo t con el TLC, compara bien los intervalos, plantea e interpreta la prueba junto con la potencia, estima la proporción de pedidos tarde y corrige los dos errores de la interpretación | Todo correcto, con algún inciso poco desarrollado | Intervalos y prueba correctos, pero concluye que la promesa se cumple porque no se rechaza $H_0$, sin tener en cuenta la potencia | Errores en las hipótesis o en la interpretación del valor p o del intervalo | Cálculos incorrectos o sin interpretación | No se presenta |
+| **4. Problema 4: prueba A/B** | Tabla y gráfico claros, prueba e intervalo correctos, ahorro calculado con la estimación y con los dos límites, y recomendación que distingue la significancia estadística de la importancia para el negocio | Todo correcto, con la recomendación poco desarrollada | Prueba correcta, pero el ahorro solo con la estimación puntual | Interpreta el valor p como la probabilidad de que $H_0$ sea cierta, o recomienda solo por el valor p | Cálculos incorrectos | No se presenta |
+| **5. Resumen y comunicación** | Resumen claro para no estadísticos, con cifras e incertidumbre; tablas y figuras numeradas, citadas e interpretadas | Resumen adecuado, con alguna recomendación sin cifras o alguna figura sin citar | Resumen con lenguaje técnico o incompleto; varias figuras sin numerar o sin interpretar | Resumen que no responde las cuatro preguntas | Sin resumen o informe muy desorganizado | No se presenta informe |
+| **6. Reproducibilidad y entrega** | El proyecto se genera sin errores, con la semilla del estudiante, el código comentado y todos los archivos pedidos | Fallas menores, como algún bloque sin comentarios | Falta algún archivo o la semilla no es la del estudiante | Rutas absolutas o el proyecto requiere arreglos para generarse | El proyecto no se genera | No se entrega el proyecto |
+
+<br/>
+
+*Última revisión: 8 de noviembre de 2026.*
+
+<br/><br/>

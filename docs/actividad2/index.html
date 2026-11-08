@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Actividad 2. Decisiones con probabilidad, simulación e inferencia</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Actividad 2
+  </a>
+</li>
+<li>
+  <a href="../unidad2/index.html">Unidad 2</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Actividad 2. Decisiones con probabilidad, simulación e
+inferencia</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un científico de datos no solo calcula: usa la probabilidad, la
+simulación y la inferencia para tomar decisiones con información
+incompleta. Esta actividad presenta cuatro decisiones de una empresa de
+domicilios. Cada una se resuelve con los métodos de la Unidad 2 y
+termina en una recomendación para la empresa.</p>
+<p><br/></p>
+<div id="cuál-es-el-caso" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál es el
+caso?</strong></span></h2>
+<p>Una empresa de domicilios de Cali conecta restaurantes, repartidores
+y clientes por medio de una aplicación. El equipo de analítica debe
+responder cuatro preguntas de la gerencia:</p>
+<ol style="list-style-type: decimal">
+<li>¿Cuántas de las alertas de fraude son fraude de verdad?</li>
+<li>¿Cuántos repartidores programar el viernes en la noche?</li>
+<li>¿La aplicación cumple la promesa de entregar en 30 minutos en
+promedio?</li>
+<li>¿La nueva pantalla de pago reduce los pedidos cancelados?</li>
+</ol>
+<p>El caso y los datos son ficticios.</p>
+<p><br/></p>
+</div>
+<div id="qué-datos-se-usan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué datos se
+usan?</strong></span></h2>
+<p>Los datos están en el archivo <a
+href="data/datos_actividad2.xlsx">datos_actividad2.xlsx</a>, que tiene
+tres hojas. El problema 1 no usa datos: trabaja con la información del
+enunciado.</p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="24%" />
+<col width="34%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Hoja</th>
+<th align="center">Problema</th>
+<th align="left">Cada fila es</th>
+<th align="left">Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>pedidos_viernes</code></td>
+<td align="center">2</td>
+<td align="left">Un viernes</td>
+<td align="left"><code>viernes</code>: número del viernes, de 1 a
+40.<br/><code>pedidos</code>: pedidos recibidos en la zona sur entre las
+7 y las 8 p. m.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>tiempos_entrega</code></td>
+<td align="center">3</td>
+<td align="left">Un pedido</td>
+<td align="left"><code>pedido</code>: código del
+pedido.<br/><code>tiempo</code>: tiempo de entrega, en minutos.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>prueba_ab</code></td>
+<td align="center">4</td>
+<td align="left">Un pedido</td>
+<td align="left"><code>pedido</code>: código del
+pedido.<br/><code>version</code>: pantalla de pago que vio el cliente,
+<code>A</code> (actual) o <code>B</code>
+(nueva).<br/><code>cancelado</code>: 1 si el pedido se canceló, 0 si
+no.</td>
+</tr>
+</tbody>
+</table>
+<p>Para leer una hoja se usa
+<code>readxl::read_excel("data/datos_actividad2.xlsx", sheet = "pedidos_viernes")</code>.</p>
+<p><br/></p>
+</div>
+<div id="qué-se-debe-hacer" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se debe
+hacer?</strong></span></h2>
+<p>Cada inciso se responde con el código, los resultados y su
+interpretación en el contexto del caso. Cada afirmación se apoya en una
+cifra: en lugar de “la mayoría de las alertas son falsas”, se escribe el
+porcentaje.</p>
+<p><br/></p>
+<div id="problema-1.-cuántas-alertas-de-fraude-son-fraude-de-verdad"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Problema 1. ¿Cuántas alertas de
+fraude son fraude de verdad?</strong></span></h3>
+<p>La empresa usa un modelo que marca como sospechosos algunos pedidos
+pagados con tarjeta. Según el área de riesgo:</p>
+<ul>
+<li>El 2 % de los pedidos pagados con tarjeta son fraudulentos.</li>
+<li>El modelo marca el 92 % de los pedidos fraudulentos
+(sensibilidad).</li>
+<li>El modelo deja sin marcar el 95 % de los pedidos legítimos
+(especificidad).</li>
+</ul>
+<ol style="list-style-type: lower-alpha">
+<li><p>Construya una tabla de doble entrada para 10,000 pedidos, con las
+filas fraude y legítimo y las columnas con alerta y sin alerta. Con la
+tabla, calcule la probabilidad de que un pedido con alerta sea fraude,
+la probabilidad de que un pedido sin alerta sea legítimo y la exactitud
+del modelo (la proporción de pedidos bien clasificados).</p></li>
+<li><p>Compruebe por simulación la probabilidad de que un pedido con
+alerta sea fraude: genere 100,000 pedidos, decida al azar cuáles son
+fraude y cuáles reciben alerta según la sensibilidad y la especificidad,
+y calcule la proporción de fraudes entre los pedidos con alerta. Compare
+con el resultado de (a).</p></li>
+<li><p>Grafique la probabilidad de que un pedido con alerta sea fraude
+cuando el porcentaje de fraude va de 0.5 % a 20 %. ¿Qué pasa cuando el
+fraude es poco frecuente?</p></li>
+<li><p>El área de riesgo propone cancelar automáticamente todo pedido
+con alerta. La empresa recibe 5,000 pedidos con tarjeta al día. ¿Cuántos
+pedidos legítimos se cancelarían al día? ¿Recomendaría la propuesta?
+Proponga una alternativa.</p></li>
+</ol>
+<p><br/></p>
+</div>
+<div
+id="problema-2.-cuántos-repartidores-programar-el-viernes-en-la-noche"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Problema 2. ¿Cuántos
+repartidores programar el viernes en la noche?</strong></span></h3>
+<p>La empresa debe decidir cuántos repartidores programar en la zona sur
+los viernes entre las 7 y las 8 p. m. Cada repartidor entrega 3 pedidos
+en esa hora. Si llegan más pedidos de los que se pueden atender, los
+sobrantes se retrasan. La meta es que eso ocurra en menos del 5 % de los
+viernes.</p>
+<p>La hoja <code>pedidos_viernes</code> tiene el número de pedidos
+recibidos en esa hora durante los últimos 40 viernes. Suponga que el
+número de pedidos en una hora sigue una distribución de Poisson con
+media <span class="math inline">\(\lambda\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Estime <span class="math inline">\(\lambda\)</span> con el
+estimador de máxima verosimilitud y calcule un intervalo de confianza
+del 95 % para <span class="math inline">\(\lambda\)</span>. Compare la
+media y la varianza de los datos: ¿se parecen, como lo espera el modelo
+de Poisson?</p></li>
+<li><p>Con el <span class="math inline">\(\lambda\)</span> estimado,
+calcule con <code>ppois()</code> la probabilidad de que los pedidos
+superen la capacidad con 6, 7, 8, 9 y 10 repartidores. Presente los
+resultados en una tabla.</p></li>
+<li><p>Estime por simulación la misma probabilidad para 9 repartidores,
+con 100, 1,000, 10,000 y 100,000 horas simuladas con
+<code>rpois()</code>. Grafique la estimación según el número de horas
+simuladas, con una línea horizontal en el valor exacto de (b). ¿Qué
+resultado de la unidad explica lo que observa?</p></li>
+<li><p>¿Cuántos repartidores recomienda programar? Repita el cálculo de
+(b) con el límite superior del intervalo de (a) y discuta si cambia la
+recomendación.</p></li>
+</ol>
+<p><br/></p>
+</div>
+<div id="problema-3.-la-aplicación-cumple-la-promesa-de-30-minutos"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Problema 3. ¿La aplicación
+cumple la promesa de 30 minutos?</strong></span></h3>
+<p>La aplicación anuncia que el tiempo promedio de entrega es de 30
+minutos. La hoja <code>tiempos_entrega</code> tiene el tiempo de entrega
+de 60 pedidos elegidos al azar el último mes.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Describa los tiempos con indicadores, un histograma y un gráfico
+Q-Q. ¿Parecen venir de una distribución normal? ¿Se puede usar el
+intervalo t con esta muestra? Justifique con el teorema del límite
+central.</p></li>
+<li><p>Calcule un intervalo de confianza del 95 % para la media con la
+distribución t y otro con bootstrap percentil. Calcule también un
+intervalo bootstrap para la mediana. Compare los intervalos. ¿Qué medida
+describe mejor el tiempo típico de entrega? ¿Por qué?</p></li>
+<li><p>Plantee las hipótesis y realice una prueba para decidir si el
+tiempo promedio de entrega es mayor que 30 minutos. Interprete el valor
+p. Luego calcule:</p>
+<ul>
+<li>La potencia que tenía la prueba para detectar un retraso de 3
+minutos, es decir, una media real de 33 minutos.</li>
+<li>El tamaño de muestra necesario para que esa potencia sea del 80
+%.</li>
+</ul>
+<p>Con estos resultados, ¿se puede afirmar que la aplicación cumple su
+promesa?</p></li>
+<li><p>Un pedido llega tarde si tarda más de 45 minutos. Estime la
+proporción de pedidos que llegan tarde, con un intervalo de confianza
+del 95 %.</p></li>
+<li><p>Al pedirle a una herramienta de inteligencia artificial que
+interpretara el intervalo t de (b), respondió: <em>“Hay un 95 % de
+probabilidad de que el tiempo promedio esté en el intervalo, y el 95 %
+de los pedidos se entregan en ese rango de minutos”</em>. Señale los dos
+errores de esta interpretación y escríbala de forma correcta.</p></li>
+</ol>
+<p><br/></p>
+</div>
+<div id="problema-4.-la-nueva-pantalla-de-pago-reduce-las-cancelaciones"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Problema 4. ¿La nueva pantalla
+de pago reduce las cancelaciones?</strong></span></h3>
+<p>La empresa probó una pantalla de pago nueva (B) frente a la actual
+(A). Durante dos semanas, cada pedido se asignó al azar a una de las dos
+versiones. La hoja <code>prueba_ab</code> tiene la versión que vio cada
+cliente y si el pedido se canceló.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Calcule el porcentaje de pedidos cancelados en cada versión y
+preséntelo en una tabla y un gráfico.</p></li>
+<li><p>Realice una prueba de hipótesis para comparar las dos
+proporciones y calcule un intervalo de confianza del 95 % para la
+diferencia. Interprete los dos resultados.</p></li>
+<li><p>Cada cancelación hace perder 9,000 pesos de margen, la empresa
+recibe 5,000 pedidos al día y la pantalla B cuesta 8 millones de pesos
+al mes en licencias. Calcule el ahorro mensual (30 días) de pasar a la
+versión B con la diferencia estimada y con los dos límites del intervalo
+de (b). ¿Recomendaría el cambio? Distinga entre una diferencia
+estadísticamente significativa y una diferencia que vale la pena para el
+negocio.</p></li>
+</ol>
+<p><br/></p>
+</div>
+<div id="resumen-para-la-gerencia" class="section level3">
+<h3><span style="color:#034a94"><strong>Resumen para la
+gerencia</strong></span></h3>
+<p>Al inicio del informe, escriba un resumen de máximo una página con la
+respuesta a cada una de las cuatro preguntas de la gerencia. Escríbalo
+para personas que no conocen estadística: sin fórmulas ni código, con
+las cifras que sustentan cada recomendación y con la incertidumbre que
+tiene cada una.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-páginas-del-curso-sirven" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué páginas del curso
+sirven?</strong></span></h2>
+<table>
+<colgroup>
+<col width="29%" />
+<col width="70%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Páginas de la Unidad 2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left"><a href="../unidad2/recurso102.html">Tipos de
+probabilidad</a>, <a href="../unidad2/recurso104.html">Teorema de
+Bayes</a> y <a href="../unidad2/recurso101.html">Enfoques y axiomas</a>
+(simulación)</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><a href="../unidad2/recurso203.html">Modelos
+discretos</a>, <a href="../unidad2/recurso304.html">Métodos de
+estimación</a>, <a href="../unidad2/recurso400.html">Intervalos para una
+población</a> y <a href="../unidad2/recurso303.html">Propiedades de los
+estimadores</a> (ley de los grandes números)</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><a href="../unidad2/recurso301.html">Distribución
+muestral</a>, <a href="../unidad2/recurso302.html">Teorema del límite
+central</a>, <a href="../unidad2/recurso305.html">Bootstrap</a>, <a
+href="../unidad2/recurso400.html">Intervalos para una población</a>, <a
+href="../unidad2/recurso500.html">Conceptos de las pruebas</a> y <a
+href="../unidad2/recurso501.html">Pruebas para medias y
+proporciones</a></td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left"><a href="../unidad2/recurso401.html">Intervalos para
+dos poblaciones</a>, <a href="../unidad2/recurso500.html">Conceptos de
+las pruebas</a> y <a href="../unidad2/recurso501.html">Pruebas para
+medias y proporciones</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Resumen</td>
+<td align="left"><a href="../unidad2/recurso600.html">Caso
+integrador</a></td>
+</tr>
+<tr class="even">
+<td align="left">Entrega</td>
+<td align="left"><a href="../unidad1/recurso103.html">Proyecto en
+RStudio</a> y <a href="../unidad1/recurso102.html">RMarkdown</a>, de la
+Unidad 1</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cómo-se-entrega" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se
+entrega?</strong></span></h2>
+<ol style="list-style-type: decimal">
+<li><p>La actividad es <strong>individual</strong>.</p></li>
+<li><p>Se entrega por la plataforma <strong>Bspace</strong>, antes de la
+fecha límite.</p></li>
+<li><p>Se entrega un proyecto de <strong>R</strong> en un archivo
+comprimido <strong>.zip</strong>, que contenga:</p>
+<ul>
+<li>El archivo de datos <code>datos_actividad2.xlsx</code>.</li>
+<li>El archivo <strong>.Rproj</strong> del proyecto.</li>
+<li>El archivo <strong>.Rmd</strong> con el resumen para la gerencia y
+los cuatro problemas, en ese orden.</li>
+<li>El archivo <strong>HTML</strong> generado a partir del
+<strong>.Rmd</strong>.</li>
+</ul></li>
+<li><p>Antes de entregar, compruebe que el proyecto cumple los
+requisitos de <a href="../unidad1/recurso103.html">Proyecto en
+RStudio</a>: abre con doble clic en el <strong>.Rproj</strong>, no usa
+rutas absolutas ni <code>setwd()</code>, y el <strong>.Rmd</strong> se
+genera con <strong>Knit</strong> después de reiniciar
+<strong>R</strong>.</p></li>
+<li><p><strong>Semilla:</strong> en las simulaciones y en el bootstrap
+use <code>set.seed()</code> con su código de estudiante, por ejemplo
+<code>set.seed(8945123)</code>. Por eso algunos resultados cambian de un
+estudiante a otro; lo que se evalúa es la interpretación.</p></li>
+<li><p><strong>Código:</strong> cada bloque tiene comentarios que
+explican qué hace. El código se muestra en el informe, separado de las
+salidas.</p></li>
+<li><p><strong>Tablas y gráficos:</strong></p>
+<ul>
+<li>Todos se numeran (Tabla 1, Figura 1…) en su título, con
+<code>caption</code> en <code>kable()</code> o con <code>fig.cap</code>
+en el bloque de código.</li>
+<li>Cada uno se cita en el texto con su número y se interpreta.</li>
+<li>Los ejes tienen títulos claros, con unidades, y las leyendas son
+legibles.</li>
+</ul></li>
+<li><p><strong>Uso de inteligencia artificial:</strong> se sigue lo
+indicado en <a
+href="../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso">IA en
+RStudio</a>. Si la usó, indique al final del informe qué herramienta usó
+y para qué. Cada cifra del informe debe salir de su propio
+código.</p></li>
+<li><p><strong>Paquetes:</strong> todo se puede resolver con
+<strong>R</strong> base y <code>readxl</code>. Puede usar otros paquetes
+de CRAN, si explica para qué usa cada uno.</p></li>
+</ol>
+<p><br/></p>
+</div>
+<div id="cómo-se-evalúa" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se
+evalúa?</strong></span></h2>
+<p>Se evalúa la aplicación correcta de los métodos, la precisión de las
+interpretaciones, la calidad de las recomendaciones, la claridad de la
+comunicación y la reproducibilidad del proyecto.</p>
+<p>Cada criterio recibe entre 0 y 30 puntos, para un máximo de 180. La
+nota es <span class="math inline">\(5 \times \text{puntos} /
+180\)</span>.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="10%" />
+<col width="15%" />
+<col width="11%" />
+<col width="12%" />
+<col width="11%" />
+<col width="15%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Criterio</th>
+<th align="left">Muy alto (30)</th>
+<th align="left">Alto (25)</th>
+<th align="left">Medio (20)</th>
+<th align="left">Bajo (15)</th>
+<th align="left">Muy bajo (10)</th>
+<th align="left">No se presenta (0)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>1. Problema 1: alertas de fraude</strong></td>
+<td align="left">Tabla y probabilidades correctas, simulación que
+coincide con el cálculo, gráfico bien interpretado y recomendación
+justificada con el número de pedidos cancelados</td>
+<td align="left">Cálculos correctos, con la simulación, el gráfico o la
+recomendación poco desarrollados</td>
+<td align="left">Calcula las probabilidades, pero confunde alguna
+condicional o no interpreta el gráfico</td>
+<td align="left">Confunde <span class="math inline">\(P(\text{fraude}
+\mid \text{alerta})\)</span> con la sensibilidad</td>
+<td align="left">Cálculos incorrectos o sin interpretación</td>
+<td align="left">No se presenta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>2. Problema 2: repartidores</strong></td>
+<td align="left">Estima <span class="math inline">\(\lambda\)</span> con
+su intervalo, revisa el supuesto de Poisson, calcula bien las
+probabilidades, explica la simulación con la ley de los grandes números
+y justifica la recomendación considerando la incertidumbre de <span
+class="math inline">\(\lambda\)</span></td>
+<td align="left">Todo correcto, con la discusión del supuesto o de la
+incertidumbre incompleta</td>
+<td align="left">Probabilidades correctas, pero sin intervalo para <span
+class="math inline">\(\lambda\)</span> o sin explicar la simulación</td>
+<td align="left">Errores en <code>ppois()</code> (por ejemplo, <span
+class="math inline">\(P(X \geq c)\)</span> en lugar de <span
+class="math inline">\(P(X &gt; c)\)</span>) o recomendación sin
+sustento</td>
+<td align="left">Cálculos incorrectos</td>
+<td align="left">No se presenta</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>3. Problema 3: tiempo de entrega</strong></td>
+<td align="left">Describe la forma de los datos, justifica el intervalo
+t con el TLC, compara bien los intervalos, plantea e interpreta la
+prueba junto con la potencia, estima la proporción de pedidos tarde y
+corrige los dos errores de la interpretación</td>
+<td align="left">Todo correcto, con algún inciso poco desarrollado</td>
+<td align="left">Intervalos y prueba correctos, pero concluye que la
+promesa se cumple porque no se rechaza <span
+class="math inline">\(H_0\)</span>, sin tener en cuenta la potencia</td>
+<td align="left">Errores en las hipótesis o en la interpretación del
+valor p o del intervalo</td>
+<td align="left">Cálculos incorrectos o sin interpretación</td>
+<td align="left">No se presenta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>4. Problema 4: prueba A/B</strong></td>
+<td align="left">Tabla y gráfico claros, prueba e intervalo correctos,
+ahorro calculado con la estimación y con los dos límites, y
+recomendación que distingue la significancia estadística de la
+importancia para el negocio</td>
+<td align="left">Todo correcto, con la recomendación poco
+desarrollada</td>
+<td align="left">Prueba correcta, pero el ahorro solo con la estimación
+puntual</td>
+<td align="left">Interpreta el valor p como la probabilidad de que <span
+class="math inline">\(H_0\)</span> sea cierta, o recomienda solo por el
+valor p</td>
+<td align="left">Cálculos incorrectos</td>
+<td align="left">No se presenta</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>5. Resumen y comunicación</strong></td>
+<td align="left">Resumen claro para no estadísticos, con cifras e
+incertidumbre; tablas y figuras numeradas, citadas e interpretadas</td>
+<td align="left">Resumen adecuado, con alguna recomendación sin cifras o
+alguna figura sin citar</td>
+<td align="left">Resumen con lenguaje técnico o incompleto; varias
+figuras sin numerar o sin interpretar</td>
+<td align="left">Resumen que no responde las cuatro preguntas</td>
+<td align="left">Sin resumen o informe muy desorganizado</td>
+<td align="left">No se presenta informe</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>6. Reproducibilidad y entrega</strong></td>
+<td align="left">El proyecto se genera sin errores, con la semilla del
+estudiante, el código comentado y todos los archivos pedidos</td>
+<td align="left">Fallas menores, como algún bloque sin comentarios</td>
+<td align="left">Falta algún archivo o la semilla no es la del
+estudiante</td>
+<td align="left">Rutas absolutas o el proyecto requiere arreglos para
+generarse</td>
+<td align="left">El proyecto no se genera</td>
+<td align="left">No se entrega el proyecto</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<p><em>Última revisión: 8 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

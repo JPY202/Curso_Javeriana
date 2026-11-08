@@ -1,0 +1,12 @@
+name: " "
+output_dir: "../docs/actividad2"
+exclude: ["README.md", "crear_datos.R", "Actividad2.Rproj"]
+include: ["data"]
+navbar:
+  title: " "
+  left:
+    - text: "Actividad 2"
+      icon: fa-home
+      href: index.html
+    - text: "Unidad 2"
+      href: ../unidad2/index.html

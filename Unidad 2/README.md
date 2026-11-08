@@ -28,6 +28,8 @@ Las páginas siguen el nivel del sitio original de la Unidad 2 (metodosySIM2_V2)
 
 La unidad se trabaja en 4 semanas: Probabilidad (semana 1), Variables aleatorias (semana 2), Inferencia estadística (semana 3) e Intervalos, Pruebas y Caso integrador (semana 4).
 
+El índice incluye la sección *¿Qué se necesita saber antes de empezar?*: una tabla de temas previos con enlaces de repaso (Unidad 1 y Grinstead y Snell), una tabla de notación y un diagnóstico de seis ejercicios con solución.
+
 
 - `index.Rmd`: portada con el contenido de la unidad.
 - `recurso100.Rmd`: Espacio muestral y eventos.
