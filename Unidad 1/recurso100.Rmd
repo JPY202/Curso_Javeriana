@@ -270,7 +270,7 @@ La media sin ese argumento se ve afectada por el valor 100.
 
 - [Big Book of R](https://www.bigbookofr.com/): colección de más de 400 libros sobre **R**, con una [sección en español](https://www.bigbookofr.com/chapters/Espa%C3%B1ol.html).
 
-- [R para Ciencia de Datos, 2.ª edición](https://davidrsch.github.io/r4ds-es/): traducción al español de la edición vigente.
+- [R for Data Science, 2.ª edición](https://r4ds.hadley.nz/): versión gratuita en línea publicada por los autores, en inglés.
 
 - [R para Ciencia de Datos, 1.ª edición](https://es.r4ds.hadley.nz/): traducción colaborativa de la comunidad latinoamericana de **R**.
 

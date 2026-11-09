@@ -17,7 +17,209 @@ knitr::include_graphics("img/banner_presentacion.png")
 
 <br/>
 
-Esta unidad se concentra en algunos conceptos básicos de estadística, el análisis exploratorio de datos y el manejo del software **R**.
+Esta unidad se concentra en algunos conceptos básicos de estadística, el análisis exploratorio de datos y el manejo del software **R**. Cada tema se explica con ejemplos y se acompaña de código en **R**.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se organiza el trabajo en 4 semanas?**</span>
+
+| Semana | Tema | Páginas |
+|:------:|:-----|:-------:|
+| 1 | Software R | 8 |
+| 2 | Análisis de datos: conceptos, tablas de frecuencia e indicadores | 7 |
+| 3 | Gráficos | 7 |
+| 4 | Procesamiento de datos, casos e informe | 7 |
+
+Cada página tiene ejemplos con código en **R**, errores frecuentes y retos con solución. Se recomienda leer las páginas en orden y resolver los retos antes de abrir la solución. La [Actividad 1](../actividad1/index.html) usa los temas de las cuatro semanas, así que conviene leer el enunciado desde la primera semana.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se necesita saber antes de empezar?**</span>
+
+La unidad parte de cero en **R** y en estadística: no se necesita saber programar. Sí ayuda manejar el computador con soltura, algunos temas de matemáticas básicas y la lectura de tablas y gráficos sencillos. Antes de la primera semana, revise esta lista y resuelva el diagnóstico.
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué temas conviene repasar?**</span>
+
+| Tema | Dónde se usa en la unidad | Dónde aprender o repasar |
+|:-----|:--------------------------|:-------------------------|
+| Instalar programas en su computador | Instalar **R**, **RStudio** y paquetes | [¿Cómo instalar R y RStudio?](recurso100.html#cómo-instalar-r-y-rstudio) y [Paquetes](recurso104.html) |
+| Carpetas, rutas y archivos comprimidos (.zip) | Proyectos, importación de datos y entregas | [Proyecto en RStudio](recurso103.html#qué-son-el-directorio-de-trabajo-y-las-rutas) |
+| Leer textos técnicos cortos en inglés | Mensajes de error y ayuda de **R** | [¿Cómo pedir ayuda en R?](recurso100.html#cómo-pedir-ayuda-en-r) |
+| Fracciones, decimales y porcentajes | Tablas de frecuencia, gráficos e indicadores | Matemáticas de bachillerato |
+| Punto decimal (en **R** se escribe 3.5, no 3,5) | Todo el código | [Objetos en R](recurso101.html) |
+| Sumatoria ($\sum$) y subíndices ($x_1, \ldots, x_n$) | Fórmulas de los indicadores | [Indicadores de centro](recurso203.html) |
+| Potencias, raíces y orden de las operaciones | Varianza y desviación estándar | [Indicadores de dispersión](recurso205.html) |
+| Leer tablas y gráficos sencillos | Toda la unidad | [Tablas de frecuencia](recurso201.html) y [Gráficos](recurso300.html) |
+
+<br/>
+
+### <span style="color:#034a94">**¿Qué notación se usa?**</span>
+
+Muchas dificultades vienen de la notación y no del concepto. Estos son los símbolos que aparecen con más frecuencia:
+
+| Símbolo | Se lee | Significado en la unidad |
+|:-------:|:-------|:-------------------------|
+| $n$, $N$ | n, N | Tamaño de la muestra y de la población |
+| $x_i$ | x sub i | Valor de la variable en la observación $i$ |
+| $\sum$ | sumatoria | Suma de varios términos |
+| $\bar{x}$, $\mu$ | x barra, mu | Media de la muestra y de la población |
+| $s^2$, $s$ | s cuadrado, s | Varianza y desviación estándar de la muestra |
+| $\sigma$ | sigma | Desviación estándar de la población |
+| $n_i$, $f_i$ | n sub i, f sub i | Frecuencia absoluta y relativa de la categoría $i$ |
+| $N_i$, $F_i$ | N sub i, F sub i | Frecuencia absoluta y relativa acumulada |
+| $Q_1$, $Q_3$, $RIC$ | primer cuartil, tercer cuartil, rango intercuartílico | Indicadores de posición; $RIC = Q_3 - Q_1$ |
+
+<br/>
+
+### <span style="color:#034a94">**¿Está listo para empezar?**</span>
+
+Resuelva estos seis ejercicios sin abrir la solución. No necesita **R**: las soluciones muestran cómo se hará cada cálculo en la unidad. Si falla uno, repase el tema indicado antes de la primera semana.
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 1. Porcentajes**</span>
+
+a. En una encuesta a 240 personas, 18 no respondieron la pregunta sobre su ingreso. ¿Qué porcentaje no respondió?
+
+b. El arriendo de un apartamento subió de 1,200,000 a 1,500,000 pesos. ¿En qué porcentaje subió?
+
+<details>
+<summary>Ver solución</summary>
+
+a. $18 / 240 = 0.075$, es decir, el 7.5 %.
+
+b. El aumento es de 300,000 pesos, y $300{,}000 / 1{,}200{,}000 = 0.25$: subió un 25 %. El porcentaje se calcula sobre el valor inicial, no sobre el final.
+
+```{r, echo=TRUE}
+18 / 240 * 100
+(1500000 - 1200000) / 1200000 * 100
+```
+
+**Si tuvo dificultad**, repase porcentajes: aparecen en todas las tablas de frecuencia y en muchos gráficos.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 2. Sumatoria, potencias y raíces**</span>
+
+Para los datos $x_1 = 2$, $x_2 = 4$ y $x_3 = 6$, calcule paso a paso:
+
+$$\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad s^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1} \qquad s = \sqrt{s^2}$$
+
+<details>
+<summary>Ver solución</summary>
+
+- $\bar{x} = (2 + 4 + 6)/3 = 4$
+- $\sum (x_i - \bar{x})^2 = (2 - 4)^2 + (4 - 4)^2 + (6 - 4)^2 = 4 + 0 + 4 = 8$
+- $s^2 = 8 / 2 = 4$ y $s = \sqrt{4} = 2$
+
+```{r, echo=TRUE}
+x <- c(2, 4, 6)
+mean(x)
+var(x)
+sd(x)
+```
+
+Primero se resta, luego se eleva al cuadrado y al final se suma. **Si tuvo dificultad**, no se preocupe: estas fórmulas se explican en [Indicadores de centro](recurso203.html) y [Indicadores de dispersión](recurso205.html), pero conviene repasar el orden de las operaciones.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 3. Promedio y dato extremo**</span>
+
+Los salarios mensuales (millones de pesos) de cinco empleados de una empresa son 1.4, 1.5, 1.6, 1.8 y 12.0. Calcule el promedio. ¿Representa bien el salario de un empleado típico? ¿Qué valor lo representaría mejor?
+
+<details>
+<summary>Ver solución</summary>
+
+El promedio es $18.3 / 5 = 3.66$ millones, más del doble de lo que ganan cuatro de los cinco empleados: el salario de 12 millones lo jala hacia arriba. El valor del centro de los datos ordenados, 1.6 millones, representa mejor al empleado típico. Ese valor es la mediana.
+
+```{r, echo=TRUE}
+salario <- c(1.4, 1.5, 1.6, 1.8, 12.0)
+mean(salario)
+median(salario)
+```
+
+**Si tuvo dificultad**, lo verá en [¿Cómo influye un dato extremo?](recurso203.html#cómo-influye-un-dato-extremo).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 4. Leer una tabla**</span>
+
+En una encuesta a 50 hogares se preguntó el número de hijos:
+
+| Número de hijos | Hogares |
+|:---------------:|:-------:|
+| 0 | 12 |
+| 1 | 18 |
+| 2 | 15 |
+| 3 o más | 5 |
+| **Total** | **50** |
+
+a. ¿Qué porcentaje de los hogares tiene como máximo un hijo?
+
+b. ¿Se puede calcular el número promedio exacto de hijos con esta tabla? ¿Por qué?
+
+<details>
+<summary>Ver solución</summary>
+
+a. $(12 + 18) / 50 = 0.60$: el 60 % de los hogares tiene 0 o 1 hijo. Es una frecuencia relativa acumulada.
+
+b. No. La categoría 3 o más no dice cuántos hijos tiene cada uno de esos 5 hogares: pueden ser 3 o 7. Para el promedio exacto se necesitan los datos originales.
+
+**Si tuvo dificultad**, repase [Tablas de frecuencia](recurso201.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 5. Tipos de variable**</span>
+
+Diga si cada variable es categórica o numérica: estrato socioeconómico, edad en años, medio de transporte al trabajo, número de hijos y código postal.
+
+<details>
+<summary>Ver solución</summary>
+
+| Variable | Tipo | Comentario |
+|:---------|:-----|:-----------|
+| Estrato socioeconómico | Categórica ordinal | Usa números, pero indica un orden, no una cantidad: el estrato 4 no es el doble del 2 |
+| Edad en años | Numérica | Es una cantidad que se puede promediar |
+| Medio de transporte | Categórica nominal | Sus categorías no tienen orden |
+| Número de hijos | Numérica discreta | Toma valores enteros |
+| Código postal | Categórica nominal | Es un número que funciona como nombre: promediarlo no tiene sentido |
+
+**Si tuvo dificultad**, lo verá en [Conceptos básicos](recurso200.html). La pregunta clave es si tiene sentido sumar o promediar los valores.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 6. Archivos y números en el computador**</span>
+
+a. ¿Cómo se escriben en **R** los números tres coma cinco y un millón doscientos mil?
+
+b. Descargó el archivo `datos.zip` y dentro está `ventas.xlsx`. ¿Qué debe hacer antes de abrir `ventas.xlsx` desde **R**?
+
+c. ¿Sabe en qué carpeta de su computador quedan los archivos que descarga? ¿Cómo encuentra la ruta completa de un archivo?
+
+<details>
+<summary>Ver solución</summary>
+
+a. `3.5` y `1200000`. **R** usa punto decimal y no admite separadores de miles: `3,5` y `1.200.000` producen errores o resultados equivocados.
+
+b. Descomprimir el archivo y guardar `ventas.xlsx` en la carpeta del proyecto. Si se abre desde la vista del .zip, el archivo queda en una carpeta temporal y **R** no lo encuentra en el proyecto.
+
+c. Por lo general, en la carpeta Descargas. La ruta completa se ve en las propiedades del archivo (Windows) o en la opción Obtener información (Mac). En la unidad se trabaja con proyectos, que evitan escribir rutas completas.
+
+**Si tuvo dificultad**, repase [Proyecto en RStudio](recurso103.html#qué-son-el-directorio-de-trabajo-y-las-rutas).
+
+</details>
+</div>
 
 <br/>
 

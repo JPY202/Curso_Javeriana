@@ -185,7 +185,7 @@ Estas herramientas pueden enviar a servidores externos [fragmentos de código o 
 
 ## <span style="color:#034a94">**¿Cómo usar la IA en el curso?**</span>
 
-La responsabilidad del trabajo sigue siendo de quien lo entrega. La guía de la [UNESCO](https://gcedclearinghouse.org/en/node/129341) propone un enfoque centrado en la agencia humana. En la práctica:
+La responsabilidad del trabajo sigue siendo de quien lo entrega. La guía de la [UNESCO](https://unesdoc.unesco.org/ark:/48223/pf0000386693) propone un enfoque centrado en la agencia humana. En la práctica:
 
 - Siga las reglas de cada asignatura sobre el uso de IA.
 - Intente primero resolver el problema por su cuenta, porque así se aprende a detectar errores.
@@ -315,7 +315,7 @@ También hay que confirmar si las reglas de la institución permiten usar la her
 ## <span style="color:#034a94">**Referencias**</span>
 
 - GitHub. [Plans for GitHub Copilot](https://docs.github.com/en/copilot/concepts/billing/individual-plans), [Get started with a Copilot plan](https://docs.github.com/en/copilot/how-tos/manage-your-account/get-started-with-a-copilot-plan) y [Access GitHub Copilot for free as a student](https://docs.github.com/en/copilot/how-tos/copilot-on-github/set-up-copilot/enable-copilot/set-up-for-students).
-- Miao, F. y Holmes, W. (2023). [Guidance for Generative AI in Education and Research](https://gcedclearinghouse.org/en/node/129341). UNESCO.
+- Miao, F. y Holmes, W. (2023). [Guidance for Generative AI in Education and Research](https://unesdoc.unesco.org/ark:/48223/pf0000386693). UNESCO.
 - Mock, T., Rohrbaugh, N. y Chisholm, A. (2026). [Posit AI now available to all](https://posit.co/blog/posit-ai-now-available-all). Posit.
 - Posit. [GitHub Copilot](https://docs.posit.co/ide/user/ide/guide/tools/copilot.html), [What's new with Posit AI](https://docs.posit.co/posit-ai/whats-new/) y [Posit AI](https://posit.co/ai).
 - Student (1908). The probable error of the mean. *Biometrika*, 6, 1-25. Fuente de la base `sleep`.

@@ -401,7 +401,7 @@ summary(datos)
 
 - Xie, Y., Allaire, J. J. y Grolemund, G. (2018). [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/). Chapman & Hall/CRC. Es la guía completa.
 - Xie, Y., Dervieux, C. y Riederer, E. (2020). [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/). Chapman & Hall/CRC. Reúne soluciones prácticas a tareas concretas.
-- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R para Ciencia de Datos](https://davidrsch.github.io/r4ds-es/) (2.ª ed., traducción al español). La parte de comunicación trata Quarto.
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R for Data Science](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly. Versión gratuita en línea de los autores. La [traducción oficial al español](https://es.r4ds.hadley.nz/) corresponde a la 1.ª edición. La parte de comunicación trata Quarto.
 - Xie, Y. [bookdown: Authoring Books and Technical Documents with R Markdown](https://bookdown.org/yihui/bookdown/). Explica cómo escribir libros y documentos largos.
 
 ### <span style="color:#034a94">**Otros libros**</span>

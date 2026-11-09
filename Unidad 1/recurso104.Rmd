@@ -438,7 +438,7 @@ Son 227 personas, con un promedio de 64.5 minutos, y `sizep()` da 384.16, por lo
 
 ## <span style="color:#034a94">**Libros y recursos**</span>
 
-- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R para Ciencia de Datos](https://davidrsch.github.io/r4ds-es/) (2.ª ed., traducción al español). Enseña a usar los paquetes del tidyverse.
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). [R for Data Science](https://r4ds.hadley.nz/) (2.ª ed.). O'Reilly. Versión gratuita en línea de los autores. La [traducción oficial al español](https://es.r4ds.hadley.nz/) corresponde a la 1.ª edición. Enseña a usar los paquetes del tidyverse.
 - [Vistas de tareas de CRAN](https://cran.r-project.org/web/views/): paquetes organizados por tema.
 - [Hojas de referencia de Posit](https://rstudio.github.io/cheatsheets/): resúmenes de los paquetes más usados.
 

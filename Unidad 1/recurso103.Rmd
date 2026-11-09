@@ -102,7 +102,7 @@ proyecto_ventas/
 
 ### <span style="color:#034a94">**Nombres de archivos**</span>
 
-[R para Ciencia de Datos](https://davidrsch.github.io/r4ds-es/) recomienda nombres descriptivos, sin espacios ni caracteres especiales. Si los scripts se ejecutan en un orden, conviene iniciar el nombre con un número.
+[R for Data Science](https://r4ds.hadley.nz/workflow-scripts.html) recomienda nombres descriptivos, sin espacios ni caracteres especiales. Si los scripts se ejecutan en un orden, conviene iniciar el nombre con un número.
 
 | Evitar                     | Preferir                  |
 |:---------------------------|:--------------------------|
@@ -400,7 +400,7 @@ El nombre de `Untitled1.R` depende de lo que haga el script. Primero hay que abr
 
 ## <span style="color:#034a94">**Libros y recursos**</span>
 
-- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). *R for Data Science* (2.ª ed.), capítulo [Workflow: scripts and projects](https://r4ds.hadley.nz/workflow-scripts.html). Traducción: [R para Ciencia de Datos](https://davidrsch.github.io/r4ds-es/).
+- Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). *R for Data Science* (2.ª ed.), capítulo [Workflow: scripts and projects](https://r4ds.hadley.nz/workflow-scripts.html).
 - [Guía de usuario de RStudio](https://docs.posit.co/ide/user/): documentación oficial de Posit.
 - [Documentación de renv](https://rstudio.github.io/renv/articles/renv.html): explica cómo conservar los paquetes de un proyecto.
 

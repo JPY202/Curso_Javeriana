@@ -321,7 +321,7 @@ ggplot(estratos, aes(x = estrato, y = viviendas)) +
 
 - American Statistical Association. (2016). [*Guidelines for Assessment and Instruction in Statistics Education: College Report*](https://www.amstat.org/docs/default-source/amstat-documents/gaisecollege_full.pdf).
 - Anscombe, F. J. (1973). Graphs in statistical analysis. *The American Statistician*, 27(1), 17-21.
-- Arteaga, P., Batanero, C., Díaz, C. y Contreras, J. M. (2009). [El lenguaje de los gráficos estadísticos](https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1156663/Arteaga2009El.pdf). *Revista Iberoamericana de Educación Matemática*, 18, 93-104.
+- Arteaga, P., Batanero, C., Díaz, C. y Contreras, J. M. (2009). [El lenguaje de los gráficos estadísticos](https://revistaunion.org.fespm.es/index.php/UNION/issue/download/25/22). *Unión. Revista Iberoamericana de Educación Matemática*, 18, 93-104. El enlace lleva al número completo en el sitio oficial de la revista.
 - Contraloría General de la República e INEC. [*Manual para la elaboración de cuadros y gráficos estadísticos*](https://www.inec.gob.pa/archivos/P0705547520250731153243Manual%20de%20Cuadros%20y%20Gr%C3%A1ficas.pdf) (6.ª ed.). Panamá.
 - Friel, S. N., Curcio, F. R. y Bright, G. W. (2001). Making sense of graphs: Critical factors influencing comprehension and instructional implications. *Journal for Research in Mathematics Education*, 32(2), 124-158.
 - Government Analysis Function. (2022). [*Data visualisation: charts*](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/).

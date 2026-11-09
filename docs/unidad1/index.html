@@ -418,8 +418,473 @@ $(document).ready(function () {
 <p><br/></p>
 <p>Esta unidad se concentra en algunos conceptos básicos de estadística,
 el análisis exploratorio de datos y el manejo del software
-<strong>R</strong>.</p>
+<strong>R</strong>. Cada tema se explica con ejemplos y se acompaña de
+código en <strong>R</strong>.</p>
 <p><br/></p>
+<div id="cómo-se-organiza-el-trabajo-en-4-semanas"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se organiza el trabajo en
+4 semanas?</strong></span></h2>
+<table>
+<colgroup>
+<col width="34%" />
+<col width="26%" />
+<col width="39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Semana</th>
+<th align="left">Tema</th>
+<th align="center">Páginas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="left">Software R</td>
+<td align="center">8</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="left">Análisis de datos: conceptos, tablas de frecuencia e
+indicadores</td>
+<td align="center">7</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="left">Gráficos</td>
+<td align="center">7</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="left">Procesamiento de datos, casos e informe</td>
+<td align="center">7</td>
+</tr>
+</tbody>
+</table>
+<p>Cada página tiene ejemplos con código en <strong>R</strong>, errores
+frecuentes y retos con solución. Se recomienda leer las páginas en orden
+y resolver los retos antes de abrir la solución. La <a
+href="../actividad1/index.html">Actividad 1</a> usa los temas de las
+cuatro semanas, así que conviene leer el enunciado desde la primera
+semana.</p>
+<p><br/></p>
+</div>
+<div id="qué-se-necesita-saber-antes-de-empezar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se necesita saber antes de
+empezar?</strong></span></h2>
+<p>La unidad parte de cero en <strong>R</strong> y en estadística: no se
+necesita saber programar. Sí ayuda manejar el computador con soltura,
+algunos temas de matemáticas básicas y la lectura de tablas y gráficos
+sencillos. Antes de la primera semana, revise esta lista y resuelva el
+diagnóstico.</p>
+<p><br/></p>
+<div id="qué-temas-conviene-repasar" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué temas conviene
+repasar?</strong></span></h3>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="45%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tema</th>
+<th align="left">Dónde se usa en la unidad</th>
+<th align="left">Dónde aprender o repasar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Instalar programas en su computador</td>
+<td align="left">Instalar <strong>R</strong>, <strong>RStudio</strong> y
+paquetes</td>
+<td align="left"><a
+href="recurso100.html#cómo-instalar-r-y-rstudio">¿Cómo instalar R y
+RStudio?</a> y <a href="recurso104.html">Paquetes</a></td>
+</tr>
+<tr class="even">
+<td align="left">Carpetas, rutas y archivos comprimidos (.zip)</td>
+<td align="left">Proyectos, importación de datos y entregas</td>
+<td align="left"><a
+href="recurso103.html#qué-son-el-directorio-de-trabajo-y-las-rutas">Proyecto
+en RStudio</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Leer textos técnicos cortos en inglés</td>
+<td align="left">Mensajes de error y ayuda de <strong>R</strong></td>
+<td align="left"><a href="recurso100.html#cómo-pedir-ayuda-en-r">¿Cómo
+pedir ayuda en R?</a></td>
+</tr>
+<tr class="even">
+<td align="left">Fracciones, decimales y porcentajes</td>
+<td align="left">Tablas de frecuencia, gráficos e indicadores</td>
+<td align="left">Matemáticas de bachillerato</td>
+</tr>
+<tr class="odd">
+<td align="left">Punto decimal (en <strong>R</strong> se escribe 3.5, no
+3,5)</td>
+<td align="left">Todo el código</td>
+<td align="left"><a href="recurso101.html">Objetos en R</a></td>
+</tr>
+<tr class="even">
+<td align="left">Sumatoria (<span class="math inline">\(\sum\)</span>) y
+subíndices (<span class="math inline">\(x_1, \ldots, x_n\)</span>)</td>
+<td align="left">Fórmulas de los indicadores</td>
+<td align="left"><a href="recurso203.html">Indicadores de
+centro</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Potencias, raíces y orden de las operaciones</td>
+<td align="left">Varianza y desviación estándar</td>
+<td align="left"><a href="recurso205.html">Indicadores de
+dispersión</a></td>
+</tr>
+<tr class="even">
+<td align="left">Leer tablas y gráficos sencillos</td>
+<td align="left">Toda la unidad</td>
+<td align="left"><a href="recurso201.html">Tablas de frecuencia</a> y <a
+href="recurso300.html">Gráficos</a></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="qué-notación-se-usa" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué notación se
+usa?</strong></span></h3>
+<p>Muchas dificultades vienen de la notación y no del concepto. Estos
+son los símbolos que aparecen con más frecuencia:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="18%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Símbolo</th>
+<th align="left">Se lee</th>
+<th align="left">Significado en la unidad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(n\)</span>, <span
+class="math inline">\(N\)</span></td>
+<td align="left">n, N</td>
+<td align="left">Tamaño de la muestra y de la población</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(x_i\)</span></td>
+<td align="left">x sub i</td>
+<td align="left">Valor de la variable en la observación <span
+class="math inline">\(i\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(\sum\)</span></td>
+<td align="left">sumatoria</td>
+<td align="left">Suma de varios términos</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\bar{x}\)</span>, <span
+class="math inline">\(\mu\)</span></td>
+<td align="left">x barra, mu</td>
+<td align="left">Media de la muestra y de la población</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(s^2\)</span>, <span
+class="math inline">\(s\)</span></td>
+<td align="left">s cuadrado, s</td>
+<td align="left">Varianza y desviación estándar de la muestra</td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(\sigma\)</span></td>
+<td align="left">sigma</td>
+<td align="left">Desviación estándar de la población</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(n_i\)</span>, <span
+class="math inline">\(f_i\)</span></td>
+<td align="left">n sub i, f sub i</td>
+<td align="left">Frecuencia absoluta y relativa de la categoría <span
+class="math inline">\(i\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(N_i\)</span>, <span
+class="math inline">\(F_i\)</span></td>
+<td align="left">N sub i, F sub i</td>
+<td align="left">Frecuencia absoluta y relativa acumulada</td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(Q_1\)</span>, <span
+class="math inline">\(Q_3\)</span>, <span
+class="math inline">\(RIC\)</span></td>
+<td align="left">primer cuartil, tercer cuartil, rango
+intercuartílico</td>
+<td align="left">Indicadores de posición; <span
+class="math inline">\(RIC = Q_3 - Q_1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="está-listo-para-empezar" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Está listo para
+empezar?</strong></span></h3>
+<p>Resuelva estos seis ejercicios sin abrir la solución. No necesita
+<strong>R</strong>: las soluciones muestran cómo se hará cada cálculo en
+la unidad. Si falla uno, repase el tema indicado antes de la primera
+semana.</p>
+</div>
+<div id="ejercicio-1.-porcentajes"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 1.
+Porcentajes</strong></span></h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>En una encuesta a 240 personas, 18 no respondieron la pregunta
+sobre su ingreso. ¿Qué porcentaje no respondió?</p></li>
+<li><p>El arriendo de un apartamento subió de 1,200,000 a 1,500,000
+pesos. ¿En qué porcentaje subió?</p></li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p><span class="math inline">\(18 / 240 = 0.075\)</span>, es decir,
+el 7.5 %.</p></li>
+<li><p>El aumento es de 300,000 pesos, y <span
+class="math inline">\(300{,}000 / 1{,}200{,}000 = 0.25\)</span>: subió
+un 25 %. El porcentaje se calcula sobre el valor inicial, no sobre el
+final.</p></li>
+</ol>
+<pre class="r"><code>18 / 240 * 100</code></pre>
+<pre><code>[1] 7.5</code></pre>
+<pre class="r"><code>(1500000 - 1200000) / 1200000 * 100</code></pre>
+<pre><code>[1] 25</code></pre>
+<p><strong>Si tuvo dificultad</strong>, repase porcentajes: aparecen en
+todas las tablas de frecuencia y en muchos gráficos.</p>
+</details>
+</div>
+<div id="ejercicio-2.-sumatoria-potencias-y-raíces"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 2. Sumatoria,
+potencias y raíces</strong></span></h3>
+<p>Para los datos <span class="math inline">\(x_1 = 2\)</span>, <span
+class="math inline">\(x_2 = 4\)</span> y <span class="math inline">\(x_3
+= 6\)</span>, calcule paso a paso:</p>
+<p><span class="math display">\[\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+\qquad s^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1} \qquad s =
+\sqrt{s^2}\]</span></p>
+<details>
+<summary>
+Ver solución
+</summary>
+<ul>
+<li><span class="math inline">\(\bar{x} = (2 + 4 + 6)/3 =
+4\)</span></li>
+<li><span class="math inline">\(\sum (x_i - \bar{x})^2 = (2 - 4)^2 + (4
+- 4)^2 + (6 - 4)^2 = 4 + 0 + 4 = 8\)</span></li>
+<li><span class="math inline">\(s^2 = 8 / 2 = 4\)</span> y <span
+class="math inline">\(s = \sqrt{4} = 2\)</span></li>
+</ul>
+<pre class="r"><code>x &lt;- c(2, 4, 6)
+mean(x)</code></pre>
+<pre><code>[1] 4</code></pre>
+<pre class="r"><code>var(x)</code></pre>
+<pre><code>[1] 4</code></pre>
+<pre class="r"><code>sd(x)</code></pre>
+<pre><code>[1] 2</code></pre>
+<p>Primero se resta, luego se eleva al cuadrado y al final se suma.
+<strong>Si tuvo dificultad</strong>, no se preocupe: estas fórmulas se
+explican en <a href="recurso203.html">Indicadores de centro</a> y <a
+href="recurso205.html">Indicadores de dispersión</a>, pero conviene
+repasar el orden de las operaciones.</p>
+</details>
+</div>
+<div id="ejercicio-3.-promedio-y-dato-extremo"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 3. Promedio y dato
+extremo</strong></span></h3>
+<p>Los salarios mensuales (millones de pesos) de cinco empleados de una
+empresa son 1.4, 1.5, 1.6, 1.8 y 12.0. Calcule el promedio. ¿Representa
+bien el salario de un empleado típico? ¿Qué valor lo representaría
+mejor?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>El promedio es <span class="math inline">\(18.3 / 5 = 3.66\)</span>
+millones, más del doble de lo que ganan cuatro de los cinco empleados:
+el salario de 12 millones lo jala hacia arriba. El valor del centro de
+los datos ordenados, 1.6 millones, representa mejor al empleado típico.
+Ese valor es la mediana.</p>
+<pre class="r"><code>salario &lt;- c(1.4, 1.5, 1.6, 1.8, 12.0)
+mean(salario)</code></pre>
+<pre><code>[1] 3.66</code></pre>
+<pre class="r"><code>median(salario)</code></pre>
+<pre><code>[1] 1.6</code></pre>
+<p><strong>Si tuvo dificultad</strong>, lo verá en <a
+href="recurso203.html#cómo-influye-un-dato-extremo">¿Cómo influye un
+dato extremo?</a>.</p>
+</details>
+</div>
+<div id="ejercicio-4.-leer-una-tabla"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 4. Leer una
+tabla</strong></span></h3>
+<p>En una encuesta a 50 hogares se preguntó el número de hijos:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Número de hijos</th>
+<th align="center">Hogares</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">0</td>
+<td align="center">12</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">18</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">15</td>
+</tr>
+<tr class="even">
+<td align="center">3 o más</td>
+<td align="center">5</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>Total</strong></td>
+<td align="center"><strong>50</strong></td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: lower-alpha">
+<li><p>¿Qué porcentaje de los hogares tiene como máximo un
+hijo?</p></li>
+<li><p>¿Se puede calcular el número promedio exacto de hijos con esta
+tabla? ¿Por qué?</p></li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p><span class="math inline">\((12 + 18) / 50 = 0.60\)</span>: el 60
+% de los hogares tiene 0 o 1 hijo. Es una frecuencia relativa
+acumulada.</p></li>
+<li><p>No. La categoría 3 o más no dice cuántos hijos tiene cada uno de
+esos 5 hogares: pueden ser 3 o 7. Para el promedio exacto se necesitan
+los datos originales.</p></li>
+</ol>
+<p><strong>Si tuvo dificultad</strong>, repase <a
+href="recurso201.html">Tablas de frecuencia</a>.</p>
+</details>
+</div>
+<div id="ejercicio-5.-tipos-de-variable"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 5. Tipos de
+variable</strong></span></h3>
+<p>Diga si cada variable es categórica o numérica: estrato
+socioeconómico, edad en años, medio de transporte al trabajo, número de
+hijos y código postal.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<table>
+<colgroup>
+<col width="35%" />
+<col width="21%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Tipo</th>
+<th align="left">Comentario</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Estrato socioeconómico</td>
+<td align="left">Categórica ordinal</td>
+<td align="left">Usa números, pero indica un orden, no una cantidad: el
+estrato 4 no es el doble del 2</td>
+</tr>
+<tr class="even">
+<td align="left">Edad en años</td>
+<td align="left">Numérica</td>
+<td align="left">Es una cantidad que se puede promediar</td>
+</tr>
+<tr class="odd">
+<td align="left">Medio de transporte</td>
+<td align="left">Categórica nominal</td>
+<td align="left">Sus categorías no tienen orden</td>
+</tr>
+<tr class="even">
+<td align="left">Número de hijos</td>
+<td align="left">Numérica discreta</td>
+<td align="left">Toma valores enteros</td>
+</tr>
+<tr class="odd">
+<td align="left">Código postal</td>
+<td align="left">Categórica nominal</td>
+<td align="left">Es un número que funciona como nombre: promediarlo no
+tiene sentido</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Si tuvo dificultad</strong>, lo verá en <a
+href="recurso200.html">Conceptos básicos</a>. La pregunta clave es si
+tiene sentido sumar o promediar los valores.</p>
+</details>
+</div>
+<div id="ejercicio-6.-archivos-y-números-en-el-computador"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Ejercicio 6. Archivos y números
+en el computador</strong></span></h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>¿Cómo se escriben en <strong>R</strong> los números tres coma
+cinco y un millón doscientos mil?</p></li>
+<li><p>Descargó el archivo <code>datos.zip</code> y dentro está
+<code>ventas.xlsx</code>. ¿Qué debe hacer antes de abrir
+<code>ventas.xlsx</code> desde <strong>R</strong>?</p></li>
+<li><p>¿Sabe en qué carpeta de su computador quedan los archivos que
+descarga? ¿Cómo encuentra la ruta completa de un archivo?</p></li>
+</ol>
+<details>
+<summary>
+Ver solución
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li><p><code>3.5</code> y <code>1200000</code>. <strong>R</strong> usa
+punto decimal y no admite separadores de miles: <code>3,5</code> y
+<code>1.200.000</code> producen errores o resultados
+equivocados.</p></li>
+<li><p>Descomprimir el archivo y guardar <code>ventas.xlsx</code> en la
+carpeta del proyecto. Si se abre desde la vista del .zip, el archivo
+queda en una carpeta temporal y <strong>R</strong> no lo encuentra en el
+proyecto.</p></li>
+<li><p>Por lo general, en la carpeta Descargas. La ruta completa se ve
+en las propiedades del archivo (Windows) o en la opción Obtener
+información (Mac). En la unidad se trabaja con proyectos, que evitan
+escribir rutas completas.</p></li>
+</ol>
+<p><strong>Si tuvo dificultad</strong>, repase <a
+href="recurso103.html#qué-son-el-directorio-de-trabajo-y-las-rutas">Proyecto
+en RStudio</a>.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
 <div id="contenido-de-la-unidad" class="section level2">
 <h2><span style="color:#034a94"><strong>Contenido de la
 unidad</strong></span></h2>
