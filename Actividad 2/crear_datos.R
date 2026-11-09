@@ -4,39 +4,66 @@
 
 set.seed(2026)
 
-# Hoja 1. Pedidos recibidos entre las 7 y las 8 p. m. en 40 viernes (problema 2)
-# Se simulan con una Poisson de media 18 pedidos por hora.
-pedidos_viernes <- data.frame(
-  viernes = 1:40,
-  pedidos = rpois(40, lambda = 18)
+# ---------------------------------------------------------------
+# Hoja 1. pedidos: muestra aleatoria de 10,000 pedidos del tercer trimestre de 2026
+# ---------------------------------------------------------------
+n <- 10000
+fechas <- seq(as.Date("2026-07-01"), as.Date("2026-09-30"), by = "day")
+fecha  <- sort(sample(fechas, n, replace = TRUE))
+
+zona     <- sample(c("Norte", "Sur", "Oriente", "Oeste"), n, replace = TRUE, prob = c(0.30, 0.30, 0.20, 0.20))
+vehiculo <- sample(c("Moto", "Bicicleta", "Carro"), n, replace = TRUE, prob = c(0.70, 0.20, 0.10))
+
+# Distancia en km: las bicicletas hacen recorridos más cortos
+distancia <- ifelse(vehiculo == "Bicicleta", rgamma(n, shape = 3, scale = 0.6), rgamma(n, shape = 3, scale = 1.1))
+distancia <- round(pmax(distancia, 0.3), 1)
+
+# Tiempo de entrega en minutos: preparación + recorrido + demoras (asimétrico a la derecha)
+minutos_km <- c(Moto = 3.5, Bicicleta = 5.5, Carro = 4.5)[vehiculo]
+extra_zona <- c(Norte = 0, Sur = 2, Oriente = 3, Oeste = 1)[zona]
+tiempo <- 12 + minutos_km * distancia + extra_zona + rgamma(n, shape = 1.5, scale = 4)
+tiempo <- round(tiempo, 1)
+
+metodo_pago <- sample(c("Tarjeta", "Efectivo", "Billetera digital"), n, replace = TRUE, prob = c(0.55, 0.25, 0.20))
+
+# Fraude y alerta del modelo: solo se registran en pagos con tarjeta
+tarjeta <- metodo_pago == "Tarjeta"
+fraude <- ifelse(tarjeta, rbinom(n, 1, 0.02), NA)
+alerta <- ifelse(tarjeta, ifelse(fraude == 1, rbinom(n, 1, 0.92), rbinom(n, 1, 0.05)), NA)
+
+# Prueba A/B de la pantalla de pago: pedidos desde el 19 de agosto (últimas seis semanas)
+en_prueba <- fecha >= as.Date("2026-08-19")
+version <- ifelse(en_prueba, sample(c("A", "B"), n, replace = TRUE), "Ninguna")
+
+# Cancelación: 8.5 % con la pantalla actual, 6.5 % con la nueva; algo mayor con efectivo
+p_cancela <- ifelse(version == "B", 0.065, 0.085)
+p_cancela <- p_cancela + ifelse(metodo_pago == "Efectivo", 0.01, -0.003)
+cancelado <- rbinom(n, 1, p_cancela)
+
+# Un pedido cancelado no tiene tiempo de entrega
+tiempo[cancelado == 1] <- NA
+
+pedidos <- data.frame(
+  pedido = sprintf("P%05d", 1:n), fecha, zona, vehiculo, distancia_km = distancia,
+  metodo_pago, alerta_fraude = alerta, fraude, version_pago = version, cancelado,
+  tiempo_min = tiempo
 )
 
-# Hoja 2. Tiempo de entrega de 60 pedidos elegidos al azar (problema 3)
-# Gamma con forma 6 y media 32 minutos: asimétrica a la derecha, como los tiempos reales.
-tiempos_entrega <- data.frame(
-  pedido = sprintf("P%03d", 1:60),
-  tiempo = round(rgamma(60, shape = 6, scale = 32 / 6), 1)
-)
+# ---------------------------------------------------------------
+# Hoja 2. pedidos_hora: pedidos recibidos por hora, los viernes de 6 a 11 p. m., durante 52 semanas
+# ---------------------------------------------------------------
+media_zona  <- c(Norte = 20, Sur = 18, Oriente = 11, Oeste = 14)
+factor_hora <- c("18" = 0.70, "19" = 1.00, "20" = 0.95, "21" = 0.70, "22" = 0.40)
+pedidos_hora <- expand.grid(hora_inicio = as.integer(names(factor_hora)), zona = names(media_zona), viernes = 1:52,
+                            stringsAsFactors = FALSE)[, c("viernes", "zona", "hora_inicio")]
+lambda <- media_zona[pedidos_hora$zona] * factor_hora[as.character(pedidos_hora$hora_inicio)]
+pedidos_hora$pedidos <- rpois(nrow(pedidos_hora), lambda)
 
-# Hoja 3. Prueba A/B de la pantalla de pago (problema 4)
-# 1,500 pedidos por versión, asignados al azar. Cancelaciones fijas: 128 en A y 98 en B.
-cancela_A <- sample(rep(c(1, 0), c(128, 1500 - 128)))
-cancela_B <- sample(rep(c(1, 0), c(98, 1500 - 98)))
-prueba_ab <- data.frame(
-  pedido = sprintf("AB%04d", 1:3000),
-  version = rep(c("A", "B"), each = 1500),
-  cancelado = c(cancela_A, cancela_B)
-)
-prueba_ab <- prueba_ab[sample(nrow(prueba_ab)), ]   # el orden de las filas no revela la versión
-prueba_ab$pedido <- sprintf("AB%04d", 1:3000)
-
+# ---------------------------------------------------------------
 # Comprobaciones
-stopifnot(nrow(pedidos_viernes) == 40, nrow(tiempos_entrega) == 60, nrow(prueba_ab) == 3000,
-          sum(prueba_ab$cancelado[prueba_ab$version == "A"]) == 128,
-          sum(prueba_ab$cancelado[prueba_ab$version == "B"]) == 98,
-          all(tiempos_entrega$tiempo > 0))
+# ---------------------------------------------------------------
+stopifnot(nrow(pedidos) == 10000, nrow(pedidos_hora) == 52 * 4 * 5,
+          all(is.na(pedidos$fraude) == !tarjeta), all(is.na(pedidos$tiempo_min) == (pedidos$cancelado == 1)),
+          all(pedidos$distancia_km > 0))
 
-writexl::write_xlsx(list(pedidos_viernes = pedidos_viernes,
-                         tiempos_entrega = tiempos_entrega,
-                         prueba_ab = prueba_ab),
-                    "data/datos_actividad2.xlsx")
+writexl::write_xlsx(list(pedidos = pedidos, pedidos_hora = pedidos_hora), "data/datos_actividad2.xlsx")

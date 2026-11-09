@@ -81,7 +81,6 @@ body {
   font-family:calibri,arial,sans-serif;
 }
 
-@import url("estilos_contenidos_servidor.css");
 
 :root{
     --primer-color:#F7B733;

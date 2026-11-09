@@ -386,53 +386,127 @@ promedio?</li>
 usan?</strong></span></h2>
 <p>Los datos están en el archivo <a
 href="data/datos_actividad2.xlsx">datos_actividad2.xlsx</a>, que tiene
-tres hojas. El problema 1 no usa datos: trabaja con la información del
-enunciado.</p>
+dos hojas.</p>
+<p><strong>Hoja <code>pedidos</code>.</strong> Muestra aleatoria de
+10,000 pedidos del tercer trimestre de 2026 (julio a septiembre). Cada
+fila es un pedido. Se usa en los problemas 1, 3 y 4.</p>
 <table>
 <colgroup>
-<col width="14%" />
-<col width="24%" />
-<col width="34%" />
-<col width="26%" />
+<col width="31%" />
+<col width="40%" />
+<col width="28%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Hoja</th>
-<th align="center">Problema</th>
-<th align="left">Cada fila es</th>
-<th align="left">Variables</th>
+<th align="left">Variable</th>
+<th align="left">Descripción</th>
+<th align="left">Valores</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>pedidos_viernes</code></td>
-<td align="center">2</td>
-<td align="left">Un viernes</td>
-<td align="left"><code>viernes</code>: número del viernes, de 1 a
-40.<br/><code>pedidos</code>: pedidos recibidos en la zona sur entre las
-7 y las 8 p. m.</td>
+<td align="left"><code>pedido</code></td>
+<td align="left">Código del pedido</td>
+<td align="left">P00001 a P10000</td>
 </tr>
 <tr class="even">
-<td align="left"><code>tiempos_entrega</code></td>
-<td align="center">3</td>
-<td align="left">Un pedido</td>
-<td align="left"><code>pedido</code>: código del
-pedido.<br/><code>tiempo</code>: tiempo de entrega, en minutos.</td>
+<td align="left"><code>fecha</code></td>
+<td align="left">Fecha del pedido</td>
+<td align="left">2026-07-01 a 2026-09-30</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>prueba_ab</code></td>
-<td align="center">4</td>
-<td align="left">Un pedido</td>
-<td align="left"><code>pedido</code>: código del
-pedido.<br/><code>version</code>: pantalla de pago que vio el cliente,
-<code>A</code> (actual) o <code>B</code>
-(nueva).<br/><code>cancelado</code>: 1 si el pedido se canceló, 0 si
-no.</td>
+<td align="left"><code>zona</code></td>
+<td align="left">Zona de Cali donde se entregó</td>
+<td align="left">Norte, Sur, Oriente, Oeste</td>
+</tr>
+<tr class="even">
+<td align="left"><code>vehiculo</code></td>
+<td align="left">Vehículo del repartidor</td>
+<td align="left">Moto, Bicicleta, Carro</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>distancia_km</code></td>
+<td align="left">Distancia del restaurante al cliente, en
+kilómetros</td>
+<td align="left">Número positivo</td>
+</tr>
+<tr class="even">
+<td align="left"><code>metodo_pago</code></td>
+<td align="left">Forma de pago</td>
+<td align="left">Tarjeta, Efectivo, Billetera digital</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>alerta_fraude</code></td>
+<td align="left">1 si el modelo de fraude marcó el pedido, 0 si no</td>
+<td align="left">Solo para pagos con tarjeta; vacío (<code>NA</code>) en
+los demás</td>
+</tr>
+<tr class="even">
+<td align="left"><code>fraude</code></td>
+<td align="left">1 si la investigación confirmó fraude, 0 si no</td>
+<td align="left">Solo para pagos con tarjeta; vacío (<code>NA</code>) en
+los demás</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>version_pago</code></td>
+<td align="left">Pantalla de pago que vio el cliente</td>
+<td align="left">A (actual) o B (nueva) desde el 19 de agosto; Ninguna
+antes de esa fecha</td>
+</tr>
+<tr class="even">
+<td align="left"><code>cancelado</code></td>
+<td align="left">1 si el pedido se canceló, 0 si no</td>
+<td align="left">0 o 1</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tiempo_min</code></td>
+<td align="left">Tiempo de entrega, en minutos</td>
+<td align="left">Vacío (<code>NA</code>) si el pedido se canceló</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hoja <code>pedidos_hora</code>.</strong> Número de pedidos
+recibidos en cada hora entre las 6 y las 11 p. m., los viernes de las
+últimas 52 semanas, en cada zona. Cada fila es una hora de un viernes en
+una zona (1,040 filas). Se usa en el problema 2.</p>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="40%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Descripción</th>
+<th align="left">Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>viernes</code></td>
+<td align="left">Número del viernes</td>
+<td align="left">1 a 52</td>
+</tr>
+<tr class="even">
+<td align="left"><code>zona</code></td>
+<td align="left">Zona de Cali</td>
+<td align="left">Norte, Sur, Oriente, Oeste</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>hora_inicio</code></td>
+<td align="left">Hora en que empieza la franja de una hora</td>
+<td align="left">18 (6 p. m.) a 22 (10 p. m.)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>pedidos</code></td>
+<td align="left">Pedidos recibidos en esa hora</td>
+<td align="left">Número entero</td>
 </tr>
 </tbody>
 </table>
 <p>Para leer una hoja se usa
-<code>readxl::read_excel("data/datos_actividad2.xlsx", sheet = "pedidos_viernes")</code>.</p>
+<code>readxl::read_excel("data/datos_actividad2.xlsx", sheet = "pedidos")</code>.</p>
 <p><br/></p>
 </div>
 <div id="qué-se-debe-hacer" class="section level2">
@@ -448,32 +522,26 @@ class="section level3">
 <h3><span style="color:#034a94"><strong>Problema 1. ¿Cuántas alertas de
 fraude son fraude de verdad?</strong></span></h3>
 <p>La empresa usa un modelo que marca como sospechosos algunos pedidos
-pagados con tarjeta. Según el área de riesgo:</p>
-<ul>
-<li>El 2 % de los pedidos pagados con tarjeta son fraudulentos.</li>
-<li>El modelo marca el 92 % de los pedidos fraudulentos
-(sensibilidad).</li>
-<li>El modelo deja sin marcar el 95 % de los pedidos legítimos
-(especificidad).</li>
-</ul>
+pagados con tarjeta. Después, un equipo investiga cada caso y confirma
+si hubo fraude. Trabaje solo con los pedidos pagados con tarjeta.</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>Construya una tabla de doble entrada para 10,000 pedidos, con las
-filas fraude y legítimo y las columnas con alerta y sin alerta. Con la
-tabla, calcule la probabilidad de que un pedido con alerta sea fraude,
-la probabilidad de que un pedido sin alerta sea legítimo y la exactitud
-del modelo (la proporción de pedidos bien clasificados).</p></li>
-<li><p>Compruebe por simulación la probabilidad de que un pedido con
-alerta sea fraude: genere 100,000 pedidos, decida al azar cuáles son
-fraude y cuáles reciben alerta según la sensibilidad y la especificidad,
-y calcule la proporción de fraudes entre los pedidos con alerta. Compare
-con el resultado de (a).</p></li>
-<li><p>Grafique la probabilidad de que un pedido con alerta sea fraude
-cuando el porcentaje de fraude va de 0.5 % a 20 %. ¿Qué pasa cuando el
-fraude es poco frecuente?</p></li>
+<li><p>Construya la tabla de doble entrada de <code>fraude</code> y
+<code>alerta_fraude</code>. Con ella, estime el porcentaje de pedidos
+fraudulentos, la sensibilidad del modelo (proporción de fraudes que
+marca), la especificidad (proporción de pedidos legítimos que no marca)
+y la exactitud (proporción de pedidos bien clasificados).</p></li>
+<li><p>Calcule la probabilidad de que un pedido con alerta sea fraude de
+dos formas: directamente con la tabla y con el teorema de Bayes a partir
+de las estimaciones de (a). ¿Coinciden? ¿Por qué?</p></li>
+<li><p>Con la sensibilidad y la especificidad de (a), grafique la
+probabilidad de que un pedido con alerta sea fraude cuando el porcentaje
+de fraude va de 0.5 % a 20 %. ¿Qué pasa cuando el fraude es poco
+frecuente?</p></li>
 <li><p>El área de riesgo propone cancelar automáticamente todo pedido
-con alerta. La empresa recibe 5,000 pedidos con tarjeta al día. ¿Cuántos
-pedidos legítimos se cancelarían al día? ¿Recomendaría la propuesta?
-Proponga una alternativa.</p></li>
+con alerta. La empresa recibe 5,000 pedidos con tarjeta al día. Con sus
+estimaciones, ¿cuántos pedidos legítimos se cancelarían al día y cuántos
+fraudes se detendrían? ¿Recomendaría la propuesta? Proponga una
+alternativa.</p></li>
 </ol>
 <p><br/></p>
 </div>
@@ -482,33 +550,36 @@ id="problema-2.-cuántos-repartidores-programar-el-viernes-en-la-noche"
 class="section level3">
 <h3><span style="color:#034a94"><strong>Problema 2. ¿Cuántos
 repartidores programar el viernes en la noche?</strong></span></h3>
-<p>La empresa debe decidir cuántos repartidores programar en la zona sur
+<p>La empresa debe decidir cuántos repartidores programar en cada zona
 los viernes entre las 7 y las 8 p. m. Cada repartidor entrega 3 pedidos
 en esa hora. Si llegan más pedidos de los que se pueden atender, los
 sobrantes se retrasan. La meta es que eso ocurra en menos del 5 % de los
-viernes.</p>
-<p>La hoja <code>pedidos_viernes</code> tiene el número de pedidos
-recibidos en esa hora durante los últimos 40 viernes. Suponga que el
-número de pedidos en una hora sigue una distribución de Poisson con
-media <span class="math inline">\(\lambda\)</span>.</p>
+viernes. Suponga que el número de pedidos en una hora sigue una
+distribución de Poisson con media <span
+class="math inline">\(\lambda\)</span>.</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>Estime <span class="math inline">\(\lambda\)</span> con el
-estimador de máxima verosimilitud y calcule un intervalo de confianza
-del 95 % para <span class="math inline">\(\lambda\)</span>. Compare la
+<li><p>Con los datos de la zona Sur entre las 7 y las 8 p. m.
+(<code>hora_inicio</code> igual a 19), estime <span
+class="math inline">\(\lambda\)</span> con el estimador de máxima
+verosimilitud y calcule un intervalo de confianza del 95 %. Compare la
 media y la varianza de los datos: ¿se parecen, como lo espera el modelo
 de Poisson?</p></li>
 <li><p>Con el <span class="math inline">\(\lambda\)</span> estimado,
 calcule con <code>ppois()</code> la probabilidad de que los pedidos
-superen la capacidad con 6, 7, 8, 9 y 10 repartidores. Presente los
-resultados en una tabla.</p></li>
-<li><p>Estime por simulación la misma probabilidad para 9 repartidores,
+superen la capacidad con 5, 6, 7, 8 y 9 repartidores. Presente los
+resultados en una tabla. ¿Cuántos repartidores cumplen la meta?</p></li>
+<li><p>Estime por simulación la misma probabilidad para 8 repartidores,
 con 100, 1,000, 10,000 y 100,000 horas simuladas con
 <code>rpois()</code>. Grafique la estimación según el número de horas
-simuladas, con una línea horizontal en el valor exacto de (b). ¿Qué
-resultado de la unidad explica lo que observa?</p></li>
-<li><p>¿Cuántos repartidores recomienda programar? Repita el cálculo de
-(b) con el límite superior del intervalo de (a) y discuta si cambia la
-recomendación.</p></li>
+simuladas, con una línea horizontal en el valor exacto de (b) y otra en
+5 %. ¿Qué resultado de la unidad explica lo que observa? ¿Qué riesgo
+habría si la decisión se tomara con solo 100 horas simuladas?</p></li>
+<li><p>Repita (a) y (b) para las cuatro zonas en la misma franja.
+Presente una tabla con <span class="math inline">\(\hat\lambda\)</span>,
+su intervalo, y el número de repartidores que cumple la meta con <span
+class="math inline">\(\hat\lambda\)</span> y con el límite superior del
+intervalo. ¿Cuántos repartidores recomienda programar en cada
+zona?</p></li>
 </ol>
 <p><br/></p>
 </div>
@@ -517,36 +588,35 @@ class="section level3">
 <h3><span style="color:#034a94"><strong>Problema 3. ¿La aplicación
 cumple la promesa de 30 minutos?</strong></span></h3>
 <p>La aplicación anuncia que el tiempo promedio de entrega es de 30
-minutos. La hoja <code>tiempos_entrega</code> tiene el tiempo de entrega
-de 60 pedidos elegidos al azar el último mes.</p>
+minutos. Use la variable <code>tiempo_min</code> de la hoja
+<code>pedidos</code>.</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>Describa los tiempos con indicadores, un histograma y un gráfico
-Q-Q. ¿Parecen venir de una distribución normal? ¿Se puede usar el
-intervalo t con esta muestra? Justifique con el teorema del límite
-central.</p></li>
+<li><p>¿Cuántos pedidos no tienen tiempo de entrega y por qué? Describa
+los tiempos con indicadores, un histograma y un gráfico Q-Q, y
+compárelos por tipo de vehículo con un diagrama de cajas. ¿Los tiempos
+parecen venir de una distribución normal?</p></li>
 <li><p>Calcule un intervalo de confianza del 95 % para la media con la
-distribución t y otro con bootstrap percentil. Calcule también un
-intervalo bootstrap para la mediana. Compare los intervalos. ¿Qué medida
-describe mejor el tiempo típico de entrega? ¿Por qué?</p></li>
+distribución t y un intervalo bootstrap para la mediana. ¿Por qué los
+intervalos son tan angostos?</p></li>
 <li><p>Plantee las hipótesis y realice una prueba para decidir si el
 tiempo promedio de entrega es mayor que 30 minutos. Interprete el valor
-p. Luego calcule:</p>
-<ul>
-<li>La potencia que tenía la prueba para detectar un retraso de 3
-minutos, es decir, una media real de 33 minutos.</li>
-<li>El tamaño de muestra necesario para que esa potencia sea del 80
-%.</li>
-</ul>
-<p>Con estos resultados, ¿se puede afirmar que la aplicación cumple su
-promesa?</p></li>
-<li><p>Un pedido llega tarde si tarda más de 45 minutos. Estime la
-proporción de pedidos que llegan tarde, con un intervalo de confianza
-del 95 %.</p></li>
+p. ¿De cuántos minutos es la diferencia? ¿Es importante para el
+cliente?</p></li>
+<li><p>Suponga que la empresa no tuviera todos los tiempos y solo
+hubiera auditado 60 pedidos al azar. Extraiga 1,000 muestras aleatorias
+de 60 tiempos, haga la prueba de (c) en cada una y calcule el porcentaje
+de muestras en las que se rechaza <span
+class="math inline">\(H_0\)</span> con <span
+class="math inline">\(\alpha = 0.05\)</span>. Compare ese porcentaje con
+la potencia que da <code>power.t.test()</code>, usando la media y la
+desviación estándar de todos los tiempos como si fueran los valores
+reales. ¿Qué concluye sobre las muestras pequeñas?</p></li>
 <li><p>Al pedirle a una herramienta de inteligencia artificial que
 interpretara el intervalo t de (b), respondió: <em>“Hay un 95 % de
 probabilidad de que el tiempo promedio esté en el intervalo, y el 95 %
 de los pedidos se entregan en ese rango de minutos”</em>. Señale los dos
-errores de esta interpretación y escríbala de forma correcta.</p></li>
+errores de esta interpretación y escríbala de forma correcta. Use sus
+resultados para mostrar el segundo error.</p></li>
 </ol>
 <p><br/></p>
 </div>
@@ -554,10 +624,9 @@ errores de esta interpretación y escríbala de forma correcta.</p></li>
 class="section level3">
 <h3><span style="color:#034a94"><strong>Problema 4. ¿La nueva pantalla
 de pago reduce las cancelaciones?</strong></span></h3>
-<p>La empresa probó una pantalla de pago nueva (B) frente a la actual
-(A). Durante dos semanas, cada pedido se asignó al azar a una de las dos
-versiones. La hoja <code>prueba_ab</code> tiene la versión que vio cada
-cliente y si el pedido se canceló.</p>
+<p>Desde el 19 de agosto, cada pedido se asignó al azar a la pantalla de
+pago actual (A) o a una nueva (B). Trabaje solo con los pedidos que
+participaron en la prueba.</p>
 <ol style="list-style-type: lower-alpha">
 <li><p>Calcule el porcentaje de pedidos cancelados en cada versión y
 preséntelo en una tabla y un gráfico.</p></li>
@@ -596,16 +665,15 @@ sirven?</strong></span></h2>
 <thead>
 <tr class="header">
 <th align="left">Problema</th>
-<th align="left">Páginas de la Unidad 2</th>
+<th align="left">Páginas del curso</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left"><a href="../unidad2/recurso102.html">Tipos de
-probabilidad</a>, <a href="../unidad2/recurso104.html">Teorema de
-Bayes</a> y <a href="../unidad2/recurso101.html">Enfoques y axiomas</a>
-(simulación)</td>
+probabilidad</a> y <a href="../unidad2/recurso104.html">Teorema de
+Bayes</a></td>
 </tr>
 <tr class="even">
 <td align="left">2</td>
@@ -613,7 +681,9 @@ Bayes</a> y <a href="../unidad2/recurso101.html">Enfoques y axiomas</a>
 discretos</a>, <a href="../unidad2/recurso304.html">Métodos de
 estimación</a>, <a href="../unidad2/recurso400.html">Intervalos para una
 población</a> y <a href="../unidad2/recurso303.html">Propiedades de los
-estimadores</a> (ley de los grandes números)</td>
+estimadores</a> (ley de los grandes números). Para filtrar y resumir por
+zona: <a href="../unidad1/recurso401.html">Organizar los datos</a>, de
+la Unidad 1</td>
 </tr>
 <tr class="odd">
 <td align="left">3</td>
@@ -623,7 +693,9 @@ central</a>, <a href="../unidad2/recurso305.html">Bootstrap</a>, <a
 href="../unidad2/recurso400.html">Intervalos para una población</a>, <a
 href="../unidad2/recurso500.html">Conceptos de las pruebas</a> y <a
 href="../unidad2/recurso501.html">Pruebas para medias y
-proporciones</a></td>
+proporciones</a>. De la Unidad 1: <a
+href="../unidad1/recurso402.html">Datos faltantes</a> y <a
+href="../unidad1/recurso303.html">Variable numérica</a></td>
 </tr>
 <tr class="even">
 <td align="left">4</td>
@@ -731,10 +803,10 @@ nota es <span class="math inline">\(5 \times \text{puntos} /
 <tbody>
 <tr class="odd">
 <td align="left"><strong>1. Problema 1: alertas de fraude</strong></td>
-<td align="left">Tabla y probabilidades correctas, simulación que
-coincide con el cálculo, gráfico bien interpretado y recomendación
+<td align="left">Tabla y estimaciones correctas, probabilidad calculada
+con la tabla y con Bayes, gráfico bien interpretado y recomendación
 justificada con el número de pedidos cancelados</td>
-<td align="left">Cálculos correctos, con la simulación, el gráfico o la
+<td align="left">Cálculos correctos, con la comparación, el gráfico o la
 recomendación poco desarrollados</td>
 <td align="left">Calcula las probabilidades, pero confunde alguna
 condicional o no interpreta el gráfico</td>
@@ -745,15 +817,17 @@ condicional o no interpreta el gráfico</td>
 </tr>
 <tr class="even">
 <td align="left"><strong>2. Problema 2: repartidores</strong></td>
-<td align="left">Estima <span class="math inline">\(\lambda\)</span> con
-su intervalo, revisa el supuesto de Poisson, calcula bien las
-probabilidades, explica la simulación con la ley de los grandes números
-y justifica la recomendación considerando la incertidumbre de <span
+<td align="left">Filtra bien los datos, estima <span
+class="math inline">\(\lambda\)</span> con su intervalo, revisa el
+supuesto de Poisson, calcula bien las probabilidades, explica la
+simulación con la ley de los grandes números y recomienda por zona
+considerando la incertidumbre de <span
 class="math inline">\(\lambda\)</span></td>
-<td align="left">Todo correcto, con la discusión del supuesto o de la
-incertidumbre incompleta</td>
+<td align="left">Todo correcto, con la discusión del supuesto, de la
+incertidumbre o de las zonas incompleta</td>
 <td align="left">Probabilidades correctas, pero sin intervalo para <span
-class="math inline">\(\lambda\)</span> o sin explicar la simulación</td>
+class="math inline">\(\lambda\)</span>, sin explicar la simulación o sin
+las cuatro zonas</td>
 <td align="left">Errores en <code>ppois()</code> (por ejemplo, <span
 class="math inline">\(P(X \geq c)\)</span> en lugar de <span
 class="math inline">\(P(X &gt; c)\)</span>) o recomendación sin
@@ -763,14 +837,13 @@ sustento</td>
 </tr>
 <tr class="odd">
 <td align="left"><strong>3. Problema 3: tiempo de entrega</strong></td>
-<td align="left">Describe la forma de los datos, justifica el intervalo
-t con el TLC, compara bien los intervalos, plantea e interpreta la
-prueba junto con la potencia, estima la proporción de pedidos tarde y
-corrige los dos errores de la interpretación</td>
+<td align="left">Explica los faltantes, describe la forma de los datos,
+interpreta intervalos y prueba, distingue significancia de importancia,
+relaciona la simulación de muestras de 60 con la potencia y corrige los
+dos errores de la interpretación</td>
 <td align="left">Todo correcto, con algún inciso poco desarrollado</td>
-<td align="left">Intervalos y prueba correctos, pero concluye que la
-promesa se cumple porque no se rechaza <span
-class="math inline">\(H_0\)</span>, sin tener en cuenta la potencia</td>
+<td align="left">Intervalos y prueba correctos, pero concluye solo por
+el valor p o no relaciona la simulación con la potencia</td>
 <td align="left">Errores en las hipótesis o en la interpretación del
 valor p o del intervalo</td>
 <td align="left">Cálculos incorrectos o sin interpretación</td>
