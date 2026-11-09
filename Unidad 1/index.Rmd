@@ -1,5 +1,5 @@
 ---
-title: <span style="color:#034a94"> **Experiencia**</span>
+title: <span style="color:#034a94"> **Unidad 1. Análisis exploratorio de datos con R**</span>
 output:
   html_document:
     toc: no
