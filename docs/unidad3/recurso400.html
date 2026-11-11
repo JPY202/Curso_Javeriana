@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Supuestos del modelo</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Supuestos del modelo</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Las pruebas, los intervalos y las predicciones de las páginas
+anteriores se apoyan en cuatro supuestos sobre los errores.
+<code>lm()</code> calcula la recta aunque los supuestos no se cumplan, y
+no avisa. Por eso hay que saber qué dice cada supuesto, qué se daña si
+falla y qué tan grave es.</p>
+<p>Esta página presenta los supuestos y sus consecuencias. La página
+siguiente, <a href="recurso401.html">Revisión de los supuestos</a>,
+muestra cómo revisarlos con los datos, y la sección
+<strong>Soluciones</strong> del menú, qué hacer cuando fallan. Los
+bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="cuáles-son-los-supuestos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuáles son los
+supuestos?</strong></span></h2>
+<p>El modelo es <span class="math inline">\(y_i = \beta_0 + \beta_1 x_i
++ \varepsilon_i\)</span>, con:</p>
+<table>
+<colgroup>
+<col width="28%" />
+<col width="34%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Supuesto</th>
+<th align="left">En símbolos</th>
+<th align="left">En palabras</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1. Linealidad</td>
+<td align="left"><span class="math inline">\(E(\varepsilon_i \mid x_i) =
+0\)</span></td>
+<td align="left">La media de <span class="math inline">\(y\)</span> es
+una recta en <span class="math inline">\(x\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">2. Varianza constante (homocedasticidad)</td>
+<td align="left"><span class="math inline">\(\text{Var}(\varepsilon_i
+\mid x_i) = \sigma^2\)</span></td>
+<td align="left">La dispersión alrededor de la recta es la misma para
+todo <span class="math inline">\(x\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">3. Independencia</td>
+<td align="left">Los <span class="math inline">\(\varepsilon_i\)</span>
+no están correlacionados</td>
+<td align="left">Conocer el error de una observación no dice nada del
+error de otra</td>
+</tr>
+<tr class="even">
+<td align="left">4. Normalidad</td>
+<td align="left"><span class="math inline">\(\varepsilon_i \sim N(0,
+\sigma^2)\)</span></td>
+<td align="left">Alrededor de la recta, los datos siguen una normal</td>
+</tr>
+</tbody>
+</table>
+<p>Los supuestos se refieren a los <strong>errores</strong>, no a las
+variables. No se necesita que <span class="math inline">\(x\)</span> ni
+<span class="math inline">\(y\)</span> tengan distribución normal: el
+abdomen puede tener cualquier distribución.</p>
+<p><br/></p>
+</div>
+<div id="qué-pasa-si-falla-cada-supuesto" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasa si falla cada
+supuesto?</strong></span></h2>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="19%" />
+<col width="31%" />
+<col width="24%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Si falla</th>
+<th align="left">Pendiente estimada</th>
+<th align="left">Errores estándar, pruebas e IC</th>
+<th align="left">Intervalo de predicción</th>
+<th align="left">Qué tan grave</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Linealidad</td>
+<td align="left">Sesgada: describe mal la relación</td>
+<td align="left">Sin sentido, porque el modelo es otro</td>
+<td align="left">Sesgado</td>
+<td align="left">Muy grave</td>
+</tr>
+<tr class="even">
+<td align="left">Varianza constante</td>
+<td align="left">Insesgada, pero ya no es la más precisa</td>
+<td align="left">Incorrectos: los IC pueden cubrir menos del 95 %</td>
+<td align="left">Muy ancho donde hay poca variación y muy angosto donde
+hay mucha</td>
+<td align="left">Grave para la inferencia</td>
+</tr>
+<tr class="odd">
+<td align="left">Independencia</td>
+<td align="left">Insesgada</td>
+<td align="left">Incorrectos, casi siempre demasiado pequeños: se
+encuentran efectos que no existen</td>
+<td align="left">Incorrecto</td>
+<td align="left">Grave</td>
+</tr>
+<tr class="even">
+<td align="left">Normalidad</td>
+<td align="left">Insesgada y la mejor entre las lineales</td>
+<td align="left">Aproximadamente correctos si <span
+class="math inline">\(n\)</span> es grande, por el teorema del límite
+central</td>
+<td align="left">Incorrecto aunque <span
+class="math inline">\(n\)</span> sea grande</td>
+<td align="left">Leve para la inferencia; importante para predecir</td>
+</tr>
+</tbody>
+</table>
+<p>Hay dos lecciones:</p>
+<ul>
+<li><strong>El orden de importancia</strong> es linealidad,
+independencia, varianza constante y normalidad. La normalidad, que suele
+recibir más atención, es la que menos afecta las conclusiones sobre la
+pendiente cuando hay muchos datos.</li>
+<li><strong>Un supuesto que falla puede parecer otro.</strong> Una curva
+no modelada produce residuales que cambian de dispersión, y un orden en
+el tiempo produce rachas de residuales positivos y negativos.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="qué-tan-grave-es-la-varianza-no-constante"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tan grave es la varianza no
+constante?</strong></span></h2>
+<p>Una simulación lo muestra. Se generan 5 000 muestras de 100 datos de
+un modelo con pendiente verdadera igual a 2, primero con varianza
+constante y luego con una desviación estándar que crece con <span
+class="math inline">\(x\)</span>. En cada muestra se calcula el
+intervalo del 95 % para la pendiente y se cuenta cuántas veces contiene
+el 2.</p>
+<pre class="r"><code>set.seed(2026)
+n &lt;- 100
+x &lt;- runif(n, 1, 10)
+cubre &lt;- function(desv_est) {
+  y &lt;- 5 + 2 * x + rnorm(n, 0, desv_est)
+  ic &lt;- confint(lm(y ~ x))[2, ]
+  ic[1] &lt;= 2 &amp; 2 &lt;= ic[2]
+}
+c(varianza_constante = mean(replicate(5000, cubre(3))),
+  varianza_creciente = mean(replicate(5000, cubre(0.6 * x^1.5))))</code></pre>
+<pre><code>varianza_constante varianza_creciente 
+            0.9454             0.8954 </code></pre>
+<p>Con varianza constante, el intervalo cubre el valor verdadero cerca
+del 95 % de las veces, como promete. Con varianza creciente, la
+cobertura cae: el intervalo dice 95 % pero acierta menos. La pendiente
+estimada sigue siendo insesgada; lo que falla es la medida de su
+incertidumbre.</p>
+<p><br/></p>
+</div>
+<div id="qué-tan-grave-es-la-falta-de-linealidad"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tan grave es la falta de
+linealidad?</strong></span></h2>
+<p>Si la relación real es curva y se ajusta una recta, la pendiente
+describe un promedio de pendientes distintas y las predicciones se
+equivocan de forma sistemática.</p>
+<pre class="r"><code>set.seed(2026)
+x &lt;- runif(100, 1, 10)
+y &lt;- 10 * log(x) + rnorm(100, 0, 1.5)
+recta &lt;- lm(y ~ x)
+plot(x, y, pch = 19, col = &quot;#034A9480&quot;, las = 1, xlim = c(0, 11), ylim = c(-5, 30))
+abline(recta, col = &quot;#C0392B&quot;, lwd = 2)
+curve(10 * log(x), add = TRUE, lty = 2, lwd = 2)
+legend(&quot;bottomright&quot;, bty = &quot;n&quot;, lty = c(1, 2), lwd = 2, col = c(&quot;#C0392B&quot;, &quot;black&quot;),
+       legend = c(&quot;Recta ajustada&quot;, &quot;Media verdadera&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso400_files/figure-html/unnamed-chunk-2-1.png" alt="Puntos que forman una curva creciente que se aplana; la recta queda por encima de los puntos en los extremos y por debajo en el centro" width="65%" />
+<p class="caption">
+Datos simulados con relación curva y la recta ajustada.
+</p>
+</div>
+<p>La recta queda por debajo de la media verdadera en el centro y por
+encima en los extremos. Ningún intervalo corrige esto: el problema es el
+modelo, no la muestra.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-ven-los-supuestos-en-los-residuales"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se ven los supuestos en
+los residuales?</strong></span></h2>
+<p>Como los errores no se observan, los supuestos se revisan con los
+<strong>residuales</strong>. El gráfico más útil es el de
+<strong>residuales contra valores ajustados</strong>. Si los supuestos
+se cumplen, los puntos forman una franja horizontal alrededor de cero,
+sin forma.</p>
+<pre class="r"><code>set.seed(2026)
+x &lt;- runif(150, 1, 10)
+casos &lt;- list(
+  &quot;Supuestos razonables&quot; = 5 + 2 * x + rnorm(150, 0, 2),
+  &quot;Varianza creciente&quot; = 5 + 2 * x + rnorm(150, 0, 0.5 * x),
+  &quot;Relación curva&quot; = 5 + 2 * x + 0.6 * (x - 5.5)^2 + rnorm(150, 0, 1.5),
+  &quot;Un punto atípico&quot; = c(5 + 2 * x[-1] + rnorm(149, 0, 2), 5 + 2 * x[1] + 15)
+)
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+for (nombre in names(casos)) {
+  m &lt;- lm(casos[[nombre]] ~ x)
+  plot(fitted(m), residuals(m), pch = 19, col = &quot;#034A9480&quot;, las = 1, main = nombre,
+       xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales&quot;)
+  abline(h = 0, lty = 2)
+}</code></pre>
+<div class="figure">
+<img src="recurso400_files/figure-html/unnamed-chunk-3-1.png" alt="Cuatro paneles: una franja horizontal sin forma; un embudo que se abre a la derecha; una curva en forma de U; una franja con un punto muy alejado" width="100%" />
+<p class="caption">
+Residuales contra valores ajustados en cuatro situaciones simuladas.
+</p>
+</div>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Patrón</th>
+<th align="left">Indica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Franja horizontal sin forma</td>
+<td align="left">Los supuestos 1 y 2 son razonables</td>
+</tr>
+<tr class="even">
+<td align="left">Embudo (la dispersión crece o decrece)</td>
+<td align="left">Varianza no constante</td>
+</tr>
+<tr class="odd">
+<td align="left">Curva</td>
+<td align="left">Falta de linealidad</td>
+</tr>
+<tr class="even">
+<td align="left">Puntos muy alejados</td>
+<td align="left">Valores atípicos (página <a
+href="recurso600.html">Puntos influyentes</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cuándo-importa-la-independencia" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuándo importa la
+independencia?</strong></span></h2>
+<p>La independencia depende de <strong>cómo se recogieron los
+datos</strong>, más que de los datos mismos. Hay que preguntarse si unas
+observaciones pueden estar relacionadas con otras:</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="74%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Situación</th>
+<th align="left">Por qué falla la independencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Datos en el tiempo (ventas mensuales, una serie
+anual)</td>
+<td align="left">Lo que pasa un mes se parece a lo del mes anterior</td>
+</tr>
+<tr class="even">
+<td align="left">Mediciones repetidas en las mismas personas</td>
+<td align="left">Las mediciones de una persona se parecen entre sí</td>
+</tr>
+<tr class="odd">
+<td align="left">Grupos (estudiantes de un mismo colegio, árboles de una
+misma finca)</td>
+<td align="left">Los del mismo grupo comparten condiciones</td>
+</tr>
+<tr class="even">
+<td align="left">Datos en el espacio (municipios vecinos)</td>
+<td align="left">Los vecinos se parecen</td>
+</tr>
+</tbody>
+</table>
+<p>En los datos de grasa corporal, cada hombre se midió una vez y no hay
+un orden en el tiempo: no hay razones para dudar de la independencia. Si
+los datos tienen alguna de estas estructuras, se necesitan otros modelos
+(series de tiempo, modelos mixtos), que están fuera de esta unidad.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Revisar la normalidad de <span
+class="math inline">\(x\)</span> o de <span
+class="math inline">\(y\)</span></td>
+<td align="left">Los supuestos son sobre los errores</td>
+<td align="left">Revisar los residuales</td>
+</tr>
+<tr class="even">
+<td align="left">Creer que la heterocedasticidad sesga la pendiente</td>
+<td align="left">Se confunde sesgo con precisión</td>
+<td align="left">La pendiente sigue insesgada; fallan los errores
+estándar</td>
+</tr>
+<tr class="odd">
+<td align="left">Preocuparse solo por la normalidad</td>
+<td align="left">Es el supuesto más conocido</td>
+<td align="left">Revisar primero linealidad e independencia</td>
+</tr>
+<tr class="even">
+<td align="left">Revisar la independencia con una prueba sin orden en
+los datos</td>
+<td align="left">Las pruebas de independencia necesitan un orden</td>
+<td align="left">Pensar en cómo se recogieron los datos</td>
+</tr>
+<tr class="odd">
+<td align="left">Concluir que se cumple un supuesto porque
+<code>lm()</code> no dio error</td>
+<td align="left"><code>lm()</code> no revisa supuestos</td>
+<td align="left">Revisar con gráficos de residuales</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-errores-no-normales"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Errores no
+normales</strong></span></h3>
+<p>Repita la simulación de cobertura con errores exponenciales
+centrados, <code>rexp(n, 1/3) - 3</code>, que son muy asimétricos.
+¿Cuánto cubre el intervalo de la pendiente?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+n &lt;- 100
+x &lt;- runif(n, 1, 10)
+mean(replicate(5000, {
+  y &lt;- 5 + 2 * x + rexp(n, 1 / 3) - 3
+  ic &lt;- confint(lm(y ~ x))[2, ]
+  ic[1] &lt;= 2 &amp; 2 &lt;= ic[2]
+}))</code></pre>
+<pre><code>[1] 0.9524</code></pre>
+<p>Cubre cerca del 95 %. Con 100 datos, la falta de normalidad casi no
+afecta el intervalo de la pendiente.</p>
+</details>
+</div>
+<div id="reto-2.-leer-un-gráfico"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Leer un
+gráfico</strong></span></h3>
+<p>Un estudiante ajusta el gasto en vivienda según el ingreso de 300
+hogares y ve que los residuales forman un embudo que se abre hacia la
+derecha. ¿Qué supuesto falla? ¿Está sesgada la pendiente? ¿Qué pasa con
+su intervalo de confianza?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Falla la varianza constante: los hogares de más ingreso varían más en
+su gasto. La pendiente sigue siendo insesgada si la relación es lineal,
+pero su error estándar y su intervalo de confianza no son confiables. La
+página <a href="recurso501.html">Varianza no constante</a> muestra cómo
+corregirlo.</p>
+</details>
+</div>
+<div id="reto-3.-son-independientes"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Son
+independientes?</strong></span></h3>
+<p>¿En cuál de estos estudios hay que dudar de la independencia? (a) El
+peso de 200 recién nacidos de un hospital en un año. (b) El precio
+diario del dólar durante 2025. (c) La nota de 120 estudiantes de 4
+cursos de un mismo colegio.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>En (b), porque el precio de un día se parece al del día anterior. En
+(c), porque los estudiantes de un mismo curso comparten profesor y
+condiciones. En (a) puede haber dudas si hay gemelos, pero en general se
+acepta la independencia.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. La sección 3.2
+resume los efectos del incumplimiento de cada supuesto.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 4.</li>
+<li>Fox, J. (2016). <em>Applied Regression Analysis and Generalized
+Linear Models</em> (3.ª ed.). Sage. Capítulo 12.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Fox, J. (2016). <em>Applied Regression Analysis and Generalized
+Linear Models</em> (3.ª ed.). Sage.</li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

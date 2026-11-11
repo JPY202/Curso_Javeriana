@@ -1,0 +1,305 @@
+---
+title: <span style="color:#034a94"> **Revisión de los supuestos**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+Esta página revisa los cuatro supuestos del modelo de la grasa corporal según el abdomen. El orden es siempre el mismo: **primero los gráficos de residuales, después las pruebas como complemento**. Los gráficos muestran qué falla y dónde; las pruebas dan un valor p, pero no dicen si el problema es grande ni de dónde viene.
+
+Al final se verá que una sola observación cambia la conclusión de casi todas las pruebas. Los bloques de código se ejecutan en orden.
+
+Los datos se descargan aquí: <a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+grasa <- read.csv("data/grasa.csv")
+modelo <- lm(grasa ~ abdomen, data = grasa)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué residuales se usan?**</span>
+
+Los residuales ordinarios, $e_i = y_i - \hat{y}_i$, no tienen todos la misma varianza: los de los puntos con $x$ lejos de la media varían menos, porque esos puntos "jalan" la recta hacia ellos. Por eso se usan versiones **estandarizadas**, que se comparan con una misma escala.
+
+| Residual | Fórmula | En R | Uso |
+|:---------|:--------|:-----|:----|
+| Ordinario | $e_i = y_i - \hat{y}_i$ | `residuals(modelo)` | En las unidades de $y$ |
+| Estandarizado | $r_i = \dfrac{e_i}{\hat{\sigma}\sqrt{1 - h_{ii}}}$ | `rstandard(modelo)` | Gráficos y normalidad |
+| Estudentizado (R-student) | Igual, pero con $\hat{\sigma}_{(i)}$, la estimación sin la observación $i$ | `rstudent(modelo)` | Detectar atípicos |
+
+$h_{ii}$ es el **apalancamiento** de la observación $i$: mide qué tan lejos está su $x$ del centro de los datos (página [Puntos influyentes](recurso600.html)). Los residuales estandarizados y estudentizados se leen como valores $z$: la mayoría debería estar entre −2 y 2, y valores más allá de ±3 son raros.
+
+```{r}
+head(data.frame(ordinario = residuals(modelo), estandarizado = rstandard(modelo),
+                estudentizado = rstudent(modelo)))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué muestran los gráficos de residuales?**</span>
+
+`plot()` aplicada a un modelo produce cuatro gráficos de diagnóstico. Los tres primeros revisan los supuestos:
+
+```{r, fig.width=10, fig.height=3.8, fig.cap="Gráficos de diagnóstico del modelo de la grasa según el abdomen.", fig.alt="Tres paneles: residuales contra ajustados con una franja horizontal y la observación 39 abajo a la derecha; gráfico Q-Q casi recto con la observación 39 separada en el extremo inferior; raíz de los residuales estandarizados contra ajustados, plano salvo en el extremo derecho, donde sube por la observación 39", out.width="100%"}
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+plot(modelo, which = 1:3, las = 1)
+```
+
+| Gráfico | Qué revisa | Qué se espera | En el ejemplo |
+|:--------|:-----------|:--------------|:--------------|
+| Residuals vs Fitted | Linealidad y varianza | Franja horizontal sin forma; la línea roja (un suavizado) cerca de cero | Franja sin forma clara; la línea se curva solo en el extremo derecho, donde está la observación 39 |
+| Q-Q Residuals | Normalidad | Puntos sobre la diagonal | Casi recto, con la observación 39 separada abajo |
+| Scale-Location | Varianza constante | Línea roja horizontal | Horizontal en casi todo el rango; sube en el extremo derecho, otra vez por la observación 39 |
+
+**R** marca con su número las tres observaciones con los residuales más grandes. La **39** aparece en los tres gráficos: es el hombre de 148 cm de abdomen, con menos grasa de la que predice la recta.
+
+Hay que mirar el gráfico **sin** esperar perfección. Con datos reales, siempre hay algo de irregularidad. La pregunta es si hay un patrón claro.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba la linealidad?**</span>
+
+Hay dos formas sencillas de probar si una recta es suficiente.
+
+**Agregar un término cuadrático.** Si la relación es curva, el término $x^2$ debería ser significativo:
+
+```{r}
+modelo_cuad <- lm(grasa ~ abdomen + I(abdomen^2), data = grasa)
+anova(modelo, modelo_cuad)
+```
+
+`anova()` con dos modelos compara si el modelo grande reduce la suma de cuadrados del error más de lo que se espera por azar. El valor p es `r format(signif(anova(modelo, modelo_cuad)[2, 6], 2), scientific = FALSE)`: hay evidencia de curvatura. Pero el gráfico no mostraba una curva clara. ¿De dónde viene? Se vuelve a esto al final de la página.
+
+**Prueba de falta de ajuste.** Cuando hay varias observaciones con el mismo valor de $x$ (**réplicas**), se compara la recta con un modelo que da una media distinta a cada valor de $x$, sin forma impuesta. En **R** se hace con `factor()`:
+
+```{r}
+length(unique(grasa$abdomen))   # valores distintos de abdomen en 252 hombres
+anova(modelo, lm(grasa ~ factor(abdomen), data = grasa))
+```
+
+El valor p es `r round(anova(modelo, lm(grasa ~ factor(abdomen), data = grasa))[2, 6], 2)`: las medias de los grupos no se alejan de la recta más de lo esperado. La prueba tiene poca potencia aquí, porque la mayoría de los valores de abdomen aparecen una sola vez.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba la varianza constante?**</span>
+
+La **prueba de Breusch-Pagan** ajusta una regresión de los residuales al cuadrado sobre $x$. Si la varianza cambia con $x$, esa regresión tiene pendiente.
+
+$$
+H_0: \text{la varianza es constante} \qquad H_1: \text{la varianza cambia con } x
+$$
+
+Se usa la función `bptest()` del paquete `lmtest`. El paquete `lmtest` reúne pruebas para revisar modelos de regresión; se instala una sola vez con `install.packages("lmtest")`.
+
+```{r}
+library(lmtest)
+bptest(modelo)
+```
+
+El valor p es `r format(signif(bptest(modelo)$p.value, 2), scientific = FALSE)`: la prueba rechaza la varianza constante, aunque el tercer gráfico solo subía en el extremo donde está la observación 39.
+
+La **prueba de White** es una variante que también incluye $x^2$, para detectar una varianza que crece y luego decrece:
+
+```{r}
+bptest(modelo, ~ abdomen + I(abdomen^2), data = grasa)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba la normalidad?**</span>
+
+La **prueba de Shapiro-Wilk** se aplica a los residuales estandarizados:
+
+```{r}
+shapiro.test(rstandard(modelo))
+```
+
+Con un valor p de `r round(shapiro.test(rstandard(modelo))$p.value, 3)`, no se rechaza la normalidad al 5 %. Esto **no prueba** que los errores sean normales: solo dice que la prueba no encontró evidencia en contra. El gráfico Q-Q es más informativo.
+
+No se usa la prueba de Kolmogorov-Smirnov con `ks.test(residuos, "pnorm", mean(residuos), sd(residuos))`: al estimar la media y la desviación con los mismos datos, su valor p es incorrecto (sale demasiado grande).
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba la independencia?**</span>
+
+La independencia se revisa **cuando hay un orden** en los datos, casi siempre el tiempo. En los datos de grasa no lo hay: el número de cada hombre no indica cuándo se midió. Aplicar aquí una prueba de independencia no tiene sentido.
+
+Para ver cómo se revisa, se usa otro caso: la tasa de condenas de mujeres en Canadá (por cada 100 000) según la fecundidad (hijos por cada 1 000 mujeres), de 1931 a 1968 (Fox y Hartnagel, 1979; datos del paquete `carData`).
+
+Los datos se descargan aquí: <a href="data/condenas.csv" download>condenas.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+condenas <- read.csv("data/condenas.csv")
+modelo_c <- lm(condenas_mujeres ~ fecundidad, data = condenas)
+coef(modelo_c)
+```
+
+Con datos en el tiempo, se grafican los residuales **en orden**:
+
+```{r, fig.width=7, fig.height=3.8, fig.cap="Residuales del modelo de condenas en orden de tiempo.", fig.alt="Residuales unidos por una línea; forman rachas largas: negativos entre 1931 y 1938, positivos entre 1939 y 1943, negativos entre 1944 y 1958 y positivos entre 1959 y 1966", out.width="75%", fig.align="center"}
+plot(condenas$anio, residuals(modelo_c), type = "b", pch = 19, col = "#034A94", las = 1,
+     xlab = "Año", ylab = "Residuales", ylim = c(-60, 60))
+abline(h = 0, lty = 2)
+```
+
+Los residuales forman **rachas**: son negativos de 1931 a 1938, positivos durante la Segunda Guerra Mundial (1939 a 1943), negativos de 1944 a 1958 y positivos de 1959 a 1966. Si fueran independientes, cambiarían de signo al azar. La **prueba de Durbin-Watson** mide la correlación entre cada residual y el anterior:
+
+```{r}
+dwtest(modelo_c, alternative = "two.sided")
+```
+
+El estadístico $DW$ vale cerca de 2 si no hay correlación, y se acerca a 0 si la correlación es positiva. Aquí $DW = `r round(dwtest(modelo_c)$statistic, 2)`$ y el valor p es casi cero: los errores están correlacionados en el tiempo. Los errores estándar de este modelo subestiman la incertidumbre, y la pendiente parece más precisa de lo que es. Para estos datos se necesitan modelos de series de tiempo.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué pasa sin la observación 39?**</span>
+
+Tres pruebas del modelo de la grasa señalaron problemas o casi: curvatura (p = `r format(signif(anova(modelo, modelo_cuad)[2, 6], 2), scientific = FALSE)`), varianza no constante (p = `r format(signif(bptest(modelo)$p.value, 2), scientific = FALSE)`) y normalidad en el límite (p = `r round(shapiro.test(rstandard(modelo))$p.value, 3)`). Los gráficos, en cambio, solo mostraban un punto separado: la observación 39. Se repiten las pruebas sin ella:
+
+```{r}
+sin39 <- grasa[grasa$id != 39, ]
+modelo_sin39 <- lm(grasa ~ abdomen, data = sin39)
+c(curvatura = anova(modelo_sin39, lm(grasa ~ abdomen + I(abdomen^2), data = sin39))[2, 6],
+  breusch_pagan = unname(bptest(modelo_sin39)$p.value),
+  shapiro = shapiro.test(rstandard(modelo_sin39))$p.value)
+```
+
+Sin ese hombre, ninguna prueba encuentra problemas. **Un solo punto, de 252, producía la curvatura, la heterocedasticidad y buena parte de la señal contra la normalidad.**
+
+Esto no quiere decir que haya que borrarlo. Es un hombre real de 165 kg, no un error. Quiere decir que antes de concluir que un supuesto falla, hay que ver si el problema es de todos los datos o de unos pocos. La página [Puntos influyentes](recurso600.html) muestra cómo identificarlos y qué hacer con ellos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se usan bien las pruebas?**</span>
+
+| Recomendación | Por qué |
+|:--------------|:--------|
+| Graficar antes de probar | El gráfico muestra qué falla y dónde; el valor p no |
+| Fijar el nivel de significancia antes de ver los resultados | Elegir $\alpha$ después para que una prueba rechace o no es hacer trampa |
+| No elegir la prueba según su resultado | Con varias pruebas para lo mismo, alguna rechazará por azar |
+| No concluir que el supuesto se cumple porque no se rechazó | No rechazar solo dice que no hay evidencia en contra |
+| Con $n$ grande, mirar la magnitud | Con miles de datos, las pruebas rechazan desvíos sin importancia práctica |
+| Con $n$ pequeño, desconfiar de un "no rechazo" | Las pruebas tienen poca potencia |
+| Pensar en el diseño para la independencia | Las pruebas de independencia necesitan un orden en los datos |
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Aplicar Durbin-Watson a datos sin orden | La prueba depende del orden de las filas | Usarla solo con datos en el tiempo o en otro orden con sentido |
+| Usar `ks.test()` con la media y la desviación de los residuales | El valor p es incorrecto | Usar Shapiro-Wilk y el gráfico Q-Q |
+| Decir "los residuales son normales" porque $p > 0.05$ | No rechazar no prueba la normalidad | Decir "no hay evidencia contra la normalidad" |
+| Concluir que la varianza no es constante por una prueba | Un solo punto puede producir el rechazo | Revisar los gráficos y los puntos influyentes |
+| Correr muchas pruebas y quedarse con la que conviene | Se infla la probabilidad de error | Elegir las pruebas antes de ver los datos |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. El modelo del pecho**</span>
+
+Revise los supuestos del modelo de la grasa según la circunferencia del pecho: gráficos y las pruebas de Breusch-Pagan y Shapiro-Wilk. ¿Aparece otra vez la observación 39?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, fig.width=10, fig.height=3.8, fig.cap="Gráficos de diagnóstico del modelo de la grasa según el pecho.", fig.alt="Tres paneles de diagnóstico con la observación 39 separada del resto", out.width="100%"}
+modelo_pecho <- lm(grasa ~ pecho, data = grasa)
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+plot(modelo_pecho, which = 1:3, las = 1)
+bptest(modelo_pecho)$p.value
+shapiro.test(rstandard(modelo_pecho))$p.value
+```
+
+Sí: el hombre 39 también tiene el pecho más grande de la muestra y vuelve a aparecer separado en los gráficos. Las conclusiones de las pruebas deben leerse con ese punto en mente.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Durbin-Watson sin sentido**</span>
+
+Aplique `dwtest()` al modelo de la grasa. Luego desordene las filas al azar (`set.seed(2026)`) y repita. ¿Por qué cambia el resultado?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+dwtest(modelo)$p.value
+set.seed(2026)
+desordenado <- grasa[sample(nrow(grasa)), ]
+dwtest(lm(grasa ~ abdomen, data = desordenado))$p.value
+```
+
+El resultado cambia porque Durbin-Watson compara cada residual con el de la fila anterior. Si el orden de las filas no significa nada, la prueba tampoco.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Normalidad con muchos datos**</span>
+
+Simule 5 000 errores de una distribución $t$ con 10 grados de libertad, que se parece mucho a la normal. Aplique Shapiro-Wilk y haga el gráfico Q-Q. ¿Qué concluye?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, fig.width=5, fig.height=4, fig.cap="Gráfico Q-Q de 5 000 valores de una t con 10 grados de libertad.", fig.alt="Puntos sobre la diagonal en casi todo el rango y algo separados en los extremos", out.width="55%", fig.align="center"}
+set.seed(2026)
+e <- rt(5000, df = 10)
+shapiro.test(e)$p.value
+qqnorm(e, pch = 19, cex = 0.5, col = "#034A9460", las = 1, main = "")
+qqline(e, col = "#C0392B", lwd = 2)
+```
+
+Con 5 000 datos la prueba suele rechazar la normalidad, aunque el gráfico muestra que la diferencia está solo en los extremos y es pequeña. Para la inferencia sobre la pendiente, esa diferencia no tiene importancia.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Flórez, A. J. (2026). [*Notas de clase: Modelo lineal general I*](https://alvaroflorez.github.io/MLG1/). Notas en el sitio del autor. El capítulo 3 trata los residuales, los gráficos de diagnóstico y las pruebas.
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley. Capítulo 4.
+- Fox, J. y Weisberg, S. (2019). *An R Companion to Applied Regression* (3.ª ed.). Sage. Capítulo 8.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Flórez, A. J. (2026). *Notas de clase: Modelo lineal general I*. https://alvaroflorez.github.io/MLG1/
+- Fox, J. y Hartnagel, T. F. (1979). Changing social roles and female crime in Canada: A time series analysis. *Canadian Review of Sociology and Anthropology*, 16(1), 96-104.
+- Fox, J. y Weisberg, S. (2019). *An R Companion to Applied Regression* (3.ª ed.). Sage.
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

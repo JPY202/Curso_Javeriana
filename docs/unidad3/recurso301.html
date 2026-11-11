@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Estimación de la media y predicción</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Estimación de la media y predicción</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Un médico tiene dos preguntas distintas:</p>
+<ol style="list-style-type: decimal">
+<li><strong>¿Cuál es la grasa promedio de los hombres con 110 cm de
+abdomen?</strong> Le sirve para describir un grupo.</li>
+<li><strong>Su paciente tiene 110 cm de abdomen: ¿cuánta grasa
+tendrá?</strong> Le sirve para una persona.</li>
+</ol>
+<p>La respuesta puntual es la misma: el valor de la recta en 110 cm.
+Pero la incertidumbre es muy distinta. Esta página presenta el
+<strong>intervalo de confianza para la media</strong> y el
+<strong>intervalo de predicción</strong> para un valor nuevo, y explica
+por qué el segundo es mucho más ancho. Los bloques de código se ejecutan
+en orden.</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+modelo &lt;- lm(grasa ~ abdomen, data = grasa)
+n &lt;- nrow(grasa)</code></pre>
+<p><br/></p>
+<div id="cuál-es-la-estimación-puntual" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál es la estimación
+puntual?</strong></span></h2>
+<p>Para un valor <span class="math inline">\(x_0\)</span> de la variable
+explicativa, la estimación de la media y la predicción son el valor de
+la recta:</p>
+<p><span class="math display">\[
+\hat{y}_0 = \hat{\beta}_0 + \hat{\beta}_1 x_0
+\]</span></p>
+<p>La función <code>predict()</code> lo calcula. Recibe el modelo y una
+tabla (<code>data.frame</code>) con los valores nuevos de <span
+class="math inline">\(x\)</span>, con <strong>el mismo nombre</strong>
+de la variable del modelo:</p>
+<pre class="r"><code>nuevos &lt;- data.frame(abdomen = c(85, 110, 125))
+predict(modelo, newdata = nuevos)</code></pre>
+<pre><code>       1        2        3 
+14.51909 29.14135 37.91471 </code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-estima-la-media-de-y-para-un-valor-de-x"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se estima la media de y
+para un valor de x?</strong></span></h2>
+<p>La media de <span class="math inline">\(y\)</span> en <span
+class="math inline">\(x_0\)</span> es <span class="math inline">\(E(Y
+\mid x_0) = \beta_0 + \beta_1 x_0\)</span>, un valor fijo de la
+población. Su estimación <span class="math inline">\(\hat{y}_0\)</span>
+varía de muestra a muestra porque <span
+class="math inline">\(\hat{\beta}_0\)</span> y <span
+class="math inline">\(\hat{\beta}_1\)</span> varían. Su error estándar
+es</p>
+<p><span class="math display">\[
+\text{EE}(\hat{y}_0) = \hat{\sigma} \sqrt{\frac{1}{n} + \frac{(x_0 -
+\bar{x})^2}{S_{xx}}}
+\]</span></p>
+<p>y el <strong>intervalo de confianza para la media</strong> es</p>
+<p><span class="math display">\[
+\hat{y}_0 \pm t_{1 - \alpha/2, \; n - 2} \; \hat{\sigma}
+\sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}
+\]</span></p>
+<pre class="r"><code>predict(modelo, newdata = nuevos, interval = &quot;confidence&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 14.51909 13.83473 15.20344
+2 29.14135 28.07462 30.20808
+3 37.91471 36.13571 39.69371</code></pre>
+<p>Con 95 % de confianza, la grasa <strong>promedio</strong> de los
+hombres con 110 cm de abdomen está entre 28.1 % y 30.2 %.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-predice-un-valor-nuevo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se predice un valor
+nuevo?</strong></span></h2>
+<p>Un hombre nuevo con <span class="math inline">\(x_0\)</span> tendrá
+<span class="math inline">\(Y_0 = \beta_0 + \beta_1 x_0 +
+\varepsilon_0\)</span>. Para predecirlo hay dos fuentes de
+incertidumbre:</p>
+<ul>
+<li>No se conoce la recta exacta: la misma incertidumbre del intervalo
+para la media.</li>
+<li>Aunque se conociera, el hombre tiene su propio error <span
+class="math inline">\(\varepsilon_0\)</span>, con varianza <span
+class="math inline">\(\sigma^2\)</span>: los hombres con el mismo
+abdomen no tienen la misma grasa.</li>
+</ul>
+<p>Por eso el <strong>intervalo de predicción</strong> suma un 1 dentro
+de la raíz:</p>
+<p><span class="math display">\[
+\hat{y}_0 \pm t_{1 - \alpha/2, \; n - 2} \; \hat{\sigma} \sqrt{1 +
+\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}
+\]</span></p>
+<pre class="r"><code>predict(modelo, newdata = nuevos, interval = &quot;prediction&quot;)</code></pre>
+<pre><code>       fit       lwr      upr
+1 14.51909  5.601703 23.43647
+2 29.14135 20.186501 38.09620
+3 37.91471 28.847391 46.98203</code></pre>
+<p>Con 95 % de confianza, un hombre nuevo con 110 cm de abdomen tendrá
+entre 20.2 % y 38.1 % de grasa. Es un intervalo muy amplio: la cinta
+métrica da una idea de la grasa, pero no la reemplaza.</p>
+<p><br/></p>
+</div>
+<div id="en-qué-se-diferencian-los-dos-intervalos"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿En qué se diferencian los dos
+intervalos?</strong></span></h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Intervalo para la media</th>
+<th align="left">Intervalo de predicción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Pregunta</td>
+<td align="left">¿Cuál es la grasa <strong>promedio</strong> de los
+hombres con 110 cm?</td>
+<td align="left">¿Cuánta grasa tendrá <strong>un hombre</strong> con 110
+cm?</td>
+</tr>
+<tr class="even">
+<td align="left">Qué estima</td>
+<td align="left">Un parámetro: <span class="math inline">\(E(Y \mid
+x_0)\)</span></td>
+<td align="left">Una variable aleatoria: <span
+class="math inline">\(Y_0\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Incertidumbre</td>
+<td align="left">Solo la de la recta</td>
+<td align="left">La de la recta más la variación entre personas</td>
+</tr>
+<tr class="even">
+<td align="left">Al crecer <span class="math inline">\(n\)</span></td>
+<td align="left">Se angosta hasta cero</td>
+<td align="left">Se angosta hasta <span class="math inline">\(\hat{y}_0
+\pm 1.96\,\sigma\)</span>, no hasta cero</td>
+</tr>
+<tr class="odd">
+<td align="left">Depende de la normalidad</td>
+<td align="left">Poco con <span class="math inline">\(n\)</span>
+grande</td>
+<td align="left">Mucho, siempre</td>
+</tr>
+</tbody>
+</table>
+<p>El último punto es importante. El intervalo para la media se apoya en
+el teorema del límite central: con muchos datos funciona aunque los
+errores no sean normales. El intervalo de predicción se refiere a
+<strong>una</strong> observación: si los errores son asimétricos, el
+intervalo queda mal ubicado sin importar cuántos datos haya.</p>
+<p>Con los intervalos para todos los valores de <span
+class="math inline">\(x\)</span> se forman las
+<strong>bandas</strong>:</p>
+<pre class="r"><code>malla &lt;- data.frame(abdomen = seq(69, 149, by = 1))
+ic &lt;- predict(modelo, newdata = malla, interval = &quot;confidence&quot;)
+ip &lt;- predict(modelo, newdata = malla, interval = &quot;prediction&quot;)
+plot(grasa ~ abdomen, data = grasa, type = &quot;n&quot;, las = 1,
+     xlab = &quot;Circunferencia del abdomen (cm)&quot;, ylab = &quot;Grasa corporal (%)&quot;,
+     xlim = c(65, 150), ylim = c(-5, 60))
+polygon(c(malla$abdomen, rev(malla$abdomen)), c(ip[, &quot;lwr&quot;], rev(ip[, &quot;upr&quot;])),
+        col = &quot;#E0E0E0&quot;, border = NA)
+polygon(c(malla$abdomen, rev(malla$abdomen)), c(ic[, &quot;lwr&quot;], rev(ic[, &quot;upr&quot;])),
+        col = &quot;#9DC3E6&quot;, border = NA)
+points(grasa ~ abdomen, data = grasa, pch = 19, cex = 0.6, col = &quot;#034A9480&quot;)
+lines(malla$abdomen, ic[, &quot;fit&quot;], col = &quot;#C0392B&quot;, lwd = 2)
+legend(&quot;topleft&quot;, bty = &quot;n&quot;, fill = c(&quot;#9DC3E6&quot;, &quot;#E0E0E0&quot;),
+       legend = c(&quot;Intervalo para la media&quot;, &quot;Intervalo de predicción&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso301_files/figure-html/unnamed-chunk-5-1.png" alt="Nube de puntos con una recta roja; alrededor, una banda azul angosta que se abre en los extremos y una banda gris ancha que contiene casi todos los puntos" width="75%" />
+<p class="caption">
+Recta estimada con la banda de confianza para la media (azul) y la banda
+de predicción (gris), al 95 %.
+</p>
+</div>
+<p>La banda de predicción contiene cerca del 95 % de los puntos, como se
+espera:</p>
+<pre class="r"><code>ip_datos &lt;- predict(modelo, interval = &quot;prediction&quot;)
+mean(grasa$grasa &gt;= ip_datos[, &quot;lwr&quot;] &amp; grasa$grasa &lt;= ip_datos[, &quot;upr&quot;])</code></pre>
+<pre><code>[1] 0.968254</code></pre>
+<p><strong>R</strong> muestra una advertencia al calcular intervalos de
+predicción con los mismos datos del ajuste; aquí se usa solo para
+comprobar la cobertura.</p>
+<p>Las dos bandas son más angostas cerca de <span
+class="math inline">\(\bar{x} = 92.6\)</span> cm y se abren hacia los
+extremos: el término <span class="math inline">\((x_0 -
+\bar{x})^2\)</span> crece al alejarse del centro de los datos. La recta
+se conoce mejor donde hay más datos.</p>
+<p><br/></p>
+</div>
+<div id="qué-pasa-al-extrapolar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasa al
+extrapolar?</strong></span></h2>
+<p>Las fórmulas dan un intervalo para cualquier <span
+class="math inline">\(x_0\)</span>, también fuera del rango de los
+datos:</p>
+<pre class="r"><code>predict(modelo, newdata = data.frame(abdomen = c(55, 170)), interval = &quot;prediction&quot;)</code></pre>
+<pre><code>        fit       lwr       upr
+1 -3.027629 -12.14824  6.092979
+2 64.234782  54.45673 74.012836</code></pre>
+<p>Para 55 cm, la predicción es negativa y el intervalo incluye valores
+imposibles. Para 170 cm, el intervalo parece razonable, pero no hay
+ningún dato que muestre que la relación sigue siendo recta tan lejos.
+Los intervalos <strong>solo miden la incertidumbre dentro del
+modelo</strong>: si el modelo deja de valer fuera del rango, el
+intervalo no lo avisa.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Usar el intervalo de confianza para predecir a una
+persona</td>
+<td align="left">Se confunde la media con un valor individual</td>
+<td align="left">Para una persona,
+<code>interval = "prediction"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Llamar al intervalo de predicción “intervalo para <span
+class="math inline">\(\hat{y}_0\)</span>”</td>
+<td align="left">Lo que se predice es <span
+class="math inline">\(Y_0\)</span></td>
+<td align="left">El intervalo es para el valor nuevo <span
+class="math inline">\(Y_0\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Comparar intervalos de distinto nivel</td>
+<td align="left">Un IC del 95 % y un IP del 90 % no son comparables</td>
+<td align="left">Usar el mismo nivel</td>
+</tr>
+<tr class="even">
+<td align="left"><code>predict()</code> devuelve los valores ajustados
+de los datos</td>
+<td align="left">El nombre de la columna en <code>newdata</code> no
+coincide con el del modelo</td>
+<td align="left">Usar exactamente el mismo nombre
+(<code>abdomen</code>)</td>
+</tr>
+<tr class="odd">
+<td align="left">Confiar en el intervalo fuera del rango de <span
+class="math inline">\(x\)</span></td>
+<td align="left">La fórmula no sabe que se está extrapolando</td>
+<td align="left">Limitar las predicciones al rango observado</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-intervalo-a-mano"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Intervalo a
+mano</strong></span></h3>
+<p>Calcule con las fórmulas el intervalo de predicción del 95 % para un
+abdomen de 85 cm y compárelo con <code>predict()</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>x &lt;- grasa$abdomen
+Sxx &lt;- sum((x - mean(x))^2)
+y0 &lt;- coef(modelo)[1] + coef(modelo)[2] * 85
+ee_pred &lt;- sigma(modelo) * sqrt(1 + 1 / n + (85 - mean(x))^2 / Sxx)
+y0 + c(-1, 1) * qt(0.975, n - 2) * ee_pred</code></pre>
+<pre><code>[1]  5.601703 23.436471</code></pre>
+<pre class="r"><code>predict(modelo, data.frame(abdomen = 85), interval = &quot;prediction&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 14.51909 5.601703 23.43647</code></pre>
+<p>Coinciden.</p>
+</details>
+</div>
+<div id="reto-2.-ancho-de-los-intervalos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Ancho de los
+intervalos</strong></span></h3>
+<p>Calcule el ancho del intervalo para la media y del de predicción en
+70, 92 y 140 cm. ¿Cuál cambia más con <span
+class="math inline">\(x_0\)</span>?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>puntos &lt;- data.frame(abdomen = c(70, 92, 140))
+ic3 &lt;- predict(modelo, puntos, interval = &quot;confidence&quot;)
+ip3 &lt;- predict(modelo, puntos, interval = &quot;prediction&quot;)
+data.frame(abdomen = puntos$abdomen,
+           ancho_media = ic3[, &quot;upr&quot;] - ic3[, &quot;lwr&quot;],
+           ancho_prediccion = ip3[, &quot;upr&quot;] - ip3[, &quot;lwr&quot;])</code></pre>
+<pre><code>  abdomen ancho_media ancho_prediccion
+1      70    2.601362         17.97144
+2      92    1.121665         17.81751
+3     140    5.063858         18.48914</code></pre>
+<p>El intervalo para la media es más de cuatro veces más ancho en 140 cm
+que en el centro de los datos. El de predicción casi no cambia, porque
+lo domina la variación entre personas (<span
+class="math inline">\(\sigma\)</span>), que es la misma en todo el
+rango.</p>
+</details>
+</div>
+<div id="reto-3.-más-datos-ayudan"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Más datos
+ayudan?</strong></span></h3>
+<p>Si se midieran 10 000 hombres en lugar de 252, ¿qué pasaría con cada
+intervalo? Responda con las fórmulas y luego con una simulación del
+modelo <span class="math inline">\(\text{grasa} = -35 + 0.58 \times
+\text{abdomen} + \varepsilon\)</span>, <span
+class="math inline">\(\sigma = 4.5\)</span>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+x_grande &lt;- sample(grasa$abdomen, 10000, replace = TRUE)
+y_grande &lt;- -35 + 0.58 * x_grande + rnorm(10000, 0, 4.5)
+m_grande &lt;- lm(y_grande ~ x_grande)
+predict(m_grande, data.frame(x_grande = 110), interval = &quot;confidence&quot;)</code></pre>
+<pre><code>       fit      lwr     upr
+1 28.68083 28.51156 28.8501</code></pre>
+<pre class="r"><code>predict(m_grande, data.frame(x_grande = 110), interval = &quot;prediction&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 28.68083 19.86202 37.49964</code></pre>
+<p>El intervalo para la media se vuelve muy angosto, porque <span
+class="math inline">\(1/n\)</span> y <span class="math inline">\((x_0 -
+\bar{x})^2 / S_{xx}\)</span> se acercan a cero. El de predicción casi no
+cambia: queda cerca de <span class="math inline">\(\hat{y}_0 \pm 1.96
+\times 4.5\)</span>, porque la variación entre personas no se reduce con
+más datos.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. La sección 1.6.3
+trata los intervalos para la media y de predicción con los datos de
+grasa corporal.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 2.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Varianza no constante</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Varianza no constante</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Cuando la varianza de los errores cambia con <span
+class="math inline">\(x\)</span>, la recta de mínimos cuadrados sigue
+siendo insesgada, pero sus errores estándar están mal y los intervalos
+de confianza no cubren lo que dicen (<a href="recurso400.html">Supuestos
+del modelo</a>). Transformar <span class="math inline">\(y\)</span> es
+una solución (<a href="recurso500.html">Transformaciones</a>), pero
+cambia la escala de interpretación y no siempre funciona.</p>
+<p>Esta página presenta dos soluciones que mantienen la escala original:
+los <strong>errores estándar robustos</strong> y los <strong>mínimos
+cuadrados ponderados</strong>. Primero se ven con datos simulados, donde
+se conoce la verdad, y luego con el caso de los países. Los bloques de
+código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-opciones-hay" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué opciones
+hay?</strong></span></h2>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="25%" />
+<col width="23%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Opción</th>
+<th align="left">Qué hace</th>
+<th align="left">Ventaja</th>
+<th align="left">Limitación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Transformar <span class="math inline">\(y\)</span></td>
+<td align="left">Cambia la escala para que la varianza sea
+constante</td>
+<td align="left">Puede corregir también una curva</td>
+<td align="left">La interpretación cambia; volver a la escala original
+requiere cuidado</td>
+</tr>
+<tr class="even">
+<td align="left">Errores estándar robustos</td>
+<td align="left">Deja la recta de MCO y corrige solo los errores
+estándar</td>
+<td align="left">Muy sencilla; no exige saber cómo cambia la
+varianza</td>
+<td align="left">La estimación no gana precisión; el intervalo de
+predicción no se corrige</td>
+</tr>
+<tr class="odd">
+<td align="left">Mínimos cuadrados ponderados (MCP)</td>
+<td align="left">Da menos peso a las observaciones con más varianza</td>
+<td align="left">Estimaciones más precisas e intervalos de predicción
+que cambian con <span class="math inline">\(x\)</span></td>
+<td align="left">Hay que estimar cómo cambia la varianza</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="cuál-es-el-ejemplo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál es el
+ejemplo?</strong></span></h2>
+<p>Se simulan 150 observaciones de un modelo con intercepto 5, pendiente
+2 y una desviación estándar que crece con <span
+class="math inline">\(x\)</span>:</p>
+<p><span class="math display">\[
+y_i = 5 + 2 x_i + \varepsilon_i, \qquad \text{Desv. est.}(\varepsilon_i)
+= 0.5\, x_i
+\]</span></p>
+<pre class="r"><code>set.seed(2026)
+n &lt;- 150
+x &lt;- runif(n, 1, 10)
+y &lt;- 5 + 2 * x + rnorm(n, 0, 0.5 * x)
+simulados &lt;- data.frame(x, y)
+mco &lt;- lm(y ~ x, data = simulados)
+round(summary(mco)$coefficients, 4)</code></pre>
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   4.6179     0.5168  8.9361        0
+x             2.1488     0.0909 23.6494        0</code></pre>
+<pre class="r"><code>par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+plot(y ~ x, data = simulados, pch = 19, col = &quot;#034A9480&quot;, las = 1, ylim = c(0, 40))
+abline(mco, col = &quot;#C0392B&quot;, lwd = 2)
+plot(fitted(mco), residuals(mco), pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales&quot;)
+abline(h = 0, lty = 2)</code></pre>
+<div class="figure">
+<img src="recurso501_files/figure-html/unnamed-chunk-2-1.png" alt="A la izquierda, nube creciente que se abre hacia la derecha con la recta; a la derecha, residuales en forma de embudo" width="100%" />
+<p class="caption">
+Datos simulados con varianza creciente y sus residuales.
+</p>
+</div>
+<p>El embudo de los residuales muestra la varianza creciente.</p>
+<p><br/></p>
+</div>
+<div id="qué-son-los-errores-estándar-robustos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los errores estándar
+robustos?</strong></span></h2>
+<p>El error estándar de <code>summary()</code> supone que todos los
+errores tienen la misma varianza <span
+class="math inline">\(\sigma^2\)</span>. Los <strong>errores estándar
+robustos</strong> (también llamados de White o “sándwich”) usan el
+residual de cada observación para estimar su propia varianza. No cambian
+la recta: solo su error estándar.</p>
+<p>Se calculan con dos paquetes:</p>
+<ul>
+<li><code>sandwich</code>: calcula matrices de varianza robustas. La
+función <code>vcovHC()</code> (<em>heteroscedasticity-consistent</em>)
+con <code>type = "HC3"</code> es la versión recomendada para muestras
+pequeñas y medianas.</li>
+<li><code>lmtest</code>: la función <code>coeftest()</code> repite la
+tabla de <code>summary()</code> con la matriz de varianza que se le
+indique.</li>
+</ul>
+<p>Se instalan una sola vez con
+<code>install.packages(c("sandwich", "lmtest"))</code>.</p>
+<pre class="r"><code>library(sandwich)
+library(lmtest)
+coeftest(mco, vcov = vcovHC(mco, type = &quot;HC3&quot;))</code></pre>
+<pre><code>
+t test of coefficients:
+
+            Estimate Std. Error t value              Pr(&gt;|t|)    
+(Intercept)  4.61791    0.40142  11.504 &lt; 0.00000000000000022 ***
+x            2.14885    0.10788  19.918 &lt; 0.00000000000000022 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Las estimaciones son las mismas de <code>summary()</code>; los
+errores estándar cambian. Para el intervalo de confianza robusto se usa
+<code>coefci()</code>, también de <code>lmtest</code>:</p>
+<pre class="r"><code>coefci(mco, vcov = vcovHC(mco, type = &quot;HC3&quot;))</code></pre>
+<pre><code>               2.5 %   97.5 %
+(Intercept) 3.824659 5.411153
+x           1.935656 2.362036</code></pre>
+<pre class="r"><code>confint(mco)</code></pre>
+<pre><code>              2.5 %   97.5 %
+(Intercept) 3.59670 5.639112
+x           1.96929 2.328402</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-son-los-mínimos-cuadrados-ponderados"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué son los mínimos cuadrados
+ponderados?</strong></span></h2>
+<p>Las observaciones con mucha varianza dan poca información sobre la
+recta: sus valores están muy dispersos. Los <strong>mínimos cuadrados
+ponderados</strong> (MCP) minimizan una suma de cuadrados en la que cada
+residual tiene un <strong>peso</strong> <span
+class="math inline">\(w_i\)</span>:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n} w_i \, (y_i - b_0 - b_1 x_i)^2, \qquad w_i =
+\frac{1}{\text{Var}(\varepsilon_i)}
+\]</span></p>
+<p>Las observaciones con más varianza pesan menos. Si los pesos son
+correctos, los estimadores de MCP son los de menor varianza: es el
+teorema de Gauss-Markov aplicado a este caso.</p>
+<p>Casi nunca se conocen las varianzas. Una forma usual de estimarlas
+tiene cuatro pasos (Montgomery, Peck y Vining, 2012, capítulo 5):</p>
+<ol style="list-style-type: decimal">
+<li>Ajustar el modelo por MCO y guardar los residuales.</li>
+<li>Ajustar una regresión de los <strong>residuales en valor
+absoluto</strong> sobre <span class="math inline">\(x\)</span>. Su valor
+ajustado estima la desviación estándar de cada observación.</li>
+<li>Calcular los pesos: <span class="math inline">\(w_i =
+1/\hat{s}_i^2\)</span>.</li>
+<li>Ajustar el modelo con <code>lm(..., weights = w)</code>.</li>
+</ol>
+<pre class="r"><code># Paso 2: la desviación estándar como función de x
+aux &lt;- lm(abs(residuals(mco)) ~ x, data = simulados)
+s_hat &lt;- fitted(aux)
+range(s_hat)   # deben ser todos positivos</code></pre>
+<pre><code>[1] 0.3342785 4.1104423</code></pre>
+<pre class="r"><code># Paso 3: pesos
+simulados$w &lt;- 1 / s_hat^2
+
+# Paso 4: modelo ponderado
+mcp &lt;- lm(y ~ x, data = simulados, weights = w)
+round(summary(mcp)$coefficients, 4)</code></pre>
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   4.5806     0.1786 25.6481        0
+x             2.1590     0.0693 31.1411        0</code></pre>
+<p>Si <span class="math inline">\(\hat{s}_i\)</span> diera algún valor
+negativo o cero, los pesos no tendrían sentido. En ese caso se ajusta el
+paso 2 con otra forma, por ejemplo usando los valores ajustados de MCO
+en lugar de <span class="math inline">\(x\)</span>.</p>
+<p>Para revisar el resultado se usan los <strong>residuales
+ponderados</strong>, <span class="math inline">\(\sqrt{w_i}\,
+e_i\)</span>, que deberían tener varianza constante:</p>
+<pre class="r"><code>plot(fitted(mcp), residuals(mcp) * sqrt(simulados$w), pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales ponderados&quot;)
+abline(h = 0, lty = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso501_files/figure-html/unnamed-chunk-6-1.png" alt="Residuales en una franja horizontal de ancho parejo" width="60%" />
+<p class="caption">
+Residuales ponderados del modelo de mínimos cuadrados ponderados.
+</p>
+</div>
+<p>El embudo desapareció.</p>
+<p><br/></p>
+</div>
+<div id="cuál-método-funciona-mejor" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál método funciona
+mejor?</strong></span></h2>
+<p>En una sola muestra no se puede saber. Con simulación sí: se repite
+el ejemplo 2 000 veces y se cuenta cuántas veces el intervalo del 95 %
+para la pendiente contiene el valor verdadero (2), y qué tan ancho es en
+promedio.</p>
+<pre class="r"><code>set.seed(2026)
+resultados &lt;- replicate(2000, {
+  y &lt;- 5 + 2 * x + rnorm(n, 0, 0.5 * x)
+  m &lt;- lm(y ~ x)
+  w &lt;- 1 / fitted(lm(abs(residuals(m)) ~ x))^2
+  m_w &lt;- lm(y ~ x, weights = w)
+  ic &lt;- rbind(mco = confint(m)[2, ],
+              robusto = coefci(m, vcov = vcovHC(m, type = &quot;HC3&quot;))[2, ],
+              mcp = confint(m_w)[2, ])
+  c(cubre = ic[, 1] &lt;= 2 &amp; 2 &lt;= ic[, 2], ancho = ic[, 2] - ic[, 1])
+})
+matrix(rowMeans(resultados), nrow = 3,
+       dimnames = list(c(&quot;MCO&quot;, &quot;Robusto&quot;, &quot;MCP&quot;), c(&quot;Cobertura&quot;, &quot;Ancho promedio&quot;)))</code></pre>
+<pre><code>        Cobertura Ancho promedio
+MCO        0.9065      0.3552436
+Robusto    0.9430      0.4081965
+MCP        0.9370      0.2939553</code></pre>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="42%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Método</th>
+<th align="left">Cobertura</th>
+<th align="left">Ancho</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MCO con errores estándar usuales</td>
+<td align="left">Menor que 95 %: el intervalo promete más de lo que
+da</td>
+<td align="left">Demasiado angosto</td>
+</tr>
+<tr class="even">
+<td align="left">MCO con errores estándar robustos</td>
+<td align="left">Cercana a 95 %</td>
+<td align="left">Más ancho</td>
+</tr>
+<tr class="odd">
+<td align="left">MCP</td>
+<td align="left">Cercana a 95 %</td>
+<td align="left">El más angosto de los que cubren bien</td>
+</tr>
+</tbody>
+</table>
+<p>Los errores estándar robustos corrigen la cobertura. MCP además gana
+precisión, porque aprovecha mejor la información de las observaciones
+con poca varianza.</p>
+<p><br/></p>
+</div>
+<div id="qué-pasa-con-los-datos-de-los-países" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasa con los datos de los
+países?</strong></span></h2>
+<p>En la página <a href="recurso500.html">Transformaciones</a>, el
+modelo de la fecundidad según el logaritmo del PIB tenía varianza no
+constante. Se le aplican las dos soluciones:</p>
+<p>Los datos se descargan aquí:
+<a href="data/paises.csv" download>paises.csv</a>. Guarde el archivo en
+la carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>paises &lt;- na.omit(read.csv(&quot;data/paises.csv&quot;))
+m1 &lt;- lm(fertilidad ~ log(pib_pc), data = paises)
+aux_p &lt;- lm(abs(residuals(m1)) ~ log(pib_pc), data = paises)
+range(fitted(aux_p))</code></pre>
+<pre><code>[1] 0.3082667 1.2446523</code></pre>
+<pre class="r"><code>paises$w &lt;- 1 / fitted(aux_p)^2
+m1_mcp &lt;- lm(fertilidad ~ log(pib_pc), data = paises, weights = w)
+
+rbind(MCO = summary(m1)$coefficients[2, 1:2],
+      Robusto = coeftest(m1, vcov = vcovHC(m1, type = &quot;HC3&quot;))[2, 1:2],
+      MCP = summary(m1_mcp)$coefficients[2, 1:2])</code></pre>
+<pre><code>          Estimate Std. Error
+MCO     -0.6200866 0.04244986
+Robusto -0.6200866 0.04493515
+MCP     -0.4768560 0.03713834</code></pre>
+<p>El error estándar robusto es un poco mayor que el usual, como se
+espera. Pero la pendiente de MCP es muy distinta de la de MCO: -0.48
+frente a -0.62. Si el único problema fuera la varianza, las dos
+estimarían la misma pendiente y deberían parecerse.</p>
+<p>Cuando MCO y MCP dan pendientes muy distintas, la causa suele ser que
+<strong>la media no es una recta</strong>. MCP da más peso a los países
+ricos, que tienen menos varianza, y allí la relación es más plana (es la
+curvatura que se vio en <a href="recurso500.html">Transformaciones</a>).
+Ponderar no arregla un modelo mal especificado para la media. Para estos
+datos, la solución es transformar la fecundidad o agregar un término
+cuadrático.</p>
+<p><br/></p>
+</div>
+<div id="cómo-elegir" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo
+elegir?</strong></span></h2>
+<table>
+<colgroup>
+<col width="42%" />
+<col width="57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Situación</th>
+<th align="left">Recomendación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Solo interesa la pendiente y su intervalo, y <span
+class="math inline">\(n\)</span> no es muy pequeño</td>
+<td align="left">Errores estándar robustos</td>
+</tr>
+<tr class="even">
+<td align="left">Interesa predecir, con intervalos que reflejen que la
+variación cambia con <span class="math inline">\(x\)</span></td>
+<td align="left">MCP</td>
+</tr>
+<tr class="odd">
+<td align="left">La relación también es curva</td>
+<td align="left">Transformar o modelar la curva primero</td>
+</tr>
+<tr class="even">
+<td align="left">MCO y MCP dan pendientes muy distintas</td>
+<td align="left">Revisar el modelo para la media antes de seguir</td>
+</tr>
+<tr class="odd">
+<td align="left">Los datos son promedios de grupos de distinto tamaño
+<span class="math inline">\(n_i\)</span></td>
+<td align="left">MCP con pesos conocidos, <span
+class="math inline">\(w_i = n_i\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Ponderar sin revisar la media</td>
+<td align="left">Se trata como un problema solo de varianza</td>
+<td align="left">Revisar primero la linealidad; comparar MCO y MCP</td>
+</tr>
+<tr class="even">
+<td align="left">Revisar los residuales ordinarios del modelo
+ponderado</td>
+<td align="left">Esos residuales siguen teniendo varianza no
+constante</td>
+<td align="left">Usar los residuales ponderados, <span
+class="math inline">\(\sqrt{w_i}\,e_i\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Usar pesos negativos o infinitos</td>
+<td align="left">El modelo auxiliar dio desviaciones negativas o
+cero</td>
+<td align="left">Revisar <code>range(fitted(aux))</code> y cambiar la
+forma del modelo auxiliar</td>
+</tr>
+<tr class="even">
+<td align="left">Creer que los errores estándar robustos cambian la
+recta</td>
+<td align="left">Solo cambian la incertidumbre</td>
+<td align="left">La recta es la misma de MCO</td>
+</tr>
+<tr class="odd">
+<td align="left">Usar errores robustos con muy pocos datos</td>
+<td align="left">Son aproximaciones para <span
+class="math inline">\(n\)</span> grande</td>
+<td align="left">Con pocos datos, preferir HC3 y ser prudente</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-varianza-constante"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Varianza
+constante</strong></span></h3>
+<p>Simule 150 datos de <span class="math inline">\(y = 5 + 2x +
+\varepsilon\)</span> con desviación estándar constante igual a 3.
+Compare los errores estándar usuales y los robustos. ¿Qué pasa?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+y_cte &lt;- 5 + 2 * x + rnorm(n, 0, 3)
+m_cte &lt;- lm(y_cte ~ x)
+c(usual = summary(m_cte)$coefficients[2, 2],
+  robusto = sqrt(vcovHC(m_cte, type = &quot;HC3&quot;)[2, 2]))</code></pre>
+<pre><code>     usual    robusto 
+0.09773790 0.09951518 </code></pre>
+<p>Son parecidos. Con varianza constante, los errores estándar robustos
+no cambian mucho la conclusión: usarlos por precaución tiene poco costo
+cuando <span class="math inline">\(n\)</span> es grande.</p>
+</details>
+</div>
+<div id="reto-2.-promedios-de-grupos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Promedios de
+grupos</strong></span></h3>
+<p>Una empresa registra el tiempo promedio de atención de cada sucursal
+según su número de empleados. Las sucursales atendieron entre 10 y 500
+clientes. ¿Qué pesos usaría en MCP y por qué?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Si el tiempo de cada cliente tiene varianza <span
+class="math inline">\(\sigma^2\)</span>, el promedio de una sucursal con
+<span class="math inline">\(n_i\)</span> clientes tiene varianza <span
+class="math inline">\(\sigma^2/n_i\)</span>. El peso es <span
+class="math inline">\(w_i = n_i\)</span>: los promedios basados en más
+clientes son más precisos y deben pesar más. Aquí los pesos se conocen y
+no hay que estimarlos.</p>
+</details>
+</div>
+<div id="reto-3.-países-con-logaritmos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Países con
+logaritmos</strong></span></h3>
+<p>Ajuste el modelo <code>log(fertilidad) ~ log(pib_pc)</code> por MCO y
+por MCP con los cuatro pasos. ¿Las pendientes se parecen más que en el
+modelo sin logaritmo en la fecundidad?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>m2 &lt;- lm(log(fertilidad) ~ log(pib_pc), data = paises)
+aux2 &lt;- lm(abs(residuals(m2)) ~ log(pib_pc), data = paises)
+paises$w2 &lt;- 1 / fitted(aux2)^2
+m2_mcp &lt;- lm(log(fertilidad) ~ log(pib_pc), data = paises, weights = w2)
+c(MCO = coef(m2)[2], MCP = coef(m2_mcp)[2])</code></pre>
+<pre><code>MCO.log(pib_pc) MCP.log(pib_pc) 
+     -0.2071498      -0.1963145 </code></pre>
+<p>Las pendientes se parecen más: el logaritmo de la fecundidad
+estabilizó la varianza, así que ponderar cambia poco. La diferencia que
+queda viene de la leve curvatura que aún tiene este modelo.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 4
+presenta los mínimos cuadrados ponderados con pesos estimados.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 5.</li>
+<li>Fox, J. y Weisberg, S. (2019). <em>An R Companion to Applied
+Regression</em> (3.ª ed.). Sage. Trata los errores estándar robustos en
+<strong>R</strong>.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Long, J. S. y Ervin, L. H. (2000). Using heteroscedasticity
+consistent standard errors in the linear regression model. <em>The
+American Statistician</em>, 54(3), 217-224.</li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+<li>White, H. (1980). A heteroskedasticity-consistent covariance matrix
+estimator and a direct test for heteroskedasticity.
+<em>Econometrica</em>, 48(4), 817-838.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

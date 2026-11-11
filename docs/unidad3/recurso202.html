@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Propiedades de los estimadores</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Propiedades de los estimadores</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Si se midiera otra muestra de 252 hombres, la recta estimada sería un
+poco distinta. Los estimadores <span
+class="math inline">\(\hat{\beta}_0\)</span> y <span
+class="math inline">\(\hat{\beta}_1\)</span> son <strong>variables
+aleatorias</strong>: cambian de una muestra a otra, como la media
+muestral en la Unidad 2.</p>
+<p>Esta página muestra, con simulación, cómo es su distribución
+muestral: dónde se centran (<strong>insesgadez</strong>), cuánto varían
+(<strong>error estándar</strong>) y de qué depende esa variación.
+Termina con el teorema de Gauss-Markov, que explica por qué se usa
+mínimos cuadrados. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="cómo-se-ve-la-distribución-muestral-de-la-pendiente"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se ve la distribución
+muestral de la pendiente?</strong></span></h2>
+<p>Para verla hay que conocer los parámetros de la población, y en la
+práctica no se conocen. Con simulación se pueden fijar: se supone que la
+población real es</p>
+<p><span class="math display">\[
+\text{grasa} = -35 + 0.58 \times \text{abdomen} + \varepsilon, \qquad
+\varepsilon \sim N(0, 4.5^2),
+\]</span></p>
+<p>con valores parecidos a los estimados. Se dejan fijos los 252
+abdómenes de los datos, se generan 10 000 muestras de grasa con ese
+modelo y en cada una se estima la recta.</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+x &lt;- grasa$abdomen
+n &lt;- length(x)
+beta0 &lt;- -35; beta1 &lt;- 0.58; sigma &lt;- 4.5
+
+set.seed(2026)
+estimaciones &lt;- replicate(10000, {
+  y &lt;- beta0 + beta1 * x + rnorm(n, 0, sigma)
+  coef(lm(y ~ x))
+})
+dim(estimaciones)</code></pre>
+<pre><code>[1]     2 10000</code></pre>
+<pre class="r"><code>rowMeans(estimaciones)</code></pre>
+<pre><code>(Intercept)           x 
+-35.0542250   0.5806138 </code></pre>
+<p>El promedio de las 10 000 pendientes es casi exactamente 0.58, el
+valor verdadero, y el de los interceptos es casi −35.</p>
+<pre class="r"><code>hist(estimaciones[2, ], breaks = 40, col = &quot;#BDD7EE&quot;, border = &quot;white&quot;, las = 1,
+     main = &quot;&quot;, xlab = &quot;Pendiente estimada&quot;, ylab = &quot;Frecuencia&quot;, xlim = c(0.46, 0.70))
+abline(v = beta1, col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso202_files/figure-html/unnamed-chunk-2-1.png" alt="Histograma con forma de campana centrado en 0.58, entre 0.48 y 0.68 aproximadamente" width="70%" />
+<p class="caption">
+Distribución de la pendiente estimada en 10 000 muestras simuladas. La
+línea roja es el valor verdadero.
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="son-insesgados-los-estimadores" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Son insesgados los
+estimadores?</strong></span></h2>
+<p>Sí. Si el modelo es correcto (la media de <span
+class="math inline">\(y\)</span> es una recta y los errores tienen media
+cero), los estimadores de mínimos cuadrados son
+<strong>insesgados</strong>:</p>
+<p><span class="math display">\[
+E(\hat{\beta}_0) = \beta_0, \qquad E(\hat{\beta}_1) = \beta_1
+\]</span></p>
+<p>Como en la Unidad 2, insesgado no quiere decir que acierte en cada
+muestra: quiere decir que, en promedio sobre muchas muestras, acierta.
+La simulación lo confirma.</p>
+<p>Para la insesgadez <strong>no</strong> se necesita que la varianza
+sea constante ni que los errores sean normales. Basta que el modelo para
+la media sea correcto. Si la relación real es curva y se ajusta una
+recta, los estimadores sí quedan sesgados.</p>
+<p><br/></p>
+</div>
+<div id="cuánto-varían-los-estimadores" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuánto varían los
+estimadores?</strong></span></h2>
+<p>Las varianzas de los estimadores son:</p>
+<p><span class="math display">\[
+\text{Var}(\hat{\beta}_1) = \frac{\sigma^2}{S_{xx}}, \qquad
+\text{Var}(\hat{\beta}_0) = \sigma^2 \left( \frac{1}{n} +
+\frac{\bar{x}^2}{S_{xx}} \right),
+\qquad S_{xx} = \sum (x_i - \bar{x})^2
+\]</span></p>
+<p>Se cumplen si los errores tienen varianza constante <span
+class="math inline">\(\sigma^2\)</span> y son independientes. La raíz de
+la varianza es el <strong>error estándar</strong>. Con la simulación se
+puede comprobar:</p>
+<pre class="r"><code>Sxx &lt;- sum((x - mean(x))^2)
+c(teorico = sqrt(sigma^2 / Sxx), simulado = sd(estimaciones[2, ]))</code></pre>
+<pre><code>   teorico   simulado 
+0.02634104 0.02653383 </code></pre>
+<p>Con datos reales, <span class="math inline">\(\sigma^2\)</span> no se
+conoce y se reemplaza por <span
+class="math inline">\(\hat{\sigma}^2\)</span>. Eso da el <strong>error
+estándar estimado</strong>, que es la columna <code>Std. Error</code> de
+<code>summary()</code>:</p>
+<pre class="r"><code>modelo &lt;- lm(grasa ~ abdomen, data = grasa)
+sqrt(sigma(modelo)^2 / Sxx)</code></pre>
+<pre><code>[1] 0.02642528</code></pre>
+<pre class="r"><code>summary(modelo)$coefficients[, &quot;Std. Error&quot;]</code></pre>
+<pre><code>(Intercept)     abdomen 
+ 2.46229413  0.02642528 </code></pre>
+<p><br/></p>
+</div>
+<div id="de-qué-depende-la-precisión-de-la-pendiente"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿De qué depende la precisión de
+la pendiente?</strong></span></h2>
+<p>La fórmula <span class="math inline">\(\text{Var}(\hat{\beta}_1) =
+\sigma^2 / S_{xx}\)</span> dice que la pendiente se estima con más
+precisión cuando:</p>
+<table>
+<colgroup>
+<col width="32%" />
+<col width="32%" />
+<col width="36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Factor</th>
+<th align="left">Efecto</th>
+<th align="left">Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\sigma\)</span> es
+pequeño</td>
+<td align="left">Menor varianza</td>
+<td align="left">Los puntos están más cerca de la recta</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(n\)</span> es grande</td>
+<td align="left">Menor varianza</td>
+<td align="left"><span class="math inline">\(S_{xx}\)</span> suma más
+términos</td>
+</tr>
+<tr class="odd">
+<td align="left">Los <span class="math inline">\(x\)</span> están
+<strong>dispersos</strong></td>
+<td align="left">Menor varianza</td>
+<td align="left"><span class="math inline">\(S_{xx}\)</span> es mayor;
+la recta se apoya en puntos alejados</td>
+</tr>
+</tbody>
+</table>
+<p>El tercer factor es el menos intuitivo. Si solo se midieran hombres
+con abdomen entre 88 y 94 cm, la pendiente sería mucho más incierta,
+aunque se midieran los mismos 252:</p>
+<pre class="r"><code>set.seed(2026)
+x_angosto &lt;- runif(n, 88, 94)
+pend_angosto &lt;- replicate(10000, {
+  y &lt;- beta0 + beta1 * x_angosto + rnorm(n, 0, sigma)
+  coef(lm(y ~ x_angosto))[2]
+})
+c(rango_completo = sd(estimaciones[2, ]), rango_angosto = sd(pend_angosto))</code></pre>
+<pre><code>rango_completo  rango_angosto 
+    0.02653383     0.15798711 </code></pre>
+<pre class="r"><code>set.seed(2026)
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+for (caso in 1:2) {
+  xs &lt;- if (caso == 1) x else x_angosto
+  plot(NULL, xlim = c(70, 120), ylim = c(0, 45), las = 1,
+       xlab = &quot;Abdomen (cm)&quot;, ylab = &quot;Grasa (%)&quot;,
+       main = ifelse(caso == 1, &quot;Abdomen entre 69 y 148 cm&quot;, &quot;Abdomen entre 88 y 94 cm&quot;))
+  rect(min(xs), 0, max(xs), 45, col = &quot;#F2F2F2&quot;, border = NA)
+  for (k in 1:30) {
+    y &lt;- beta0 + beta1 * xs + rnorm(n, 0, sigma)
+    abline(lm(y ~ xs), col = &quot;#034A9450&quot;)
+  }
+  abline(beta0, beta1, col = &quot;#C0392B&quot;, lwd = 2)
+}</code></pre>
+<div class="figure">
+<img src="recurso202_files/figure-html/unnamed-chunk-6-1.png" alt="Dos paneles con 30 rectas grises cada uno; a la izquierda las rectas casi coinciden, a la derecha se abren como un abanico" width="100%" />
+<p class="caption">
+Rectas estimadas en 30 muestras con x dispersos (izquierda) y con x en
+un rango angosto (derecha).
+</p>
+</div>
+<p>Esto tiene una consecuencia práctica: al diseñar un estudio, conviene
+que la variable explicativa cubra un rango amplio.</p>
+<p><br/></p>
+</div>
+<div id="por-qué-mínimos-cuadrados" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Por qué mínimos
+cuadrados?</strong></span></h2>
+<p>Hay muchas formas de trazar una recta por una nube de puntos:
+minimizar los valores absolutos de los residuales, unir los puntos
+extremos, promediar pendientes entre pares de puntos. El <strong>teorema
+de Gauss-Markov</strong> dice que, si:</p>
+<ul>
+<li>la media de <span class="math inline">\(y\)</span> es una recta en
+<span class="math inline">\(x\)</span>,</li>
+<li>los errores tienen varianza constante,</li>
+<li>y los errores no están correlacionados,</li>
+</ul>
+<p>entonces, entre todos los estimadores <strong>lineales</strong> (que
+son sumas ponderadas de los <span class="math inline">\(y_i\)</span>) e
+<strong>insesgados</strong>, los de mínimos cuadrados son los de
+<strong>menor varianza</strong>. Se dice que son los <strong>mejores
+estimadores lineales insesgados</strong> (MELI; en inglés, BLUE).</p>
+<p>El teorema <strong>no</strong> exige normalidad. Sí exige varianza
+constante: cuando la varianza cambia con <span
+class="math inline">\(x\)</span>, hay estimadores mejores, como los de
+mínimos cuadrados ponderados (página <a href="recurso501.html">Varianza
+no constante</a>).</p>
+<p><br/></p>
+</div>
+<div id="qué-distribución-tienen-los-estimadores"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué distribución tienen los
+estimadores?</strong></span></h2>
+<p>Si además los errores son <strong>normales</strong>, los estimadores
+tienen distribución normal:</p>
+<p><span class="math display">\[
+\hat{\beta}_1 \sim N\!\left(\beta_1, \; \frac{\sigma^2}{S_{xx}}\right)
+\]</span></p>
+<p>Al reemplazar <span class="math inline">\(\sigma\)</span> por <span
+class="math inline">\(\hat{\sigma}\)</span>, el cociente</p>
+<p><span class="math display">\[
+t = \frac{\hat{\beta}_1 - \beta_1}{\text{EE}(\hat{\beta}_1)}
+\]</span></p>
+<p>sigue una distribución <span class="math inline">\(t\)</span> con
+<span class="math inline">\(n - 2\)</span> grados de libertad. Es la
+base de las pruebas y los intervalos de la página siguiente. Si los
+errores no son normales pero <span class="math inline">\(n\)</span> es
+grande, la distribución <span class="math inline">\(t\)</span> sigue
+siendo una buena aproximación, por el teorema del límite central.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Creer que la heterocedasticidad sesga la pendiente</td>
+<td align="left">Se confunde sesgo con precisión</td>
+<td align="left">MCO sigue insesgado; lo que falla son los errores
+estándar</td>
+</tr>
+<tr class="even">
+<td align="left">Creer que Gauss-Markov exige normalidad</td>
+<td align="left">Se mezclan dos resultados</td>
+<td align="left">Gauss-Markov exige media lineal, varianza constante y
+errores no correlacionados</td>
+</tr>
+<tr class="odd">
+<td align="left">Medir solo un rango angosto de <span
+class="math inline">\(x\)</span></td>
+<td align="left">Se ahorra en el diseño</td>
+<td align="left">La pendiente queda imprecisa; conviene cubrir un rango
+amplio</td>
+</tr>
+<tr class="even">
+<td align="left">Leer <code>Std. Error</code> como la desviación de los
+datos</td>
+<td align="left">Son cosas distintas</td>
+<td align="left">Es la variación del estimador de una muestra a
+otra</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-más-ruido" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Más
+ruido</strong></span></h3>
+<p>Repita la simulación con <span class="math inline">\(\sigma =
+9\)</span> (el doble). ¿Qué pasa con el centro y con la desviación
+estándar de las pendientes?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+pend_ruido &lt;- replicate(10000, {
+  y &lt;- beta0 + beta1 * x + rnorm(n, 0, 9)
+  coef(lm(y ~ x))[2]
+})
+c(media = mean(pend_ruido), desv_est = sd(pend_ruido))</code></pre>
+<pre><code>     media   desv_est 
+0.58122768 0.05306766 </code></pre>
+<p>El centro sigue en 0.58: el estimador sigue insesgado. La desviación
+estándar se duplica, porque el error estándar es proporcional a <span
+class="math inline">\(\sigma\)</span>.</p>
+</details>
+</div>
+<div id="reto-2.-errores-no-normales"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Errores no
+normales</strong></span></h3>
+<p>Repita la simulación con errores de una distribución exponencial
+centrada, <code>rexp(n, 1/4.5) - 4.5</code>, que es muy asimétrica.
+¿Siguen siendo insesgadas las pendientes? ¿Tiene forma de campana su
+histograma?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+pend_exp &lt;- replicate(10000, {
+  y &lt;- beta0 + beta1 * x + rexp(n, 1 / 4.5) - 4.5
+  coef(lm(y ~ x))[2]
+})
+mean(pend_exp)</code></pre>
+<pre><code>[1] 0.5798967</code></pre>
+<pre class="r"><code>hist(pend_exp, breaks = 40, col = &quot;#BDD7EE&quot;, border = &quot;white&quot;, las = 1,
+     main = &quot;&quot;, xlab = &quot;Pendiente estimada&quot;, ylab = &quot;Frecuencia&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso202_files/figure-html/unnamed-chunk-8-1.png" alt="Histograma con forma de campana centrado en 0.58" width="60%" />
+<p class="caption">
+Pendientes estimadas con errores exponenciales.
+</p>
+</div>
+<p>Sí: el promedio sigue cerca de 0.58 y el histograma tiene forma de
+campana. Con <span class="math inline">\(n = 252\)</span>, el teorema
+del límite central hace que la pendiente sea casi normal aunque los
+errores no lo sean.</p>
+</details>
+</div>
+<div id="reto-3.-error-estándar-a-mano"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Error estándar a
+mano</strong></span></h3>
+<p>Calcule el error estándar estimado del intercepto con la fórmula de
+la página y compárelo con <code>summary()</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>sqrt(sigma(modelo)^2 * (1 / n + mean(x)^2 / Sxx))</code></pre>
+<pre><code>[1] 2.462294</code></pre>
+<pre class="r"><code>summary(modelo)$coefficients[1, &quot;Std. Error&quot;]</code></pre>
+<pre><code>[1] 2.462294</code></pre>
+<p>Coinciden. El error estándar del intercepto es grande porque <span
+class="math inline">\(x = 0\)</span> está muy lejos de los datos (<span
+class="math inline">\(\bar{x}^2\)</span> es grande).</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 1
+deduce las varianzas de los estimadores y enuncia el teorema de
+Gauss-Markov.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley. El
+capítulo 2 presenta las propiedades de los estimadores, y el apéndice C
+demuestra el teorema de Gauss-Markov.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

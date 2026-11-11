@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Correlación de Spearman y Kendall</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Correlación de Spearman y Kendall</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>La correlación de Pearson mide relaciones <strong>lineales</strong>.
+Muchas relaciones reales son <strong>monótonas</strong> pero no rectas:
+siempre crecen (o siempre decrecen), aunque no al mismo ritmo. Por
+ejemplo, la fecundidad baja rápido cuando un país pasa de muy pobre a
+pobre, y casi no cambia entre países ricos.</p>
+<p>Esta página presenta dos coeficientes que miden relaciones monótonas
+usando solo el <strong>orden</strong> de los datos: el de
+<strong>Spearman</strong> y el de <strong>Kendall</strong>. Los bloques
+de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-una-relación-monótona" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es una relación
+monótona?</strong></span></h2>
+<p>Una relación es <strong>monótona creciente</strong> si, cuando <span
+class="math inline">\(x\)</span> aumenta, <span
+class="math inline">\(y\)</span> tiende a aumentar, sin importar si lo
+hace en línea recta. Es <strong>monótona decreciente</strong> si <span
+class="math inline">\(y\)</span> tiende a disminuir. Una relación que
+primero sube y luego baja (en forma de U invertida) <strong>no</strong>
+es monótona.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Forma de la relación</th>
+<th align="center">Pearson</th>
+<th align="center">Spearman y Kendall</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Recta</td>
+<td align="center">La mide bien</td>
+<td align="center">La miden bien</td>
+</tr>
+<tr class="even">
+<td align="left">Curva pero monótona</td>
+<td align="center">La subestima</td>
+<td align="center">La miden bien</td>
+</tr>
+<tr class="odd">
+<td align="left">En forma de U</td>
+<td align="center">Cercano a 0</td>
+<td align="center">Cercanos a 0</td>
+</tr>
+</tbody>
+</table>
+<p>Ninguno de los tres coeficientes detecta una relación en forma de U.
+Para eso hay que graficar.</p>
+<p><br/></p>
+</div>
+<div id="cuáles-son-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuáles son los
+datos?</strong></span></h2>
+<p>Se usan datos de las Naciones Unidas para 213 países y territorios,
+entre 2009 y 2011, del paquete <code>carData</code> (Fox y Weisberg,
+2019). La copia de la carpeta <code>data</code> tiene los nombres en
+español:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Qué mide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>pais</code>, <code>region</code></td>
+<td align="left">País y región</td>
+</tr>
+<tr class="even">
+<td align="left"><code>fertilidad</code></td>
+<td align="left">Número esperado de hijos por mujer</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>pib_pc</code></td>
+<td align="left">Producto interno bruto por habitante, en dólares</td>
+</tr>
+<tr class="even">
+<td align="left"><code>urbana</code></td>
+<td align="left">Porcentaje de la población en zonas urbanas</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>vida_mujer</code></td>
+<td align="left">Esperanza de vida de las mujeres, en años</td>
+</tr>
+</tbody>
+</table>
+<p>Los datos se descargan aquí:
+<a href="data/paises.csv" download>paises.csv</a>. Guarde el archivo en
+la carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>paises &lt;- read.csv(&quot;data/paises.csv&quot;)
+paises &lt;- na.omit(paises)   # se quitan 14 territorios sin datos
+nrow(paises)</code></pre>
+<pre><code>[1] 199</code></pre>
+<pre class="r"><code>plot(fertilidad ~ pib_pc, data = paises, pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;PIB por habitante (dólares)&quot;, ylab = &quot;Hijos por mujer&quot;,
+     xlim = c(0, 110000), ylim = c(0, 7.5))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso101_files/figure-html/unnamed-chunk-2-1.png" alt="Nube de puntos con forma de L: la fecundidad cae rápido entre los países más pobres y queda casi plana, cerca de 2 hijos, entre los países ricos" width="70%" />
+<p class="caption">
+Fecundidad y PIB por habitante en 199 países.
+</p>
+</div>
+<p>La relación es decreciente pero muy curva. Pearson no la describe
+bien:</p>
+<pre class="r"><code>cor(paises$pib_pc, paises$fertilidad)</code></pre>
+<pre><code>[1] -0.4399891</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-es-el-coeficiente-de-spearman" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el coeficiente de
+Spearman?</strong></span></h2>
+<p>El <strong>coeficiente de Spearman</strong>, <span
+class="math inline">\(r_s\)</span>, es la correlación de Pearson
+calculada sobre los <strong>rangos</strong> de los datos: el valor más
+pequeño recibe el rango 1, el siguiente el 2, y así hasta <span
+class="math inline">\(n\)</span>. Si hay empates, cada uno recibe el
+promedio de los rangos que ocuparían.</p>
+<p>Un ejemplo con cinco países:</p>
+<pre class="r"><code>cinco &lt;- paises[paises$pais %in% c(&quot;Niger&quot;, &quot;India&quot;, &quot;Colombia&quot;, &quot;Chile&quot;, &quot;Norway&quot;),
+                c(&quot;pais&quot;, &quot;pib_pc&quot;, &quot;fertilidad&quot;)]
+cinco$rango_pib &lt;- rank(cinco$pib_pc)
+cinco$rango_fert &lt;- rank(cinco$fertilidad)
+cinco</code></pre>
+<pre><code>        pais  pib_pc fertilidad rango_pib rango_fert
+39     Chile 11887.7      1.832         4          1
+41  Colombia  6222.8      2.293         3          3
+88     India  1406.4      2.538         2          4
+139    Niger   357.7      6.925         1          5
+144   Norway 84588.7      1.948         5          2</code></pre>
+<pre class="r"><code>cor(cinco$rango_pib, cinco$rango_fert)</code></pre>
+<pre><code>[1] -0.9</code></pre>
+<pre class="r"><code>cor(cinco$pib_pc, cinco$fertilidad, method = &quot;spearman&quot;)</code></pre>
+<pre><code>[1] -0.9</code></pre>
+<p>Los dos cálculos dan lo mismo. Con los 199 países:</p>
+<pre class="r"><code>cor(paises$pib_pc, paises$fertilidad, method = &quot;spearman&quot;)</code></pre>
+<pre><code>[1] -0.7101706</code></pre>
+<p><span class="math inline">\(r_s = -0.71\)</span> indica una relación
+monótona decreciente fuerte, mucho más clara que la que sugería Pearson
+(<span class="math inline">\(-0.44\)</span>).</p>
+<p>Como solo usa el orden, Spearman tiene dos ventajas:</p>
+<ul>
+<li>No cambia si se aplica una transformación creciente a una variable
+(por ejemplo, el logaritmo del PIB).</li>
+<li>Un valor extremo pesa poco: el país más rico tiene rango 199 sin
+importar si su PIB es el doble que el del segundo.</li>
+</ul>
+<pre class="r"><code>cor(log(paises$pib_pc), paises$fertilidad, method = &quot;spearman&quot;)</code></pre>
+<pre><code>[1] -0.7101706</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-es-el-coeficiente-de-kendall" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el coeficiente de
+Kendall?</strong></span></h2>
+<p>El <strong>coeficiente de Kendall</strong>, <span
+class="math inline">\(\tau\)</span> (tau), también usa solo el orden,
+pero cuenta <strong>pares de observaciones</strong>. Un par de países
+es:</p>
+<ul>
+<li><strong>Concordante</strong> si el país con más PIB también tiene
+más fecundidad.</li>
+<li><strong>Discordante</strong> si el país con más PIB tiene menos
+fecundidad.</li>
+</ul>
+<p><span class="math display">\[
+\tau = \frac{\text{pares concordantes} - \text{pares
+discordantes}}{\text{número total de pares}}
+\]</span></p>
+<p>Con los cinco países hay <span class="math inline">\(\binom{5}{2} =
+10\)</span> pares:</p>
+<pre class="r"><code>pares &lt;- combn(nrow(cinco), 2)
+signo &lt;- apply(pares, 2, function(p) sign(diff(cinco$pib_pc[p])) * sign(diff(cinco$fertilidad[p])))
+table(signo)   # 1 = concordante, -1 = discordante</code></pre>
+<pre><code>signo
+-1  1 
+ 9  1 </code></pre>
+<pre class="r"><code>(sum(signo == 1) - sum(signo == -1)) / ncol(pares)</code></pre>
+<pre><code>[1] -0.8</code></pre>
+<pre class="r"><code>cor(cinco$pib_pc, cinco$fertilidad, method = &quot;kendall&quot;)</code></pre>
+<pre><code>[1] -0.8</code></pre>
+<p>De los 10 pares, 9 son discordantes. El único concordante es Chile y
+Noruega: Noruega tiene más PIB y también un poco más de fecundidad.
+<span class="math inline">\(\tau = -1\)</span> significaría que todos
+los pares son discordantes. Cuando hay empates, <strong>R</strong>
+calcula la versión llamada <span class="math inline">\(\tau_b\)</span>,
+que corrige el denominador por los pares empatados. Con los 199
+países:</p>
+<pre class="r"><code>cor(paises$pib_pc, paises$fertilidad, method = &quot;kendall&quot;)</code></pre>
+<pre><code>[1] -0.51523</code></pre>
+<p><strong>Kendall suele dar valores más pequeños que Spearman y
+Pearson</strong> para la misma relación, porque mide otra cosa: la
+diferencia entre la proporción de pares concordantes y discordantes. Por
+eso no se usa la misma escala de “fuerte” o “moderada” para los tres. En
+una relación lineal con datos normales, <span class="math inline">\(\tau
+\approx \frac{2}{\pi}\arcsin(r)\)</span>: una <span
+class="math inline">\(r\)</span> de 0.81 corresponde a una <span
+class="math inline">\(\tau\)</span> cercana a 0.60.</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+cor(grasa$abdomen, grasa$grasa, method = &quot;kendall&quot;)</code></pre>
+<pre><code>[1] 0.6202173</code></pre>
+<pre class="r"><code>2 / pi * asin(cor(grasa$abdomen, grasa$grasa))</code></pre>
+<pre><code>[1] 0.6051071</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-si-son-distintos-de-cero"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba si son distintos
+de cero?</strong></span></h2>
+<p><code>cor.test()</code> hace la prueba de <span
+class="math inline">\(H_0\)</span>: no hay asociación monótona, con el
+argumento <code>method</code>. Ninguna de las dos pruebas exige
+normalidad.</p>
+<pre class="r"><code>cor.test(paises$pib_pc, paises$fertilidad, method = &quot;spearman&quot;, exact = FALSE)</code></pre>
+<pre><code>
+    Spearman&#39;s rank correlation rho
+
+data:  paises$pib_pc and paises$fertilidad
+S = 2246138, p-value &lt; 0.00000000000000022
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+       rho 
+-0.7101706 </code></pre>
+<pre class="r"><code>cor.test(paises$pib_pc, paises$fertilidad, method = &quot;kendall&quot;, exact = FALSE)</code></pre>
+<pre><code>
+    Kendall&#39;s rank correlation tau
+
+data:  paises$pib_pc and paises$fertilidad
+z = -10.806, p-value &lt; 0.00000000000000022
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+     tau 
+-0.51523 </code></pre>
+<p>El argumento <code>exact = FALSE</code> usa una aproximación para el
+valor p. Sin él, <strong>R</strong> intenta el cálculo exacto, que no es
+posible cuando hay empates, y muestra una advertencia.</p>
+<p><br/></p>
+</div>
+<div id="cuál-coeficiente-usar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuál coeficiente
+usar?</strong></span></h2>
+<table>
+<colgroup>
+<col width="34%" />
+<col width="37%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Situación</th>
+<th align="left">Coeficiente</th>
+<th align="left">Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Relación aproximadamente recta, sin puntos
+extremos</td>
+<td align="left">Pearson</td>
+<td align="left">Es el que se conecta con la regresión lineal</td>
+</tr>
+<tr class="even">
+<td align="left">Relación monótona pero curva</td>
+<td align="left">Spearman o Kendall</td>
+<td align="left">Miden la tendencia sin exigir una recta</td>
+</tr>
+<tr class="odd">
+<td align="left">Puntos extremos que no se pueden corregir</td>
+<td align="left">Spearman o Kendall</td>
+<td align="left">Usan rangos y no los valores</td>
+</tr>
+<tr class="even">
+<td align="left">Variables ordinales (por ejemplo, nivel de satisfacción
+de 1 a 5)</td>
+<td align="left">Spearman o Kendall</td>
+<td align="left">Solo el orden tiene sentido</td>
+</tr>
+<tr class="odd">
+<td align="left">Relación en forma de U</td>
+<td align="left">Ninguno</td>
+<td align="left">Graficar y modelar la curva</td>
+</tr>
+</tbody>
+</table>
+<p>Spearman y Kendall casi siempre llevan a la misma conclusión.
+Spearman es más fácil de explicar (Pearson sobre rangos); Kendall tiene
+una interpretación directa en términos de pares.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Usar Spearman o Kendall para cualquier relación no
+lineal</td>
+<td align="left">Solo miden relaciones monótonas</td>
+<td align="left">Graficar primero; si hay forma de U, ninguno sirve</td>
+</tr>
+<tr class="even">
+<td align="left">Comparar <span class="math inline">\(\tau\)</span> con
+los cortes de <span class="math inline">\(r\)</span></td>
+<td align="left">Kendall da valores menores para la misma relación</td>
+<td align="left">Interpretar cada coeficiente por separado</td>
+</tr>
+<tr class="odd">
+<td align="left">Decir que Kendall no usa rangos y Spearman sí</td>
+<td align="left">Los dos dependen solo del orden</td>
+<td align="left">Kendall cuenta pares; Spearman correlaciona rangos</td>
+</tr>
+<tr class="even">
+<td align="left">Ignorar la advertencia de <code>cor.test()</code> por
+empates</td>
+<td align="left">El valor p exacto no se puede calcular con empates</td>
+<td align="left">Usar <code>exact = FALSE</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-una-curva-perfecta"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Una curva
+perfecta</strong></span></h3>
+<p>Con <code>x &lt;- 1:20</code> y <code>y &lt;- exp(x / 3)</code>,
+calcule los tres coeficientes. ¿Por qué Spearman y Kendall valen 1?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>x &lt;- 1:20
+y &lt;- exp(x / 3)
+c(pearson = cor(x, y), spearman = cor(x, y, method = &quot;spearman&quot;),
+  kendall = cor(x, y, method = &quot;kendall&quot;))</code></pre>
+<pre><code>  pearson  spearman   kendall 
+0.7982556 1.0000000 1.0000000 </code></pre>
+<p>La relación es perfectamente monótona: todos los pares son
+concordantes y los rangos de <span class="math inline">\(x\)</span> y de
+<span class="math inline">\(y\)</span> coinciden. Pearson es menor que 1
+porque los puntos no están sobre una recta.</p>
+</details>
+</div>
+<div id="reto-2.-una-relación-en-u"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Una relación en
+U</strong></span></h3>
+<p>Con <code>x &lt;- -10:10</code> y <code>y &lt;- x^2</code>, calcule
+Pearson y Spearman. ¿Hay relación entre <span
+class="math inline">\(x\)</span> y <span
+class="math inline">\(y\)</span>?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>x &lt;- -10:10
+y &lt;- x^2
+c(pearson = cor(x, y), spearman = cor(x, y, method = &quot;spearman&quot;))</code></pre>
+<pre><code> pearson spearman 
+       0        0 </code></pre>
+<p>Los dos coeficientes valen 0, pero <span
+class="math inline">\(y\)</span> depende por completo de <span
+class="math inline">\(x\)</span>. La relación no es lineal ni monótona:
+baja y luego sube.</p>
+</details>
+</div>
+<div id="reto-3.-urbanización-y-esperanza-de-vida"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Urbanización y esperanza
+de vida</strong></span></h3>
+<p>Grafique la esperanza de vida de las mujeres contra el porcentaje de
+población urbana y calcule los tres coeficientes. ¿Cuál describe mejor
+la relación?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>plot(vida_mujer ~ urbana, data = paises, pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Población urbana (%)&quot;, ylab = &quot;Esperanza de vida de las mujeres (años)&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso101_files/figure-html/unnamed-chunk-13-1.png" alt="Nube de puntos creciente con mucha dispersión entre los países poco urbanos" width="60%" />
+<p class="caption">
+Esperanza de vida de las mujeres y población urbana.
+</p>
+</div>
+<pre class="r"><code>c(pearson = cor(paises$urbana, paises$vida_mujer),
+  spearman = cor(paises$urbana, paises$vida_mujer, method = &quot;spearman&quot;),
+  kendall = cor(paises$urbana, paises$vida_mujer, method = &quot;kendall&quot;))</code></pre>
+<pre><code>  pearson  spearman   kendall 
+0.6013320 0.6521535 0.4632818 </code></pre>
+<p>La relación es creciente y algo curva. Pearson y Spearman dan valores
+parecidos; la dispersión es grande, así que la relación es moderada.
+Kendall es menor, como se espera.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. Se descarga gratis desde el
+sitio de la editorial.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Conover, W. J. (1999). <em>Practical Nonparametric Statistics</em>
+(3.ª ed.). Wiley. Trata en detalle los coeficientes de Spearman y
+Kendall y sus pruebas.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Conover, W. J. (1999). <em>Practical Nonparametric Statistics</em>
+(3.ª ed.). Wiley.</li>
+<li>Fox, J. y Weisberg, S. (2019). <em>An R Companion to Applied
+Regression</em> (3.ª ed.). Sage.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

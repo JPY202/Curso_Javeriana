@@ -1,0 +1,214 @@
+"pais","region","grupo","fertilidad","pib_pc","urbana","vida_mujer"
+"Afghanistan","Asia","other",5.968,499,23,49.49
+"Albania","Europe","other",1.525,3677.2,53,80.4
+"Algeria","Africa","africa",2.142,4473,67,75
+"American Samoa",NA,NA,NA,NA,NA,NA
+"Angola","Africa","africa",5.135,4321.9,59,53.17
+"Anguilla","Caribbean","other",2,13750.1,100,81.1
+"Argentina","Latin Amer","other",2.172,9162.1,93,79.89
+"Armenia","Asia","other",1.735,3030.7,64,77.33
+"Aruba","Caribbean","other",1.671,22851.5,47,77.75
+"Australia","Oceania","oecd",1.949,57118.9,89,84.27
+"Austria","Europe","oecd",1.346,45158.8,68,83.55
+"Azerbaijan","Asia","other",2.148,5637.6,52,73.66
+"Bahamas","Caribbean","other",1.877,22461.6,84,78.85
+"Bahrain","Asia","other",2.43,18184.1,89,76.06
+"Bangladesh","Asia","other",2.157,670.4,29,70.23
+"Barbados","Caribbean","other",1.575,14497.3,45,80.26
+"Belarus","Europe","other",1.479,5702,75,76.37
+"Belgium","Europe","oecd",1.835,43814.8,97,82.81
+"Belize","Latin Amer","other",2.679,4495.8,53,77.81
+"Benin","Africa","africa",5.078,741.1,42,58.66
+"Bermuda","Caribbean","other",1.76,92624.7,100,82.3
+"Bhutan","Asia","other",2.258,2047.2,35,69.84
+"Bolivia","Latin Amer","other",3.229,1977.9,67,69.4
+"Bosnia and Herzegovina","Europe","other",1.134,4477.7,49,78.4
+"Botswana","Africa","africa",2.617,7402.9,62,51.34
+"Brazil","Latin Amer","other",1.8,10715.6,87,77.41
+"Brunei Darussalam","Asia","other",1.984,32647.6,76,80.64
+"Bulgaria","Europe","other",1.546,6365.1,72,77.12
+"Burkina Faso","Africa","africa",5.75,519.7,27,57.02
+"Burundi","Africa","africa",4.051,176.6,11,52.58
+"Cambodia","Asia","other",2.422,797.2,20,65.1
+"Cameroon","Africa","africa",4.287,1206.6,59,53.56
+"Canada","North America","oecd",1.691,46360.9,81,83.49
+"Cape Verde","Africa","africa",2.279,3244,62,77.7
+"Cayman Islands","Caribbean","other",1.6,57047.9,100,83.8
+"Central African Republic","Africa","africa",4.423,450.8,39,51.3
+"Chad","Africa","africa",5.737,727.4,28,51.61
+"Channel Islands",NA,NA,NA,NA,NA,NA
+"Chile","Latin Amer","oecd",1.832,11887.7,89,82.35
+"China","Asia","other",1.559,4354,48,75.61
+"Colombia","Latin Amer","other",2.293,6222.8,75,77.69
+"Comoros","Africa","africa",4.742,736.6,28,63.18
+"Congo","Africa","africa",4.442,2665.1,63,59.33
+"Cook Islands","Oceania","other",2.53080628409411,12212.1,76,76.2454672361809
+"Costa Rica","Latin Amer","other",1.812,7703.8,65,81.99
+"Cote dIvoire","Africa","africa",4.224,1154.1,51,57.71
+"Croatia","Europe","other",1.501,13819.5,58,80.37
+"Cuba","Caribbean","other",1.451,5704.4,75,81.33
+"Cyprus","Asia","other",1.458,28364.3,71,82.14
+"Czech Republic","Europe","oecd",1.501,18838.8,74,81
+"Democratic Republic of the Congo","Africa","africa",5.485,200.6,36,50.56
+"Denmark","Europe","oecd",1.885,55830.2,87,81.37
+"Djibouti","Africa","africa",3.589,1282.6,76,60.04
+"Dominica","Caribbean","other",3,7020.8,67,78.2
+"Dominican Republic","Caribbean","other",2.49,5195.4,70,76.57
+"Timor Leste","Asia","other",5.918,706.1,29,64.2
+"Ecuador","Latin Amer","other",2.393,4072.6,68,78.91
+"Egypt","Africa","africa",2.636,2653.7,44,75.52
+"El Salvador","Latin Amer","other",2.171,3425.6,65,77.09
+"Equatorial Guinea","Africa","africa",4.98,16852.4,40,52.91
+"Eritrea","Africa","africa",4.243,429.1,22,64.41
+"Estonia","Europe","oecd",1.702,14135.4,70,79.95
+"Ethiopia","Africa","africa",3.848,324.6,17,61.59
+"Fiji","Oceania","other",2.602,3545.7,52,72.27
+"Finland","Europe","oecd",1.875,44501.7,85,83.28
+"France","Europe","oecd",1.987,39545.9,86,84.9
+"French Guiana",NA,NA,NA,NA,NA,NA
+"French Polynesia","Oceania","other",2.033,24669,51,78.07
+"Gabon","Africa","africa",3.195,12468.8,86,64.32
+"Gambia","Africa","africa",4.689,579.1,59,60.3
+"Georgia","Asia","other",1.528,2680.3,53,77.31
+"Germany","Europe","oecd",1.457,39857.1,74,82.99
+"Ghana","Africa","africa",3.988,1333.2,52,65.8
+"Greece","Europe","oecd",1.54,26503.8,62,82.58
+"Greenland","NorthAtlantic","other",2.217,35292.7,84,71.6
+"Grenada","Caribbean","other",2.171,7429,40,77.72
+"Guadeloupe",NA,NA,NA,NA,NA,NA
+"Guam",NA,NA,NA,NA,NA,NA
+"Guatemala","Latin Amer","other",3.84,2882.3,50,75.1
+"Guinea","Africa","africa",5.032,427.5,36,56.39
+"Guinea-Bissau","Africa","africa",4.877,539.4,30,50.4
+"Guyana","Latin Amer","other",2.19,2996,29,73.45
+"Haiti","Caribbean","other",3.159,612.7,54,63.87
+"Honduras","Latin Amer","other",2.996,2026.2,52,75.92
+"Hong Kong","Asia","other",1.137,31823.7,100,86.35
+"Hungary","Europe","oecd",1.43,12884,68,78.47
+"Iceland","Europe","other",2.098,39278,94,83.77
+"India","Asia","other",2.538,1406.4,30,67.62
+"Indonesia","Asia","other",2.055,2949.3,45,71.8
+"Iran","Asia","other",1.587,5227.1,71,75.28
+"Iraq","Asia","other",4.535,888.5,66,72.6
+"Ireland","Europe","oecd",2.097,46220.3,62,83.17
+"Israel","Asia","oecd",2.909,29311.6,92,84.19
+"Italy","Europe","oecd",1.476,33877.1,69,84.62
+"Jamaica","Caribbean","other",2.262,4899,52,75.98
+"Japan","Asia","oecd",1.418,43140.9,67,87.12
+"Jordan","Asia","other",2.889,4445.3,79,75.17
+"Kazakhstan","Asia","other",2.481,9166.7,59,72.84
+"Kenya","Africa","africa",4.623,801.8,23,59.16
+"Kiribati","Oceania","other",3.5,1468.2,44,63.1
+"Kuwait","Asia","other",2.251,45430.4,98,75.89
+"Kyrgyzstan","Asia","other",2.621,865.4,35,72.36
+"Laos","Asia","other",2.543,1047.6,34,69.42
+"Latvia","Europe","other",1.506,10663,68,78.51
+"Lebanon","Asia","other",1.764,9283.7,87,75.07
+"Lesotho","Africa","africa",3.051,980.7,28,48.11
+"Liberia","Africa","africa",5.038,218.6,48,58.59
+"Libya","Africa","africa",2.41,11320.8,78,77.86
+"Lithuania","Europe","other",1.495,10975.5,67,78.28
+"Luxembourg","Europe","oecd",1.683,105095.4,85,82.67
+"Macao","Asia","other",1.163,49990.2,100,83.8
+"Madagascar","Africa","africa",4.493,421.9,31,68.61
+"Malawi","Africa","africa",5.968,357.4,20,55.17
+"Malaysia","Asia","other",2.572,8372.8,73,76.86
+"Maldives","Asia","other",1.668,4684.5,41,78.7
+"Mali","Africa","africa",6.117,598.8,37,53.14
+"Malta","Europe","other",1.284,19599.2,95,82.29
+"Marshall Islands","Oceania","other",4.38446625852824,3069.4,72,70.6
+"Martinique",NA,NA,NA,NA,NA,NA
+"Mauritania","Africa","africa",4.361,1131.1,42,60.95
+"Mauritius","Africa","africa",1.59,7488.3,42,76.89
+"Mayotte",NA,NA,NA,NA,NA,NA
+"Mexico","Latin Amer","oecd",2.227,9100.7,78,79.64
+"Micronesia","Oceania","other",3.307,2678.2,23,70.17
+"Moldova","Europe","other",1.45,1625.8,48,73.48
+"Mongolia","Asia","other",2.446,2246.7,63,72.83
+"Montenegro","Europe","other",1.63,6509.8,61,77.37
+"Morocco","Africa","africa",2.183,2865,59,74.86
+"Mozambique","Africa","africa",4.713,407.5,39,51.81
+"Myanmar","Asia","other",1.939,876.2,34,67.87
+"Namibia","Africa","africa",3.055,5124.7,39,63.04
+"Nauru","Oceania","other",3.3,6190.1,100,57.1
+"Nepal","Asia","other",2.587,534.7,19,70.05
+"Neth Antilles","Caribbean","other",1.9,20321.1,93,79.86
+"Netherlands","Europe","oecd",1.794,46909.7,83,82.79
+"New Caledonia","Oceania","other",2.091,35319.5,57,80.49
+"New Zealand","Oceania","oecd",2.135,32372.1,86,82.77
+"Nicaragua","Latin Amer","other",2.5,1131.9,58,77.45
+"Niger","Africa","africa",6.925,357.7,17,55.77
+"Nigeria","Africa","africa",5.431,1239.8,51,53.38
+"Niue",NA,NA,NA,NA,NA,NA
+"North Korea","Asia","other",1.988,504,60,72.12
+"Northern Mariana Islands",NA,NA,NA,NA,NA,NA
+"Norway","Europe","oecd",1.948,84588.7,80,83.47
+"Oman","Asia","other",2.146,20791,73,76.44
+"Pakistan","Asia","other",3.201,1003.2,36,66.88
+"Palau","Oceania","other",2,10821.8,84,72.1
+"Palestinian Territory","Asia","other",4.27,1819.5,74,74.81
+"Panama","Latin Amer","other",2.409,7614,75,79.07
+"Papua New Guinea","Oceania","other",3.799,1428.4,13,65.52
+"Paraguay","Latin Amer","other",2.858,2771.1,62,74.91
+"Peru","Latin Amer","other",2.41,5410.7,77,76.9
+"Philippines","Asia","other",3.05,2140.1,49,72.57
+"Poland","Europe","oecd",1.415,12263.2,61,80.56
+"Portugal","Europe","oecd",1.312,21437.6,61,82.76
+"Puerto Rico","Caribbean","other",1.757,26461,99,83.2
+"Qatar","Asia","other",2.204,72397.9,96,78.24
+"Republic of Korea","Asia","other",1.389,21052.2,83,83.95
+"Reunion",NA,NA,NA,NA,NA,NA
+"Romania","Europe","other",1.428,7522.4,58,77.95
+"Russian Federation","Europe","other",1.529,10351.4,73,75.01
+"Rwanda","Africa","africa",5.282,532.3,19,57.13
+"Saint Lucia","Caribbean","other",1.907,6677.1,28,77.54
+"Samoa","Oceania","other",3.763,3343.3,20,76.02
+"Sao Tome and Principe","Africa","africa",3.488,1283.3,63,66.48
+"Saudi Arabia","Asia","other",2.639,15835.9,82,75.57
+"Senegal","Africa","africa",4.605,1032.7,43,60.92
+"Serbia","Europe","other",1.562,5123.2,56,77.05
+"Seychelles","Africa","africa",2.34,11450.6,56,78
+"Sierra Leone","Africa","africa",4.728,351.7,39,48.87
+"Singapore","Asia","other",1.367,43783.1,100,83.71
+"Slovakia","Europe","oecd",1.372,15976,55,79.53
+"Slovenia","Europe","oecd",1.477,23109.8,49,82.84
+"Solomon Islands","Oceania","other",4.041,1193.5,19,70
+"Somalia","Africa","africa",6.283,114.8,38,53.38
+"South Africa","Africa","africa",2.383,7254.8,62,54.09
+"Spain","Europe","other",1.504,30542.8,78,84.76
+"Sri Lanka","Asia","other",2.235,2375.3,14,78.4
+"St Vincent and Grenadines","Caribbean","other",1.995,6171.7,50,74.73
+"Sudan","Africa","africa",4.225,1824.9,41,63.82
+"Suriname","Latin Amer","other",2.266,7018,70,74.18
+"Swaziland","Africa","africa",3.174,3311.2,21,48.54
+"Sweden","Europe","oecd",1.925,48906.2,85,83.65
+"Switzerland","Europe","oecd",1.536,68880.2,74,84.71
+"Syria","Asia","other",2.772,2931.5,56,77.72
+"Tajikistan","Asia","other",3.162,816,26,71.23
+"Tanzania","Africa","africa",5.499,516,27,60.31
+"TFYR Macedonia","Europe","other",1.397,4434.5,59,77.14
+"Thailand","Asia","other",1.528,4612.8,34,77.76
+"Togo","Africa","africa",3.864,524.6,44,59.4
+"Tokelau",NA,NA,NA,NA,NA,NA
+"Tonga","Oceania","other",3.783,3543.1,24,75.38
+"Trinidad and Tobago","Caribbean","other",1.632,15205.1,14,73.82
+"Tunisia","Africa","africa",1.909,4222.1,68,77.05
+"Turkey","Asia","oecd",2.022,10095.1,70,76.61
+"Turkmenistan","Asia","other",2.316,4587.5,50,69.4
+"Tuvalu","Oceania","other",3.7,3187.2,51,65.1
+"Uganda","Africa","africa",5.901,509,13,55.44
+"Ukraine","Europe","other",1.483,3035,69,74.58
+"United Arab Emirates","Asia","other",1.707,39624.7,84,78.02
+"United Kingdom","Europe","oecd",1.867,36326.8,80,82.42
+"United States","North America","oecd",2.077,46545.9,83,81.31
+"United States Virgin Islands",NA,NA,NA,NA,NA,NA
+"Uruguay","Latin Amer","other",2.043,11952.4,93,80.66
+"Uzbekistan","Asia","other",2.264,1427.3,36,71.9
+"Vanuatu","Oceania","other",3.75,2963.5,26,73.58
+"Venezuela","Latin Amer","other",2.391,13502.7,94,77.73
+"Viet Nam","Asia","other",1.75,1182.7,31,77.44
+"Wallis and Futuna Islands",NA,NA,NA,NA,NA,NA
+"Western Sahara",NA,NA,NA,NA,NA,NA
+"Yemen","Asia","other",4.938,1437.2,32,67.66
+"Zambia","Africa","africa",6.3,1237.8,36,50.04
+"Zimbabwe","Africa","africa",3.109,573.1,39,52.72

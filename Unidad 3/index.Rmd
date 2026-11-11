@@ -1,0 +1,182 @@
+---
+title: <span style="color:#034a94"> **Unidad 3. Correlación y regresión lineal simple**</span>
+output:
+  html_document:
+    toc: no
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = NA)
+options(scipen = 999)
+```
+
+```{r, out.width="100%", fig.align="center", fig.alt="Banner de Métodos y Simulación Estadística"}
+knitr::include_graphics("img/banner_presentacion.jpg")
+```
+
+<br/>
+
+Esta unidad estudia la relación entre dos variables cuantitativas: cómo medirla con la **correlación** y cómo describirla y usarla para predecir con el **modelo de regresión lineal simple**. Incluye la estimación del modelo, las pruebas y los intervalos, la revisión de los supuestos, qué hacer cuando fallan y cómo tratar los puntos que no siguen el patrón de los demás.
+
+La unidad trabaja con **una sola variable explicativa**. La regresión con varias variables explicativas se estudia en el curso siguiente, *Modelos Estadísticos para la Toma de Decisiones*.
+
+<br/>
+
+## <span style="color:#034a94">**¿Con qué datos se trabaja?**</span>
+
+Casi toda la unidad sigue un mismo caso: **252 hombres** a quienes se les midió el porcentaje de grasa corporal con pesaje bajo el agua y la circunferencia del abdomen con una cinta métrica (Johnson, 1996). La pregunta es si una medida barata y rápida, el abdomen, sirve para conocer una medida costosa, la grasa.
+
+Dos casos más se usan donde el primero no alcanza, y el caso integrador usa datos nuevos. Descargue los tres archivos y guárdelos en una carpeta llamada `data` dentro de su proyecto de **RStudio**:
+
+| Datos | Archivo (clic para descargar) | Páginas |
+|:------|:--------|:--------|
+| Grasa corporal y medidas del cuerpo de 252 hombres | <a href="data/grasa.csv" download>grasa.csv</a> | Casi todas |
+| Fecundidad, PIB por habitante y otros indicadores de 199 países (Naciones Unidas, 2009 a 2011) | <a href="data/paises.csv" download>paises.csv</a> | Spearman y Kendall, Transformaciones, Varianza no constante |
+| Tasa de condenas de mujeres y fecundidad en Canadá, 1931 a 1968 | <a href="data/condenas.csv" download>condenas.csv</a> | Revisión de los supuestos (independencia) |
+| Peso medido y peso reportado de 200 personas que hacen ejercicio | <a href="data/peso.csv" download>peso.csv</a> | Caso integrador |
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se necesita saber antes de empezar?**</span>
+
+| Tema | Dónde se usa | Dónde repasar |
+|:-----|:-------------|:--------------|
+| Gráfico de dispersión | En todas las páginas | [Relaciones y cambios en el tiempo](../unidad1/recurso304.html) |
+| Media, varianza y desviación estándar | Correlación, estimación | [Indicadores de dispersión](../unidad1/recurso205.html) |
+| Valores atípicos y datos imposibles | Correlación, puntos influyentes | [Organizar los datos](../unidad1/recurso401.html) |
+| Distribución normal, $t$ y chi-cuadrado | Pruebas e intervalos | [Distribución muestral](../unidad2/recurso301.html) |
+| Insesgadez y varianza de un estimador | Propiedades de los estimadores | [Propiedades de los estimadores](../unidad2/recurso303.html) |
+| Máxima verosimilitud | Estimación de los coeficientes, Box-Cox | [Métodos de estimación](../unidad2/recurso304.html) |
+| Intervalos de confianza | Inferencia, predicción | [Intervalos para una población](../unidad2/recurso400.html) |
+| Pruebas de hipótesis y valor p | Inferencia, supuestos | [Conceptos de las pruebas](../unidad2/recurso500.html) |
+| Logaritmos y exponencial | Transformaciones | Matemáticas de bachillerato |
+| `read.csv()`, `data.frame()`, `plot()` en R | En todas las páginas | [Objetos en R](../unidad1/recurso101.html) |
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué notación se usa?**</span>
+
+| Símbolo | Se lee | Significado en la unidad |
+|:-------:|:-------|:-------------------------|
+| $y$, $x$ | ye, equis | Variable respuesta y variable explicativa |
+| $r$, $\rho$ | r, rho | Correlación de la muestra y de la población |
+| $r_s$, $\tau$ | r sub s, tau | Correlación de Spearman y de Kendall |
+| $\beta_0$, $\beta_1$ | beta cero, beta uno | Intercepto y pendiente del modelo (parámetros) |
+| $\hat{\beta}_0$, $\hat{\beta}_1$ | beta cero gorro, beta uno gorro | Sus estimaciones |
+| $\varepsilon_i$ | épsilon | Error de la observación $i$ |
+| $\hat{y}_i$, $e_i$ | ye gorro, e | Valor ajustado y residual |
+| $\sigma^2$, $\hat{\sigma}$ | sigma cuadrado, sigma gorro | Varianza del error y desviación estándar residual |
+| $S_{xx}$ | ese equis equis | $\sum (x_i - \bar{x})^2$ |
+| $R^2$ | R cuadrado | Coeficiente de determinación |
+| $h_{ii}$ | hache | Apalancamiento de la observación $i$ |
+| $E(Y \mid x)$ | esperanza de Y dado x | Media de $Y$ para un valor de $x$ |
+
+<br/>
+
+## <span style="color:#034a94">**¿Está listo para empezar?**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 1. Una recta**</span>
+
+La recta $y = 4 + 0.5x$, ¿cuánto vale en $x = 10$? ¿Cuánto cambia $y$ si $x$ aumenta 6 unidades? ¿Dónde corta el eje vertical?
+
+<details>
+<summary>Ver solución</summary>
+
+En $x = 10$, $y = 4 + 5 = 9$. Si $x$ aumenta 6, $y$ aumenta $0.5 \times 6 = 3$. Corta el eje vertical en $y = 4$ (cuando $x = 0$). **Si tuvo dificultad**, repase la ecuación de la recta: pendiente e intercepto son la base de toda la unidad.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 2. Logaritmos**</span>
+
+Calcule con R `log(100)`, `exp(log(100))` y `log(200) - log(100)`. ¿Qué tiene de especial el último resultado?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, echo=TRUE}
+log(100)
+exp(log(100))
+log(200) - log(100)
+log(2)
+```
+
+`log()` en R es el logaritmo natural. La diferencia de logaritmos es el logaritmo del cociente: $\log 200 - \log 100 = \log 2$, sin importar los valores. Por eso los logaritmos convierten los cambios porcentuales en diferencias, una idea que se usa en [Transformaciones](recurso500.html).
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Ejercicio 3. Intervalo de confianza**</span>
+
+Una muestra de 25 datos tiene media 50 y desviación estándar 10. Construya el intervalo del 95 % para la media de la población con R e interprételo.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, echo=TRUE}
+50 + c(-1, 1) * qt(0.975, df = 24) * 10 / sqrt(25)
+```
+
+Con 95 % de confianza, la media de la población está entre 45.9 y 54.1. Los intervalos de la regresión tienen la misma forma: estimación más o menos un cuantil $t$ por el error estándar. **Si tuvo dificultad**, repase [Intervalos para una población](../unidad2/recurso400.html).
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Contenido de la unidad**</span>
+
+1.  **Correlación**
+
+    - [Correlación de Pearson](recurso100.html)
+    - [Correlación de Spearman y Kendall](recurso101.html)
+
+    <br/>
+
+2.  **Modelo**
+
+    - [Modelo de regresión lineal simple](recurso200.html)
+    - [Estimación de los coeficientes](recurso201.html)
+    - [Propiedades de los estimadores](recurso202.html)
+
+    <br/>
+
+3.  **Inferencia**
+
+    - [Pruebas, intervalos y R²](recurso300.html)
+    - [Estimación de la media y predicción](recurso301.html)
+
+    <br/>
+
+4.  **Supuestos**
+
+    - [Supuestos del modelo](recurso400.html)
+    - [Revisión de los supuestos](recurso401.html)
+
+    <br/>
+
+5.  **Soluciones**
+
+    - [Transformaciones](recurso500.html)
+    - [Varianza no constante](recurso501.html)
+
+    <br/>
+
+6.  **[Puntos atípicos e influyentes](recurso600.html)**
+
+    <br/>
+
+7.  **[Caso integrador](recurso700.html)**
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Johnson, R. W. (1996). Fitting percentage of body fat to simple body measurements. *Journal of Statistics Education*, 4(1).
+
+<br/><br/>

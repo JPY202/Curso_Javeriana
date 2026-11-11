@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Revisión de los supuestos</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Revisión de los supuestos</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Esta página revisa los cuatro supuestos del modelo de la grasa
+corporal según el abdomen. El orden es siempre el mismo: <strong>primero
+los gráficos de residuales, después las pruebas como
+complemento</strong>. Los gráficos muestran qué falla y dónde; las
+pruebas dan un valor p, pero no dicen si el problema es grande ni de
+dónde viene.</p>
+<p>Al final se verá que una sola observación cambia la conclusión de
+casi todas las pruebas. Los bloques de código se ejecutan en orden.</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+modelo &lt;- lm(grasa ~ abdomen, data = grasa)</code></pre>
+<p><br/></p>
+<div id="qué-residuales-se-usan" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué residuales se
+usan?</strong></span></h2>
+<p>Los residuales ordinarios, <span class="math inline">\(e_i = y_i -
+\hat{y}_i\)</span>, no tienen todos la misma varianza: los de los puntos
+con <span class="math inline">\(x\)</span> lejos de la media varían
+menos, porque esos puntos “jalan” la recta hacia ellos. Por eso se usan
+versiones <strong>estandarizadas</strong>, que se comparan con una misma
+escala.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="33%" />
+<col width="30%" />
+<col width="20%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Residual</th>
+<th align="left">Fórmula</th>
+<th align="left">En R</th>
+<th align="left">Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Ordinario</td>
+<td align="left"><span class="math inline">\(e_i = y_i -
+\hat{y}_i\)</span></td>
+<td align="left"><code>residuals(modelo)</code></td>
+<td align="left">En las unidades de <span
+class="math inline">\(y\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Estandarizado</td>
+<td align="left"><span class="math inline">\(r_i =
+\dfrac{e_i}{\hat{\sigma}\sqrt{1 - h_{ii}}}\)</span></td>
+<td align="left"><code>rstandard(modelo)</code></td>
+<td align="left">Gráficos y normalidad</td>
+</tr>
+<tr class="odd">
+<td align="left">Estudentizado (R-student)</td>
+<td align="left">Igual, pero con <span
+class="math inline">\(\hat{\sigma}_{(i)}\)</span>, la estimación sin la
+observación <span class="math inline">\(i\)</span></td>
+<td align="left"><code>rstudent(modelo)</code></td>
+<td align="left">Detectar atípicos</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(h_{ii}\)</span> es el
+<strong>apalancamiento</strong> de la observación <span
+class="math inline">\(i\)</span>: mide qué tan lejos está su <span
+class="math inline">\(x\)</span> del centro de los datos (página <a
+href="recurso600.html">Puntos influyentes</a>). Los residuales
+estandarizados y estudentizados se leen como valores <span
+class="math inline">\(z\)</span>: la mayoría debería estar entre −2 y 2,
+y valores más allá de ±3 son raros.</p>
+<pre class="r"><code>head(data.frame(ordinario = residuals(modelo), estandarizado = rstandard(modelo),
+                estudentizado = rstudent(modelo)))</code></pre>
+<pre><code>  ordinario estandarizado estudentizado
+1 -2.036065    -0.4523353    -0.4516146
+2 -6.449306    -1.4337072    -1.4367556
+3  8.384730     1.8617242     1.8710123
+4 -4.437934    -0.9856628    -0.9856064
+5  4.507555     1.0014278     1.0014335
+6  0.582942     0.1293942     0.1291395</code></pre>
+<p><br/></p>
+</div>
+<div id="qué-muestran-los-gráficos-de-residuales"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué muestran los gráficos de
+residuales?</strong></span></h2>
+<p><code>plot()</code> aplicada a un modelo produce cuatro gráficos de
+diagnóstico. Los tres primeros revisan los supuestos:</p>
+<pre class="r"><code>par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+plot(modelo, which = 1:3, las = 1)</code></pre>
+<div class="figure">
+<img src="recurso401_files/figure-html/unnamed-chunk-3-1.png" alt="Tres paneles: residuales contra ajustados con una franja horizontal y la observación 39 abajo a la derecha; gráfico Q-Q casi recto con la observación 39 separada en el extremo inferior; raíz de los residuales estandarizados contra ajustados, plano salvo en el extremo derecho, donde sube por la observación 39" width="100%" />
+<p class="caption">
+Gráficos de diagnóstico del modelo de la grasa según el abdomen.
+</p>
+</div>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="23%" />
+<col width="29%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Gráfico</th>
+<th align="left">Qué revisa</th>
+<th align="left">Qué se espera</th>
+<th align="left">En el ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Residuals vs Fitted</td>
+<td align="left">Linealidad y varianza</td>
+<td align="left">Franja horizontal sin forma; la línea roja (un
+suavizado) cerca de cero</td>
+<td align="left">Franja sin forma clara; la línea se curva solo en el
+extremo derecho, donde está la observación 39</td>
+</tr>
+<tr class="even">
+<td align="left">Q-Q Residuals</td>
+<td align="left">Normalidad</td>
+<td align="left">Puntos sobre la diagonal</td>
+<td align="left">Casi recto, con la observación 39 separada abajo</td>
+</tr>
+<tr class="odd">
+<td align="left">Scale-Location</td>
+<td align="left">Varianza constante</td>
+<td align="left">Línea roja horizontal</td>
+<td align="left">Horizontal en casi todo el rango; sube en el extremo
+derecho, otra vez por la observación 39</td>
+</tr>
+</tbody>
+</table>
+<p><strong>R</strong> marca con su número las tres observaciones con los
+residuales más grandes. La <strong>39</strong> aparece en los tres
+gráficos: es el hombre de 148 cm de abdomen, con menos grasa de la que
+predice la recta.</p>
+<p>Hay que mirar el gráfico <strong>sin</strong> esperar perfección. Con
+datos reales, siempre hay algo de irregularidad. La pregunta es si hay
+un patrón claro.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-la-linealidad" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba la
+linealidad?</strong></span></h2>
+<p>Hay dos formas sencillas de probar si una recta es suficiente.</p>
+<p><strong>Agregar un término cuadrático.</strong> Si la relación es
+curva, el término <span class="math inline">\(x^2\)</span> debería ser
+significativo:</p>
+<pre class="r"><code>modelo_cuad &lt;- lm(grasa ~ abdomen + I(abdomen^2), data = grasa)
+anova(modelo, modelo_cuad)</code></pre>
+<pre><code>Analysis of Variance Table
+
+Model 1: grasa ~ abdomen
+Model 2: grasa ~ abdomen + I(abdomen^2)
+  Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    250 5094.9                                  
+2    249 4802.7  1    292.28 15.154 0.0001273 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><code>anova()</code> con dos modelos compara si el modelo grande
+reduce la suma de cuadrados del error más de lo que se espera por azar.
+El valor p es 0.00013: hay evidencia de curvatura. Pero el gráfico no
+mostraba una curva clara. ¿De dónde viene? Se vuelve a esto al final de
+la página.</p>
+<p><strong>Prueba de falta de ajuste.</strong> Cuando hay varias
+observaciones con el mismo valor de <span
+class="math inline">\(x\)</span> (<strong>réplicas</strong>), se compara
+la recta con un modelo que da una media distinta a cada valor de <span
+class="math inline">\(x\)</span>, sin forma impuesta. En
+<strong>R</strong> se hace con <code>factor()</code>:</p>
+<pre class="r"><code>length(unique(grasa$abdomen))   # valores distintos de abdomen en 252 hombres</code></pre>
+<pre><code>[1] 185</code></pre>
+<pre class="r"><code>anova(modelo, lm(grasa ~ factor(abdomen), data = grasa))</code></pre>
+<pre><code>Analysis of Variance Table
+
+Model 1: grasa ~ abdomen
+Model 2: grasa ~ factor(abdomen)
+  Res.Df    RSS  Df Sum of Sq     F Pr(&gt;F)
+1    250 5094.9                           
+2     67 1438.1 183    3656.8 0.931 0.6504</code></pre>
+<p>El valor p es 0.65: las medias de los grupos no se alejan de la recta
+más de lo esperado. La prueba tiene poca potencia aquí, porque la
+mayoría de los valores de abdomen aparecen una sola vez.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-la-varianza-constante" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba la varianza
+constante?</strong></span></h2>
+<p>La <strong>prueba de Breusch-Pagan</strong> ajusta una regresión de
+los residuales al cuadrado sobre <span class="math inline">\(x\)</span>.
+Si la varianza cambia con <span class="math inline">\(x\)</span>, esa
+regresión tiene pendiente.</p>
+<p><span class="math display">\[
+H_0: \text{la varianza es constante} \qquad H_1: \text{la varianza
+cambia con } x
+\]</span></p>
+<p>Se usa la función <code>bptest()</code> del paquete
+<code>lmtest</code>. El paquete <code>lmtest</code> reúne pruebas para
+revisar modelos de regresión; se instala una sola vez con
+<code>install.packages("lmtest")</code>.</p>
+<pre class="r"><code>library(lmtest)
+bptest(modelo)</code></pre>
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  modelo
+BP = 10.138, df = 1, p-value = 0.001453</code></pre>
+<p>El valor p es 0.0015: la prueba rechaza la varianza constante, aunque
+el tercer gráfico solo subía en el extremo donde está la observación
+39.</p>
+<p>La <strong>prueba de White</strong> es una variante que también
+incluye <span class="math inline">\(x^2\)</span>, para detectar una
+varianza que crece y luego decrece:</p>
+<pre class="r"><code>bptest(modelo, ~ abdomen + I(abdomen^2), data = grasa)</code></pre>
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  modelo
+BP = 59.234, df = 2, p-value = 0.0000000000001372</code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-la-normalidad" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba la
+normalidad?</strong></span></h2>
+<p>La <strong>prueba de Shapiro-Wilk</strong> se aplica a los residuales
+estandarizados:</p>
+<pre class="r"><code>shapiro.test(rstandard(modelo))</code></pre>
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  rstandard(modelo)
+W = 0.98969, p-value = 0.0703</code></pre>
+<p>Con un valor p de 0.07, no se rechaza la normalidad al 5 %. Esto
+<strong>no prueba</strong> que los errores sean normales: solo dice que
+la prueba no encontró evidencia en contra. El gráfico Q-Q es más
+informativo.</p>
+<p>No se usa la prueba de Kolmogorov-Smirnov con
+<code>ks.test(residuos, "pnorm", mean(residuos), sd(residuos))</code>:
+al estimar la media y la desviación con los mismos datos, su valor p es
+incorrecto (sale demasiado grande).</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-prueba-la-independencia" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se prueba la
+independencia?</strong></span></h2>
+<p>La independencia se revisa <strong>cuando hay un orden</strong> en
+los datos, casi siempre el tiempo. En los datos de grasa no lo hay: el
+número de cada hombre no indica cuándo se midió. Aplicar aquí una prueba
+de independencia no tiene sentido.</p>
+<p>Para ver cómo se revisa, se usa otro caso: la tasa de condenas de
+mujeres en Canadá (por cada 100 000) según la fecundidad (hijos por cada
+1 000 mujeres), de 1931 a 1968 (Fox y Hartnagel, 1979; datos del paquete
+<code>carData</code>).</p>
+<p>Los datos se descargan aquí:
+<a href="data/condenas.csv" download>condenas.csv</a>. Guarde el archivo
+en la carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>condenas &lt;- read.csv(&quot;data/condenas.csv&quot;)
+modelo_c &lt;- lm(condenas_mujeres ~ fecundidad, data = condenas)
+coef(modelo_c)</code></pre>
+<pre><code> (Intercept)   fecundidad 
+264.60671541  -0.05508818 </code></pre>
+<p>Con datos en el tiempo, se grafican los residuales <strong>en
+orden</strong>:</p>
+<pre class="r"><code>plot(condenas$anio, residuals(modelo_c), type = &quot;b&quot;, pch = 19, col = &quot;#034A94&quot;, las = 1,
+     xlab = &quot;Año&quot;, ylab = &quot;Residuales&quot;, ylim = c(-60, 60))
+abline(h = 0, lty = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso401_files/figure-html/unnamed-chunk-10-1.png" alt="Residuales unidos por una línea; forman rachas largas: negativos entre 1931 y 1938, positivos entre 1939 y 1943, negativos entre 1944 y 1958 y positivos entre 1959 y 1966" width="75%" />
+<p class="caption">
+Residuales del modelo de condenas en orden de tiempo.
+</p>
+</div>
+<p>Los residuales forman <strong>rachas</strong>: son negativos de 1931
+a 1938, positivos durante la Segunda Guerra Mundial (1939 a 1943),
+negativos de 1944 a 1958 y positivos de 1959 a 1966. Si fueran
+independientes, cambiarían de signo al azar. La <strong>prueba de
+Durbin-Watson</strong> mide la correlación entre cada residual y el
+anterior:</p>
+<pre class="r"><code>dwtest(modelo_c, alternative = &quot;two.sided&quot;)</code></pre>
+<pre><code>
+    Durbin-Watson test
+
+data:  modelo_c
+DW = 0.45225, p-value = 0.0000000009425
+alternative hypothesis: true autocorrelation is not 0</code></pre>
+<p>El estadístico <span class="math inline">\(DW\)</span> vale cerca de
+2 si no hay correlación, y se acerca a 0 si la correlación es positiva.
+Aquí <span class="math inline">\(DW = 0.45\)</span> y el valor p es casi
+cero: los errores están correlacionados en el tiempo. Los errores
+estándar de este modelo subestiman la incertidumbre, y la pendiente
+parece más precisa de lo que es. Para estos datos se necesitan modelos
+de series de tiempo.</p>
+<p><br/></p>
+</div>
+<div id="qué-pasa-sin-la-observación-39" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasa sin la observación
+39?</strong></span></h2>
+<p>Tres pruebas del modelo de la grasa señalaron problemas o casi:
+curvatura (p = 0.00013), varianza no constante (p = 0.0015) y normalidad
+en el límite (p = 0.07). Los gráficos, en cambio, solo mostraban un
+punto separado: la observación 39. Se repiten las pruebas sin ella:</p>
+<pre class="r"><code>sin39 &lt;- grasa[grasa$id != 39, ]
+modelo_sin39 &lt;- lm(grasa ~ abdomen, data = sin39)
+c(curvatura = anova(modelo_sin39, lm(grasa ~ abdomen + I(abdomen^2), data = sin39))[2, 6],
+  breusch_pagan = unname(bptest(modelo_sin39)$p.value),
+  shapiro = shapiro.test(rstandard(modelo_sin39))$p.value)</code></pre>
+<pre><code>    curvatura breusch_pagan       shapiro 
+    0.3144877     0.9718519     0.1931575 </code></pre>
+<p>Sin ese hombre, ninguna prueba encuentra problemas. <strong>Un solo
+punto, de 252, producía la curvatura, la heterocedasticidad y buena
+parte de la señal contra la normalidad.</strong></p>
+<p>Esto no quiere decir que haya que borrarlo. Es un hombre real de 165
+kg, no un error. Quiere decir que antes de concluir que un supuesto
+falla, hay que ver si el problema es de todos los datos o de unos pocos.
+La página <a href="recurso600.html">Puntos influyentes</a> muestra cómo
+identificarlos y qué hacer con ellos.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-usan-bien-las-pruebas" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se usan bien las
+pruebas?</strong></span></h2>
+<table>
+<colgroup>
+<col width="62%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Recomendación</th>
+<th align="left">Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Graficar antes de probar</td>
+<td align="left">El gráfico muestra qué falla y dónde; el valor p
+no</td>
+</tr>
+<tr class="even">
+<td align="left">Fijar el nivel de significancia antes de ver los
+resultados</td>
+<td align="left">Elegir <span class="math inline">\(\alpha\)</span>
+después para que una prueba rechace o no es hacer trampa</td>
+</tr>
+<tr class="odd">
+<td align="left">No elegir la prueba según su resultado</td>
+<td align="left">Con varias pruebas para lo mismo, alguna rechazará por
+azar</td>
+</tr>
+<tr class="even">
+<td align="left">No concluir que el supuesto se cumple porque no se
+rechazó</td>
+<td align="left">No rechazar solo dice que no hay evidencia en
+contra</td>
+</tr>
+<tr class="odd">
+<td align="left">Con <span class="math inline">\(n\)</span> grande,
+mirar la magnitud</td>
+<td align="left">Con miles de datos, las pruebas rechazan desvíos sin
+importancia práctica</td>
+</tr>
+<tr class="even">
+<td align="left">Con <span class="math inline">\(n\)</span> pequeño,
+desconfiar de un “no rechazo”</td>
+<td align="left">Las pruebas tienen poca potencia</td>
+</tr>
+<tr class="odd">
+<td align="left">Pensar en el diseño para la independencia</td>
+<td align="left">Las pruebas de independencia necesitan un orden en los
+datos</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aplicar Durbin-Watson a datos sin orden</td>
+<td align="left">La prueba depende del orden de las filas</td>
+<td align="left">Usarla solo con datos en el tiempo o en otro orden con
+sentido</td>
+</tr>
+<tr class="even">
+<td align="left">Usar <code>ks.test()</code> con la media y la
+desviación de los residuales</td>
+<td align="left">El valor p es incorrecto</td>
+<td align="left">Usar Shapiro-Wilk y el gráfico Q-Q</td>
+</tr>
+<tr class="odd">
+<td align="left">Decir “los residuales son normales” porque <span
+class="math inline">\(p &gt; 0.05\)</span></td>
+<td align="left">No rechazar no prueba la normalidad</td>
+<td align="left">Decir “no hay evidencia contra la normalidad”</td>
+</tr>
+<tr class="even">
+<td align="left">Concluir que la varianza no es constante por una
+prueba</td>
+<td align="left">Un solo punto puede producir el rechazo</td>
+<td align="left">Revisar los gráficos y los puntos influyentes</td>
+</tr>
+<tr class="odd">
+<td align="left">Correr muchas pruebas y quedarse con la que
+conviene</td>
+<td align="left">Se infla la probabilidad de error</td>
+<td align="left">Elegir las pruebas antes de ver los datos</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-el-modelo-del-pecho"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. El modelo del
+pecho</strong></span></h3>
+<p>Revise los supuestos del modelo de la grasa según la circunferencia
+del pecho: gráficos y las pruebas de Breusch-Pagan y Shapiro-Wilk.
+¿Aparece otra vez la observación 39?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>modelo_pecho &lt;- lm(grasa ~ pecho, data = grasa)
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+plot(modelo_pecho, which = 1:3, las = 1)</code></pre>
+<div class="figure">
+<img src="recurso401_files/figure-html/unnamed-chunk-13-1.png" alt="Tres paneles de diagnóstico con la observación 39 separada del resto" width="100%" />
+<p class="caption">
+Gráficos de diagnóstico del modelo de la grasa según el pecho.
+</p>
+</div>
+<pre class="r"><code>bptest(modelo_pecho)$p.value</code></pre>
+<pre><code>       BP 
+0.7146967 </code></pre>
+<pre class="r"><code>shapiro.test(rstandard(modelo_pecho))$p.value</code></pre>
+<pre><code>[1] 0.3073198</code></pre>
+<p>Sí: el hombre 39 también tiene el pecho más grande de la muestra y
+vuelve a aparecer separado en los gráficos. Las conclusiones de las
+pruebas deben leerse con ese punto en mente.</p>
+</details>
+</div>
+<div id="reto-2.-durbin-watson-sin-sentido"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Durbin-Watson sin
+sentido</strong></span></h3>
+<p>Aplique <code>dwtest()</code> al modelo de la grasa. Luego desordene
+las filas al azar (<code>set.seed(2026)</code>) y repita. ¿Por qué
+cambia el resultado?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>dwtest(modelo)$p.value</code></pre>
+<pre><code>[1] 0.07435958</code></pre>
+<pre class="r"><code>set.seed(2026)
+desordenado &lt;- grasa[sample(nrow(grasa)), ]
+dwtest(lm(grasa ~ abdomen, data = desordenado))$p.value</code></pre>
+<pre><code>[1] 0.9268532</code></pre>
+<p>El resultado cambia porque Durbin-Watson compara cada residual con el
+de la fila anterior. Si el orden de las filas no significa nada, la
+prueba tampoco.</p>
+</details>
+</div>
+<div id="reto-3.-normalidad-con-muchos-datos"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Normalidad con muchos
+datos</strong></span></h3>
+<p>Simule 5 000 errores de una distribución <span
+class="math inline">\(t\)</span> con 10 grados de libertad, que se
+parece mucho a la normal. Aplique Shapiro-Wilk y haga el gráfico Q-Q.
+¿Qué concluye?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>set.seed(2026)
+e &lt;- rt(5000, df = 10)
+shapiro.test(e)$p.value</code></pre>
+<pre><code>[1] 0.00000000004413577</code></pre>
+<pre class="r"><code>qqnorm(e, pch = 19, cex = 0.5, col = &quot;#034A9460&quot;, las = 1, main = &quot;&quot;)
+qqline(e, col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso401_files/figure-html/unnamed-chunk-15-1.png" alt="Puntos sobre la diagonal en casi todo el rango y algo separados en los extremos" width="55%" />
+<p class="caption">
+Gráfico Q-Q de 5 000 valores de una t con 10 grados de libertad.
+</p>
+</div>
+<p>Con 5 000 datos la prueba suele rechazar la normalidad, aunque el
+gráfico muestra que la diferencia está solo en los extremos y es
+pequeña. Para la inferencia sobre la pendiente, esa diferencia no tiene
+importancia.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 3
+trata los residuales, los gráficos de diagnóstico y las pruebas.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 4.</li>
+<li>Fox, J. y Weisberg, S. (2019). <em>An R Companion to Applied
+Regression</em> (3.ª ed.). Sage. Capítulo 8.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Fox, J. y Hartnagel, T. F. (1979). Changing social roles and female
+crime in Canada: A time series analysis. <em>Canadian Review of
+Sociology and Anthropology</em>, 16(1), 96-104.</li>
+<li>Fox, J. y Weisberg, S. (2019). <em>An R Companion to Applied
+Regression</em> (3.ª ed.). Sage.</li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+name: " "
+output_dir: "../docs/unidad3"
+exclude: ["README.md", "render.R"]
+navbar:
+  title: " "
+  left:
+    - text: "Métodos"
+      icon: fa-home
+      href: index.html
+    - text: "Correlación"
+      menu:
+        - text: "Correlación de Pearson"
+          href: recurso100.html
+        - text: "Correlación de Spearman y Kendall"
+          href: recurso101.html
+    - text: "Modelo"
+      menu:
+        - text: "Modelo de regresión lineal simple"
+          href: recurso200.html
+        - text: "Estimación de los coeficientes"
+          href: recurso201.html
+        - text: "Propiedades de los estimadores"
+          href: recurso202.html
+    - text: "Inferencia"
+      menu:
+        - text: "Pruebas, intervalos y R²"
+          href: recurso300.html
+        - text: "Estimación de la media y predicción"
+          href: recurso301.html
+    - text: "Supuestos"
+      menu:
+        - text: "Supuestos del modelo"
+          href: recurso400.html
+        - text: "Revisión de los supuestos"
+          href: recurso401.html
+    - text: "Soluciones"
+      menu:
+        - text: "Transformaciones"
+          href: recurso500.html
+        - text: "Varianza no constante"
+          href: recurso501.html
+    - text: "Puntos influyentes"
+      href: recurso600.html
+    - text: "Caso integrador"
+      href: recurso700.html

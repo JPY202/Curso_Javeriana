@@ -1,0 +1,259 @@
+---
+title: <span style="color:#034a94"> **Estimación de la media y predicción**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+Un médico tiene dos preguntas distintas:
+
+1. **¿Cuál es la grasa promedio de los hombres con 110 cm de abdomen?** Le sirve para describir un grupo.
+2. **Su paciente tiene 110 cm de abdomen: ¿cuánta grasa tendrá?** Le sirve para una persona.
+
+La respuesta puntual es la misma: el valor de la recta en 110 cm. Pero la incertidumbre es muy distinta. Esta página presenta el **intervalo de confianza para la media** y el **intervalo de predicción** para un valor nuevo, y explica por qué el segundo es mucho más ancho. Los bloques de código se ejecutan en orden.
+
+Los datos se descargan aquí: <a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+grasa <- read.csv("data/grasa.csv")
+modelo <- lm(grasa ~ abdomen, data = grasa)
+n <- nrow(grasa)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuál es la estimación puntual?**</span>
+
+Para un valor $x_0$ de la variable explicativa, la estimación de la media y la predicción son el valor de la recta:
+
+$$
+\hat{y}_0 = \hat{\beta}_0 + \hat{\beta}_1 x_0
+$$
+
+La función `predict()` lo calcula. Recibe el modelo y una tabla (`data.frame`) con los valores nuevos de $x$, con **el mismo nombre** de la variable del modelo:
+
+```{r}
+nuevos <- data.frame(abdomen = c(85, 110, 125))
+predict(modelo, newdata = nuevos)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se estima la media de y para un valor de x?**</span>
+
+La media de $y$ en $x_0$ es $E(Y \mid x_0) = \beta_0 + \beta_1 x_0$, un valor fijo de la población. Su estimación $\hat{y}_0$ varía de muestra a muestra porque $\hat{\beta}_0$ y $\hat{\beta}_1$ varían. Su error estándar es
+
+$$
+\text{EE}(\hat{y}_0) = \hat{\sigma} \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}
+$$
+
+y el **intervalo de confianza para la media** es
+
+$$
+\hat{y}_0 \pm t_{1 - \alpha/2, \; n - 2} \; \hat{\sigma} \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}
+$$
+
+```{r}
+predict(modelo, newdata = nuevos, interval = "confidence")
+```
+
+Con 95 % de confianza, la grasa **promedio** de los hombres con 110 cm de abdomen está entre `r round(predict(modelo, data.frame(abdomen = 110), interval = "confidence")[2], 1)` % y `r round(predict(modelo, data.frame(abdomen = 110), interval = "confidence")[3], 1)` %.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se predice un valor nuevo?**</span>
+
+Un hombre nuevo con $x_0$ tendrá $Y_0 = \beta_0 + \beta_1 x_0 + \varepsilon_0$. Para predecirlo hay dos fuentes de incertidumbre:
+
+- No se conoce la recta exacta: la misma incertidumbre del intervalo para la media.
+- Aunque se conociera, el hombre tiene su propio error $\varepsilon_0$, con varianza $\sigma^2$: los hombres con el mismo abdomen no tienen la misma grasa.
+
+Por eso el **intervalo de predicción** suma un 1 dentro de la raíz:
+
+$$
+\hat{y}_0 \pm t_{1 - \alpha/2, \; n - 2} \; \hat{\sigma} \sqrt{1 + \frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}
+$$
+
+```{r}
+predict(modelo, newdata = nuevos, interval = "prediction")
+```
+
+Con 95 % de confianza, un hombre nuevo con 110 cm de abdomen tendrá entre `r round(predict(modelo, data.frame(abdomen = 110), interval = "prediction")[2], 1)` % y `r round(predict(modelo, data.frame(abdomen = 110), interval = "prediction")[3], 1)` % de grasa. Es un intervalo muy amplio: la cinta métrica da una idea de la grasa, pero no la reemplaza.
+
+<br/>
+
+## <span style="color:#034a94">**¿En qué se diferencian los dos intervalos?**</span>
+
+| | Intervalo para la media | Intervalo de predicción |
+|:--|:--|:--|
+| Pregunta | ¿Cuál es la grasa **promedio** de los hombres con 110 cm? | ¿Cuánta grasa tendrá **un hombre** con 110 cm? |
+| Qué estima | Un parámetro: $E(Y \mid x_0)$ | Una variable aleatoria: $Y_0$ |
+| Incertidumbre | Solo la de la recta | La de la recta más la variación entre personas |
+| Al crecer $n$ | Se angosta hasta cero | Se angosta hasta $\hat{y}_0 \pm 1.96\,\sigma$, no hasta cero |
+| Depende de la normalidad | Poco con $n$ grande | Mucho, siempre |
+
+El último punto es importante. El intervalo para la media se apoya en el teorema del límite central: con muchos datos funciona aunque los errores no sean normales. El intervalo de predicción se refiere a **una** observación: si los errores son asimétricos, el intervalo queda mal ubicado sin importar cuántos datos haya.
+
+Con los intervalos para todos los valores de $x$ se forman las **bandas**:
+
+```{r, fig.width=7, fig.height=5, fig.cap="Recta estimada con la banda de confianza para la media (azul) y la banda de predicción (gris), al 95 %.", fig.alt="Nube de puntos con una recta roja; alrededor, una banda azul angosta que se abre en los extremos y una banda gris ancha que contiene casi todos los puntos", out.width="75%", fig.align="center"}
+malla <- data.frame(abdomen = seq(69, 149, by = 1))
+ic <- predict(modelo, newdata = malla, interval = "confidence")
+ip <- predict(modelo, newdata = malla, interval = "prediction")
+plot(grasa ~ abdomen, data = grasa, type = "n", las = 1,
+     xlab = "Circunferencia del abdomen (cm)", ylab = "Grasa corporal (%)",
+     xlim = c(65, 150), ylim = c(-5, 60))
+polygon(c(malla$abdomen, rev(malla$abdomen)), c(ip[, "lwr"], rev(ip[, "upr"])),
+        col = "#E0E0E0", border = NA)
+polygon(c(malla$abdomen, rev(malla$abdomen)), c(ic[, "lwr"], rev(ic[, "upr"])),
+        col = "#9DC3E6", border = NA)
+points(grasa ~ abdomen, data = grasa, pch = 19, cex = 0.6, col = "#034A9480")
+lines(malla$abdomen, ic[, "fit"], col = "#C0392B", lwd = 2)
+legend("topleft", bty = "n", fill = c("#9DC3E6", "#E0E0E0"),
+       legend = c("Intervalo para la media", "Intervalo de predicción"))
+```
+
+La banda de predicción contiene cerca del 95 % de los puntos, como se espera:
+
+```{r}
+ip_datos <- predict(modelo, interval = "prediction")
+mean(grasa$grasa >= ip_datos[, "lwr"] & grasa$grasa <= ip_datos[, "upr"])
+```
+
+**R** muestra una advertencia al calcular intervalos de predicción con los mismos datos del ajuste; aquí se usa solo para comprobar la cobertura.
+
+Las dos bandas son más angostas cerca de $\bar{x} = `r round(mean(grasa$abdomen), 1)`$ cm y se abren hacia los extremos: el término $(x_0 - \bar{x})^2$ crece al alejarse del centro de los datos. La recta se conoce mejor donde hay más datos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué pasa al extrapolar?**</span>
+
+Las fórmulas dan un intervalo para cualquier $x_0$, también fuera del rango de los datos:
+
+```{r}
+predict(modelo, newdata = data.frame(abdomen = c(55, 170)), interval = "prediction")
+```
+
+Para 55 cm, la predicción es negativa y el intervalo incluye valores imposibles. Para 170 cm, el intervalo parece razonable, pero no hay ningún dato que muestre que la relación sigue siendo recta tan lejos. Los intervalos **solo miden la incertidumbre dentro del modelo**: si el modelo deja de valer fuera del rango, el intervalo no lo avisa.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Usar el intervalo de confianza para predecir a una persona | Se confunde la media con un valor individual | Para una persona, `interval = "prediction"` |
+| Llamar al intervalo de predicción "intervalo para $\hat{y}_0$" | Lo que se predice es $Y_0$ | El intervalo es para el valor nuevo $Y_0$ |
+| Comparar intervalos de distinto nivel | Un IC del 95 % y un IP del 90 % no son comparables | Usar el mismo nivel |
+| `predict()` devuelve los valores ajustados de los datos | El nombre de la columna en `newdata` no coincide con el del modelo | Usar exactamente el mismo nombre (`abdomen`) |
+| Confiar en el intervalo fuera del rango de $x$ | La fórmula no sabe que se está extrapolando | Limitar las predicciones al rango observado |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Intervalo a mano**</span>
+
+Calcule con las fórmulas el intervalo de predicción del 95 % para un abdomen de 85 cm y compárelo con `predict()`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+x <- grasa$abdomen
+Sxx <- sum((x - mean(x))^2)
+y0 <- coef(modelo)[1] + coef(modelo)[2] * 85
+ee_pred <- sigma(modelo) * sqrt(1 + 1 / n + (85 - mean(x))^2 / Sxx)
+y0 + c(-1, 1) * qt(0.975, n - 2) * ee_pred
+predict(modelo, data.frame(abdomen = 85), interval = "prediction")
+```
+
+Coinciden.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Ancho de los intervalos**</span>
+
+Calcule el ancho del intervalo para la media y del de predicción en 70, 92 y 140 cm. ¿Cuál cambia más con $x_0$?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+puntos <- data.frame(abdomen = c(70, 92, 140))
+ic3 <- predict(modelo, puntos, interval = "confidence")
+ip3 <- predict(modelo, puntos, interval = "prediction")
+data.frame(abdomen = puntos$abdomen,
+           ancho_media = ic3[, "upr"] - ic3[, "lwr"],
+           ancho_prediccion = ip3[, "upr"] - ip3[, "lwr"])
+```
+
+El intervalo para la media es más de cuatro veces más ancho en 140 cm que en el centro de los datos. El de predicción casi no cambia, porque lo domina la variación entre personas ($\sigma$), que es la misma en todo el rango.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. ¿Más datos ayudan?**</span>
+
+Si se midieran 10 000 hombres en lugar de 252, ¿qué pasaría con cada intervalo? Responda con las fórmulas y luego con una simulación del modelo $\text{grasa} = -35 + 0.58 \times \text{abdomen} + \varepsilon$, $\sigma = 4.5$.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+set.seed(2026)
+x_grande <- sample(grasa$abdomen, 10000, replace = TRUE)
+y_grande <- -35 + 0.58 * x_grande + rnorm(10000, 0, 4.5)
+m_grande <- lm(y_grande ~ x_grande)
+predict(m_grande, data.frame(x_grande = 110), interval = "confidence")
+predict(m_grande, data.frame(x_grande = 110), interval = "prediction")
+```
+
+El intervalo para la media se vuelve muy angosto, porque $1/n$ y $(x_0 - \bar{x})^2 / S_{xx}$ se acercan a cero. El de predicción casi no cambia: queda cerca de $\hat{y}_0 \pm 1.96 \times 4.5$, porque la variación entre personas no se reduce con más datos.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Flórez, A. J. (2026). [*Notas de clase: Modelo lineal general I*](https://alvaroflorez.github.io/MLG1/). Notas en el sitio del autor. La sección 1.6.3 trata los intervalos para la media y de predicción con los datos de grasa corporal.
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley. Capítulo 2.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Flórez, A. J. (2026). *Notas de clase: Modelo lineal general I*. https://alvaroflorez.github.io/MLG1/
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

@@ -1,0 +1,274 @@
+---
+title: <span style="color:#034a94"> **Correlación de Spearman y Kendall**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+La correlación de Pearson mide relaciones **lineales**. Muchas relaciones reales son **monótonas** pero no rectas: siempre crecen (o siempre decrecen), aunque no al mismo ritmo. Por ejemplo, la fecundidad baja rápido cuando un país pasa de muy pobre a pobre, y casi no cambia entre países ricos.
+
+Esta página presenta dos coeficientes que miden relaciones monótonas usando solo el **orden** de los datos: el de **Spearman** y el de **Kendall**. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es una relación monótona?**</span>
+
+Una relación es **monótona creciente** si, cuando $x$ aumenta, $y$ tiende a aumentar, sin importar si lo hace en línea recta. Es **monótona decreciente** si $y$ tiende a disminuir. Una relación que primero sube y luego baja (en forma de U invertida) **no** es monótona.
+
+| Forma de la relación | Pearson | Spearman y Kendall |
+|:---------------------|:-------:|:------------------:|
+| Recta | La mide bien | La miden bien |
+| Curva pero monótona | La subestima | La miden bien |
+| En forma de U | Cercano a 0 | Cercanos a 0 |
+
+Ninguno de los tres coeficientes detecta una relación en forma de U. Para eso hay que graficar.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuáles son los datos?**</span>
+
+Se usan datos de las Naciones Unidas para 213 países y territorios, entre 2009 y 2011, del paquete `carData` (Fox y Weisberg, 2019). La copia de la carpeta `data` tiene los nombres en español:
+
+| Variable | Qué mide |
+|:---------|:---------|
+| `pais`, `region` | País y región |
+| `fertilidad` | Número esperado de hijos por mujer |
+| `pib_pc` | Producto interno bruto por habitante, en dólares |
+| `urbana` | Porcentaje de la población en zonas urbanas |
+| `vida_mujer` | Esperanza de vida de las mujeres, en años |
+
+Los datos se descargan aquí: <a href="data/paises.csv" download>paises.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+paises <- read.csv("data/paises.csv")
+paises <- na.omit(paises)   # se quitan 14 territorios sin datos
+nrow(paises)
+```
+
+```{r, fig.width=6.5, fig.height=4.5, fig.cap="Fecundidad y PIB por habitante en 199 países.", fig.alt="Nube de puntos con forma de L: la fecundidad cae rápido entre los países más pobres y queda casi plana, cerca de 2 hijos, entre los países ricos", out.width="70%", fig.align="center"}
+plot(fertilidad ~ pib_pc, data = paises, pch = 19, col = "#034A9480", las = 1,
+     xlab = "PIB por habitante (dólares)", ylab = "Hijos por mujer",
+     xlim = c(0, 110000), ylim = c(0, 7.5))
+```
+
+La relación es decreciente pero muy curva. Pearson no la describe bien:
+
+```{r}
+cor(paises$pib_pc, paises$fertilidad)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el coeficiente de Spearman?**</span>
+
+El **coeficiente de Spearman**, $r_s$, es la correlación de Pearson calculada sobre los **rangos** de los datos: el valor más pequeño recibe el rango 1, el siguiente el 2, y así hasta $n$. Si hay empates, cada uno recibe el promedio de los rangos que ocuparían.
+
+Un ejemplo con cinco países:
+
+```{r}
+cinco <- paises[paises$pais %in% c("Niger", "India", "Colombia", "Chile", "Norway"),
+                c("pais", "pib_pc", "fertilidad")]
+cinco$rango_pib <- rank(cinco$pib_pc)
+cinco$rango_fert <- rank(cinco$fertilidad)
+cinco
+cor(cinco$rango_pib, cinco$rango_fert)
+cor(cinco$pib_pc, cinco$fertilidad, method = "spearman")
+```
+
+Los dos cálculos dan lo mismo. Con los 199 países:
+
+```{r}
+cor(paises$pib_pc, paises$fertilidad, method = "spearman")
+```
+
+$r_s = `r round(cor(paises$pib_pc, paises$fertilidad, method = "spearman"), 2)`$ indica una relación monótona decreciente fuerte, mucho más clara que la que sugería Pearson ($`r round(cor(paises$pib_pc, paises$fertilidad), 2)`$).
+
+Como solo usa el orden, Spearman tiene dos ventajas:
+
+- No cambia si se aplica una transformación creciente a una variable (por ejemplo, el logaritmo del PIB).
+- Un valor extremo pesa poco: el país más rico tiene rango 199 sin importar si su PIB es el doble que el del segundo.
+
+```{r}
+cor(log(paises$pib_pc), paises$fertilidad, method = "spearman")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el coeficiente de Kendall?**</span>
+
+El **coeficiente de Kendall**, $\tau$ (tau), también usa solo el orden, pero cuenta **pares de observaciones**. Un par de países es:
+
+- **Concordante** si el país con más PIB también tiene más fecundidad.
+- **Discordante** si el país con más PIB tiene menos fecundidad.
+
+$$
+\tau = \frac{\text{pares concordantes} - \text{pares discordantes}}{\text{número total de pares}}
+$$
+
+Con los cinco países hay $\binom{5}{2} = 10$ pares:
+
+```{r}
+pares <- combn(nrow(cinco), 2)
+signo <- apply(pares, 2, function(p) sign(diff(cinco$pib_pc[p])) * sign(diff(cinco$fertilidad[p])))
+table(signo)   # 1 = concordante, -1 = discordante
+(sum(signo == 1) - sum(signo == -1)) / ncol(pares)
+cor(cinco$pib_pc, cinco$fertilidad, method = "kendall")
+```
+
+De los 10 pares, 9 son discordantes. El único concordante es Chile y Noruega: Noruega tiene más PIB y también un poco más de fecundidad. $\tau = -1$ significaría que todos los pares son discordantes. Cuando hay empates, **R** calcula la versión llamada $\tau_b$, que corrige el denominador por los pares empatados. Con los 199 países:
+
+```{r}
+cor(paises$pib_pc, paises$fertilidad, method = "kendall")
+```
+
+**Kendall suele dar valores más pequeños que Spearman y Pearson** para la misma relación, porque mide otra cosa: la diferencia entre la proporción de pares concordantes y discordantes. Por eso no se usa la misma escala de "fuerte" o "moderada" para los tres. En una relación lineal con datos normales, $\tau \approx \frac{2}{\pi}\arcsin(r)$: una $r$ de 0.81 corresponde a una $\tau$ cercana a 0.60.
+
+Los datos se descargan aquí: <a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+grasa <- read.csv("data/grasa.csv")
+cor(grasa$abdomen, grasa$grasa, method = "kendall")
+2 / pi * asin(cor(grasa$abdomen, grasa$grasa))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba si son distintos de cero?**</span>
+
+`cor.test()` hace la prueba de $H_0$: no hay asociación monótona, con el argumento `method`. Ninguna de las dos pruebas exige normalidad.
+
+```{r}
+cor.test(paises$pib_pc, paises$fertilidad, method = "spearman", exact = FALSE)
+cor.test(paises$pib_pc, paises$fertilidad, method = "kendall", exact = FALSE)
+```
+
+El argumento `exact = FALSE` usa una aproximación para el valor p. Sin él, **R** intenta el cálculo exacto, que no es posible cuando hay empates, y muestra una advertencia.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuál coeficiente usar?**</span>
+
+| Situación | Coeficiente | Por qué |
+|:----------|:-----------|:--------|
+| Relación aproximadamente recta, sin puntos extremos | Pearson | Es el que se conecta con la regresión lineal |
+| Relación monótona pero curva | Spearman o Kendall | Miden la tendencia sin exigir una recta |
+| Puntos extremos que no se pueden corregir | Spearman o Kendall | Usan rangos y no los valores |
+| Variables ordinales (por ejemplo, nivel de satisfacción de 1 a 5) | Spearman o Kendall | Solo el orden tiene sentido |
+| Relación en forma de U | Ninguno | Graficar y modelar la curva |
+
+Spearman y Kendall casi siempre llevan a la misma conclusión. Spearman es más fácil de explicar (Pearson sobre rangos); Kendall tiene una interpretación directa en términos de pares.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Usar Spearman o Kendall para cualquier relación no lineal | Solo miden relaciones monótonas | Graficar primero; si hay forma de U, ninguno sirve |
+| Comparar $\tau$ con los cortes de $r$ | Kendall da valores menores para la misma relación | Interpretar cada coeficiente por separado |
+| Decir que Kendall no usa rangos y Spearman sí | Los dos dependen solo del orden | Kendall cuenta pares; Spearman correlaciona rangos |
+| Ignorar la advertencia de `cor.test()` por empates | El valor p exacto no se puede calcular con empates | Usar `exact = FALSE` |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Una curva perfecta**</span>
+
+Con `x <- 1:20` y `y <- exp(x / 3)`, calcule los tres coeficientes. ¿Por qué Spearman y Kendall valen 1?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+x <- 1:20
+y <- exp(x / 3)
+c(pearson = cor(x, y), spearman = cor(x, y, method = "spearman"),
+  kendall = cor(x, y, method = "kendall"))
+```
+
+La relación es perfectamente monótona: todos los pares son concordantes y los rangos de $x$ y de $y$ coinciden. Pearson es menor que 1 porque los puntos no están sobre una recta.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Una relación en U**</span>
+
+Con `x <- -10:10` y `y <- x^2`, calcule Pearson y Spearman. ¿Hay relación entre $x$ y $y$?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+x <- -10:10
+y <- x^2
+c(pearson = cor(x, y), spearman = cor(x, y, method = "spearman"))
+```
+
+Los dos coeficientes valen 0, pero $y$ depende por completo de $x$. La relación no es lineal ni monótona: baja y luego sube.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Urbanización y esperanza de vida**</span>
+
+Grafique la esperanza de vida de las mujeres contra el porcentaje de población urbana y calcule los tres coeficientes. ¿Cuál describe mejor la relación?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, fig.width=5.5, fig.height=4, fig.cap="Esperanza de vida de las mujeres y población urbana.", fig.alt="Nube de puntos creciente con mucha dispersión entre los países poco urbanos", out.width="60%", fig.align="center"}
+plot(vida_mujer ~ urbana, data = paises, pch = 19, col = "#034A9480", las = 1,
+     xlab = "Población urbana (%)", ylab = "Esperanza de vida de las mujeres (años)")
+c(pearson = cor(paises$urbana, paises$vida_mujer),
+  spearman = cor(paises$urbana, paises$vida_mujer, method = "spearman"),
+  kendall = cor(paises$urbana, paises$vida_mujer, method = "kendall"))
+```
+
+La relación es creciente y algo curva. Pearson y Spearman dan valores parecidos; la dispersión es grande, así que la relación es moderada. Kendall es menor, como se espera.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Conover, W. J. (1999). *Practical Nonparametric Statistics* (3.ª ed.). Wiley. Trata en detalle los coeficientes de Spearman y Kendall y sus pruebas.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Conover, W. J. (1999). *Practical Nonparametric Statistics* (3.ª ed.). Wiley.
+- Fox, J. y Weisberg, S. (2019). *An R Companion to Applied Regression* (3.ª ed.). Sage.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

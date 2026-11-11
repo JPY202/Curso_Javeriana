@@ -1,0 +1,326 @@
+---
+title: <span style="color:#034a94"> **Transformaciones**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+Cuando la revisión de los supuestos muestra una relación curva o una varianza que crece con la media, una de las soluciones más usadas es **transformar** las variables, casi siempre con el logaritmo. El modelo sigue siendo una recta, pero entre las variables transformadas.
+
+Esta página muestra cómo elegir una transformación, cómo interpretar los coeficientes cuando hay logaritmos, cómo usar el método de **Box-Cox** y cómo volver a la escala original. También presenta los **términos cuadráticos** como otra forma de modelar una curva. Se usa el caso de la fecundidad y el PIB por habitante de la página [Correlación de Spearman y Kendall](recurso101.html). Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuándo conviene transformar?**</span>
+
+| Lo que se ve | Transformación usual |
+|:-------------|:--------------------|
+| Relación curva, con $x$ muy asimétrica (pocos valores muy grandes) | Logaritmo de $x$ |
+| La dispersión de $y$ crece con su media (embudo) | Logaritmo de $y$ (o raíz cuadrada si $y$ es un conteo) |
+| Los dos problemas a la vez | Logaritmo de las dos |
+| $y$ es una proporción entre 0 y 1 | Otros modelos (regresión logística o beta) |
+
+El logaritmo solo se aplica a valores positivos. Sirve sobre todo para variables que se miden en escala multiplicativa, como ingresos, precios, poblaciones o concentraciones: en ellas importa más el cambio porcentual que el cambio absoluto.
+
+La razón principal para transformar es la **forma de la relación**. Si después de transformar la varianza también se estabiliza, mejor. Transformar solo para que una prueba de normalidad no rechace no es una buena razón.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué pasa con el modelo sin transformar?**</span>
+
+Los datos se descargan aquí: <a href="data/paises.csv" download>paises.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+paises <- na.omit(read.csv("data/paises.csv"))
+m0 <- lm(fertilidad ~ pib_pc, data = paises)
+```
+
+```{r, fig.width=9, fig.height=3.8, fig.cap="Fecundidad según el PIB por habitante: datos con la recta (izquierda) y residuales (derecha).", fig.alt="A la izquierda, nube en forma de L con una recta que no la sigue; a la derecha, residuales con forma curva y mucha más dispersión a la izquierda", out.width="100%"}
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+plot(fertilidad ~ pib_pc, data = paises, pch = 19, col = "#034A9480", las = 1,
+     xlab = "PIB por habitante (dólares)", ylab = "Hijos por mujer", ylim = c(0, 8))
+abline(m0, col = "#C0392B", lwd = 2)
+plot(fitted(m0), residuals(m0), pch = 19, col = "#034A9480", las = 1,
+     xlab = "Valores ajustados", ylab = "Residuales")
+abline(h = 0, lty = 2)
+```
+
+La recta no sigue los datos: la relación es curva y la dispersión es mucho mayor entre los países pobres. El PIB por habitante es muy asimétrico: la mayoría de los países tiene menos de 10 000 dólares y unos pocos más de 50 000.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué cambia con el logaritmo?**</span>
+
+Se prueba primero con el logaritmo del PIB y luego con el logaritmo de las dos variables:
+
+```{r}
+m1 <- lm(fertilidad ~ log(pib_pc), data = paises)
+m2 <- lm(log(fertilidad) ~ log(pib_pc), data = paises)
+```
+
+```{r, fig.width=9, fig.height=7, fig.cap="Datos y residuales con logaritmo del PIB (arriba) y con logaritmo de las dos variables (abajo).", fig.alt="Arriba, una nube recta y decreciente pero con forma de embudo en los residuales; abajo, una nube recta con residuales en una franja más pareja", out.width="100%"}
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+plot(fertilidad ~ log(pib_pc), data = paises, pch = 19, col = "#034A9480", las = 1,
+     xlab = "log(PIB por habitante)", ylab = "Hijos por mujer", main = "Logaritmo del PIB")
+abline(m1, col = "#C0392B", lwd = 2)
+plot(fitted(m1), residuals(m1), pch = 19, col = "#034A9480", las = 1,
+     xlab = "Valores ajustados", ylab = "Residuales", main = "Residuales")
+abline(h = 0, lty = 2)
+plot(log(fertilidad) ~ log(pib_pc), data = paises, pch = 19, col = "#034A9480", las = 1,
+     xlab = "log(PIB por habitante)", ylab = "log(hijos por mujer)", main = "Logaritmo de las dos")
+abline(m2, col = "#C0392B", lwd = 2)
+plot(fitted(m2), residuals(m2), pch = 19, col = "#034A9480", las = 1,
+     xlab = "Valores ajustados", ylab = "Residuales", main = "Residuales")
+abline(h = 0, lty = 2)
+```
+
+Con el logaritmo del PIB, la relación ya es casi recta, pero los residuales forman un embudo: la fecundidad varía más en los países pobres. Al tomar también el logaritmo de la fecundidad, la franja de residuales es más pareja. La prueba de Breusch-Pagan ([Revisión de los supuestos](recurso401.html)) lo confirma:
+
+```{r}
+library(lmtest)
+c(sin_transformar = bptest(m0)$p.value,
+  log_pib = bptest(m1)$p.value,
+  log_las_dos = bptest(m2)$p.value)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se interpretan los coeficientes con logaritmos?**</span>
+
+El logaritmo convierte los cambios **porcentuales** en cambios **absolutos**. Por eso la interpretación cambia según qué variable está transformada:
+
+| Modelo | Interpretación de $\beta_1$ | Fórmula exacta |
+|:-------|:----------------------------|:---------------|
+| $y = \beta_0 + \beta_1 x$ | $x$ aumenta 1 unidad: $y$ cambia $\beta_1$ unidades | |
+| $\log y = \beta_0 + \beta_1 x$ | $x$ aumenta 1 unidad: $y$ cambia cerca de $100\,\beta_1$ % | $100(e^{\beta_1} - 1)$ % |
+| $y = \beta_0 + \beta_1 \log x$ | $x$ aumenta 1 %: $y$ cambia cerca de $\beta_1 / 100$ unidades | Con un aumento de 10 %: $\beta_1 \log(1.10)$ |
+| $\log y = \beta_0 + \beta_1 \log x$ | $x$ aumenta 1 %: $y$ cambia cerca de $\beta_1$ % (**elasticidad**) | Con un aumento de 10 %: $100(1.10^{\beta_1} - 1)$ % |
+
+Las aproximaciones funcionan bien cuando $\beta_1$ es pequeño (menor que 0.2 en valor absoluto). En el modelo con logaritmo en las dos variables:
+
+```{r}
+coef(m2)
+b1 <- coef(m2)[2]
+100 * (1.10^b1 - 1)   # cambio porcentual en la fecundidad si el PIB es 10 % mayor
+100 * (2^b1 - 1)      # si el PIB es el doble
+```
+
+Entre países cuyo PIB por habitante difiere en 10 %, la fecundidad es, en promedio, `r round(abs(100 * (1.10^b1 - 1)), 1)` % menor en el más rico. Entre un país y otro con el doble de PIB, la fecundidad es `r round(abs(100 * (2^b1 - 1)), 1)` % menor. Como en todo el modelo, es una asociación entre países, no el efecto de que un país se enriquezca.
+
+En el modelo con logaritmo solo del PIB (`m1`), la pendiente es `r round(coef(m1)[2], 3)`: si el PIB es 10 % mayor, la fecundidad es menor en $`r round(coef(m1)[2], 3)` \times \log(1.10) = `r round(coef(m1)[2] * log(1.1), 3)`$ hijos por mujer.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el método de Box-Cox?**</span>
+
+El método de **Box-Cox** busca, entre las transformaciones de potencia de $y$, la que mejor cumple los supuestos del modelo:
+
+$$
+y^{(\lambda)} = \begin{cases} \dfrac{y^\lambda - 1}{\lambda} & \lambda \neq 0 \\[2mm] \log y & \lambda = 0 \end{cases}
+$$
+
+| $\lambda$ | Transformación |
+|:---------:|:---------------|
+| 1 | Ninguna |
+| 0.5 | Raíz cuadrada |
+| 0 | Logaritmo |
+| −0.5 | $1/\sqrt{y}$ |
+| −1 | Recíproco, $1/y$ |
+
+Para cada $\lambda$ se ajusta el modelo y se calcula su verosimilitud; se elige el $\lambda$ que la hace máxima. La función `boxcox()` del paquete `MASS`, que viene instalado con **R**, grafica el **perfil de verosimilitud** con su intervalo de confianza del 95 %. Se aplica al modelo que ya tiene el logaritmo del PIB, porque Box-Cox solo transforma $y$:
+
+```{r, fig.width=6.5, fig.height=4.2, fig.cap="Perfil de verosimilitud de Box-Cox para la fecundidad. Las líneas verticales punteadas marcan el intervalo de confianza del 95 %.", fig.alt="Curva con forma de montaña con el máximo cerca de menos 0.33; las líneas punteadas están cerca de menos 0.63 y menos 0.05", out.width="65%", fig.align="center"}
+library(MASS)
+bc <- boxcox(m1, lambda = seq(-1.5, 1, by = 0.01), las = 1)
+lambda_max <- bc$x[which.max(bc$y)]
+ic_lambda <- range(bc$x[bc$y > max(bc$y) - qchisq(0.95, 1) / 2])
+c(lambda = lambda_max, inferior = ic_lambda[1], superior = ic_lambda[2])
+```
+
+El máximo está en $\hat{\lambda} = `r round(lambda_max, 2)`$, con un intervalo de `r round(ic_lambda[1], 2)` a `r round(ic_lambda[2], 2)`. ¿Qué transformación usar?
+
+- **No se usa $\hat{\lambda}$ con todos sus decimales.** Se elige un valor **interpretable** dentro del intervalo o cerca de él. Una potencia de −0.33 no tiene interpretación sencilla.
+- Aquí el intervalo incluye −0.5 ($1/\sqrt{y}$) pero **no incluye el 0** (logaritmo).
+- El logaritmo está muy cerca del borde y tiene una interpretación clara en porcentajes.
+
+Se comparan los residuales de las dos opciones:
+
+```{r}
+m_raiz <- lm(I(1 / sqrt(fertilidad)) ~ log(pib_pc), data = paises)
+data.frame(transformacion = c("log(y)", "1/sqrt(y)"),
+           breusch_pagan = c(bptest(m2)$p.value, bptest(m_raiz)$p.value),
+           shapiro = c(shapiro.test(rstandard(m2))$p.value, shapiro.test(rstandard(m_raiz))$p.value))
+```
+
+$1/\sqrt{y}$ estabiliza mejor la varianza, pero sus residuales se alejan más de la normal. El logaritmo da un modelo aceptable en los dos sentidos y se interpreta en porcentajes. En este caso se prefiere el logaritmo. Box-Cox es una **guía**, no una regla: la decisión final combina el perfil, los residuales y la interpretación, y se reporta.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se vuelve a la escala original?**</span>
+
+El modelo con logaritmos predice $\log y$. Para dar la predicción en hijos por mujer se aplica la exponencial. Para Colombia (PIB por habitante de 6 222.8 dólares):
+
+```{r}
+colombia <- data.frame(pib_pc = 6222.8)
+pred_log <- predict(m2, colombia, interval = "prediction")
+pred_log
+exp(pred_log)
+```
+
+Hay que tener cuidado con lo que significa:
+
+- $e^{\widehat{\log y}}$ estima la **mediana** de $y$, no su media. Como la exponencial no es lineal, la exponencial de un promedio no es el promedio de las exponenciales.
+- Si los errores en escala logarítmica son normales, la media se estima con $e^{\widehat{\log y} + \hat{\sigma}^2/2}$:
+
+```{r}
+c(mediana = exp(pred_log[1, "fit"]), media = exp(pred_log[1, "fit"] + sigma(m2)^2 / 2))
+```
+
+- Los **límites del intervalo** sí se pueden pasar con la exponencial, porque la transformación conserva el orden. El intervalo queda asimétrico alrededor de la predicción, lo que es razonable para una variable que no puede ser negativa.
+
+Con 95 % de confianza, un país con el PIB de Colombia tendría entre `r round(exp(pred_log[1, "lwr"]), 1)` y `r round(exp(pred_log[1, "upr"]), 1)` hijos por mujer. Colombia tenía `r paises$fertilidad[paises$pais == "Colombia"]`.
+
+<br/>
+
+## <span style="color:#034a94">**¿Y si queda una curva?**</span>
+
+Ninguna transformación es perfecta. En el modelo con logaritmos aún queda algo de curvatura: al agregar el cuadrado de $\log x$, el término es significativo.
+
+```{r}
+m_cuad <- lm(log(fertilidad) ~ log(pib_pc) + I(log(pib_pc)^2), data = paises)
+anova(m2, m_cuad)
+coef(m_cuad)
+```
+
+Un **término cuadrático** permite que la pendiente cambie con $x$. El modelo sigue siendo lineal en los coeficientes, y se ajusta con `lm()`. Aquí la curva indica que la fecundidad baja más rápido entre los países pobres y se aplana entre los ricos.
+
+```{r, fig.width=6.5, fig.height=4.5, fig.cap="Modelo con logaritmos: recta (rojo) y curva con término cuadrático (azul).", fig.alt="Nube decreciente con una recta roja y una curva azul que se aplana a la derecha", out.width="65%", fig.align="center"}
+plot(log(fertilidad) ~ log(pib_pc), data = paises, pch = 19, col = "#034A9460", las = 1,
+     xlab = "log(PIB por habitante)", ylab = "log(hijos por mujer)")
+abline(m2, col = "#C0392B", lwd = 2)
+malla <- data.frame(pib_pc = exp(seq(4.5, 11.7, by = 0.05)))
+lines(log(malla$pib_pc), predict(m_cuad, malla), col = "#034A94", lwd = 2)
+```
+
+Precauciones con los términos cuadráticos:
+
+- Los coeficientes por separado no se interpretan: la pendiente depende de $x$.
+- En los extremos y fuera del rango de los datos, la parábola puede dar resultados absurdos. Aquí su punto más bajo está en un PIB de unos `r format(round(exp(-coef(m_cuad)[2] / (2 * coef(m_cuad)[3])), -3), big.mark = " ")` dólares, cerca del país más rico; a partir de ahí la parábola dice que la fecundidad vuelve a subir, algo que ningún dato respalda.
+- La diferencia entre la recta y la curva es pequeña en casi todo el rango. Con 199 países, una curvatura leve es significativa. Si el objetivo es una interpretación sencilla, la recta en escala logarítmica puede ser suficiente; si es predecir bien en los extremos, la curva es mejor.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Usar $\hat{\lambda}$ de Box-Cox con todos sus decimales | Se toma el máximo como valor exacto | Elegir un valor interpretable dentro del intervalo |
+| Interpretar la pendiente con logaritmos como en el modelo sin transformar | Se olvida la escala | Hablar de cambios porcentuales (tabla de esta página) |
+| Decir que $e^{\hat{y}}$ es la media de $y$ | La exponencial no conserva promedios | Es la mediana; la media requiere un ajuste |
+| Aplicar el logaritmo a una variable con ceros | $\log 0$ no existe | Revisar por qué hay ceros; sumar una constante cambia los resultados y debe justificarse |
+| Transformar para que una prueba no rechace | Se pierde la razón del modelo | Transformar por la forma de la relación y revisar los residuales |
+| Interpretar por separado los coeficientes de $x$ y $x^2$ | La pendiente cambia con $x$ | Graficar la curva ajustada |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Interpretar una elasticidad**</span>
+
+Con la pendiente del modelo `m2`, ¿cuánto menor es la fecundidad promedio en un país con el triple del PIB por habitante de otro?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+100 * (3^coef(m2)[2] - 1)
+```
+
+Cerca de 20 % menor. Se usa la fórmula exacta $100(3^{\beta_1} - 1)$ porque un triple no es un cambio pequeño.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Esperanza de vida**</span>
+
+Ajuste la esperanza de vida de las mujeres según el logaritmo del PIB por habitante. Interprete la pendiente para un PIB 10 % mayor y revise los residuales.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, fig.width=5.5, fig.height=4, fig.cap="Residuales del modelo de esperanza de vida.", fig.alt="Residuales con varios valores muy negativos a la izquierda", out.width="55%", fig.align="center"}
+m_vida <- lm(vida_mujer ~ log(pib_pc), data = paises)
+coef(m_vida)
+coef(m_vida)[2] * log(1.10)
+plot(fitted(m_vida), residuals(m_vida), pch = 19, col = "#034A9480", las = 1,
+     xlab = "Valores ajustados", ylab = "Residuales")
+abline(h = 0, lty = 2)
+```
+
+Entre países cuyo PIB difiere en 10 %, la esperanza de vida de las mujeres es en promedio cerca de medio año mayor en el más rico. Los residuales muestran varios países pobres con una esperanza de vida mucho menor que la esperada: la distribución de los residuales es asimétrica. Hay otras variables (conflictos, epidemias) que el PIB no recoge.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Media y mediana**</span>
+
+Para un país con un PIB por habitante de 1 000 dólares, calcule con el modelo `m2` la mediana y la media estimadas de la fecundidad. ¿Por qué la media es mayor?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+pred_1000 <- predict(m2, data.frame(pib_pc = 1000))
+c(mediana = exp(pred_1000), media = exp(pred_1000 + sigma(m2)^2 / 2))
+```
+
+En la escala original, la distribución de la fecundidad es asimétrica a la derecha: algunos países tienen fecundidades mucho mayores que la mediana, y eso sube la media.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Flórez, A. J. (2026). [*Notas de clase: Modelo lineal general I*](https://alvaroflorez.github.io/MLG1/). Notas en el sitio del autor. El capítulo 4 trata las transformaciones para linealizar y estabilizar la varianza y el método de Box-Cox, con datos de las Naciones Unidas.
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Weisberg, S. (2014). *Applied Linear Regression* (4.ª ed.). Wiley. El capítulo 8 trata las transformaciones; de este libro vienen los datos de las Naciones Unidas.
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley. Capítulo 5.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Box, G. E. P. y Cox, D. R. (1964). An analysis of transformations. *Journal of the Royal Statistical Society, Series B*, 26(2), 211-252.
+- Flórez, A. J. (2026). *Notas de clase: Modelo lineal general I*. https://alvaroflorez.github.io/MLG1/
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley.
+- Weisberg, S. (2014). *Applied Linear Regression* (4.ª ed.). Wiley.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

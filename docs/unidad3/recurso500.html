@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Transformaciones</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Transformaciones</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Cuando la revisión de los supuestos muestra una relación curva o una
+varianza que crece con la media, una de las soluciones más usadas es
+<strong>transformar</strong> las variables, casi siempre con el
+logaritmo. El modelo sigue siendo una recta, pero entre las variables
+transformadas.</p>
+<p>Esta página muestra cómo elegir una transformación, cómo interpretar
+los coeficientes cuando hay logaritmos, cómo usar el método de
+<strong>Box-Cox</strong> y cómo volver a la escala original. También
+presenta los <strong>términos cuadráticos</strong> como otra forma de
+modelar una curva. Se usa el caso de la fecundidad y el PIB por
+habitante de la página <a href="recurso101.html">Correlación de Spearman
+y Kendall</a>. Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="cuándo-conviene-transformar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cuándo conviene
+transformar?</strong></span></h2>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Lo que se ve</th>
+<th align="left">Transformación usual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Relación curva, con <span
+class="math inline">\(x\)</span> muy asimétrica (pocos valores muy
+grandes)</td>
+<td align="left">Logaritmo de <span
+class="math inline">\(x\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">La dispersión de <span class="math inline">\(y\)</span>
+crece con su media (embudo)</td>
+<td align="left">Logaritmo de <span class="math inline">\(y\)</span> (o
+raíz cuadrada si <span class="math inline">\(y\)</span> es un
+conteo)</td>
+</tr>
+<tr class="odd">
+<td align="left">Los dos problemas a la vez</td>
+<td align="left">Logaritmo de las dos</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(y\)</span> es una
+proporción entre 0 y 1</td>
+<td align="left">Otros modelos (regresión logística o beta)</td>
+</tr>
+</tbody>
+</table>
+<p>El logaritmo solo se aplica a valores positivos. Sirve sobre todo
+para variables que se miden en escala multiplicativa, como ingresos,
+precios, poblaciones o concentraciones: en ellas importa más el cambio
+porcentual que el cambio absoluto.</p>
+<p>La razón principal para transformar es la <strong>forma de la
+relación</strong>. Si después de transformar la varianza también se
+estabiliza, mejor. Transformar solo para que una prueba de normalidad no
+rechace no es una buena razón.</p>
+<p><br/></p>
+</div>
+<div id="qué-pasa-con-el-modelo-sin-transformar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasa con el modelo sin
+transformar?</strong></span></h2>
+<p>Los datos se descargan aquí:
+<a href="data/paises.csv" download>paises.csv</a>. Guarde el archivo en
+la carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>paises &lt;- na.omit(read.csv(&quot;data/paises.csv&quot;))
+m0 &lt;- lm(fertilidad ~ pib_pc, data = paises)</code></pre>
+<pre class="r"><code>par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+plot(fertilidad ~ pib_pc, data = paises, pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;PIB por habitante (dólares)&quot;, ylab = &quot;Hijos por mujer&quot;, ylim = c(0, 8))
+abline(m0, col = &quot;#C0392B&quot;, lwd = 2)
+plot(fitted(m0), residuals(m0), pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales&quot;)
+abline(h = 0, lty = 2)</code></pre>
+<div class="figure">
+<img src="recurso500_files/figure-html/unnamed-chunk-2-1.png" alt="A la izquierda, nube en forma de L con una recta que no la sigue; a la derecha, residuales con forma curva y mucha más dispersión a la izquierda" width="100%" />
+<p class="caption">
+Fecundidad según el PIB por habitante: datos con la recta (izquierda) y
+residuales (derecha).
+</p>
+</div>
+<p>La recta no sigue los datos: la relación es curva y la dispersión es
+mucho mayor entre los países pobres. El PIB por habitante es muy
+asimétrico: la mayoría de los países tiene menos de 10 000 dólares y
+unos pocos más de 50 000.</p>
+<p><br/></p>
+</div>
+<div id="qué-cambia-con-el-logaritmo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué cambia con el
+logaritmo?</strong></span></h2>
+<p>Se prueba primero con el logaritmo del PIB y luego con el logaritmo
+de las dos variables:</p>
+<pre class="r"><code>m1 &lt;- lm(fertilidad ~ log(pib_pc), data = paises)
+m2 &lt;- lm(log(fertilidad) ~ log(pib_pc), data = paises)</code></pre>
+<pre class="r"><code>par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+plot(fertilidad ~ log(pib_pc), data = paises, pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;log(PIB por habitante)&quot;, ylab = &quot;Hijos por mujer&quot;, main = &quot;Logaritmo del PIB&quot;)
+abline(m1, col = &quot;#C0392B&quot;, lwd = 2)
+plot(fitted(m1), residuals(m1), pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales&quot;, main = &quot;Residuales&quot;)
+abline(h = 0, lty = 2)
+plot(log(fertilidad) ~ log(pib_pc), data = paises, pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;log(PIB por habitante)&quot;, ylab = &quot;log(hijos por mujer)&quot;, main = &quot;Logaritmo de las dos&quot;)
+abline(m2, col = &quot;#C0392B&quot;, lwd = 2)
+plot(fitted(m2), residuals(m2), pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales&quot;, main = &quot;Residuales&quot;)
+abline(h = 0, lty = 2)</code></pre>
+<div class="figure">
+<img src="recurso500_files/figure-html/unnamed-chunk-4-1.png" alt="Arriba, una nube recta y decreciente pero con forma de embudo en los residuales; abajo, una nube recta con residuales en una franja más pareja" width="100%" />
+<p class="caption">
+Datos y residuales con logaritmo del PIB (arriba) y con logaritmo de las
+dos variables (abajo).
+</p>
+</div>
+<p>Con el logaritmo del PIB, la relación ya es casi recta, pero los
+residuales forman un embudo: la fecundidad varía más en los países
+pobres. Al tomar también el logaritmo de la fecundidad, la franja de
+residuales es más pareja. La prueba de Breusch-Pagan (<a
+href="recurso401.html">Revisión de los supuestos</a>) lo confirma:</p>
+<pre class="r"><code>library(lmtest)
+c(sin_transformar = bptest(m0)$p.value,
+  log_pib = bptest(m1)$p.value,
+  log_las_dos = bptest(m2)$p.value)</code></pre>
+<pre><code>sin_transformar.BP         log_pib.BP     log_las_dos.BP 
+    0.002647619570     0.000004110897     0.081966624635 </code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-interpretan-los-coeficientes-con-logaritmos"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se interpretan los
+coeficientes con logaritmos?</strong></span></h2>
+<p>El logaritmo convierte los cambios <strong>porcentuales</strong> en
+cambios <strong>absolutos</strong>. Por eso la interpretación cambia
+según qué variable está transformada:</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="54%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Modelo</th>
+<th align="left">Interpretación de <span
+class="math inline">\(\beta_1\)</span></th>
+<th align="left">Fórmula exacta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(y = \beta_0 + \beta_1
+x\)</span></td>
+<td align="left"><span class="math inline">\(x\)</span> aumenta 1
+unidad: <span class="math inline">\(y\)</span> cambia <span
+class="math inline">\(\beta_1\)</span> unidades</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\log y = \beta_0 + \beta_1
+x\)</span></td>
+<td align="left"><span class="math inline">\(x\)</span> aumenta 1
+unidad: <span class="math inline">\(y\)</span> cambia cerca de <span
+class="math inline">\(100\,\beta_1\)</span> %</td>
+<td align="left"><span class="math inline">\(100(e^{\beta_1} -
+1)\)</span> %</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(y = \beta_0 + \beta_1 \log
+x\)</span></td>
+<td align="left"><span class="math inline">\(x\)</span> aumenta 1 %:
+<span class="math inline">\(y\)</span> cambia cerca de <span
+class="math inline">\(\beta_1 / 100\)</span> unidades</td>
+<td align="left">Con un aumento de 10 %: <span
+class="math inline">\(\beta_1 \log(1.10)\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\log y = \beta_0 + \beta_1
+\log x\)</span></td>
+<td align="left"><span class="math inline">\(x\)</span> aumenta 1 %:
+<span class="math inline">\(y\)</span> cambia cerca de <span
+class="math inline">\(\beta_1\)</span> %
+(<strong>elasticidad</strong>)</td>
+<td align="left">Con un aumento de 10 %: <span
+class="math inline">\(100(1.10^{\beta_1} - 1)\)</span> %</td>
+</tr>
+</tbody>
+</table>
+<p>Las aproximaciones funcionan bien cuando <span
+class="math inline">\(\beta_1\)</span> es pequeño (menor que 0.2 en
+valor absoluto). En el modelo con logaritmo en las dos variables:</p>
+<pre class="r"><code>coef(m2)</code></pre>
+<pre><code>(Intercept) log(pib_pc) 
+  2.6655073  -0.2071498 </code></pre>
+<pre class="r"><code>b1 &lt;- coef(m2)[2]
+100 * (1.10^b1 - 1)   # cambio porcentual en la fecundidad si el PIB es 10 % mayor</code></pre>
+<pre><code>log(pib_pc) 
+  -1.954986 </code></pre>
+<pre class="r"><code>100 * (2^b1 - 1)      # si el PIB es el doble</code></pre>
+<pre><code>log(pib_pc) 
+  -13.37531 </code></pre>
+<p>Entre países cuyo PIB por habitante difiere en 10 %, la fecundidad
+es, en promedio, 2 % menor en el más rico. Entre un país y otro con el
+doble de PIB, la fecundidad es 13.4 % menor. Como en todo el modelo, es
+una asociación entre países, no el efecto de que un país se
+enriquezca.</p>
+<p>En el modelo con logaritmo solo del PIB (<code>m1</code>), la
+pendiente es -0.62: si el PIB es 10 % mayor, la fecundidad es menor en
+<span class="math inline">\(-0.62 \times \log(1.10) = -0.059\)</span>
+hijos por mujer.</p>
+<p><br/></p>
+</div>
+<div id="qué-es-el-método-de-box-cox" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el método de
+Box-Cox?</strong></span></h2>
+<p>El método de <strong>Box-Cox</strong> busca, entre las
+transformaciones de potencia de <span class="math inline">\(y\)</span>,
+la que mejor cumple los supuestos del modelo:</p>
+<p><span class="math display">\[
+y^{(\lambda)} = \begin{cases} \dfrac{y^\lambda - 1}{\lambda} &amp;
+\lambda \neq 0 \\[2mm] \log y &amp; \lambda = 0 \end{cases}
+\]</span></p>
+<table>
+<thead>
+<tr class="header">
+<th align="center"><span class="math inline">\(\lambda\)</span></th>
+<th align="left">Transformación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="left">Ninguna</td>
+</tr>
+<tr class="even">
+<td align="center">0.5</td>
+<td align="left">Raíz cuadrada</td>
+</tr>
+<tr class="odd">
+<td align="center">0</td>
+<td align="left">Logaritmo</td>
+</tr>
+<tr class="even">
+<td align="center">−0.5</td>
+<td align="left"><span class="math inline">\(1/\sqrt{y}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center">−1</td>
+<td align="left">Recíproco, <span
+class="math inline">\(1/y\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Para cada <span class="math inline">\(\lambda\)</span> se ajusta el
+modelo y se calcula su verosimilitud; se elige el <span
+class="math inline">\(\lambda\)</span> que la hace máxima. La función
+<code>boxcox()</code> del paquete <code>MASS</code>, que viene instalado
+con <strong>R</strong>, grafica el <strong>perfil de
+verosimilitud</strong> con su intervalo de confianza del 95 %. Se aplica
+al modelo que ya tiene el logaritmo del PIB, porque Box-Cox solo
+transforma <span class="math inline">\(y\)</span>:</p>
+<pre class="r"><code>library(MASS)
+bc &lt;- boxcox(m1, lambda = seq(-1.5, 1, by = 0.01), las = 1)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso500_files/figure-html/unnamed-chunk-7-1.png" alt="Curva con forma de montaña con el máximo cerca de menos 0.33; las líneas punteadas están cerca de menos 0.63 y menos 0.05" width="65%" />
+<p class="caption">
+Perfil de verosimilitud de Box-Cox para la fecundidad. Las líneas
+verticales punteadas marcan el intervalo de confianza del 95 %.
+</p>
+</div>
+<pre class="r"><code>lambda_max &lt;- bc$x[which.max(bc$y)]
+ic_lambda &lt;- range(bc$x[bc$y &gt; max(bc$y) - qchisq(0.95, 1) / 2])
+c(lambda = lambda_max, inferior = ic_lambda[1], superior = ic_lambda[2])</code></pre>
+<pre><code>  lambda inferior superior 
+   -0.33    -0.62    -0.05 </code></pre>
+<p>El máximo está en <span class="math inline">\(\hat{\lambda} =
+-0.33\)</span>, con un intervalo de -0.62 a -0.05. ¿Qué transformación
+usar?</p>
+<ul>
+<li><strong>No se usa <span class="math inline">\(\hat{\lambda}\)</span>
+con todos sus decimales.</strong> Se elige un valor
+<strong>interpretable</strong> dentro del intervalo o cerca de él. Una
+potencia de −0.33 no tiene interpretación sencilla.</li>
+<li>Aquí el intervalo incluye −0.5 (<span
+class="math inline">\(1/\sqrt{y}\)</span>) pero <strong>no incluye el
+0</strong> (logaritmo).</li>
+<li>El logaritmo está muy cerca del borde y tiene una interpretación
+clara en porcentajes.</li>
+</ul>
+<p>Se comparan los residuales de las dos opciones:</p>
+<pre class="r"><code>m_raiz &lt;- lm(I(1 / sqrt(fertilidad)) ~ log(pib_pc), data = paises)
+data.frame(transformacion = c(&quot;log(y)&quot;, &quot;1/sqrt(y)&quot;),
+           breusch_pagan = c(bptest(m2)$p.value, bptest(m_raiz)$p.value),
+           shapiro = c(shapiro.test(rstandard(m2))$p.value, shapiro.test(rstandard(m_raiz))$p.value))</code></pre>
+<pre><code>  transformacion breusch_pagan     shapiro
+1         log(y)    0.08196662 0.214453663
+2      1/sqrt(y)    0.97376515 0.002853609</code></pre>
+<p><span class="math inline">\(1/\sqrt{y}\)</span> estabiliza mejor la
+varianza, pero sus residuales se alejan más de la normal. El logaritmo
+da un modelo aceptable en los dos sentidos y se interpreta en
+porcentajes. En este caso se prefiere el logaritmo. Box-Cox es una
+<strong>guía</strong>, no una regla: la decisión final combina el
+perfil, los residuales y la interpretación, y se reporta.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-vuelve-a-la-escala-original" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se vuelve a la escala
+original?</strong></span></h2>
+<p>El modelo con logaritmos predice <span class="math inline">\(\log
+y\)</span>. Para dar la predicción en hijos por mujer se aplica la
+exponencial. Para Colombia (PIB por habitante de 6 222.8 dólares):</p>
+<pre class="r"><code>colombia &lt;- data.frame(pib_pc = 6222.8)
+pred_log &lt;- predict(m2, colombia, interval = &quot;prediction&quot;)
+pred_log</code></pre>
+<pre><code>        fit       lwr      upr
+1 0.8558519 0.2486375 1.463066</code></pre>
+<pre class="r"><code>exp(pred_log)</code></pre>
+<pre><code>       fit      lwr      upr
+1 2.353378 1.282277 4.319184</code></pre>
+<p>Hay que tener cuidado con lo que significa:</p>
+<ul>
+<li><span class="math inline">\(e^{\widehat{\log y}}\)</span> estima la
+<strong>mediana</strong> de <span class="math inline">\(y\)</span>, no
+su media. Como la exponencial no es lineal, la exponencial de un
+promedio no es el promedio de las exponenciales.</li>
+<li>Si los errores en escala logarítmica son normales, la media se
+estima con <span class="math inline">\(e^{\widehat{\log y} +
+\hat{\sigma}^2/2}\)</span>:</li>
+</ul>
+<pre class="r"><code>c(mediana = exp(pred_log[1, &quot;fit&quot;]), media = exp(pred_log[1, &quot;fit&quot;] + sigma(m2)^2 / 2))</code></pre>
+<pre><code> mediana    media 
+2.353378 2.467019 </code></pre>
+<ul>
+<li>Los <strong>límites del intervalo</strong> sí se pueden pasar con la
+exponencial, porque la transformación conserva el orden. El intervalo
+queda asimétrico alrededor de la predicción, lo que es razonable para
+una variable que no puede ser negativa.</li>
+</ul>
+<p>Con 95 % de confianza, un país con el PIB de Colombia tendría entre
+1.3 y 4.3 hijos por mujer. Colombia tenía 2.293.</p>
+<p><br/></p>
+</div>
+<div id="y-si-queda-una-curva" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Y si queda una
+curva?</strong></span></h2>
+<p>Ninguna transformación es perfecta. En el modelo con logaritmos aún
+queda algo de curvatura: al agregar el cuadrado de <span
+class="math inline">\(\log x\)</span>, el término es significativo.</p>
+<pre class="r"><code>m_cuad &lt;- lm(log(fertilidad) ~ log(pib_pc) + I(log(pib_pc)^2), data = paises)
+anova(m2, m_cuad)</code></pre>
+<pre><code>Analysis of Variance Table
+
+Model 1: log(fertilidad) ~ log(pib_pc)
+Model 2: log(fertilidad) ~ log(pib_pc) + I(log(pib_pc)^2)
+  Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    197 18.581                                  
+2    196 17.204  1    1.3768 15.686 0.0001046 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coef(m_cuad)</code></pre>
+<pre><code>     (Intercept)      log(pib_pc) I(log(pib_pc)^2) 
+      4.91167260      -0.76072043       0.03293902 </code></pre>
+<p>Un <strong>término cuadrático</strong> permite que la pendiente
+cambie con <span class="math inline">\(x\)</span>. El modelo sigue
+siendo lineal en los coeficientes, y se ajusta con <code>lm()</code>.
+Aquí la curva indica que la fecundidad baja más rápido entre los países
+pobres y se aplana entre los ricos.</p>
+<pre class="r"><code>plot(log(fertilidad) ~ log(pib_pc), data = paises, pch = 19, col = &quot;#034A9460&quot;, las = 1,
+     xlab = &quot;log(PIB por habitante)&quot;, ylab = &quot;log(hijos por mujer)&quot;)
+abline(m2, col = &quot;#C0392B&quot;, lwd = 2)
+malla &lt;- data.frame(pib_pc = exp(seq(4.5, 11.7, by = 0.05)))
+lines(log(malla$pib_pc), predict(m_cuad, malla), col = &quot;#034A94&quot;, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso500_files/figure-html/unnamed-chunk-12-1.png" alt="Nube decreciente con una recta roja y una curva azul que se aplana a la derecha" width="65%" />
+<p class="caption">
+Modelo con logaritmos: recta (rojo) y curva con término cuadrático
+(azul).
+</p>
+</div>
+<p>Precauciones con los términos cuadráticos:</p>
+<ul>
+<li>Los coeficientes por separado no se interpretan: la pendiente
+depende de <span class="math inline">\(x\)</span>.</li>
+<li>En los extremos y fuera del rango de los datos, la parábola puede
+dar resultados absurdos. Aquí su punto más bajo está en un PIB de unos
+104 000 dólares, cerca del país más rico; a partir de ahí la parábola
+dice que la fecundidad vuelve a subir, algo que ningún dato
+respalda.</li>
+<li>La diferencia entre la recta y la curva es pequeña en casi todo el
+rango. Con 199 países, una curvatura leve es significativa. Si el
+objetivo es una interpretación sencilla, la recta en escala logarítmica
+puede ser suficiente; si es predecir bien en los extremos, la curva es
+mejor.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Usar <span class="math inline">\(\hat{\lambda}\)</span>
+de Box-Cox con todos sus decimales</td>
+<td align="left">Se toma el máximo como valor exacto</td>
+<td align="left">Elegir un valor interpretable dentro del intervalo</td>
+</tr>
+<tr class="even">
+<td align="left">Interpretar la pendiente con logaritmos como en el
+modelo sin transformar</td>
+<td align="left">Se olvida la escala</td>
+<td align="left">Hablar de cambios porcentuales (tabla de esta
+página)</td>
+</tr>
+<tr class="odd">
+<td align="left">Decir que <span
+class="math inline">\(e^{\hat{y}}\)</span> es la media de <span
+class="math inline">\(y\)</span></td>
+<td align="left">La exponencial no conserva promedios</td>
+<td align="left">Es la mediana; la media requiere un ajuste</td>
+</tr>
+<tr class="even">
+<td align="left">Aplicar el logaritmo a una variable con ceros</td>
+<td align="left"><span class="math inline">\(\log 0\)</span> no
+existe</td>
+<td align="left">Revisar por qué hay ceros; sumar una constante cambia
+los resultados y debe justificarse</td>
+</tr>
+<tr class="odd">
+<td align="left">Transformar para que una prueba no rechace</td>
+<td align="left">Se pierde la razón del modelo</td>
+<td align="left">Transformar por la forma de la relación y revisar los
+residuales</td>
+</tr>
+<tr class="even">
+<td align="left">Interpretar por separado los coeficientes de <span
+class="math inline">\(x\)</span> y <span
+class="math inline">\(x^2\)</span></td>
+<td align="left">La pendiente cambia con <span
+class="math inline">\(x\)</span></td>
+<td align="left">Graficar la curva ajustada</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-interpretar-una-elasticidad"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Interpretar una
+elasticidad</strong></span></h3>
+<p>Con la pendiente del modelo <code>m2</code>, ¿cuánto menor es la
+fecundidad promedio en un país con el triple del PIB por habitante de
+otro?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>100 * (3^coef(m2)[2] - 1)</code></pre>
+<pre><code>log(pib_pc) 
+  -20.35391 </code></pre>
+<p>Cerca de 20 % menor. Se usa la fórmula exacta <span
+class="math inline">\(100(3^{\beta_1} - 1)\)</span> porque un triple no
+es un cambio pequeño.</p>
+</details>
+</div>
+<div id="reto-2.-esperanza-de-vida"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Esperanza de
+vida</strong></span></h3>
+<p>Ajuste la esperanza de vida de las mujeres según el logaritmo del PIB
+por habitante. Interprete la pendiente para un PIB 10 % mayor y revise
+los residuales.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>m_vida &lt;- lm(vida_mujer ~ log(pib_pc), data = paises)
+coef(m_vida)</code></pre>
+<pre><code>(Intercept) log(pib_pc) 
+  29.814802    5.018835 </code></pre>
+<pre class="r"><code>coef(m_vida)[2] * log(1.10)</code></pre>
+<pre><code>log(pib_pc) 
+  0.4783461 </code></pre>
+<pre class="r"><code>plot(fitted(m_vida), residuals(m_vida), pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Valores ajustados&quot;, ylab = &quot;Residuales&quot;)
+abline(h = 0, lty = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso500_files/figure-html/unnamed-chunk-14-1.png" alt="Residuales con varios valores muy negativos a la izquierda" width="55%" />
+<p class="caption">
+Residuales del modelo de esperanza de vida.
+</p>
+</div>
+<p>Entre países cuyo PIB difiere en 10 %, la esperanza de vida de las
+mujeres es en promedio cerca de medio año mayor en el más rico. Los
+residuales muestran varios países pobres con una esperanza de vida mucho
+menor que la esperada: la distribución de los residuales es asimétrica.
+Hay otras variables (conflictos, epidemias) que el PIB no recoge.</p>
+</details>
+</div>
+<div id="reto-3.-media-y-mediana"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Media y
+mediana</strong></span></h3>
+<p>Para un país con un PIB por habitante de 1 000 dólares, calcule con
+el modelo <code>m2</code> la mediana y la media estimadas de la
+fecundidad. ¿Por qué la media es mayor?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>pred_1000 &lt;- predict(m2, data.frame(pib_pc = 1000))
+c(mediana = exp(pred_1000), media = exp(pred_1000 + sigma(m2)^2 / 2))</code></pre>
+<pre><code>mediana.1   media.1 
+ 3.436891  3.602853 </code></pre>
+<p>En la escala original, la distribución de la fecundidad es asimétrica
+a la derecha: algunos países tienen fecundidades mucho mayores que la
+mediana, y eso sube la media.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 4
+trata las transformaciones para linealizar y estabilizar la varianza y
+el método de Box-Cox, con datos de las Naciones Unidas.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Weisberg, S. (2014). <em>Applied Linear Regression</em> (4.ª ed.).
+Wiley. El capítulo 8 trata las transformaciones; de este libro vienen
+los datos de las Naciones Unidas.</li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 5.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Box, G. E. P. y Cox, D. R. (1964). An analysis of transformations.
+<em>Journal of the Royal Statistical Society, Series B</em>, 26(2),
+211-252.</li>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+<li>Weisberg, S. (2014). <em>Applied Linear Regression</em> (4.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

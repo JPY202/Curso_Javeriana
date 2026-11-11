@@ -1,0 +1,348 @@
+---
+title: <span style="color:#034a94"> **Correlación de Pearson**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+El **análisis de correlación** es una técnica estadística que se usa para cuantificar la relación entre dos variables cuantitativas. Su objetivo principal es medir el grado de asociación entre ellas, sin implicar una relación causal.
+
+En este análisis se considera una variable respuesta $Y$, cuya relación con otra variable explicativa $X$ se estudia a partir de una muestra de $n$ pares de observaciones:
+
+$$
+(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)
+$$
+
+El análisis permite responder preguntas como:
+
+- ¿Existe una asociación entre $X$ y $Y$?
+- ¿Qué tan fuerte es la relación entre las dos variables?
+- ¿Es la relación positiva o negativa?
+
+Según la forma de la relación, se usan distintas medidas de correlación. El **coeficiente de correlación de Pearson** es la más usada cuando la relación es lineal. Cuando la relación es monótona pero no lineal, o cuando hay datos atípicos, se usan los coeficientes de **Spearman** o **Kendall** ([Correlación de Spearman y Kendall](recurso101.html)).
+
+El análisis de correlación es un primer paso antes de construir un modelo de regresión: permite evaluar si conviene incluir una variable explicativa en el modelo y detectar patrones en los datos.
+
+<div class="content-box-blue">
+### <span style="color:#034a94">**Ejemplos**</span>
+
+El análisis de correlación permite responder preguntas sobre la relación entre dos variables cuantitativas. Algunos ejemplos:
+
+- **Inversión en publicidad y ventas:** ¿existe una asociación entre el presupuesto destinado a publicidad y el volumen de ventas mensuales de una empresa? ¿Los meses con más gasto en publicidad tienden a tener más ventas?
+- **Tamaño y precio de una vivienda:** ¿las casas con más metros cuadrados tienden a tener un precio de venta mayor?
+- **Rendimiento de combustible y peso del vehículo:** ¿existe un patrón entre los kilómetros por galón y el peso de un automóvil? ¿Los autos más pesados tienden a recorrer menos kilómetros por galón?
+- **Tiempo de estudio y rendimiento académico:** ¿el número de horas que un estudiante dedica a estudiar se relaciona con la calificación que obtiene en un examen?
+- **Peso y estatura:** ¿existe una correlación entre el peso y la estatura de los estudiantes?
+- **Desempleo y criminalidad:** ¿las regiones con mayor tasa de desempleo tienen también una mayor tasa de homicidios?
+- **Medidas de tránsito y accidentes viales:** ¿las ciudades con más medidas preventivas de tránsito tienen menos accidentes?
+
+</div>
+
+Además de evaluar si existe una relación entre las variables, el análisis de correlación permite determinar:
+
+- **La intensidad de la relación:** ¿es una asociación fuerte o débil?
+- **La dirección de la relación:** ¿es una correlación positiva (directa) o negativa (inversa)?
+
+Estos aspectos son fundamentales para interpretar los resultados y tomar decisiones basadas en datos. Esta página presenta la **covarianza** y el **coeficiente de correlación de Pearson**, que miden la relación **lineal**. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuáles son los datos de la unidad?**</span>
+
+Medir la grasa corporal con precisión es costoso: el método de referencia pesa a la persona bajo el agua. Medir el abdomen con una cinta métrica toma un minuto. Si las dos medidas están muy relacionadas, la cinta métrica podría dar una buena idea de la grasa.
+
+Toda la unidad usa este caso: **252 hombres** a quienes se les midió el porcentaje de grasa corporal con pesaje bajo el agua y otras 13 medidas del cuerpo (Penrose, Nelson y Fisher, 1985; Johnson, 1996). Los datos vienen en el paquete `faraway` de **R**; aquí se usa una copia con el peso en kilogramos y la estatura en centímetros.
+
+| Variable | Qué mide |
+|:---------|:---------|
+| `id` | Número del hombre (1 a 252) |
+| `grasa` | Porcentaje de grasa corporal (ecuación de Brozek) |
+| `edad` | Edad en años |
+| `peso`, `estatura` | Peso en kg y estatura en cm |
+| `cuello`, `pecho`, `abdomen`, `cadera`, `muslo`, `rodilla`, `tobillo`, `biceps`, `antebrazo`, `muneca` | Circunferencias en cm |
+
+### <span style="color:#034a94">**¿Cómo se descargan los datos?**</span>
+
+La unidad usa cuatro archivos. Descárguelos y guárdelos en una carpeta llamada `data` dentro de su proyecto de **RStudio** ([Proyecto en RStudio](../unidad1/recurso103.html)):
+
+| Archivo | Contenido | Páginas |
+|:--------|:----------|:--------|
+| <a href="data/grasa.csv" download>grasa.csv</a> | Grasa corporal y medidas del cuerpo de 252 hombres | Casi todas |
+| <a href="data/paises.csv" download>paises.csv</a> | Fecundidad, PIB por habitante y otros indicadores de 213 países y territorios | Spearman y Kendall, Transformaciones, Varianza no constante |
+| <a href="data/condenas.csv" download>condenas.csv</a> | Condenas de mujeres y fecundidad en Canadá, 1931 a 1968 | Revisión de los supuestos |
+| <a href="data/peso.csv" download>peso.csv</a> | Peso medido y peso reportado de 200 personas | Caso integrador |
+
+Con el proyecto abierto, cada archivo se lee con `read.csv()` y la ruta relativa `"data/nombre.csv"`.
+
+En las salidas de esta unidad los números se muestran sin notación científica: por ejemplo, 0.00012 y no `1.2e-04`. Para obtener lo mismo en su computador, ejecute una vez al inicio de cada sesión:
+
+```{r, eval=FALSE}
+options(scipen = 999)
+```
+
+Un valor p muy pequeño se muestra entonces con muchos ceros, como `< 0.00000000000000022`: se lee como "prácticamente cero".
+
+
+```{r}
+grasa <- read.csv("data/grasa.csv")
+dim(grasa)
+head(grasa[, c("id", "grasa", "abdomen", "peso", "estatura")])
+summary(grasa[, c("grasa", "abdomen")])
+```
+
+La pregunta de la unidad es: **¿cómo se relaciona la grasa corporal con la circunferencia del abdomen?**
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué muestra el gráfico de dispersión?**</span>
+
+Antes de calcular cualquier indicador, se grafica. El gráfico de dispersión muestra la **dirección** (positiva o negativa), la **forma** (recta o curva), la **fuerza** (qué tan cerca están los puntos de una línea) y los **puntos inusuales**.
+
+```{r, fig.width=6.5, fig.height=4.5, fig.cap="Grasa corporal y circunferencia del abdomen en 252 hombres.", fig.alt="Nube de puntos con tendencia creciente y casi recta; un punto aislado a la derecha, con abdomen cercano a 148 cm", out.width="70%", fig.align="center"}
+plot(grasa ~ abdomen, data = grasa, pch = 19, col = "#034A9480", las = 1,
+     xlab = "Circunferencia del abdomen (cm)", ylab = "Grasa corporal (%)",
+     xlim = c(65, 150), ylim = c(0, 50))
+```
+
+La relación es **positiva** (a más abdomen, más grasa), aproximadamente **recta** y bastante fuerte. Hay un hombre con un abdomen mucho mayor que el resto (148 cm), y uno con 0 % de grasa abajo a la izquierda, que no es posible en una persona viva. Los dos se estudian en la página [Puntos influyentes](recurso600.html).
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es la covarianza?**</span>
+
+La **covarianza muestral** resume si las dos variables tienden a estar por encima (o por debajo) de su media al mismo tiempo:
+
+$$
+s_{xy} = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})
+$$
+
+- Si los productos $(x_i - \bar{x})(y_i - \bar{y})$ son en su mayoría positivos, la covarianza es positiva: las dos variables crecen juntas.
+- Si son en su mayoría negativos, la covarianza es negativa.
+
+```{r}
+x <- grasa$abdomen
+y <- grasa$grasa
+n <- length(x)
+sum((x - mean(x)) * (y - mean(y))) / (n - 1)
+cov(x, y)
+```
+
+La covarianza tiene un problema: sus unidades son el producto de las unidades de las dos variables (aquí, cm × puntos porcentuales), así que su tamaño no dice si la relación es fuerte o débil. Si el abdomen se midiera en metros, la covarianza se dividiría por 100 sin que la relación cambie.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el coeficiente de correlación de Pearson?**</span>
+
+El **coeficiente de correlación de Pearson** divide la covarianza por las dos desviaciones estándar, y así queda sin unidades:
+
+$$
+r = \frac{s_{xy}}{s_x \, s_y}, \qquad -1 \le r \le 1
+$$
+
+```{r}
+cov(x, y) / (sd(x) * sd(y))
+cor(x, y)
+```
+
+| Valor de $r$ | Significado |
+|:------------:|:------------|
+| $r = 1$ | Todos los puntos están sobre una recta creciente |
+| $r$ cercano a 1 | Relación lineal positiva fuerte |
+| $r$ cercano a 0 | No hay relación **lineal** (puede haber otra) |
+| $r$ cercano a −1 | Relación lineal negativa fuerte |
+| $r = -1$ | Todos los puntos están sobre una recta decreciente |
+
+Con $r = `r round(cor(x, y), 2)`$, la relación lineal entre abdomen y grasa es positiva y fuerte. No hay cortes universales para llamar débil, moderada o fuerte a una correlación: dependen del área. En medidas físicas, 0.8 es común; en ciencias sociales, 0.3 ya puede ser importante.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué no mide la correlación?**</span>
+
+$r$ solo mide relaciones **lineales**. Las cuatro series del cuarteto de Anscombe (1973) tienen la misma media, la misma varianza y la misma correlación, $r = 0.82$, pero son muy distintas:
+
+```{r}
+sapply(1:4, function(k) cor(anscombe[[paste0("x", k)]], anscombe[[paste0("y", k)]]))
+```
+
+```{r, fig.width=9, fig.height=2.8, fig.cap="Cuarteto de Anscombe: cuatro relaciones distintas con la misma correlación.", fig.alt="Cuatro gráficos de dispersión: una nube recta con ruido, una curva perfecta, una recta perfecta con un punto alejado y una columna vertical de puntos con un punto aislado a la derecha", out.width="100%"}
+par(mfrow = c(1, 4), mar = c(4, 4, 2, 1))
+for (k in 1:4) {
+  plot(anscombe[[paste0("x", k)]], anscombe[[paste0("y", k)]], pch = 19, col = "#034A94",
+       xlim = c(3, 20), ylim = c(2, 14), xlab = "x", ylab = "y", main = paste("Serie", k), las = 1)
+}
+```
+
+- **Serie 1:** relación lineal con ruido; $r$ la describe bien.
+- **Serie 2:** relación curva y perfecta; $r$ la subestima.
+- **Serie 3:** recta perfecta con un punto alejado; sin él, $r$ sería 1.
+- **Serie 4:** no hay relación; un solo punto crea la correlación.
+
+La lección es la de toda la unidad: **siempre se grafica antes de calcular**.
+
+Otros cuidados:
+
+- **Correlación no es causalidad.** Un abdomen mayor no causa más grasa medida bajo el agua: las dos son consecuencias de la misma composición corporal. En otros casos, una tercera variable explica las dos.
+- **Correlación parte-todo.** Si una variable es parte de la otra (por ejemplo, el gasto en comida y el gasto total), la correlación es alta por construcción y no dice nada nuevo.
+- **Puntos extremos.** Un solo punto puede subir o bajar $r$. Sin el hombre de 148 cm de abdomen, $r$ pasa de `r round(cor(x, y), 3)` a `r round(cor(x[-39], y[-39]), 3)`.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se prueba si la correlación es distinta de cero?**</span>
+
+El valor $r$ es una estimación de la correlación de la población, $\rho$. Para decidir si hay evidencia de relación lineal en la población se prueba
+
+$$
+H_0: \rho = 0 \qquad \text{frente a} \qquad H_1: \rho \neq 0
+$$
+
+con el estadístico
+
+$$
+t = \frac{r\sqrt{n - 2}}{\sqrt{1 - r^2}},
+$$
+
+que sigue una distribución $t$ con $n - 2$ grados de libertad si $H_0$ es cierta y los datos vienen de una **normal bivariada** (cada par $(x, y)$ es una observación de una distribución normal en dos dimensiones). La función `cor.test()` hace la prueba y da un intervalo de confianza para $\rho$:
+
+```{r}
+cor.test(grasa$abdomen, grasa$grasa)
+```
+
+El valor p es prácticamente cero: hay evidencia fuerte de relación lineal positiva. El intervalo del 95 % para $\rho$ va de `r round(cor.test(x, y)$conf.int[1], 2)` a `r round(cor.test(x, y)$conf.int[2], 2)`.
+
+Con muestras grandes, cualquier correlación pequeña resulta significativa. Por eso se reporta $r$ con su intervalo, no solo el valor p.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se calculan muchas correlaciones a la vez?**</span>
+
+`cor()` aplicada a una tabla da la **matriz de correlaciones**: la correlación de cada par de variables.
+
+```{r}
+medidas <- grasa[, c("grasa", "abdomen", "pecho", "cadera", "peso", "cuello", "estatura")]
+round(cor(medidas), 2)
+```
+
+La primera columna muestra que el abdomen es la medida más relacionada con la grasa, seguida del pecho y la cadera. La estatura casi no se relaciona con la grasa. Por eso el resto de la unidad usa el abdomen.
+
+`pairs()` grafica todos los pares a la vez:
+
+```{r, fig.width=8, fig.height=8, fig.cap="Gráficos de dispersión de cada par de medidas.", fig.alt="Matriz de gráficos de dispersión; en la fila de estatura se ve un punto aislado muy abajo, cercano a 75 cm", out.width="80%", fig.align="center"}
+pairs(medidas, pch = 19, cex = 0.5, col = "#034A9460")
+```
+
+La fila de la estatura muestra un hombre de `r grasa$estatura[42]` cm, que es casi seguro un error de digitación (Johnson, 1996). Antes de interpretar, conviene revisar los valores imposibles, como se hizo en la Unidad 1.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Concluir que no hay relación porque $r$ es cercano a 0 | $r$ solo mide relaciones lineales | Graficar: puede haber una curva |
+| Interpretar el tamaño de la covarianza | La covarianza depende de las unidades | Usar la correlación |
+| Concluir causa a partir de $r$ | Puede haber una tercera variable | Hablar de asociación; la causa la sustenta el diseño del estudio |
+| Calcular $r$ sin graficar | Un punto extremo puede crear o esconder la relación | Graficar siempre antes |
+| Reportar solo el valor p | Con $n$ grande, todo es significativo | Reportar $r$ y su intervalo de confianza |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Cambio de unidades**</span>
+
+Pase el abdomen a metros y la grasa a proporción (dividir por 100). ¿Qué pasa con la covarianza? ¿Y con la correlación?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+cov(grasa$abdomen / 100, grasa$grasa / 100)
+cor(grasa$abdomen / 100, grasa$grasa / 100)
+```
+
+La covarianza se divide por $100 \times 100 = 10\,000$. La correlación no cambia, porque no tiene unidades.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. Muñeca y grasa**</span>
+
+Calcule la correlación entre la circunferencia de la muñeca y la grasa, con su intervalo de confianza. ¿Es más fuerte o más débil que la del abdomen? Grafique antes de responder.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r, fig.width=5, fig.height=4, fig.cap="Grasa corporal y circunferencia de la muñeca.", fig.alt="Nube de puntos dispersa con tendencia creciente débil", out.width="55%", fig.align="center"}
+plot(grasa ~ muneca, data = grasa, pch = 19, col = "#034A9480", las = 1,
+     xlab = "Circunferencia de la muñeca (cm)", ylab = "Grasa corporal (%)")
+cor.test(grasa$muneca, grasa$grasa)$estimate
+cor.test(grasa$muneca, grasa$grasa)$conf.int
+```
+
+La relación es positiva pero más débil ($r = `r round(cor(grasa$muneca, grasa$grasa), 2)`$ frente a `r round(cor(grasa$abdomen, grasa$grasa), 2)`). La muñeca depende más del tamaño de los huesos que de la grasa.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Un solo punto**</span>
+
+Con los datos de la serie 4 de Anscombe, calcule la correlación con todos los puntos y sin el punto de $x = 19$.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+cor(anscombe$x4, anscombe$y4)
+sin_punto <- anscombe$x4 != 19
+cor(anscombe$x4[sin_punto], anscombe$y4[sin_punto])
+```
+
+Sin ese punto, todas las $x$ valen 8 y la correlación no se puede calcular (`NA`): la desviación estándar de $x$ es cero. Toda la correlación de la serie viene de un solo punto.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. Se descarga gratis desde el sitio de la editorial. El capítulo 8 presenta la correlación y la regresión lineal simple.
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores, con ejemplos en **R**.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley. El capítulo 2 trata la correlación en el contexto de la regresión simple.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Anscombe, F. J. (1973). Graphs in statistical analysis. *The American Statistician*, 27(1), 17-21.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). *OpenIntro Statistics* (4.ª ed.). OpenIntro.
+- Johnson, R. W. (1996). Fitting percentage of body fat to simple body measurements. *Journal of Statistics Education*, 4(1).
+- Penrose, K. W., Nelson, A. G. y Fisher, A. G. (1985). Generalized body composition prediction equation for men using simple measurement techniques. *Medicine and Science in Sports and Exercise*, 17(2), 189.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

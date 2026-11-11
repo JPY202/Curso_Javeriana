@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Caso integrador</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>Caso
+integrador</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>Este caso reúne en un solo análisis lo visto en la unidad, siguiendo
+los ocho pasos para construir un modelo de regresión lineal simple (<a
+href="recurso200.html">Modelo de regresión lineal simple</a>):
+recolectar, explorar y procesar los datos, elegir, entrenar y evaluar el
+modelo, interpretarlo y usarlo para predecir. Se trabaja con datos
+reales que no se han usado en las otras páginas.</p>
+<p>La pregunta es: <strong>¿el peso que una persona reporta sirve para
+conocer su peso real?</strong> En muchas encuestas de salud no se pesa a
+las personas: se les pregunta cuánto pesan. Si el peso reportado se
+relaciona bien con el medido, se puede usar el modelo para
+corregirlo.</p>
+<p>Los bloques de código se ejecutan en orden.</p>
+<p><br/></p>
+<div id="paso-1.-cómo-se-recolectaron-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 1. ¿Cómo se recolectaron
+los datos?</strong></span></h2>
+<p>Davis (1990) estudió a 200 hombres y mujeres que hacían ejercicio con
+regularidad. A cada persona le preguntó su peso y su estatura, y luego
+la pesó y la midió. Los datos vienen en el paquete <code>carData</code>
+de <strong>R</strong> (Fox y Weisberg, 2019); aquí se usa una copia con
+los nombres en español.</p>
+<p>Los datos se descargan aquí:
+<a href="data/peso.csv" download>peso.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Qué mide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>id</code></td>
+<td align="left">Número de la persona (1 a 200)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>sexo</code></td>
+<td align="left">Mujer u Hombre</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>peso</code>, <code>estatura</code></td>
+<td align="left">Peso medido (kg) y estatura medida (cm)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>peso_reportado</code>,
+<code>estatura_reportada</code></td>
+<td align="left">Peso (kg) y estatura (cm) que dijo la persona</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>datos &lt;- read.csv(&quot;data/peso.csv&quot;)
+dim(datos)</code></pre>
+<pre><code>[1] 200   6</code></pre>
+<pre class="r"><code>head(datos)</code></pre>
+<pre><code>  id   sexo peso estatura peso_reportado estatura_reportada
+1  1 Hombre   77      182             77                180
+2  2  Mujer   58      161             51                159
+3  3  Mujer   53      161             54                158
+4  4 Hombre   68      177             70                175
+5  5  Mujer   59      157             59                155
+6  6 Hombre   76      170             76                165</code></pre>
+<p>Dos características del diseño importan para el modelo:</p>
+<ul>
+<li>Cada persona se midió una vez y no hay un orden en el tiempo: no hay
+razones para dudar de la independencia de los errores.</li>
+<li>Las personas hacen ejercicio con regularidad. Las conclusiones valen
+para esa población, no necesariamente para la población general.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="paso-2.-qué-muestran-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 2. ¿Qué muestran los
+datos?</strong></span></h2>
+<pre class="r"><code>summary(datos[, c(&quot;peso&quot;, &quot;estatura&quot;, &quot;peso_reportado&quot;, &quot;estatura_reportada&quot;)])</code></pre>
+<pre><code>      peso          estatura     peso_reportado   estatura_reportada
+ Min.   : 39.0   Min.   : 57.0   Min.   : 41.00   Min.   :148.0     
+ 1st Qu.: 55.0   1st Qu.:164.0   1st Qu.: 55.00   1st Qu.:160.5     
+ Median : 63.0   Median :169.5   Median : 63.00   Median :168.0     
+ Mean   : 65.8   Mean   :170.0   Mean   : 65.62   Mean   :168.5     
+ 3rd Qu.: 74.0   3rd Qu.:177.2   3rd Qu.: 73.50   3rd Qu.:175.0     
+ Max.   :166.0   Max.   :197.0   Max.   :124.00   Max.   :200.0     
+                                 NA&#39;s   :17       NA&#39;s   :17        </code></pre>
+<pre class="r"><code>colSums(is.na(datos))</code></pre>
+<pre><code>                id               sexo               peso           estatura 
+                 0                  0                  0                  0 
+    peso_reportado estatura_reportada 
+                17                 17 </code></pre>
+<p>Faltan 17 pesos reportados. El gráfico compara el peso medido con el
+reportado. La línea punteada es la <strong>recta de igualdad</strong>,
+<span class="math inline">\(y = x\)</span>: si todos dijeran su peso
+exacto, los puntos estarían sobre ella.</p>
+<pre class="r"><code>plot(peso ~ peso_reportado, data = datos, pch = 19, col = &quot;#034A9480&quot;, las = 1,
+     xlab = &quot;Peso reportado (kg)&quot;, ylab = &quot;Peso medido (kg)&quot;,
+     xlim = c(35, 170), ylim = c(35, 170))
+abline(0, 1, lty = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso700_files/figure-html/unnamed-chunk-3-1.png" alt="Nube de puntos muy cerca de la recta de igualdad, entre 40 y 125 kg, y un punto aislado arriba, con peso medido de 166 kg y peso reportado de 56 kg" width="65%" />
+<p class="caption">
+Peso medido y peso reportado. La línea punteada es la recta de igualdad.
+</p>
+</div>
+<p>Casi todos los puntos están cerca de la recta de igualdad, pero hay
+uno muy lejos: una persona que reportó 56 kg y pesó 166 kg.</p>
+<p><br/></p>
+</div>
+<div id="paso-3.-hay-que-procesar-los-datos" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 3. ¿Hay que procesar los
+datos?</strong></span></h2>
+<p>Antes de modelar se revisa el punto extraño:</p>
+<pre class="r"><code>datos[datos$id == 12, ]</code></pre>
+<pre><code>   id  sexo peso estatura peso_reportado estatura_reportada
+12 12 Mujer  166       57             56                163</code></pre>
+<p>Es una mujer con un peso medido de 166 kg y una estatura medida de 57
+cm, que dijo pesar 56 kg y medir 163 cm. Una persona adulta de 57 cm es
+imposible: los dos valores medidos se <strong>digitaron al
+revés</strong>. El peso real es 57 kg y la estatura 166 cm, que
+coinciden con lo que ella reportó. Es un error que <strong>se puede
+corregir</strong>, así que se corrige en lugar de eliminar la fila (<a
+href="recurso600.html">Puntos atípicos e influyentes</a>):</p>
+<pre class="r"><code>datos$peso[datos$id == 12] &lt;- 57
+datos$estatura[datos$id == 12] &lt;- 166</code></pre>
+<p>Las 17 personas sin peso reportado no pueden entrar al modelo. Antes
+de quitarlas conviene ver si se parecen a las demás (<a
+href="../unidad1/recurso402.html">Datos faltantes</a>):</p>
+<pre class="r"><code>datos$falta &lt;- is.na(datos$peso_reportado)
+aggregate(peso ~ falta, data = datos, FUN = function(x) round(c(media = mean(x), mediana = median(x)), 1))</code></pre>
+<pre><code>  falta peso.media peso.mediana
+1 FALSE       65.6         63.0
+2  TRUE       61.2         59.0</code></pre>
+<pre class="r"><code>table(datos$sexo, datos$falta)</code></pre>
+<pre><code>        
+         FALSE TRUE
+  Hombre    82    6
+  Mujer    101   11</code></pre>
+<pre class="r"><code>completos &lt;- datos[!datos$falta, ]
+nrow(completos)</code></pre>
+<pre><code>[1] 183</code></pre>
+<p>Las personas sin el dato pesan, en promedio, unos 4 kg menos, y entre
+ellas hay más mujeres. La diferencia es pequeña y son pocas personas,
+así que se trabaja con los 183 casos completos y se informa que faltaban
+esos datos.</p>
+<p><br/></p>
+</div>
+<div id="paso-4.-qué-modelo-se-elige" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 4. ¿Qué modelo se
+elige?</strong></span></h2>
+<p>La respuesta es el peso medido y la variable explicativa es el peso
+reportado, porque lo que se quiere es estimar el peso real a partir de
+lo que la persona dice:</p>
+<p><span class="math display">\[
+\text{peso}_i = \beta_0 + \beta_1 \, \text{reportado}_i + \varepsilon_i,
+\qquad \varepsilon_i \sim N(0, \sigma^2)
+\]</span></p>
+<p>El gráfico del paso 2 muestra una relación recta, así que no se
+necesita transformar. Si las personas reportaran su peso sin error
+sistemático, el modelo sería la recta de igualdad: <span
+class="math inline">\(\beta_0 = 0\)</span> y <span
+class="math inline">\(\beta_1 = 1\)</span>. Esas son las hipótesis
+interesantes del caso.</p>
+<p><br/></p>
+</div>
+<div id="paso-5.-cómo-se-ajusta-el-modelo" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 5. ¿Cómo se ajusta el
+modelo?</strong></span></h2>
+<pre class="r"><code>modelo &lt;- lm(peso ~ peso_reportado, data = completos)
+summary(modelo)</code></pre>
+<pre><code>
+Call:
+lm(formula = peso ~ peso_reportado, data = completos)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.5270 -1.0942 -0.1151  1.1133  6.3834 
+
+Coefficients:
+               Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept)      2.7480     0.8109   3.389             0.000862 ***
+peso_reportado   0.9582     0.0121  79.222 &lt; 0.0000000000000002 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.248 on 181 degrees of freedom
+Multiple R-squared:  0.972, Adjusted R-squared:  0.9718 
+F-statistic:  6276 on 1 and 181 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+<p>La recta estimada es</p>
+<p><span class="math display">\[
+\widehat{\text{peso}} = 2.75 + 0.958 \times \text{reportado}
+\]</span></p>
+<p>con <span class="math inline">\(R^2 = 0.972\)</span> y <span
+class="math inline">\(\hat{\sigma} = 2.25\)</span> kg: el peso reportado
+da cuenta de casi toda la variación del peso medido, y la distancia
+típica entre el peso real y la recta es de unos 2 kg.</p>
+<p>¿Qué habría pasado sin corregir el error del paso 3?</p>
+<pre class="r"><code>original &lt;- read.csv(&quot;data/peso.csv&quot;)
+modelo_error &lt;- lm(peso ~ peso_reportado, data = original)
+round(rbind(con_error = c(coef(modelo_error), r2 = summary(modelo_error)$r.squared,
+                          sigma = sigma(modelo_error)),
+            corregido = c(coef(modelo), r2 = summary(modelo)$r.squared,
+                          sigma = sigma(modelo))), 3)</code></pre>
+<pre><code>          (Intercept) peso_reportado    r2 sigma
+con_error       5.336          0.928 0.699 8.419
+corregido       2.748          0.958 0.972 2.248</code></pre>
+<p>Una sola fila mal digitada, de 183, bajaba <span
+class="math inline">\(R^2\)</span> de 0.97 a 0.7 y multiplicaba <span
+class="math inline">\(\hat{\sigma}\)</span> por más de 3.</p>
+<p><br/></p>
+</div>
+<div id="paso-6.-cumple-el-modelo-los-supuestos" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 6. ¿Cumple el modelo los
+supuestos?</strong></span></h2>
+<p><strong>Gráficos de residuales.</strong></p>
+<pre class="r"><code>par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+plot(modelo, which = 1:3, las = 1)</code></pre>
+<div class="figure">
+<img src="recurso700_files/figure-html/unnamed-chunk-9-1.png" alt="Tres paneles de diagnóstico: residuales en una franja horizontal con líneas diagonales y la persona 17 abajo; gráfico Q-Q con colas algo más largas que la normal; raíz de los residuales con una línea que sube a la derecha" width="100%" />
+<p class="caption">
+Gráficos de diagnóstico del modelo del peso.
+</p>
+</div>
+<p>Los residuales forman una franja horizontal, sin curva. Las líneas
+diagonales que se ven dentro de la franja aparecen porque los pesos se
+midieron y se reportaron en kilogramos enteros; no indican un problema.
+El gráfico Q-Q muestra colas algo más largas que las de la normal: hay
+algunas personas que se equivocaron por más de 5 kg. En el tercer
+gráfico la línea roja sube a la derecha: la dispersión es un poco mayor
+en las personas más pesadas.</p>
+<p><strong>Pruebas.</strong> Se fija <span class="math inline">\(\alpha
+= 0.05\)</span> antes de verlas:</p>
+<pre class="r"><code>library(lmtest)
+anova(modelo, lm(peso ~ factor(peso_reportado), data = completos))   # falta de ajuste</code></pre>
+<pre><code>Analysis of Variance Table
+
+Model 1: peso ~ peso_reportado
+Model 2: peso ~ factor(peso_reportado)
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1    181 914.66                           
+2    130 664.63 51    250.03 0.9589 0.5574</code></pre>
+<pre class="r"><code>bptest(modelo)                                                       # varianza constante</code></pre>
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  modelo
+BP = 5.9547, df = 1, p-value = 0.01468</code></pre>
+<pre class="r"><code>shapiro.test(rstandard(modelo))                                      # normalidad</code></pre>
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  rstandard(modelo)
+W = 0.98057, p-value = 0.01187</code></pre>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="33%" />
+<col width="36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Supuesto</th>
+<th align="left">Resultado</th>
+<th align="left">Conclusión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Linealidad</td>
+<td align="left">Falta de ajuste: p = 0.56</td>
+<td align="left">No hay evidencia contra la recta</td>
+</tr>
+<tr class="even">
+<td align="left">Varianza constante</td>
+<td align="left">Breusch-Pagan: p = 0.015</td>
+<td align="left">Hay evidencia de que la varianza cambia con el
+peso</td>
+</tr>
+<tr class="odd">
+<td align="left">Normalidad</td>
+<td align="left">Shapiro-Wilk: p = 0.012</td>
+<td align="left">Colas más largas que la normal</td>
+</tr>
+<tr class="even">
+<td align="left">Independencia</td>
+<td align="left">Por el diseño</td>
+<td align="left">No hay razones para dudar</td>
+</tr>
+</tbody>
+</table>
+<p>Con 183 datos, la falta de normalidad casi no afecta las pruebas
+sobre la pendiente (<a href="recurso400.html">Supuestos del modelo</a>).
+La varianza no constante sí afecta los errores estándar, así que las
+pruebas del paso 7 se hacen con <strong>errores estándar
+robustos</strong> (<a href="recurso501.html">Varianza no constante</a>).
+La falta de normalidad sí importa para el intervalo de predicción del
+paso 8.</p>
+<p><strong>Puntos influyentes.</strong></p>
+<pre class="r"><code>cook &lt;- cooks.distance(modelo)
+sort(cook, decreasing = TRUE)[1:3]</code></pre>
+<pre><code>        17         21         54 
+0.25451565 0.08450064 0.06544550 </code></pre>
+<pre class="r"><code>completos[completos$id %in% c(17, 21), c(&quot;id&quot;, &quot;sexo&quot;, &quot;peso&quot;, &quot;peso_reportado&quot;)]</code></pre>
+<pre><code>   id   sexo peso peso_reportado
+17 17 Hombre   92            101
+21 21 Hombre  119            124</code></pre>
+<p>La persona 17 dijo pesar 101 kg y pesó 92 kg. Su distancia de Cook
+(0.25) es la mayor, pero está lejos de 1 y no hay nada imposible en sus
+datos: es un caso real que se conserva. Sin ella, la pendiente cambia
+poco:</p>
+<pre class="r"><code>c(con_17 = coef(modelo)[2],
+  sin_17 = coef(lm(peso ~ peso_reportado, data = completos[completos$id != 17, ]))[2])</code></pre>
+<pre><code>con_17.peso_reportado sin_17.peso_reportado 
+            0.9582079             0.9662521 </code></pre>
+<p><br/></p>
+</div>
+<div id="paso-7.-qué-dice-el-modelo" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 7. ¿Qué dice el
+modelo?</strong></span></h2>
+<p>Se prueba si la pendiente es 1 y si el intercepto es 0, con errores
+estándar robustos (HC3). El paquete <code>sandwich</code> calcula la
+matriz de varianza robusta:</p>
+<pre class="r"><code>library(sandwich)
+v_rob &lt;- vcovHC(modelo, type = &quot;HC3&quot;)
+ee_rob &lt;- sqrt(diag(v_rob))
+t_pend &lt;- (coef(modelo)[2] - 1) / ee_rob[2]
+t_inter &lt;- (coef(modelo)[1] - 0) / ee_rob[1]
+gl &lt;- df.residual(modelo)
+round(c(t_pendiente = unname(t_pend), p_pendiente = unname(2 * pt(-abs(t_pend), gl)),
+        t_intercepto = unname(t_inter), p_intercepto = unname(2 * pt(-abs(t_inter), gl))), 4)</code></pre>
+<pre><code> t_pendiente  p_pendiente t_intercepto p_intercepto 
+     -2.7000       0.0076       2.7841       0.0059 </code></pre>
+<pre class="r"><code>coefci(modelo, vcov = v_rob)</code></pre>
+<pre><code>                   2.5 %    97.5 %
+(Intercept)    0.8003922 4.6955753
+peso_reportado 0.9276661 0.9887497</code></pre>
+<p>Se rechazan las dos hipótesis: la recta no es la de igualdad. Con 95
+% de confianza, la pendiente está entre 0.928 y 0.989, por debajo de
+1.</p>
+<p>¿Qué significa en kilogramos? Las dos rectas se cruzan donde <span
+class="math inline">\(\hat{\beta}_0 + \hat{\beta}_1 x = x\)</span>, es
+decir, en <span class="math inline">\(x = \hat{\beta}_0 / (1 -
+\hat{\beta}_1)\)</span>:</p>
+<pre class="r"><code>cruce &lt;- coef(modelo)[1] / (1 - coef(modelo)[2])
+cruce</code></pre>
+<pre><code>(Intercept) 
+    65.7537 </code></pre>
+<pre class="r"><code>predict(modelo, data.frame(peso_reportado = c(50, 90)))</code></pre>
+<pre><code>       1        2 
+50.65838 88.98670 </code></pre>
+<ul>
+<li>Quienes dicen pesar menos de 66 kg pesan, en promedio, un poco
+<strong>más</strong> de lo que dicen: con 50 kg reportados, el peso
+promedio es 50.7 kg.</li>
+<li>Quienes dicen pesar más de 66 kg pesan, en promedio, un poco
+<strong>menos</strong>: con 90 kg reportados, el peso promedio es 89
+kg.</li>
+</ul>
+<p>Las diferencias son de alrededor de 1 kg: estadísticamente claras,
+pero pequeñas en la práctica. Parte de este patrón puede deberse a la
+<strong>regresión hacia la media</strong>: el peso reportado tiene su
+propio error, y quienes reportan valores extremos tienden, en promedio,
+a estar más cerca del centro de lo que dicen.</p>
+<p><br/></p>
+</div>
+<div id="paso-8.-cómo-se-usa-el-modelo" class="section level2">
+<h2><span style="color:#034a94"><strong>Paso 8. ¿Cómo se usa el
+modelo?</strong></span></h2>
+<p>Si una persona de esta población dice pesar 70 kg, ¿cuánto pesa?</p>
+<pre class="r"><code>predict(modelo, data.frame(peso_reportado = 70), interval = &quot;prediction&quot;)</code></pre>
+<pre><code>       fit     lwr      upr
+1 69.82254 65.3736 74.27147</code></pre>
+<p>Con 95 % de confianza, pesa entre 65.4 y 74.3 kg. Antes de usar el
+modelo con casos nuevos hay que tener en cuenta:</p>
+<ul>
+<li><strong>El rango:</strong> los pesos reportados van de 41 a 124 kg.
+Fuera de ese rango sería extrapolar.</li>
+<li><strong>La población:</strong> son personas que hacen ejercicio. En
+otra población, por ejemplo en personas con obesidad, el error al
+reportar puede ser distinto.</li>
+<li><strong>El intervalo de predicción</strong> supone errores normales
+y varianza constante. Como los residuales tienen colas largas y la
+varianza cambia un poco, el intervalo es una aproximación: algunas
+personas se equivocan por más de lo que indica.</li>
+</ul>
+<p><br/></p>
+</div>
+<div id="cómo-se-reporta-el-resultado" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se reporta el
+resultado?</strong></span></h2>
+<blockquote>
+<p>Se analizaron 183 personas que hacen ejercicio con regularidad y que
+reportaron su peso; a una se le corrigió un error de digitación. El peso
+medido se relacionó casi de forma perfecta con el reportado (<span
+class="math inline">\(R^2 = 0.97\)</span>). La pendiente fue 0.958 (IC
+95 % con errores robustos: 0.928 a 0.989), menor que 1: quienes reportan
+pesos bajos tienden a pesar un poco más de lo que dicen, y quienes
+reportan pesos altos, un poco menos, con diferencias de alrededor de 1
+kg. La desviación estándar residual fue de 2.2 kg, así que el peso
+reportado sirve para estimar el peso de un grupo, pero para una persona
+el error puede ser de varios kilogramos.</p>
+</blockquote>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Modelar sin graficar</td>
+<td align="left">Se confía en <code>summary()</code></td>
+<td align="left">El gráfico del paso 2 mostró el error de
+digitación</td>
+</tr>
+<tr class="even">
+<td align="left">Eliminar un error que se puede corregir</td>
+<td align="left">Se borra lo que molesta</td>
+<td align="left">Si se sabe el valor correcto, se corrige y se
+informa</td>
+</tr>
+<tr class="odd">
+<td align="left">Probar solo <span class="math inline">\(\beta_1 =
+0\)</span></td>
+<td align="left">Es la prueba que muestra <code>summary()</code></td>
+<td align="left">Plantear la hipótesis que responde la pregunta: aquí,
+<span class="math inline">\(\beta_1 = 1\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Confundir significancia estadística con importancia
+práctica</td>
+<td align="left">Con muchos datos, diferencias pequeñas son
+significativas</td>
+<td align="left">Traducir los coeficientes a las unidades del
+problema</td>
+</tr>
+<tr class="odd">
+<td align="left">Usar el modelo con otra población</td>
+<td align="left">Se olvida cómo se recogieron los datos</td>
+<td align="left">Limitar las conclusiones a la población estudiada</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-mujeres-y-hombres"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Mujeres y
+hombres</strong></span></h3>
+<p>Ajuste el modelo por separado para mujeres y para hombres. ¿Se
+parecen las pendientes? ¿En qué grupo es mayor <span
+class="math inline">\(\hat{\sigma}\)</span>?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>m_mujer &lt;- lm(peso ~ peso_reportado, data = completos, subset = sexo == &quot;Mujer&quot;)
+m_hombre &lt;- lm(peso ~ peso_reportado, data = completos, subset = sexo == &quot;Hombre&quot;)
+round(rbind(mujeres = c(coef(m_mujer), sigma = sigma(m_mujer)),
+            hombres = c(coef(m_hombre), sigma = sigma(m_hombre))), 3)</code></pre>
+<pre><code>        (Intercept) peso_reportado sigma
+mujeres       1.778          0.977 2.057
+hombres       1.794          0.969 2.475</code></pre>
+<p>Compare las pendientes con sus intervalos (<code>confint()</code>)
+antes de concluir que son distintas. Para probar formalmente si difieren
+se necesita un modelo con las dos variables, que se estudia en la
+regresión múltiple.</p>
+</details>
+</div>
+<div id="reto-2.-la-estatura" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. La
+estatura</strong></span></h3>
+<p>Repita los pasos 4 a 7 con la estatura medida como respuesta y la
+estatura reportada como variable explicativa. ¿Las personas reportan
+bien su estatura?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>completos_e &lt;- datos[!is.na(datos$estatura_reportada), ]
+m_est &lt;- lm(estatura ~ estatura_reportada, data = completos_e)
+coef(m_est)</code></pre>
+<pre><code>       (Intercept) estatura_reportada 
+        12.9533978          0.9354476 </code></pre>
+<pre class="r"><code>coefci(m_est, vcov = vcovHC(m_est, type = &quot;HC3&quot;))</code></pre>
+<pre><code>                       2.5 %     97.5 %
+(Intercept)        6.7456006 19.1611949
+estatura_reportada 0.8986501  0.9722452</code></pre>
+<pre class="r"><code>mean(completos_e$estatura - completos_e$estatura_reportada)</code></pre>
+<pre><code>[1] 2.076503</code></pre>
+<p>Revise si el intervalo de la pendiente incluye 1. En estos datos, la
+estatura medida es en promedio 2.1 cm mayor que la reportada: las
+personas tendieron a reportar una estatura un poco menor que la
+real.</p>
+</details>
+</div>
+<div id="reto-3.-sin-corregir-el-error"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Sin corregir el
+error</strong></span></h3>
+<p>Con la base original (sin corregir la fila 12), calcule el
+apalancamiento, el residual estudentizado y la distancia de Cook de esa
+persona. ¿Qué tipo de punto inusual es?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>completos_o &lt;- original[!is.na(original$peso_reportado), ]
+m_o &lt;- lm(peso ~ peso_reportado, data = completos_o)
+fila &lt;- which(completos_o$id == 12)
+round(c(h = hatvalues(m_o)[fila], rstudent = rstudent(m_o)[fila], cook = cooks.distance(m_o)[fila]), 3)</code></pre>
+<pre><code>       h.12 rstudent.12     cook.12 
+      0.008      48.430       0.690 </code></pre>
+<p>Su peso reportado (56 kg) está cerca del centro de los datos, así que
+su apalancamiento es bajo. Pero su residual estudentizado es enorme. Es
+un <strong>atípico</strong>: infla mucho <span
+class="math inline">\(\hat{\sigma}\)</span> y baja <span
+class="math inline">\(R^2\)</span>. Como su residual es tan extremo,
+también mueve la pendiente (de 0.958 a 0.928) y tiene una distancia de
+Cook alta, aunque su apalancamiento sea bajo.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. El capítulo 8 trata la
+regresión lineal con ejemplos completos.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Fox, J. y Weisberg, S. (2019). <em>An R Companion to Applied
+Regression</em> (3.ª ed.). Sage. Usa los datos de Davis en varios
+ejemplos de diagnóstico.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Davis, C. (1990). Body image and weight preoccupation: A comparison
+between exercising and non-exercising women. <em>Appetite</em>, 15(1),
+13-21.</li>
+<li>Fox, J. y Weisberg, S. (2019). <em>An R Companion to Applied
+Regression</em> (3.ª ed.). Sage.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Puntos atípicos e influyentes</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>Puntos
+atípicos e influyentes</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>En la página <a href="recurso401.html">Revisión de los supuestos</a>,
+un solo hombre de 252 hizo que tres pruebas encontraran problemas. Los
+datos reales casi siempre tienen algunas observaciones que no siguen el
+patrón de las demás. Algunas son errores; otras son casos reales poco
+comunes. Algunas cambian mucho la recta; otras casi nada.</p>
+<p>Esta página enseña a distinguir tres tipos de puntos inusuales, a
+medir cuánto influye cada observación y a decidir qué hacer con ella.
+Los bloques de código se ejecutan en orden.</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+modelo &lt;- lm(grasa ~ abdomen, data = grasa)
+n &lt;- nrow(grasa)
+p &lt;- 2   # número de coeficientes: intercepto y pendiente</code></pre>
+<p><br/></p>
+<div id="qué-tipos-de-puntos-inusuales-hay" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué tipos de puntos inusuales
+hay?</strong></span></h2>
+<p>Un punto puede ser inusual en <span class="math inline">\(y\)</span>
+(lejos de la recta), en <span class="math inline">\(x\)</span> (lejos de
+los demás valores de <span class="math inline">\(x\)</span>) o en los
+dos:</p>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="19%" />
+<col width="19%" />
+<col width="23%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="center">Inusual en <span
+class="math inline">\(y\)</span></th>
+<th align="center">Inusual en <span
+class="math inline">\(x\)</span></th>
+<th align="left">Efecto en la recta</th>
+<th align="left">Efecto en <span
+class="math inline">\(\hat{\sigma}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Atípico</strong></td>
+<td align="center">Sí</td>
+<td align="center">No</td>
+<td align="left">Poco</td>
+<td align="left">Lo aumenta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>De alto apalancamiento</strong></td>
+<td align="center">No: sigue la recta</td>
+<td align="center">Sí</td>
+<td align="left">Poco; hace parecer más precisa la pendiente</td>
+<td align="left">Poco</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Influyente</strong></td>
+<td align="center">Sí</td>
+<td align="center">Sí</td>
+<td align="left">Mucho: la recta gira hacia él</td>
+<td align="left">Lo aumenta</td>
+</tr>
+</tbody>
+</table>
+<p>La figura muestra los tres casos con datos simulados. La recta azul
+es la de los 20 puntos grises; la roja incluye el punto rojo.</p>
+<pre class="r"><code>set.seed(2026)
+x0 &lt;- runif(20, 2, 8)
+y0 &lt;- 3 + 1.5 * x0 + rnorm(20, 0, 1)
+extras &lt;- list(Atípico = c(5, 18), &quot;Alto apalancamiento&quot; = c(16, 3 + 1.5 * 16),
+               Influyente = c(16, 8))
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+for (nombre in names(extras)) {
+  xe &lt;- c(x0, extras[[nombre]][1]); ye &lt;- c(y0, extras[[nombre]][2])
+  plot(x0, y0, pch = 19, col = &quot;gray60&quot;, las = 1, xlim = c(0, 17), ylim = c(0, 30),
+       xlab = &quot;x&quot;, ylab = &quot;y&quot;, main = nombre)
+  points(extras[[nombre]][1], extras[[nombre]][2], pch = 19, col = &quot;#C0392B&quot;, cex = 1.6)
+  abline(lm(y0 ~ x0), col = &quot;#034A94&quot;, lwd = 2)
+  abline(lm(ye ~ xe), col = &quot;#C0392B&quot;, lwd = 2, lty = 2)
+}</code></pre>
+<div class="figure">
+<img src="recurso600_files/figure-html/unnamed-chunk-2-1.png" alt="Tres paneles con la misma nube de puntos. En el primero, un punto rojo arriba en el centro y las dos rectas casi paralelas. En el segundo, un punto rojo a la derecha sobre la recta y las dos rectas iguales. En el tercero, un punto rojo abajo a la derecha y la recta roja inclinada hacia él" width="100%" />
+<p class="caption">
+Tres tipos de puntos inusuales. Recta azul: sin el punto rojo; recta
+roja: con él.
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="cómo-se-mide-si-un-punto-es-inusual-en-x"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se mide si un punto es
+inusual en x?</strong></span></h2>
+<p>El <strong>apalancamiento</strong> (<em>leverage</em>) de la
+observación <span class="math inline">\(i\)</span> mide qué tan lejos
+está su <span class="math inline">\(x\)</span> del centro de los
+datos:</p>
+<p><span class="math display">\[
+h_{ii} = \frac{1}{n} + \frac{(x_i - \bar{x})^2}{S_{xx}}
+\]</span></p>
+<p>Va de <span class="math inline">\(1/n\)</span> (cuando <span
+class="math inline">\(x_i = \bar{x}\)</span>) a 1, y su promedio es
+<span class="math inline">\(p/n\)</span>, donde <span
+class="math inline">\(p\)</span> es el número de coeficientes. Un punto
+con apalancamiento alto es como una persona sentada lejos del centro de
+un balancín: con poco peso puede inclinar la recta. Un criterio usual
+marca los puntos con <span class="math inline">\(h_{ii} &gt;
+2p/n\)</span>.</p>
+<pre class="r"><code>h &lt;- hatvalues(modelo)
+2 * p / n                              # umbral</code></pre>
+<pre><code>[1] 0.01587302</code></pre>
+<pre class="r"><code>sort(h, decreasing = TRUE)[1:5]        # los cinco mayores</code></pre>
+<pre><code>        39         41        216        242        169 
+0.10967822 0.04275268 0.03387581 0.02615090 0.02264036 </code></pre>
+<p>La observación 39 tiene un apalancamiento de 0.11: casi 14 veces el
+promedio (<span class="math inline">\(p/n = 0.0079\)</span>). Su abdomen
+de 148 cm está muy lejos de la media de 92.6 cm.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-mide-si-un-punto-es-atípico-en-y"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se mide si un punto es
+atípico en y?</strong></span></h2>
+<p>Un punto es <strong>atípico</strong> si su residual es muy grande.
+Para comparar se usa el <strong>residual estudentizado</strong>
+(<code>rstudent()</code>), que se calcula con <span
+class="math inline">\(\hat{\sigma}_{(i)}\)</span>, la estimación de
+<span class="math inline">\(\sigma\)</span> sin la observación <span
+class="math inline">\(i\)</span>. Así el propio punto no infla la escala
+con la que se mide. Si el modelo es correcto, sigue una distribución
+<span class="math inline">\(t\)</span> con <span class="math inline">\(n
+- p - 1\)</span> grados de libertad.</p>
+<pre class="r"><code>rs &lt;- rstudent(modelo)
+sort(abs(rs), decreasing = TRUE)[1:5]</code></pre>
+<pre><code>      39      207      204       12       81 
+4.278666 2.691053 2.264474 2.116576 2.092785 </code></pre>
+<p>Con 252 observaciones, es normal que unas cuantas pasen de ±2 por
+azar: se espera que lo haga cerca del 5 %, unas 13. Para decidir si
+<strong>el más extremo</strong> es atípico, se usa la <strong>corrección
+de Bonferroni</strong>: se multiplica su valor p por <span
+class="math inline">\(n\)</span>, porque se está buscando el mayor entre
+<span class="math inline">\(n\)</span> residuales.</p>
+<pre class="r"><code>valor_p &lt;- 2 * pt(-abs(rs[39]), df = n - p - 1)
+c(valor_p = valor_p, bonferroni = min(1, n * valor_p))</code></pre>
+<pre><code>   valor_p.39    bonferroni 
+0.00002683167 0.00676158042 </code></pre>
+<p>Aun con la corrección, el valor p de la observación 39 es 0.0068: es
+un atípico. La función <code>outlierTest()</code> del paquete
+<code>car</code> hace este mismo cálculo.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-mide-la-influencia" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se mide la
+influencia?</strong></span></h2>
+<p>Un punto es <strong>influyente</strong> si quitarlo cambia de forma
+importante el modelo. Las medidas comparan el ajuste con y sin cada
+observación:</p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="22%" />
+<col width="13%" />
+<col width="45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Medida</th>
+<th align="left">Qué mide</th>
+<th align="left">En R</th>
+<th align="left">Umbral orientativo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Distancia de Cook, <span
+class="math inline">\(D_i\)</span></td>
+<td align="left">Cuánto cambian <strong>todos</strong> los coeficientes
+juntos</td>
+<td align="left"><code>cooks.distance()</code></td>
+<td align="left"><span class="math inline">\(4/n\)</span>; mayor que 1
+es muy influyente</td>
+</tr>
+<tr class="even">
+<td align="left">DFBETAS</td>
+<td align="left">Cuánto cambia <strong>cada</strong> coeficiente, en
+errores estándar</td>
+<td align="left"><code>dfbetas()</code></td>
+<td align="left"><span class="math inline">\(2/\sqrt{n}\)</span> en
+valor absoluto</td>
+</tr>
+<tr class="odd">
+<td align="left">DFFITS</td>
+<td align="left">Cuánto cambia el valor ajustado del propio punto</td>
+<td align="left"><code>dffits()</code></td>
+<td align="left"><span class="math inline">\(2\sqrt{p/n}\)</span> en
+valor absoluto</td>
+</tr>
+<tr class="even">
+<td align="left">COVRATIO</td>
+<td align="left">Cuánto cambia la precisión de los coeficientes</td>
+<td align="left"><code>covratio()</code></td>
+<td align="left">Fuera de <span class="math inline">\(1 \pm
+3p/n\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>La distancia de Cook combina las dos ideas anteriores:</p>
+<p><span class="math display">\[
+D_i = \frac{r_i^2}{p} \cdot \frac{h_{ii}}{1 - h_{ii}}
+\]</span></p>
+<p>donde <span class="math inline">\(r_i\)</span> es el residual
+estandarizado. Es grande si el punto está lejos de la recta
+<strong>y</strong> tiene apalancamiento alto.</p>
+<p>Los umbrales son <strong>orientativos</strong>: cada libro propone
+uno distinto y ninguno es una prueba de hipótesis. Lo útil es ver qué
+observaciones se separan claramente de las demás.</p>
+<pre class="r"><code>medidas &lt;- data.frame(id = grasa$id, abdomen = grasa$abdomen, grasa = grasa$grasa,
+                      h = h, rstudent = rs, cook = cooks.distance(modelo),
+                      dfbetas_pend = dfbetas(modelo)[, 2])
+medidas &lt;- medidas[order(medidas$cook, decreasing = TRUE), ]
+round(head(medidas, 5), 3)</code></pre>
+<pre><code>     id abdomen grasa     h rstudent  cook dfbetas_pend
+39   39   148.1  33.8 0.110   -4.279 1.055       -1.474
+216 216   122.1  45.1 0.034    2.014 0.070        0.354
+41   41   126.2  33.1 0.043   -1.250 0.035       -0.252
+36   36   113.1  38.2 0.018    1.625 0.025        0.197
+180 180   104.5  16.8 0.009   -2.043 0.018       -0.143</code></pre>
+<pre class="r"><code>c(cook = 4 / n, dfbetas = 2 / sqrt(n))</code></pre>
+<pre><code>      cook    dfbetas 
+0.01587302 0.12598816 </code></pre>
+<p>La observación 39 tiene una distancia de Cook de 1.05, mayor que 1 y
+15 veces la segunda más grande. Su DFBETAS para la pendiente, -1.47,
+dice que quitarla cambia la pendiente en casi una vez y media su error
+estándar. Con el umbral <span class="math inline">\(4/n\)</span>, 7
+observaciones superan el criterio, pero solo la 39 se separa del
+resto.</p>
+<p><code>influence.measures()</code> calcula todas las medidas a la vez
+y marca con un asterisco las que superan sus criterios (que no son
+exactamente los de la tabla):</p>
+<pre class="r"><code>summary(influence.measures(modelo))</code></pre>
+<pre><code>Potentially influential observations of
+     lm(formula = grasa ~ abdomen, data = grasa) :
+
+    dfb.1_  dfb.abdm dffit   cov.r   cook.d  hat    
+35   0.04   -0.04    -0.04    1.03_*  0.00    0.02  
+39   1.43_* -1.47_*  -1.50_*  0.98    1.05_*  0.11_*
+41   0.24   -0.25    -0.26    1.04_*  0.03    0.04_*
+43  -0.01    0.01     0.02    1.02_*  0.00    0.02  
+50  -0.03    0.03    -0.03    1.03_*  0.00    0.02  
+169 -0.06    0.07     0.07    1.03_*  0.00    0.02  
+204 -0.06    0.05    -0.15    0.97_*  0.01    0.00  
+205 -0.05    0.06     0.06    1.03_*  0.00    0.02  
+207  0.00    0.02     0.17    0.96_*  0.01    0.00  
+216 -0.34    0.35     0.38_*  1.01    0.07    0.03_*
+242  0.01   -0.01    -0.01    1.04_*  0.00    0.03_*
+244 -0.01    0.01     0.01    1.03_*  0.00    0.02  </code></pre>
+<p><br/></p>
+</div>
+<div id="cómo-se-ven-en-un-gráfico" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se ven en un
+gráfico?</strong></span></h2>
+<p>El gráfico de <strong>apalancamiento contra residual
+estudentizado</strong>, con el tamaño de cada punto proporcional a la
+distancia de Cook, reúne las tres ideas:</p>
+<pre class="r"><code>plot(h, rs, cex = 0.5 + 6 * sqrt(cooks.distance(modelo)), pch = 21,
+     bg = &quot;#034A9440&quot;, col = &quot;#034A94&quot;, las = 1, xlim = c(0, 0.12), ylim = c(-5, 4),
+     xlab = &quot;Apalancamiento&quot;, ylab = &quot;Residual estudentizado&quot;)
+abline(h = c(-2, 2), lty = 2, col = &quot;gray50&quot;)
+abline(v = 2 * p / n, lty = 2, col = &quot;gray50&quot;)
+destacar &lt;- c(39, 182, 216)
+text(h[destacar], rs[destacar], labels = destacar, pos = 2, col = &quot;#C0392B&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso600_files/figure-html/unnamed-chunk-8-1.png" alt="Nube de círculos pequeños a la izquierda, entre menos 2 y 2; un círculo grande aislado abajo a la derecha, con apalancamiento 0.11 y residual menos 4.3, marcado con el número 39" width="75%" />
+<p class="caption">
+Apalancamiento y residual estudentizado de cada hombre. El área de cada
+círculo es proporcional a su distancia de Cook.
+</p>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Zona del gráfico</th>
+<th align="left">Tipo de punto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Izquierda, entre −2 y 2</td>
+<td align="left">Usual</td>
+</tr>
+<tr class="even">
+<td align="left">Izquierda, fuera de ±2</td>
+<td align="left">Atípico, poco influyente</td>
+</tr>
+<tr class="odd">
+<td align="left">Derecha, entre −2 y 2</td>
+<td align="left">Alto apalancamiento, poco influyente</td>
+</tr>
+<tr class="even">
+<td align="left">Derecha, fuera de ±2</td>
+<td align="left">Influyente</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="qué-hacer-con-un-punto-inusual" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué hacer con un punto
+inusual?</strong></span></h2>
+<p>Detectar un punto no es razón para borrarlo. Primero hay que
+<strong>averiguar por qué es inusual</strong>:</p>
+<table>
+<colgroup>
+<col width="42%" />
+<col width="57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Qué es</th>
+<th align="left">Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Un error de digitación o de medición que se puede
+corregir</td>
+<td align="left">Corregirlo</td>
+</tr>
+<tr class="even">
+<td align="left">Un error que no se puede corregir (un valor
+imposible)</td>
+<td align="left">Eliminarlo e informarlo</td>
+</tr>
+<tr class="odd">
+<td align="left">Un caso de otra población (por ejemplo, una mujer en un
+estudio de hombres)</td>
+<td align="left">Excluirlo, explicar por qué y limitar las conclusiones
+a la población estudiada</td>
+</tr>
+<tr class="even">
+<td align="left">Un caso real y válido</td>
+<td align="left">Conservarlo. Reportar el ajuste con y sin él, y pensar
+si falta una variable que lo explique</td>
+</tr>
+</tbody>
+</table>
+<p>En los datos de grasa hay dos casos para decidir:</p>
+<ul>
+<li><strong>Observación 182: 0 % de grasa.</strong> Es imposible en una
+persona viva: es un error. Pero no es influyente: tiene el abdomen más
+pequeño de la muestra (69.4 cm), y aun así su apalancamiento es moderado
+(<span class="math inline">\(h = 0.022\)</span>) y queda cerca de la
+recta (residual estudentizado -1.21). <strong>Un error no siempre es
+influyente.</strong></li>
+<li><strong>Observación 39: abdomen de 148 cm y 165 kg.</strong> No hay
+razones para pensar que sea un error: es un hombre con obesidad severa.
+Es muy influyente. <strong>Un punto influyente no siempre es un
+error.</strong></li>
+</ul>
+<pre class="r"><code>ajuste &lt;- function(datos) {
+  m &lt;- lm(grasa ~ abdomen, data = datos)
+  c(intercepto = coef(m)[[1]], pendiente = coef(m)[[2]], sigma = sigma(m),
+    r2 = summary(m)$r.squared)
+}
+round(rbind(todas = ajuste(grasa),
+            sin_182 = ajuste(grasa[grasa$id != 182, ]),
+            sin_39 = ajuste(grasa[grasa$id != 39, ]),
+            sin_39_ni_182 = ajuste(grasa[!grasa$id %in% c(39, 182), ])), 3)</code></pre>
+<pre><code>              intercepto pendiente sigma    r2
+todas            -35.197     0.585 4.514 0.662
+sin_182          -34.769     0.581 4.510 0.656
+sin_39           -38.605     0.623 4.366 0.681
+sin_39_ni_182    -38.204     0.618 4.365 0.674</code></pre>
+<p>Quitar la 182 casi no cambia nada. Quitar la 39 sube la pendiente de
+0.585 a 0.623. Una decisión razonable para estos datos:</p>
+<ul>
+<li>Eliminar la observación 182, por ser un valor imposible, e
+informarlo.</li>
+<li>Conservar la 39 y reportar que, sin ella, la pendiente es de 0.62 en
+lugar de 0.58. La conclusión principal (la grasa aumenta con el abdomen)
+no cambia; la magnitud sí, un poco.</li>
+<li>Aclarar que el modelo describe bien a los hombres con abdómenes
+entre 70 y 125 cm, donde están casi todos los datos, y que hay muy poca
+información por encima.</li>
+</ul>
+<p>Que <span class="math inline">\(\hat{\sigma}\)</span> y <span
+class="math inline">\(R^2\)</span> mejoren al quitar un punto
+<strong>no</strong> justifica quitarlo: por construcción, quitar el
+punto peor ajustado siempre mejora esas cifras.</p>
+<p><br/></p>
+</div>
+<div id="explore-la-influencia" class="section level2">
+<h2><span style="color:#034a94"><strong>Explore la
+influencia</strong></span></h2>
+<p>En el gráfico interactivo hay 20 hombres de la muestra (puntos
+grises) y un hombre más (punto rojo) que usted puede mover con los dos
+deslizadores. La recta azul se ajusta sin el punto rojo; la recta roja,
+con él. Compruebe que:</p>
+<ul>
+<li>En el centro de los valores de abdomen, el punto rojo casi no cambia
+la pendiente, aunque esté lejos de la recta.</li>
+<li>A la derecha, sobre la recta azul, el punto tiene apalancamiento
+alto pero distancia de Cook pequeña.</li>
+<li>A la derecha y lejos de la recta, la recta roja gira hacia el punto
+y la distancia de Cook pasa de 1.</li>
+</ul>
+<script>var INF_DATOS = [[87.6,11.9],[98.1,24.6],[91.1,14.9],[98.8,27.5],[81.5,14.1],[105,27.1],[93.2,18.1],[88.7,17.2],[106,26.5],[83.2,13.4],[89.4,25.3],[88.7,12.3],[76,8.4],[105.3,30.4],[88.2,17.7],[86,8.8],[100.5,28.6],[98.6,18.6],[97.5,24.2],[90.6,19.5]];</script>
+<div id="inf-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;">
+<div style="flex:1 1 250px;min-width:230px;font-size:0.95em;">
+<div>Abdomen del punto rojo: <b><span id="inf-x-v">135</span> cm</b></div>
+<input type="range" id="inf-x" min="65" max="150" step="1" value="135" style="width:100%;">
+<div style="margin-top:10px;">Grasa del punto rojo: <b><span id="inf-y-v">10</span> %</b></div>
+<input type="range" id="inf-y" min="0" max="50" step="1" value="10" style="width:100%;">
+<div id="inf-res" style="margin-top:12px;line-height:1.7;"></div>
+</div>
+<div style="flex:2 1 380px;min-width:300px;">
+<canvas id="inf-graf" width="560" height="340" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Puntos grises: 20 hombres de la muestra. Recta azul: ajuste sin el punto rojo. Recta roja punteada: ajuste con el punto rojo.</div>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function ajustar(xs, ys){
+    var n = xs.length, mx = 0, my = 0, sxx = 0, sxy = 0, sce = 0, i;
+    for (i = 0; i < n; i++) { mx += xs[i] / n; my += ys[i] / n; }
+    for (i = 0; i < n; i++) { sxx += (xs[i] - mx) * (xs[i] - mx); sxy += (xs[i] - mx) * (ys[i] - my); }
+    var b1 = sxy / sxx, b0 = my - b1 * mx;
+    for (i = 0; i < n; i++) { var e = ys[i] - b0 - b1 * xs[i]; sce += e * e; }
+    return { b0: b0, b1: b1, mx: mx, sxx: sxx, s2: sce / (n - 2), n: n };
+  }
+  function actualizar(){
+    var xr = +$("inf-x").value, yr = +$("inf-y").value;
+    $("inf-x-v").textContent = xr; $("inf-y-v").textContent = yr;
+    var xs = INF_DATOS.map(function(d){ return d[0]; }), ys = INF_DATOS.map(function(d){ return d[1]; });
+    var sin = ajustar(xs, ys);
+    var con = ajustar(xs.concat([xr]), ys.concat([yr]));
+    var n = con.n, p = 2;
+    var h = 1 / n + (xr - con.mx) * (xr - con.mx) / con.sxx;
+    var e = yr - con.b0 - con.b1 * xr;
+    var r = e / Math.sqrt(con.s2 * (1 - h));
+    var s2i = ((n - p) * con.s2 - e * e / (1 - h)) / (n - p - 1);
+    var t = e / Math.sqrt(Math.max(s2i, 1e-12) * (1 - h));
+    var cook = r * r / p * h / (1 - h);
+    var marca = function(v, u){ return v > u ? ' <span style="color:#C0392B;">(supera ' + u.toFixed(2) + ')</span>' : ''; };
+    $("inf-res").innerHTML =
+      "Pendiente sin el punto: <b>" + sin.b1.toFixed(3) + "</b><br>" +
+      "Pendiente con el punto: <b>" + con.b1.toFixed(3) + "</b><br>" +
+      "Apalancamiento: <b>" + h.toFixed(3) + "</b>" + marca(h, 2 * p / n) + "<br>" +
+      "Residual estudentizado: <b>" + t.toFixed(2) + "</b>" + marca(Math.abs(t), 2) + "<br>" +
+      "Distancia de Cook: <b>" + cook.toFixed(2) + "</b>" + marca(cook, 4 / n);
+    dibujar(xs, ys, xr, yr, sin, con);
+  }
+  function dibujar(xs, ys, xr, yr, sin, con){
+    var c = $("inf-graf"), g = c.getContext("2d"), W = c.width, H = c.height, izq = 46, der = 12, arr = 12, abj = 36;
+    var x0 = 60, x1 = 155, y0 = 0, y1 = 55;
+    function X(v){ return izq + (W - izq - der) * (v - x0) / (x1 - x0); }
+    function Y(v){ return arr + (H - arr - abj) * (1 - (v - y0) / (y1 - y0)); }
+    g.clearRect(0, 0, W, H); g.font = "11px sans-serif"; g.strokeStyle = "#e5e5e5"; g.fillStyle = "#333"; g.lineWidth = 1;
+    for (var v = 0; v <= 50; v += 10) { g.beginPath(); g.moveTo(izq, Y(v)); g.lineTo(W - der, Y(v)); g.stroke(); g.fillText(v, 18, Y(v) + 4); }
+    for (var u = 60; u <= 150; u += 15) { g.fillText(u, X(u) - 8, H - abj + 15); }
+    g.fillText("Abdomen (cm)", W / 2 - 30, H - 4);
+    g.save(); g.translate(10, H / 2 + 30); g.rotate(-Math.PI / 2); g.fillText("Grasa (%)", 0, 0); g.restore();
+    g.save(); g.beginPath(); g.rect(izq, arr, W - izq - der, H - arr - abj); g.clip();
+    g.strokeStyle = "#034A94"; g.lineWidth = 2; g.beginPath(); g.moveTo(X(x0), Y(sin.b0 + sin.b1 * x0)); g.lineTo(X(x1), Y(sin.b0 + sin.b1 * x1)); g.stroke();
+    g.strokeStyle = "#C0392B"; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(X(x0), Y(con.b0 + con.b1 * x0)); g.lineTo(X(x1), Y(con.b0 + con.b1 * x1)); g.stroke(); g.setLineDash([]);
+    g.restore();
+    g.fillStyle = "#9a9a9a";
+    for (var i = 0; i < xs.length; i++) { g.beginPath(); g.arc(X(xs[i]), Y(ys[i]), 4, 0, 2 * Math.PI); g.fill(); }
+    g.fillStyle = "#C0392B"; g.beginPath(); g.arc(X(xr), Y(yr), 7, 0, 2 * Math.PI); g.fill();
+  }
+  $("inf-x").addEventListener("input", actualizar);
+  $("inf-y").addEventListener("input", actualizar);
+  actualizar();
+})();
+</script>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Borrar los puntos que superan un umbral</td>
+<td align="left">Se toma el umbral como una prueba</td>
+<td align="left">Averiguar por qué el punto es inusual antes de
+decidir</td>
+</tr>
+<tr class="even">
+<td align="left">Quitar un punto porque mejora <span
+class="math inline">\(R^2\)</span> o <span
+class="math inline">\(\hat{\sigma}\)</span></td>
+<td align="left">Quitar el peor ajustado siempre mejora esas cifras</td>
+<td align="left">Decidir por el origen del dato, no por el ajuste</td>
+</tr>
+<tr class="odd">
+<td align="left">Llamar influyente a todo punto de alto
+apalancamiento</td>
+<td align="left">El apalancamiento es influencia potencial</td>
+<td align="left">Influyente es el que cambia la recta; mirar Cook y
+DFBETAS</td>
+</tr>
+<tr class="even">
+<td align="left">Llamar atípico a un punto lejano en <span
+class="math inline">\(x\)</span> que sigue la recta</td>
+<td align="left">Atípico se refiere al residual</td>
+<td align="left">Es un punto de alto apalancamiento</td>
+</tr>
+<tr class="odd">
+<td align="left">Mezclar varios umbrales de Cook en el mismo
+análisis</td>
+<td align="left">Cada libro propone uno</td>
+<td align="left">Elegir un criterio, decirlo y mirar qué puntos se
+separan</td>
+</tr>
+<tr class="even">
+<td align="left">Eliminar puntos sin reportarlo</td>
+<td align="left">Se pierde transparencia</td>
+<td align="left">Reportar siempre el ajuste con y sin ellos</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-medidas-a-mano"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. Medidas a
+mano</strong></span></h3>
+<p>Calcule el apalancamiento y la distancia de Cook de la observación 39
+con las fórmulas de la página y compárelos con <code>hatvalues()</code>
+y <code>cooks.distance()</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>x &lt;- grasa$abdomen
+h39 &lt;- 1 / n + (x[39] - mean(x))^2 / sum((x - mean(x))^2)
+r39 &lt;- rstandard(modelo)[39]
+c(h = h39, cook = r39^2 / p * h39 / (1 - h39))</code></pre>
+<pre><code>        h   cook.39 
+0.1096782 1.0546050 </code></pre>
+<pre class="r"><code>c(h = hatvalues(modelo)[39], cook = cooks.distance(modelo)[39])</code></pre>
+<pre><code>     h.39   cook.39 
+0.1096782 1.0546050 </code></pre>
+<p>Coinciden.</p>
+</details>
+</div>
+<div id="reto-2.-el-modelo-del-pecho"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. El modelo del
+pecho</strong></span></h3>
+<p>Calcule la distancia de Cook en el modelo de la grasa según el pecho.
+¿Cuáles son las tres observaciones más influyentes? ¿Cuánto cambia la
+pendiente sin la más influyente?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>modelo_pecho &lt;- lm(grasa ~ pecho, data = grasa)
+sort(cooks.distance(modelo_pecho), decreasing = TRUE)[1:3]</code></pre>
+<pre><code>        39        216         36 
+0.09064279 0.08027796 0.02258854 </code></pre>
+<pre class="r"><code>c(con = coef(modelo_pecho)[2],
+  sin = coef(lm(grasa ~ pecho, data = grasa[grasa$id != 39, ]))[2])</code></pre>
+<pre><code>con.pecho sin.pecho 
+0.6462223 0.6633546 </code></pre>
+<p>La observación 39 vuelve a ser la más influyente, pero ahora casi
+empata con la 216 y su distancia de Cook es mucho menor que en el modelo
+del abdomen. Aunque tiene el pecho más grande de la muestra, su grasa
+queda más cerca de lo que predice este modelo. Un punto puede ser muy
+influyente en un modelo y poco en otro.</p>
+</details>
+</div>
+<div id="reto-3.-un-error-de-digitación"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Un error de
+digitación</strong></span></h3>
+<p>Suponga que al digitar el abdomen del hombre 100 se escribió 190.0 en
+lugar de su valor real. Cambie ese dato en una copia de la base, ajuste
+el modelo y calcule su distancia de Cook. ¿Lo detectaría?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>copia &lt;- grasa
+copia$abdomen[copia$id == 100] &lt;- 190
+m_copia &lt;- lm(grasa ~ abdomen, data = copia)
+c(abdomen_real = grasa$abdomen[100], grasa = grasa$grasa[100])</code></pre>
+<pre><code>abdomen_real        grasa 
+        94.0         21.7 </code></pre>
+<pre class="r"><code>cooks.distance(m_copia)[100]</code></pre>
+<pre><code>     100 
+12.46711 </code></pre>
+<pre class="r"><code>coef(m_copia)[2]</code></pre>
+<pre><code>  abdomen 
+0.4486121 </code></pre>
+<p>Sí. Con 190 cm de abdomen y una grasa común, el punto tiene
+apalancamiento muy alto y queda lejos de la recta: su distancia de Cook
+es enorme y la pendiente cae mucho. Por eso conviene revisar las medidas
+de influencia antes de interpretar el modelo.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 5
+trata los valores atípicos, el apalancamiento y las medidas de
+influencia con datos de las Naciones Unidas.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 6.</li>
+<li>Fox, J. (2016). <em>Applied Regression Analysis and Generalized
+Linear Models</em> (3.ª ed.). Sage. Capítulo 11.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Belsley, D. A., Kuh, E. y Welsch, R. E. (1980). <em>Regression
+Diagnostics: Identifying Influential Data and Sources of
+Collinearity</em>. Wiley.</li>
+<li>Cook, R. D. (1977). Detection of influential observation in linear
+regression. <em>Technometrics</em>, 19(1), 15-18.</li>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Fox, J. (2016). <em>Applied Regression Analysis and Generalized
+Linear Models</em> (3.ª ed.). Sage.</li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

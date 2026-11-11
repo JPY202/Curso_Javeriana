@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Estimación de los coeficientes</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94">
+<strong>Estimación de los coeficientes</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>El modelo <span class="math inline">\(y_i = \beta_0 + \beta_1 x_i +
+\varepsilon_i\)</span> tiene tres parámetros desconocidos: <span
+class="math inline">\(\beta_0\)</span>, <span
+class="math inline">\(\beta_1\)</span> y <span
+class="math inline">\(\sigma^2\)</span>. Por una nube de puntos pasan
+infinitas rectas. ¿Cuál es la que mejor representa los datos?</p>
+<p>Esta página presenta el método de <strong>mínimos cuadrados
+ordinarios</strong> (MCO), que es el que usa la función
+<code>lm()</code> de <strong>R</strong>, la estimación de <span
+class="math inline">\(\sigma^2\)</span> y el método de <strong>máxima
+verosimilitud</strong>, visto en la Unidad 2. Los bloques de código se
+ejecutan en orden.</p>
+<p><br/></p>
+<div id="qué-es-un-residual" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es un
+residual?</strong></span></h2>
+<p>Para una recta cualquiera <span class="math inline">\(b_0 + b_1
+x\)</span>, el <strong>valor ajustado</strong> de la observación <span
+class="math inline">\(i\)</span> es <span
+class="math inline">\(\hat{y}_i = b_0 + b_1 x_i\)</span>, y el
+<strong>residual</strong> es la distancia vertical entre el dato y la
+recta:</p>
+<p><span class="math display">\[
+e_i = y_i - \hat{y}_i
+\]</span></p>
+<p>Un residual positivo indica que el dato está por encima de la recta;
+uno negativo, por debajo. El residual <span
+class="math inline">\(e_i\)</span> es la versión observable del error
+<span class="math inline">\(\varepsilon_i\)</span>, que no se puede ver
+porque depende de los parámetros desconocidos.</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+modelo &lt;- lm(grasa ~ abdomen, data = grasa)
+set.seed(2026)
+muestra &lt;- grasa[sample(nrow(grasa), 20), ]
+plot(grasa ~ abdomen, data = muestra, pch = 19, col = &quot;#034A94&quot;, las = 1,
+     xlab = &quot;Circunferencia del abdomen (cm)&quot;, ylab = &quot;Grasa corporal (%)&quot;,
+     xlim = c(75, 120), ylim = c(0, 40))
+abline(modelo, col = &quot;#C0392B&quot;, lwd = 2)
+segments(muestra$abdomen, muestra$grasa, muestra$abdomen, fitted(modelo)[as.character(muestra$id)],
+         col = &quot;gray50&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso201_files/figure-html/unnamed-chunk-1-1.png" alt="Veinte puntos alrededor de una recta creciente, cada uno unido a la recta por un segmento vertical gris" width="70%" />
+<p class="caption">
+Residuales de 20 hombres elegidos al azar respecto a la recta de mínimos
+cuadrados.
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-es-el-método-de-mínimos-cuadrados" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué es el método de mínimos
+cuadrados?</strong></span></h2>
+<p>El método de <strong>mínimos cuadrados ordinarios</strong> elige la
+recta que hace más pequeña la <strong>suma de los residuales al
+cuadrado</strong>:</p>
+<p><span class="math display">\[
+SCE(b_0, b_1) = \sum_{i=1}^{n} (y_i - b_0 - b_1 x_i)^2
+\]</span></p>
+<p>Se elevan al cuadrado para que los residuales positivos y negativos
+no se cancelen y para penalizar más las distancias grandes. Los valores
+que minimizan esta suma son:</p>
+<p><span class="math display">\[
+\hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i -
+\bar{x})^2} = \frac{S_{xy}}{S_{xx}}, \qquad \hat{\beta}_0 = \bar{y} -
+\hat{\beta}_1 \bar{x}
+\]</span></p>
+<p>Estas fórmulas salen de derivar la suma con respecto a <span
+class="math inline">\(b_0\)</span> y <span
+class="math inline">\(b_1\)</span> e igualar a cero (las
+<strong>ecuaciones normales</strong>). En el recuadro del final de la
+página está la deducción, para quien quiera verla.</p>
+<p>Se pueden calcular a mano en <strong>R</strong>:</p>
+<pre class="r"><code>x &lt;- grasa$abdomen
+y &lt;- grasa$grasa
+Sxy &lt;- sum((x - mean(x)) * (y - mean(y)))
+Sxx &lt;- sum((x - mean(x))^2)
+b1 &lt;- Sxy / Sxx
+b0 &lt;- mean(y) - b1 * mean(x)
+c(b0 = b0, b1 = b1)</code></pre>
+<pre><code>         b0          b1 
+-35.1966077   0.5848905 </code></pre>
+<p>La función <code>lm()</code> (<em>linear model</em>) hace lo mismo.
+Su primer argumento es una <strong>fórmula</strong>:
+<code>respuesta ~ explicativa</code>.</p>
+<pre class="r"><code>modelo &lt;- lm(grasa ~ abdomen, data = grasa)
+coef(modelo)</code></pre>
+<pre><code>(Intercept)     abdomen 
+-35.1966077   0.5848905 </code></pre>
+<p>La recta estimada es</p>
+<p><span class="math display">\[
+\widehat{\text{grasa}} = -35.2 + 0.585 \times \text{abdomen}
+\]</span></p>
+<pre class="r"><code>plot(grasa ~ abdomen, data = grasa, pch = 19, col = &quot;#034A9460&quot;, las = 1,
+     xlab = &quot;Circunferencia del abdomen (cm)&quot;, ylab = &quot;Grasa corporal (%)&quot;,
+     xlim = c(65, 150), ylim = c(0, 50))
+abline(modelo, col = &quot;#C0392B&quot;, lwd = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso201_files/figure-html/unnamed-chunk-4-1.png" alt="Nube de 252 puntos con una recta roja creciente que pasa por el centro de la nube" width="70%" />
+<p class="caption">
+Recta de mínimos cuadrados para la grasa corporal según el abdomen.
+</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-argumentos-tiene-la-función-lm" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué argumentos tiene la función
+<code>lm()</code>?</strong></span></h2>
+<p>La función <code>lm()</code> ajusta modelos de regresión lineal
+simple y múltiple. Su estructura general es:</p>
+<pre class="r"><code>lm(formula, data, subset, weights, na.action,
+   method = &quot;qr&quot;, model = TRUE, x = FALSE, y = FALSE, qr = TRUE,
+   singular.ok = TRUE, contrasts = NULL, offset, ...)</code></pre>
+<p>En la práctica se usan pocos argumentos:</p>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="44%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Argumento</th>
+<th align="left">Para qué sirve</th>
+<th align="left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>formula</code></td>
+<td align="left">La relación entre la respuesta y las variables
+explicativas, con la sintaxis <code>respuesta ~ explicativa</code></td>
+<td align="left"><code>grasa ~ abdomen</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>data</code></td>
+<td align="left">La tabla (<code>data.frame</code>) donde están las
+variables de la fórmula</td>
+<td align="left"><code>data = grasa</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>subset</code></td>
+<td align="left">Ajustar el modelo con una parte de las filas</td>
+<td align="left"><code>subset = id != 182</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>weights</code></td>
+<td align="left">Pesos para mínimos cuadrados ponderados</td>
+<td align="left"><code>weights = w</code> (<a
+href="recurso501.html">Varianza no constante</a>)</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>na.action</code></td>
+<td align="left">Qué hacer con los datos faltantes; por defecto se
+omiten las filas con <code>NA</code></td>
+<td align="left"><code>na.action = na.omit</code></td>
+</tr>
+</tbody>
+</table>
+<p>En la fórmula, <code>~</code> se lee “según” o “en función de”.
+Algunas variantes útiles:</p>
+<table>
+<colgroup>
+<col width="52%" />
+<col width="47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Fórmula</th>
+<th align="left">Modelo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>y ~ x</code></td>
+<td align="left"><span class="math inline">\(y = \beta_0 + \beta_1 x +
+\varepsilon\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><code>y ~ x - 1</code></td>
+<td align="left">Recta sin intercepto, <span class="math inline">\(y =
+\beta_1 x + \varepsilon\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>log(y) ~ log(x)</code></td>
+<td align="left">Recta entre los logaritmos (<a
+href="recurso500.html">Transformaciones</a>)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>y ~ x + I(x^2)</code></td>
+<td align="left">Término cuadrático; <code>I()</code> hace que
+<code>^</code> se calcule como potencia</td>
+</tr>
+</tbody>
+</table>
+<p><code>lm()</code> devuelve un objeto con el modelo ajustado. Sobre
+ese objeto se aplican otras funciones:</p>
+<table>
+<colgroup>
+<col width="39%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Función</th>
+<th align="left">Qué devuelve</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>coef(modelo)</code></td>
+<td align="left">Los coeficientes estimados</td>
+</tr>
+<tr class="even">
+<td align="left"><code>summary(modelo)</code></td>
+<td align="left">La tabla de coeficientes, pruebas, <span
+class="math inline">\(\hat{\sigma}\)</span> y <span
+class="math inline">\(R^2\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>fitted(modelo)</code></td>
+<td align="left">Los valores ajustados <span
+class="math inline">\(\hat{y}_i\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><code>residuals(modelo)</code></td>
+<td align="left">Los residuales <span
+class="math inline">\(e_i\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>confint(modelo)</code></td>
+<td align="left">Intervalos de confianza para los coeficientes</td>
+</tr>
+<tr class="even">
+<td align="left"><code>predict(modelo, newdata)</code></td>
+<td align="left">Predicciones para valores nuevos de <span
+class="math inline">\(x\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>anova(modelo)</code></td>
+<td align="left">La tabla de análisis de varianza</td>
+</tr>
+<tr class="even">
+<td align="left"><code>plot(modelo)</code></td>
+<td align="left">Gráficos de diagnóstico</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>subconjunto &lt;- lm(grasa ~ abdomen, data = grasa, subset = id != 182)
+coef(subconjunto)</code></pre>
+<pre><code>(Intercept)     abdomen 
+-34.7694865   0.5805124 </code></pre>
+<p><br/></p>
+</div>
+<div id="qué-propiedades-tiene-la-recta-de-mínimos-cuadrados"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué propiedades tiene la recta
+de mínimos cuadrados?</strong></span></h2>
+<p>Por la forma en que se calcula, la recta de MCO siempre cumple:</p>
+<ul>
+<li>La suma de los residuales es cero: los puntos por encima y por
+debajo se compensan.</li>
+<li>La recta pasa por el punto de medias <span
+class="math inline">\((\bar{x}, \bar{y})\)</span>.</li>
+<li>La pendiente tiene el mismo signo que la correlación: <span
+class="math inline">\(\hat{\beta}_1 = r \,
+\dfrac{s_y}{s_x}\)</span>.</li>
+</ul>
+<pre class="r"><code>sum(residuals(modelo))                        # prácticamente cero</code></pre>
+<pre><code>[1] -0.00000000000000965894</code></pre>
+<pre class="r"><code>coef(modelo)[1] + coef(modelo)[2] * mean(x)   # igual a la media de y</code></pre>
+<pre><code>(Intercept) 
+   18.93849 </code></pre>
+<pre class="r"><code>mean(y)</code></pre>
+<pre><code>[1] 18.93849</code></pre>
+<pre class="r"><code>cor(x, y) * sd(y) / sd(x)                     # igual a la pendiente</code></pre>
+<pre><code>[1] 0.5848905</code></pre>
+<p>La primera salida no es exactamente cero por el redondeo del
+computador: un número con tantos ceros después del punto decimal es cero
+para efectos prácticos.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-estima-la-varianza-del-error" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se estima la varianza del
+error?</strong></span></h2>
+<p>El tercer parámetro, <span class="math inline">\(\sigma^2\)</span>,
+mide qué tan dispersos están los datos alrededor de la recta de la
+población. Se estima con los residuales:</p>
+<p><span class="math display">\[
+\hat{\sigma}^2 = \frac{SCE}{n - 2} = \frac{\sum e_i^2}{n - 2}
+\]</span></p>
+<p>Se divide por <span class="math inline">\(n - 2\)</span> y no por
+<span class="math inline">\(n\)</span> porque se estimaron dos
+parámetros (<span class="math inline">\(\beta_0\)</span> y <span
+class="math inline">\(\beta_1\)</span>) antes de calcular los
+residuales. Con esa división, <span
+class="math inline">\(\hat{\sigma}^2\)</span> es insesgado. Es la misma
+idea de dividir por <span class="math inline">\(n - 1\)</span> en la
+varianza muestral de la Unidad 2, donde se estimaba un parámetro (la
+media).</p>
+<pre class="r"><code>SCE &lt;- sum(residuals(modelo)^2)
+n &lt;- nrow(grasa)
+sigma2 &lt;- SCE / (n - 2)
+c(SCE = SCE, sigma2 = sigma2, sigma = sqrt(sigma2))</code></pre>
+<pre><code>        SCE      sigma2       sigma 
+5094.931083   20.379724    4.514391 </code></pre>
+<pre class="r"><code>sigma(modelo)   # la misma estimación de sigma</code></pre>
+<pre><code>[1] 4.514391</code></pre>
+<p><span class="math inline">\(\hat{\sigma} = 4.51\)</span> puntos
+porcentuales es la <strong>desviación estándar residual</strong>: la
+distancia típica entre la grasa de un hombre y la recta. Como la grasa
+va de 0 a 45 %, un error típico de 4.5 puntos indica que la recta da una
+idea útil, pero no exacta, de la grasa de una persona.</p>
+<p><br/></p>
+</div>
+<div id="qué-da-el-método-de-máxima-verosimilitud"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué da el método de máxima
+verosimilitud?</strong></span></h2>
+<p>Si se supone que los errores son normales, se puede usar el método de
+<strong>máxima verosimilitud</strong> visto en la Unidad 2 (<a
+href="../unidad2/recurso304.html">Métodos de estimación</a>): se eligen
+los valores de los parámetros que hacen más probable (más verosímil)
+haber observado los datos.</p>
+<p>El resultado:</p>
+<ul>
+<li>Los estimadores de <span class="math inline">\(\beta_0\)</span> y
+<span class="math inline">\(\beta_1\)</span> son <strong>los
+mismos</strong> de mínimos cuadrados. Con errores normales, maximizar la
+verosimilitud equivale a minimizar la suma de cuadrados.</li>
+<li>El estimador de <span class="math inline">\(\sigma^2\)</span> divide
+por <span class="math inline">\(n\)</span> en lugar de <span
+class="math inline">\(n - 2\)</span>: <span
+class="math inline">\(\tilde{\sigma}^2 = SCE/n\)</span>. Es sesgado,
+aunque la diferencia es mínima con muestras grandes.</li>
+</ul>
+<pre class="r"><code>c(MCO = SCE / (n - 2), MV = SCE / n)</code></pre>
+<pre><code>     MCO       MV 
+20.37972 20.21798 </code></pre>
+<pre class="r"><code>logLik(modelo)   # logaritmo de la verosimilitud máxima</code></pre>
+<pre><code>&#39;log Lik.&#39; -736.4006 (df=3)</code></pre>
+<p><code>logLik()</code> da el valor máximo del logaritmo de la
+verosimilitud. Por sí solo no se interpreta; sirve para comparar
+modelos, por ejemplo con el criterio AIC.</p>
+<p><br/></p>
+</div>
+<div id="qué-muestra-summary" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué muestra
+<code>summary()</code>?</strong></span></h2>
+<p><code>summary()</code> reúne todo lo que se usa en las páginas
+siguientes:</p>
+<pre class="r"><code>summary(modelo)</code></pre>
+<pre><code>
+Call:
+lm(formula = grasa ~ abdomen, data = grasa)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-17.6257  -3.4672   0.0111   3.1415  11.9754 
+
+Coefficients:
+             Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept) -35.19661    2.46229  -14.29 &lt;0.0000000000000002 ***
+abdomen       0.58489    0.02643   22.13 &lt;0.0000000000000002 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 4.514 on 250 degrees of freedom
+Multiple R-squared:  0.6621,    Adjusted R-squared:  0.6608 
+F-statistic: 489.9 on 1 and 250 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+<table>
+<colgroup>
+<col width="43%" />
+<col width="17%" />
+<col width="39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Parte de la salida</th>
+<th align="left">Qué es</th>
+<th align="left">Dónde se explica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>Residuals</code></td>
+<td align="left">Resumen de los cinco números de los residuales</td>
+<td align="left">Esta página</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Estimate</code></td>
+<td align="left"><span class="math inline">\(\hat{\beta}_0\)</span> y
+<span class="math inline">\(\hat{\beta}_1\)</span></td>
+<td align="left">Esta página</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Std. Error</code></td>
+<td align="left">Error estándar de cada estimador</td>
+<td align="left"><a href="recurso202.html">Propiedades de los
+estimadores</a></td>
+</tr>
+<tr class="even">
+<td align="left"><code>t value</code>, <code>Pr(&gt;|t|)</code></td>
+<td align="left">Prueba de que cada coeficiente es cero</td>
+<td align="left"><a href="recurso300.html">Pruebas, intervalos y
+R²</a></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Residual standard error</code></td>
+<td align="left"><span class="math inline">\(\hat{\sigma}\)</span> y sus
+grados de libertad, <span class="math inline">\(n - 2\)</span></td>
+<td align="left">Esta página</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Multiple R-squared</code>,
+<code>F-statistic</code></td>
+<td align="left">Coeficiente de determinación y prueba F</td>
+<td align="left"><a href="recurso300.html">Pruebas, intervalos y
+R²</a></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<div id="para-profundizar-las-ecuaciones-normales"
+class="section level3 content-box-blue">
+<h3><span style="color:#034a94"><strong>Para profundizar: las ecuaciones
+normales</strong></span></h3>
+<p>Para minimizar <span class="math inline">\(SCE(b_0, b_1) = \sum (y_i
+- b_0 - b_1 x_i)^2\)</span> se deriva con respecto a cada coeficiente y
+se iguala a cero:</p>
+<p><span class="math display">\[
+\frac{\partial SCE}{\partial b_0} = -2 \sum (y_i - b_0 - b_1 x_i) = 0,
+\qquad
+\frac{\partial SCE}{\partial b_1} = -2 \sum x_i (y_i - b_0 - b_1 x_i) =
+0
+\]</span></p>
+<p>La primera ecuación dice que los residuales suman cero, y de ella
+sale <span class="math inline">\(b_0 = \bar{y} - b_1 \bar{x}\)</span>.
+Al reemplazar en la segunda se obtiene <span class="math inline">\(b_1 =
+S_{xy}/S_{xx}\)</span>.</p>
+<p>En forma de matrices, con <span
+class="math inline">\(\mathbf{y}\)</span> el vector de respuestas y
+<span class="math inline">\(\mathbf{X}\)</span> la matriz con una
+columna de unos y una columna con los <span
+class="math inline">\(x_i\)</span>, las ecuaciones normales son <span
+class="math inline">\(\mathbf{X}^\top \mathbf{X} \, \mathbf{b} =
+\mathbf{X}^\top \mathbf{y}\)</span>, y su solución es <span
+class="math inline">\(\hat{\boldsymbol{\beta}} = (\mathbf{X}^\top
+\mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}\)</span>. Esta forma se usa
+en la regresión múltiple.</p>
+<pre class="r"><code>X &lt;- cbind(1, grasa$abdomen)
+solve(t(X) %*% X) %*% t(X) %*% grasa$grasa</code></pre>
+<pre><code>            [,1]
+[1,] -35.1966077
+[2,]   0.5848905</code></pre>
+</div>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Escribir <code>lm(abdomen ~ grasa)</code></td>
+<td align="left">Se invierte el orden de la fórmula</td>
+<td align="left">La respuesta va a la izquierda de <code>~</code></td>
+</tr>
+<tr class="even">
+<td align="left">Calcular <span
+class="math inline">\(\hat{\sigma}\)</span> dividiendo por <span
+class="math inline">\(n\)</span> o por otro número</td>
+<td align="left">Se olvidan los grados de libertad</td>
+<td align="left">Dividir por <span class="math inline">\(n - 2\)</span>,
+o usar <code>sigma(modelo)</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Pensar que los residuales son los errores</td>
+<td align="left">El residual depende de la recta estimada</td>
+<td align="left">El error es teórico; el residual es su estimación</td>
+</tr>
+<tr class="even">
+<td align="left">Creer que MCO exige normalidad</td>
+<td align="left">La normalidad se necesita para las pruebas, no para
+calcular la recta</td>
+<td align="left">MCO solo minimiza una suma de cuadrados</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-es-mejor-otra-recta"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1. ¿Es mejor otra
+recta?</strong></span></h3>
+<p>Calcule la suma de los residuales al cuadrado para la recta <span
+class="math inline">\(-30 + 0.55\,x\)</span> y compárela con la de
+MCO.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>sum((grasa$grasa - (-30 + 0.55 * grasa$abdomen))^2)</code></pre>
+<pre><code>[1] 6105.749</code></pre>
+<pre class="r"><code>sum(residuals(modelo)^2)</code></pre>
+<pre><code>[1] 5094.931</code></pre>
+<p>La suma de la recta propuesta es mayor. Ninguna recta da una suma
+menor que la de MCO.</p>
+</details>
+</div>
+<div id="reto-2.-la-regresión-al-revés"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. La regresión al
+revés</strong></span></h3>
+<p>Ajuste <code>lm(abdomen ~ grasa)</code>. ¿Su pendiente es <span
+class="math inline">\(1/0.585\)</span>? ¿Por qué?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>coef(lm(abdomen ~ grasa, data = grasa))</code></pre>
+<pre><code>(Intercept)       grasa 
+  71.116875    1.132037 </code></pre>
+<pre class="r"><code>1 / coef(modelo)[2]</code></pre>
+<pre><code> abdomen 
+1.709722 </code></pre>
+<p>No. La regresión de <span class="math inline">\(y\)</span> sobre
+<span class="math inline">\(x\)</span> minimiza distancias verticales;
+la de <span class="math inline">\(x\)</span> sobre <span
+class="math inline">\(y\)</span>, distancias horizontales. Son rectas
+distintas, salvo que la correlación sea 1 o −1. Por eso hay que decidir
+cuál es la respuesta antes de ajustar.</p>
+</details>
+</div>
+<div id="reto-3.-pecho-y-grasa"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. Pecho y
+grasa</strong></span></h3>
+<p>Ajuste el modelo de la grasa según la circunferencia del pecho.
+Interprete la pendiente y compare <span
+class="math inline">\(\hat{\sigma}\)</span> con el del abdomen. ¿Cuál
+medida predice mejor la grasa?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>modelo_pecho &lt;- lm(grasa ~ pecho, data = grasa)
+coef(modelo_pecho)</code></pre>
+<pre><code>(Intercept)       pecho 
+-46.2163596   0.6462223 </code></pre>
+<pre class="r"><code>c(pecho = sigma(modelo_pecho), abdomen = sigma(modelo))</code></pre>
+<pre><code>   pecho  abdomen 
+5.524225 4.514391 </code></pre>
+<p>En promedio, entre hombres cuyo pecho difiere en 1 cm, la grasa
+difiere en 0.65 puntos. La desviación estándar residual es mayor con el
+pecho, así que el abdomen predice mejor.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 1
+deduce los estimadores de mínimos cuadrados y de máxima
+verosimilitud.</li>
+<li>Hernández, F., Usuga, O. y Mazo, M. (2024). <a
+href="https://fhernanb.github.io/libro_regresion/"><em>Modelos de
+regresión con R</em></a>. Versión gratuita en el sitio de los
+autores.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 2.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

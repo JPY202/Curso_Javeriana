@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Métodos y Simulación Estadística" />
+
+
+<title> Modelo de regresión lineal simple</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"> </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Métodos
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Correlación
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso100.html">Correlación de Pearson</a>
+    </li>
+    <li>
+      <a href="recurso101.html">Correlación de Spearman y Kendall</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Modelo
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso200.html">Modelo de regresión lineal simple</a>
+    </li>
+    <li>
+      <a href="recurso201.html">Estimación de los coeficientes</a>
+    </li>
+    <li>
+      <a href="recurso202.html">Propiedades de los estimadores</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Inferencia
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso300.html">Pruebas, intervalos y R²</a>
+    </li>
+    <li>
+      <a href="recurso301.html">Estimación de la media y predicción</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supuestos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso400.html">Supuestos del modelo</a>
+    </li>
+    <li>
+      <a href="recurso401.html">Revisión de los supuestos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Soluciones
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="recurso500.html">Transformaciones</a>
+    </li>
+    <li>
+      <a href="recurso501.html">Varianza no constante</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="recurso600.html">Puntos influyentes</a>
+</li>
+<li>
+  <a href="recurso700.html">Caso integrador</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>Modelo
+de regresión lineal simple</strong></span></h1>
+<h4 class="author">Métodos y Simulación Estadística</h4>
+
+</div>
+
+
+<p><br/></p>
+<p>La correlación dice qué tan fuerte es la relación lineal entre el
+abdomen y la grasa, pero no responde dos preguntas prácticas:</p>
+<ol style="list-style-type: decimal">
+<li><strong>¿Cuánto cambia, en promedio, la grasa corporal cuando el
+abdomen es 1 cm mayor?</strong></li>
+<li><strong>¿Qué porcentaje de grasa se puede esperar en un hombre con
+un abdomen de 110 cm?</strong></li>
+</ol>
+<p>El <strong>modelo de regresión lineal simple</strong> responde las
+dos: describe cómo cambia la <strong>media</strong> de una variable con
+otra y permite <strong>predecir</strong>. Esta página presenta el modelo
+y cómo se interpretan sus partes. Las páginas siguientes muestran cómo
+se estima y cómo se revisa.</p>
+<p><br/></p>
+<div id="qué-pasos-se-siguen-para-construir-un-modelo"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué pasos se siguen para
+construir un modelo?</strong></span></h2>
+<p>Un modelo de regresión no empieza con <code>lm()</code> ni termina
+con <code>summary()</code>. Es un ciclo de ocho pasos: si al evaluar o
+al usar el modelo aparece un problema, se vuelve a los datos.</p>
+<pre class="r"><code>pasos &lt;- c(&quot;Recolección\nde datos&quot;, &quot;Exploración\nde datos&quot;, &quot;Procesamiento\nde datos&quot;,
+           &quot;Elección\ndel modelo&quot;, &quot;Entrenamiento\ndel modelo&quot;, &quot;Evaluación\ndel modelo&quot;,
+           &quot;Interpretación\ndel modelo&quot;, &quot;Despliegue\ndel modelo&quot;)
+angulo &lt;- seq(200, -100, length.out = 8) * pi / 180     # posiciones sobre un óvalo
+cx &lt;- 5 + 3.9 * cos(angulo)
+cy &lt;- 3 + 2.2 * sin(angulo)
+par(mar = c(0, 0, 0, 0))
+plot(NULL, xlim = c(0, 10), ylim = c(0, 6), axes = FALSE, xlab = &quot;&quot;, ylab = &quot;&quot;, asp = 1)
+# cajas con el nombre de cada paso
+rect(cx - 0.95, cy - 0.38, cx + 0.95, cy + 0.38, col = &quot;white&quot;, border = &quot;#034A94&quot;, lwd = 2)
+text(cx, cy, pasos, col = &quot;#034A94&quot;, font = 2, cex = 0.85)
+# flechas entre pasos consecutivos, siguiendo el óvalo y sin entrar en las cajas
+fuera &lt;- function(x, y) {
+  !sapply(seq_along(x), function(i) any(abs(x[i] - cx) &lt; 1.05 &amp; abs(y[i] - cy) &lt; 0.48))
+}
+for (k in 1:8) {
+  a1 &lt;- angulo[k]
+  a2 &lt;- if (k &lt; 8) angulo[k + 1] else angulo[1] - 2 * pi
+  t &lt;- seq(a1, a2, length.out = 200)
+  xs &lt;- 5 + 3.9 * cos(t); ys &lt;- 3 + 2.2 * sin(t)
+  quedan &lt;- fuera(xs, ys)
+  xs &lt;- xs[quedan]; ys &lt;- ys[quedan]
+  color &lt;- if (k &lt; 8) &quot;#E4660E&quot; else &quot;gray50&quot;
+  lines(xs, ys, col = color, lwd = 2, lty = if (k &lt; 8) 1 else 2)
+  m &lt;- length(xs)
+  arrows(xs[m - 1], ys[m - 1], xs[m], ys[m], length = 0.1, col = color, lwd = 2)
+}
+text(cx - 0.82, cy + 0.24, 1:8, col = &quot;#E4660E&quot;, font = 2, cex = 0.9)   # número del paso</code></pre>
+<div class="figure" style="text-align: center">
+<img src="recurso200_files/figure-html/unnamed-chunk-1-1.png" alt="Ocho cajas dispuestas en un óvalo y unidas por flechas naranjas en el sentido de las manecillas del reloj: recolección de datos, exploración de datos, procesamiento de datos, elección del modelo, entrenamiento del modelo, evaluación del modelo, interpretación del modelo y despliegue del modelo; una flecha gris punteada vuelve del despliegue a la recolección" width="90%" />
+<p class="caption">
+Pasos para construir un modelo de regresión lineal simple.
+</p>
+</div>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="20%" />
+<col width="50%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Paso</th>
+<th align="left">Qué se hace</th>
+<th align="left">En el caso de la grasa corporal</th>
+<th align="left">Dónde se ve</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1. Recolección de datos</td>
+<td align="left">Definir la población, las variables y cómo se
+miden</td>
+<td align="left">252 hombres; grasa por pesaje bajo el agua y abdomen
+con cinta métrica</td>
+<td align="left"><a href="recurso100.html">Correlación de Pearson</a>;
+la forma de recoger los datos decide la independencia (<a
+href="recurso400.html">Supuestos del modelo</a>)</td>
+</tr>
+<tr class="even">
+<td align="center">2. Exploración de datos</td>
+<td align="left">Graficar y resumir antes de modelar</td>
+<td align="left">Gráfico de dispersión, correlación de 0.81</td>
+<td align="left"><a href="recurso100.html">Correlación de Pearson</a>,
+<a href="recurso101.html">Spearman y Kendall</a></td>
+</tr>
+<tr class="odd">
+<td align="center">3. Procesamiento de datos</td>
+<td align="left">Corregir errores, unidades y valores imposibles</td>
+<td align="left">Peso en kg y estatura en cm; un hombre con 0 % de grasa
+y otro con 74.9 cm de estatura</td>
+<td align="left"><a href="../unidad1/recurso401.html">Organizar los
+datos</a>, <a href="recurso600.html">Puntos influyentes</a></td>
+</tr>
+<tr class="even">
+<td align="center">4. Elección del modelo</td>
+<td align="left">Decidir la respuesta, la variable explicativa y la
+forma de la relación</td>
+<td align="left">Grasa según abdomen, en línea recta</td>
+<td align="left">Esta página y <a
+href="recurso500.html">Transformaciones</a></td>
+</tr>
+<tr class="odd">
+<td align="center">5. Entrenamiento del modelo</td>
+<td align="left">Estimar los coeficientes con los datos</td>
+<td align="left">Mínimos cuadrados con <code>lm()</code></td>
+<td align="left"><a href="recurso201.html">Estimación de los
+coeficientes</a></td>
+</tr>
+<tr class="even">
+<td align="center">6. Evaluación del modelo</td>
+<td align="left">Revisar los supuestos, el ajuste y los puntos
+influyentes</td>
+<td align="left">Residuales, <span class="math inline">\(R^2\)</span>,
+la observación 39</td>
+<td align="left"><a href="recurso300.html">Pruebas, intervalos y R²</a>,
+<a href="recurso401.html">Revisión de los supuestos</a>, <a
+href="recurso600.html">Puntos influyentes</a></td>
+</tr>
+<tr class="odd">
+<td align="center">7. Interpretación del modelo</td>
+<td align="left">Explicar los coeficientes y su incertidumbre</td>
+<td align="left">0.58 puntos de grasa por cada centímetro de abdomen,
+con su intervalo</td>
+<td align="left">Esta página y <a href="recurso300.html">Pruebas,
+intervalos y R²</a></td>
+</tr>
+<tr class="even">
+<td align="center">8. Despliegue del modelo</td>
+<td align="left">Usar el modelo con casos nuevos y vigilar que siga
+sirviendo</td>
+<td align="left">Predecir la grasa de un paciente a partir de su
+abdomen, dentro del rango de los datos</td>
+<td align="left"><a href="recurso301.html">Estimación de la media y
+predicción</a></td>
+</tr>
+</tbody>
+</table>
+<p>Si la evaluación muestra un problema (una curva, una varianza que
+cambia, un punto influyente), se regresa a los pasos 3 o 4. Si al usar
+el modelo con casos nuevos las predicciones fallan, se regresa a la
+recolección: puede que la población haya cambiado o que falte una
+variable.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-formula-el-modelo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se formula el
+modelo?</strong></span></h2>
+<p>Se tienen <span class="math inline">\(n\)</span> pares de
+observaciones <span class="math inline">\((x_i, y_i)\)</span>. La
+variable <span class="math inline">\(y\)</span> es la
+<strong>respuesta</strong> (la grasa) y <span
+class="math inline">\(x\)</span> es la <strong>variable
+explicativa</strong> (el abdomen). El modelo de regresión lineal simple
+se puede escribir de dos formas. En las dos:</p>
+<ul>
+<li><span class="math inline">\(x_i\)</span> se trata como
+<strong>fija</strong>: el análisis se hace para los valores de <span
+class="math inline">\(x\)</span> observados en la muestra o fijados por
+el diseño del estudio.</li>
+<li><span class="math inline">\(Y_i\)</span> es una <strong>variable
+aleatoria</strong>, cuya distribución depende de <span
+class="math inline">\(x_i\)</span>.</li>
+<li><span class="math inline">\(\beta_0\)</span> y <span
+class="math inline">\(\beta_1\)</span> son <strong>parámetros
+desconocidos</strong>: el intercepto y la pendiente de la recta de la
+población.</li>
+<li><span class="math inline">\(\sigma^2\)</span> es la <strong>varianza
+de los errores</strong>, que se supone constante.</li>
+</ul>
+<p><br/></p>
+<div id="primera-forma-con-el-error-aleatorio" class="section level3">
+<h3><span style="color:#034a94"><strong>Primera forma: con el error
+aleatorio</strong></span></h3>
+<p>La respuesta se escribe como la suma de una parte
+<strong>determinística</strong>, <span class="math inline">\(\beta_0 +
+\beta_1 x_i\)</span>, y un <strong>error aleatorio</strong> <span
+class="math inline">\(\varepsilon_i\)</span> con distribución normal,
+media cero y varianza constante:</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i, \qquad \varepsilon_i \sim
+N(0, \sigma^2)
+\]</span></p>
+<ul>
+<li>La recta <span class="math inline">\(\beta_0 + \beta_1 x_i\)</span>
+fija el <strong>centro</strong> de <span
+class="math inline">\(Y_i\)</span>; los errores explican las
+desviaciones de <span class="math inline">\(Y_i\)</span> alrededor de
+esa recta.</li>
+<li>Como <span class="math inline">\(x_i\)</span> es fija, <strong>la
+aleatoriedad de <span class="math inline">\(Y_i\)</span> proviene solo
+de <span class="math inline">\(\varepsilon_i\)</span></strong>.</li>
+</ul>
+<div class="caja-nota">
+<p>Los errores son la diferencia entre los valores observados <span
+class="math inline">\(Y_i\)</span> y la verdadera recta de la población.
+<strong>No son observables</strong>, porque dependen de <span
+class="math inline">\(\beta_0\)</span> y <span
+class="math inline">\(\beta_1\)</span>, que son desconocidos. Lo que se
+observa son los residuales, que se calculan con la recta estimada
+(página <a href="recurso201.html">Estimación de los
+coeficientes</a>).</p>
+</div>
+<p><br/></p>
+</div>
+<div id="segunda-forma-con-la-distribución-de-y" class="section level3">
+<h3><span style="color:#034a94"><strong>Segunda forma: con la
+distribución de Y</strong></span></h3>
+<p>La respuesta se modela directamente como una <strong>variable
+aleatoria normal</strong> cuya media depende de <span
+class="math inline">\(x_i\)</span> y cuya varianza es constante:</p>
+<p><span class="math display">\[
+Y_i \mid x_i \sim N(\mu_i, \sigma^2), \qquad \mu_i = E(Y_i \mid x_i) =
+\beta_0 + \beta_1 x_i
+\]</span></p>
+<ul>
+<li><span class="math inline">\(Y_i\)</span> es una realización de una
+variable aleatoria normal cuya media cambia en línea recta con <span
+class="math inline">\(x_i\)</span>.</li>
+<li>Para cada valor de <span class="math inline">\(x\)</span>, la
+distribución de <span class="math inline">\(Y\)</span> es normal y tiene
+la misma varianza <span class="math inline">\(\sigma^2\)</span>: lo
+único que cambia es el centro.</li>
+<li>Esta forma pone el énfasis en la <strong>distribución
+condicional</strong> de <span class="math inline">\(Y\)</span> dado
+<span class="math inline">\(x\)</span>.</li>
+</ul>
+<p>Las dos formas dicen lo mismo. En el caso de la unidad:</p>
+<p><span class="math display">\[
+\text{grasa}_i \sim N(\mu_i, \sigma^2), \qquad \mu_i = \beta_0 + \beta_1
+\, \text{abdomen}_i
+\]</span></p>
+<p>o, de forma equivalente, <span class="math inline">\(\text{grasa}_i =
+\beta_0 + \beta_1 \, \text{abdomen}_i + \varepsilon_i\)</span>, con
+<span class="math inline">\(\varepsilon_i \sim N(0,
+\sigma^2)\)</span>.</p>
+<div class="caja-nota">
+<p>En las dos formas, el modelo tiene tres parámetros: <span
+class="math inline">\(\theta = (\beta_0, \beta_1, \sigma^2)\)</span>.
+Para estimarlos se usan dos métodos: <strong>mínimos cuadrados</strong>
+y <strong>máxima verosimilitud</strong> (página <a
+href="recurso201.html">Estimación de los coeficientes</a>).</p>
+</div>
+<p><br/></p>
+</div>
+<div id="qué-representa-cada-parte" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Qué representa cada
+parte?</strong></span></h3>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="25%" />
+<col width="51%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Parte</th>
+<th align="left">Nombre</th>
+<th align="left">Qué representa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\beta_0 + \beta_1
+x\)</span></td>
+<td align="left">Recta de regresión</td>
+<td align="left">La <strong>media</strong> de <span
+class="math inline">\(Y\)</span> para los individuos con ese valor de
+<span class="math inline">\(x\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\beta_0\)</span></td>
+<td align="left">Intercepto</td>
+<td align="left">La media de <span class="math inline">\(Y\)</span>
+cuando <span class="math inline">\(x = 0\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\beta_1\)</span></td>
+<td align="left">Pendiente</td>
+<td align="left">Cuánto cambia la media de <span
+class="math inline">\(Y\)</span> cuando <span
+class="math inline">\(x\)</span> aumenta en una unidad</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\varepsilon_i\)</span></td>
+<td align="left">Error</td>
+<td align="left">La diferencia entre <span
+class="math inline">\(Y_i\)</span> y la media de su grupo: lo que la
+recta no explica</td>
+</tr>
+</tbody>
+</table>
+<p>La expresión <span class="math inline">\(E(Y \mid x) = \beta_0 +
+\beta_1 x\)</span> se lee: <strong>la media de <span
+class="math inline">\(Y\)</span> para un valor dado de <span
+class="math inline">\(x\)</span> es una recta</strong>. No dice que cada
+hombre esté sobre la recta. Dice que, entre todos los hombres con un
+abdomen de 110 cm, la grasa promedio es <span
+class="math inline">\(\beta_0 + 110\,\beta_1\)</span>.</p>
+<p><br/></p>
+</div>
+<div id="a-qué-se-aplica-el-supuesto-de-independencia"
+class="section level3">
+<h3><span style="color:#034a94"><strong>¿A qué se aplica el supuesto de
+independencia?</strong></span></h3>
+<p>Se supone que los errores son <strong>independientes e idénticamente
+distribuidos</strong> (i.i.d.):</p>
+<p><span class="math display">\[
+\varepsilon_i \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2), \qquad i =
+1, 2, \ldots, n
+\]</span></p>
+<p>El supuesto se plantea sobre los <strong>errores</strong>. Como el
+análisis es condicional a los valores observados de <span
+class="math inline">\(x\)</span>, que los errores sean independientes
+equivale a que las respuestas <span class="math inline">\(Y_1, \ldots,
+Y_n\)</span> sean independientes <strong>dado</strong> <span
+class="math inline">\(x\)</span>. Las <span
+class="math inline">\(Y_i\)</span> no son idénticamente distribuidas:
+cada una tiene su propia media, <span class="math inline">\(\beta_0 +
+\beta_1 x_i\)</span>. Por eso los supuestos se revisan con los
+residuales y no con la distribución de <span
+class="math inline">\(Y\)</span> sola: un histograma de la grasa mezcla
+hombres con abdómenes distintos y no tiene por qué parecerse a una
+normal.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-se-supone-sobre-los-errores" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se supone sobre los
+errores?</strong></span></h2>
+<p>El modelo completo incluye cuatro supuestos sobre los errores <span
+class="math inline">\(\varepsilon_i\)</span>:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Supuesto</th>
+<th align="left">Qué dice</th>
+<th align="left">Qué significa en el ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Media cero</td>
+<td align="left"><span class="math inline">\(E(\varepsilon_i \mid x_i) =
+0\)</span></td>
+<td align="left">La recta pasa por la media de cada grupo: la relación
+es lineal</td>
+</tr>
+<tr class="even">
+<td align="left">Varianza constante</td>
+<td align="left"><span class="math inline">\(\text{Var}(\varepsilon_i
+\mid x_i) = \sigma^2\)</span></td>
+<td align="left">La dispersión de la grasa alrededor de la recta es la
+misma con 80 o con 120 cm de abdomen</td>
+</tr>
+<tr class="odd">
+<td align="left">Independencia</td>
+<td align="left">Los errores no están relacionados entre sí</td>
+<td align="left">Lo que pasa con un hombre no afecta a otro</td>
+</tr>
+<tr class="even">
+<td align="left">Normalidad</td>
+<td align="left"><span class="math inline">\(\varepsilon_i \sim N(0,
+\sigma^2)\)</span></td>
+<td align="left">Para cada abdomen, la grasa sigue una distribución
+normal alrededor de la recta</td>
+</tr>
+</tbody>
+</table>
+<p>Juntos se resumen así: para cada valor de <span
+class="math inline">\(x\)</span>, <span class="math inline">\(Y \sim
+N(\beta_0 + \beta_1 x, \; \sigma^2)\)</span>. El modelo tiene tres
+parámetros: <span class="math inline">\(\beta_0\)</span>, <span
+class="math inline">\(\beta_1\)</span> y <span
+class="math inline">\(\sigma^2\)</span>.</p>
+<p>La figura muestra la idea con valores inventados, parecidos a los del
+caso de la grasa. Permite ver tres cosas:</p>
+<ul>
+<li><strong>Normalidad de la respuesta para cada valor de <span
+class="math inline">\(x\)</span>:</strong> la distribución de <span
+class="math inline">\(Y\)</span> dado <span
+class="math inline">\(x\)</span> es normal.</li>
+<li><strong>La media cambia según la recta:</strong> el centro de cada
+distribución está sobre <span class="math inline">\(\beta_0 + \beta_1
+x\)</span>.</li>
+<li><strong>Varianza constante:</strong> la dispersión de <span
+class="math inline">\(Y\)</span> alrededor de la recta es la misma en
+todo el rango de <span class="math inline">\(x\)</span>.</li>
+</ul>
+<p>Los otros dos paneles muestran qué pasa cuando falla alguno de los
+supuestos: en el del centro, las distribuciones de la izquierda son más
+angostas que las de la derecha (la varianza no es constante); en el de
+la derecha, la primera distribución es asimétrica, parecida a una gamma,
+y no a una normal.</p>
+<pre class="r"><code>b0 &lt;- -35; b1 &lt;- 0.58; sigma &lt;- 4.5
+x0 &lt;- c(80, 95, 110, 125)
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+casos &lt;- c(&quot;Se cumplen los supuestos&quot;, &quot;Varianza no constante&quot;, &quot;Una distribución no normal&quot;)
+for (caso in 1:3) {
+  plot(NULL, xlim = c(72, 140), ylim = c(-5, 65), las = 1, main = casos[caso],
+       xlab = &quot;Abdomen (cm)&quot;, ylab = &quot;Grasa (%)&quot;)
+  abline(b0, b1, col = &quot;#C0392B&quot;, lwd = 2)
+  for (k in seq_along(x0)) {
+    media &lt;- b0 + b1 * x0[k]
+    desv &lt;- if (caso == 2) c(1.5, 3, 4.5, 6)[k] else sigma
+    yy &lt;- seq(media - 3.5 * desv, media + 3.5 * desv, length.out = 200)
+    dens &lt;- dnorm(yy, media, desv)
+    if (caso == 3 &amp;&amp; k == 1) {          # gamma con la misma media, asimétrica a la derecha
+      yy &lt;- seq(media - 8, media + 20, length.out = 200)
+      dens &lt;- dgamma(yy - (media - 8), shape = 2, scale = 4)
+    }
+    lines(x0[k] + 9 * dens / max(dens), yy, col = &quot;#034A94&quot;, lwd = 2)
+    segments(x0[k], min(yy), x0[k], max(yy), lty = 2, col = &quot;gray50&quot;)
+  }
+}</code></pre>
+<div class="figure">
+<img src="recurso200_files/figure-html/unnamed-chunk-2-1.png" alt="Tres paneles con una recta roja creciente y cuatro curvas verticales azules. En el primero, las cuatro curvas son normales e iguales. En el segundo, las curvas son más angostas a la izquierda y más anchas a la derecha. En el tercero, la primera curva es asimétrica, con una cola larga hacia arriba" width="100%" />
+<p class="caption">
+Distribución de Y para varios valores de x. Izquierda: se cumplen los
+supuestos. Centro: la varianza no es constante. Derecha: una
+distribución no es normal.
+</p>
+</div>
+<p>Los supuestos se revisan con los datos en la página <a
+href="recurso401.html">Revisión de los supuestos</a>, y la página <a
+href="recurso400.html">Supuestos del modelo</a> explica qué pasa cuando
+no se cumplen.</p>
+<p><br/></p>
+</div>
+<div id="cómo-se-interpretan-los-coeficientes" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se interpretan los
+coeficientes?</strong></span></h2>
+<p>Más adelante se verá que la recta estimada con los datos es,
+aproximadamente,</p>
+<p><span class="math display">\[
+\widehat{\text{grasa}} = -35.2 + 0.585 \times \text{abdomen}.
+\]</span></p>
+<p><strong>La pendiente.</strong> Entre dos grupos de hombres cuyo
+abdomen difiere en 1 cm, la grasa <strong>promedio</strong> difiere en
+0.585 puntos porcentuales. Con 10 cm de diferencia, la grasa promedio
+difiere en 5.85 puntos.</p>
+<p>Tres cuidados al interpretar la pendiente:</p>
+<ul>
+<li>Habla de <strong>promedios</strong>, no de cada persona.</li>
+<li>Compara <strong>grupos distintos</strong> de hombres; no dice que si
+un hombre aumenta 1 cm su abdomen, su grasa subirá 0.585 puntos. Eso
+requeriría seguir a las mismas personas en el tiempo.</li>
+<li>Describe una <strong>asociación</strong>. Que la pendiente sea
+positiva no prueba que una variable cause la otra (ver más abajo).</li>
+</ul>
+<p><strong>El intercepto.</strong> Matemáticamente, es la grasa promedio
+de los hombres con 0 cm de abdomen. Ese grupo no existe: el abdomen más
+pequeño en los datos es de 69.4 cm. El intercepto de −35.2 % no tiene
+interpretación; solo ubica la recta. Esto pasa con frecuencia y no es un
+problema del modelo.</p>
+<p>Si se quiere un intercepto con sentido, se <strong>centra</strong> la
+variable explicativa: se le resta un valor de referencia. Con el abdomen
+centrado en 90 cm, el intercepto es la grasa promedio de los hombres con
+90 cm de abdomen:</p>
+<p>Los datos se descargan aquí:
+<a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la
+carpeta <code>data</code> de su proyecto de
+<strong>RStudio</strong>.</p>
+<pre class="r"><code>grasa &lt;- read.csv(&quot;data/grasa.csv&quot;)
+grasa$abdomen90 &lt;- grasa$abdomen - 90
+coef(lm(grasa ~ abdomen, data = grasa))</code></pre>
+<pre><code>(Intercept)     abdomen 
+-35.1966077   0.5848905 </code></pre>
+<pre class="r"><code>coef(lm(grasa ~ abdomen90, data = grasa))</code></pre>
+<pre><code>(Intercept)   abdomen90 
+ 17.4435397   0.5848905 </code></pre>
+<p>La pendiente no cambia. El nuevo intercepto, 17.4 %, es la grasa
+promedio esperada con un abdomen de 90 cm.</p>
+<p><br/></p>
+</div>
+<div id="para-qué-se-usa-el-modelo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Para qué se usa el
+modelo?</strong></span></h2>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="35%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Uso</th>
+<th align="left">Pregunta</th>
+<th align="left">Dónde se ve</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Describir</td>
+<td align="left">¿Cuánto cambia la media de <span
+class="math inline">\(y\)</span> con <span
+class="math inline">\(x\)</span>?</td>
+<td align="left"><a href="recurso300.html">Pruebas, intervalos y
+R²</a></td>
+</tr>
+<tr class="even">
+<td align="left">Estimar una media</td>
+<td align="left">¿Cuál es la grasa promedio de los hombres con 110 cm de
+abdomen?</td>
+<td align="left"><a href="recurso301.html">Estimación de la media y
+predicción</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Predecir</td>
+<td align="left">¿Cuánta grasa tendrá un hombre nuevo con 110 cm de
+abdomen?</td>
+<td align="left"><a href="recurso301.html">Estimación de la media y
+predicción</a></td>
+</tr>
+</tbody>
+</table>
+<p>Estimar una media y predecir un valor individual parecen lo mismo,
+pero no lo son: la predicción es mucho menos precisa, porque además de
+la incertidumbre de la recta incluye la variación de una persona a
+otra.</p>
+<p><br/></p>
+</div>
+<div id="hasta-dónde-vale-el-modelo" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Hasta dónde vale el
+modelo?</strong></span></h2>
+<p><strong>Interpolar y extrapolar.</strong> El modelo se ajusta con
+abdómenes entre 69.4 y 148.1 cm, y la mayoría está entre 80 y 110 cm.
+Usar la recta dentro de ese rango es <strong>interpolar</strong>. Usarla
+fuera es <strong>extrapolar</strong>: nada garantiza que la relación
+siga siendo recta. Con un abdomen de 55 cm, la recta da</p>
+<pre class="r"><code>-35.2 + 0.585 * 55</code></pre>
+<pre><code>[1] -3.025</code></pre>
+<p>un porcentaje de grasa negativo, que es imposible. La recta funciona
+en el rango de los datos y no se debe llevar más allá.</p>
+<p><strong>Asociación y causa.</strong> Los datos son
+<strong>observacionales</strong>: nadie asignó el tamaño del abdomen.
+Una relación fuerte entre dos variables no prueba que una cause la otra.
+Aquí, si hay una causa, va en el sentido contrario al de la recta: la
+grasa acumulada aumenta la circunferencia del abdomen, y no al revés. En
+otros casos, una tercera variable (la edad, el nivel socioeconómico)
+explica las dos. Para hablar de causa se necesita un diseño experimental
+o un análisis que controle las otras variables, que se estudia en la
+regresión múltiple.</p>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Interpretar la pendiente como el cambio de cada
+persona</td>
+<td align="left">El modelo describe medias de grupos</td>
+<td align="left">Hablar de “en promedio, entre hombres que difieren en 1
+cm”</td>
+</tr>
+<tr class="even">
+<td align="left">Interpretar un intercepto fuera del rango de <span
+class="math inline">\(x\)</span></td>
+<td align="left"><span class="math inline">\(x = 0\)</span> no está en
+los datos</td>
+<td align="left">Decir que no tiene interpretación, o centrar <span
+class="math inline">\(x\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Escribir la ecuación estimada con error: <span
+class="math inline">\(\hat{y} = b_0 + b_1 x + \varepsilon\)</span></td>
+<td align="left">Se confunde el modelo con la recta estimada</td>
+<td align="left">El modelo lleva <span
+class="math inline">\(\varepsilon\)</span>; la recta estimada no</td>
+</tr>
+<tr class="even">
+<td align="left">Usar la recta fuera del rango de los datos</td>
+<td align="left">Se supone que la relación sigue igual</td>
+<td align="left">Limitar el uso al rango observado de <span
+class="math inline">\(x\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Concluir que <span class="math inline">\(x\)</span>
+causa <span class="math inline">\(y\)</span></td>
+<td align="left">Los datos son observacionales</td>
+<td align="left">Hablar de asociación</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-interpretar" class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 1.
+Interpretar</strong></span></h3>
+<p>Con la recta <span class="math inline">\(\widehat{\text{grasa}} =
+-35.2 + 0.585 \times \text{abdomen}\)</span>, ¿cuál es la diferencia en
+la grasa promedio entre los hombres con 85 cm y con 105 cm de abdomen?
+¿Cuál es la grasa promedio estimada de los hombres con 105 cm?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>La diferencia es <span class="math inline">\(0.585 \times 20 =
+11.7\)</span> puntos porcentuales. Con 105 cm, la grasa promedio
+estimada es <span class="math inline">\(-35.2 + 0.585 \times 105 =
+26.2\)</span> %.</p>
+</details>
+</div>
+<div id="reto-2.-cambio-de-unidades"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 2. Cambio de
+unidades</strong></span></h3>
+<p>Si el abdomen se midiera en pulgadas (1 pulgada = 2.54 cm), ¿cuánto
+valdría la pendiente? Compruébelo con <code>lm()</code>.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<pre class="r"><code>coef(lm(grasa ~ I(abdomen / 2.54), data = grasa))</code></pre>
+<pre><code>    (Intercept) I(abdomen/2.54) 
+     -35.196608        1.485622 </code></pre>
+<p>Una pulgada son 2.54 cm, así que la pendiente se multiplica por 2.54:
+<span class="math inline">\(0.585 \times 2.54 = 1.49\)</span> puntos por
+pulgada. La pendiente depende de las unidades de <span
+class="math inline">\(x\)</span> y de <span
+class="math inline">\(y\)</span>.</p>
+</details>
+</div>
+<div id="reto-3.-interpolar-o-extrapolar"
+class="section level3 content-box-yellow">
+<h3><span style="color:#686868"><strong>Reto 3. ¿Interpolar o
+extrapolar?</strong></span></h3>
+<p>¿En cuál de estos casos se puede usar el modelo con confianza: un
+hombre con 92 cm de abdomen, un hombre con 160 cm, una mujer con 92
+cm?</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Solo en el primero. 160 cm está fuera del rango de los datos
+(extrapolación). Una mujer no pertenece a la población estudiada: los
+datos son de hombres, y la distribución de la grasa es distinta en las
+mujeres, así que la recta puede no aplicar aunque 92 cm esté en el
+rango.</p>
+</details>
+</div>
+<p><br/></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-o-descargar-gratis" class="section level3">
+<h3><span style="color:#034a94"><strong>Libros para leer o descargar
+gratis</strong></span></h3>
+<ul>
+<li>Flórez, A. J. (2026). <a
+href="https://alvaroflorez.github.io/MLG1/"><em>Notas de clase: Modelo
+lineal general I</em></a>. Notas en el sitio del autor. El capítulo 1
+presenta el modelo lineal simple con los mismos datos de grasa
+corporal.</li>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <a
+href="https://www.openintro.org/book/os/"><em>OpenIntro
+Statistics</em></a> (4.ª ed.). OpenIntro. El capítulo 8 introduce la
+regresión lineal con ejemplos.</li>
+</ul>
+</div>
+<div id="otros-libros" class="section level3">
+<h3><span style="color:#034a94"><strong>Otros
+libros</strong></span></h3>
+<ul>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.). Wiley.
+Capítulo 2.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). <em>OpenIntro
+Statistics</em> (4.ª ed.). OpenIntro.</li>
+<li>Flórez, A. J. (2026). <em>Notas de clase: Modelo lineal general
+I</em>. <a href="https://alvaroflorez.github.io/MLG1/"
+class="uri">https://alvaroflorez.github.io/MLG1/</a></li>
+<li>Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012).
+<em>Introduction to Linear Regression Analysis</em> (5.ª ed.).
+Wiley.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 9 de noviembre de 2026.</em></p>
+<p><br/><br/></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

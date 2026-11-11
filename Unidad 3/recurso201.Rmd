@@ -1,0 +1,347 @@
+---
+title: <span style="color:#034a94"> **Estimación de los coeficientes**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+El modelo $y_i = \beta_0 + \beta_1 x_i + \varepsilon_i$ tiene tres parámetros desconocidos: $\beta_0$, $\beta_1$ y $\sigma^2$. Por una nube de puntos pasan infinitas rectas. ¿Cuál es la que mejor representa los datos?
+
+Esta página presenta el método de **mínimos cuadrados ordinarios** (MCO), que es el que usa la función `lm()` de **R**, la estimación de $\sigma^2$ y el método de **máxima verosimilitud**, visto en la Unidad 2. Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es un residual?**</span>
+
+Para una recta cualquiera $b_0 + b_1 x$, el **valor ajustado** de la observación $i$ es $\hat{y}_i = b_0 + b_1 x_i$, y el **residual** es la distancia vertical entre el dato y la recta:
+
+$$
+e_i = y_i - \hat{y}_i
+$$
+
+Un residual positivo indica que el dato está por encima de la recta; uno negativo, por debajo. El residual $e_i$ es la versión observable del error $\varepsilon_i$, que no se puede ver porque depende de los parámetros desconocidos.
+
+Los datos se descargan aquí: <a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r, fig.width=6.5, fig.height=4.5, fig.cap="Residuales de 20 hombres elegidos al azar respecto a la recta de mínimos cuadrados.", fig.alt="Veinte puntos alrededor de una recta creciente, cada uno unido a la recta por un segmento vertical gris", out.width="70%", fig.align="center"}
+grasa <- read.csv("data/grasa.csv")
+modelo <- lm(grasa ~ abdomen, data = grasa)
+set.seed(2026)
+muestra <- grasa[sample(nrow(grasa), 20), ]
+plot(grasa ~ abdomen, data = muestra, pch = 19, col = "#034A94", las = 1,
+     xlab = "Circunferencia del abdomen (cm)", ylab = "Grasa corporal (%)",
+     xlim = c(75, 120), ylim = c(0, 40))
+abline(modelo, col = "#C0392B", lwd = 2)
+segments(muestra$abdomen, muestra$grasa, muestra$abdomen, fitted(modelo)[as.character(muestra$id)],
+         col = "gray50")
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué es el método de mínimos cuadrados?**</span>
+
+El método de **mínimos cuadrados ordinarios** elige la recta que hace más pequeña la **suma de los residuales al cuadrado**:
+
+$$
+SCE(b_0, b_1) = \sum_{i=1}^{n} (y_i - b_0 - b_1 x_i)^2
+$$
+
+Se elevan al cuadrado para que los residuales positivos y negativos no se cancelen y para penalizar más las distancias grandes. Los valores que minimizan esta suma son:
+
+$$
+\hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2} = \frac{S_{xy}}{S_{xx}}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
+$$
+
+Estas fórmulas salen de derivar la suma con respecto a $b_0$ y $b_1$ e igualar a cero (las **ecuaciones normales**). En el recuadro del final de la página está la deducción, para quien quiera verla.
+
+Se pueden calcular a mano en **R**:
+
+```{r}
+x <- grasa$abdomen
+y <- grasa$grasa
+Sxy <- sum((x - mean(x)) * (y - mean(y)))
+Sxx <- sum((x - mean(x))^2)
+b1 <- Sxy / Sxx
+b0 <- mean(y) - b1 * mean(x)
+c(b0 = b0, b1 = b1)
+```
+
+La función `lm()` (*linear model*) hace lo mismo. Su primer argumento es una **fórmula**: `respuesta ~ explicativa`.
+
+```{r}
+modelo <- lm(grasa ~ abdomen, data = grasa)
+coef(modelo)
+```
+
+La recta estimada es
+
+$$
+\widehat{\text{grasa}} = `r round(coef(modelo)[1], 2)` + `r round(coef(modelo)[2], 3)` \times \text{abdomen}
+$$
+
+```{r, fig.width=6.5, fig.height=4.5, fig.cap="Recta de mínimos cuadrados para la grasa corporal según el abdomen.", fig.alt="Nube de 252 puntos con una recta roja creciente que pasa por el centro de la nube", out.width="70%", fig.align="center"}
+plot(grasa ~ abdomen, data = grasa, pch = 19, col = "#034A9460", las = 1,
+     xlab = "Circunferencia del abdomen (cm)", ylab = "Grasa corporal (%)",
+     xlim = c(65, 150), ylim = c(0, 50))
+abline(modelo, col = "#C0392B", lwd = 2)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué argumentos tiene la función `lm()`?**</span>
+
+La función `lm()` ajusta modelos de regresión lineal simple y múltiple. Su estructura general es:
+
+```{r, eval=FALSE}
+lm(formula, data, subset, weights, na.action,
+   method = "qr", model = TRUE, x = FALSE, y = FALSE, qr = TRUE,
+   singular.ok = TRUE, contrasts = NULL, offset, ...)
+```
+
+En la práctica se usan pocos argumentos:
+
+| Argumento | Para qué sirve | Ejemplo |
+|:----------|:---------------|:--------|
+| `formula` | La relación entre la respuesta y las variables explicativas, con la sintaxis `respuesta ~ explicativa` | `grasa ~ abdomen` |
+| `data` | La tabla (`data.frame`) donde están las variables de la fórmula | `data = grasa` |
+| `subset` | Ajustar el modelo con una parte de las filas | `subset = id != 182` |
+| `weights` | Pesos para mínimos cuadrados ponderados | `weights = w` ([Varianza no constante](recurso501.html)) |
+| `na.action` | Qué hacer con los datos faltantes; por defecto se omiten las filas con `NA` | `na.action = na.omit` |
+
+En la fórmula, `~` se lee "según" o "en función de". Algunas variantes útiles:
+
+| Fórmula | Modelo |
+|:--------|:-------|
+| `y ~ x` | $y = \beta_0 + \beta_1 x + \varepsilon$ |
+| `y ~ x - 1` | Recta sin intercepto, $y = \beta_1 x + \varepsilon$ |
+| `log(y) ~ log(x)` | Recta entre los logaritmos ([Transformaciones](recurso500.html)) |
+| `y ~ x + I(x^2)` | Término cuadrático; `I()` hace que `^` se calcule como potencia |
+
+`lm()` devuelve un objeto con el modelo ajustado. Sobre ese objeto se aplican otras funciones:
+
+| Función | Qué devuelve |
+|:--------|:-------------|
+| `coef(modelo)` | Los coeficientes estimados |
+| `summary(modelo)` | La tabla de coeficientes, pruebas, $\hat{\sigma}$ y $R^2$ |
+| `fitted(modelo)` | Los valores ajustados $\hat{y}_i$ |
+| `residuals(modelo)` | Los residuales $e_i$ |
+| `confint(modelo)` | Intervalos de confianza para los coeficientes |
+| `predict(modelo, newdata)` | Predicciones para valores nuevos de $x$ |
+| `anova(modelo)` | La tabla de análisis de varianza |
+| `plot(modelo)` | Gráficos de diagnóstico |
+
+```{r}
+subconjunto <- lm(grasa ~ abdomen, data = grasa, subset = id != 182)
+coef(subconjunto)
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué propiedades tiene la recta de mínimos cuadrados?**</span>
+
+Por la forma en que se calcula, la recta de MCO siempre cumple:
+
+- La suma de los residuales es cero: los puntos por encima y por debajo se compensan.
+- La recta pasa por el punto de medias $(\bar{x}, \bar{y})$.
+- La pendiente tiene el mismo signo que la correlación: $\hat{\beta}_1 = r \, \dfrac{s_y}{s_x}$.
+
+```{r}
+sum(residuals(modelo))                        # prácticamente cero
+coef(modelo)[1] + coef(modelo)[2] * mean(x)   # igual a la media de y
+mean(y)
+cor(x, y) * sd(y) / sd(x)                     # igual a la pendiente
+```
+
+La primera salida no es exactamente cero por el redondeo del computador: un número con tantos ceros después del punto decimal es cero para efectos prácticos.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se estima la varianza del error?**</span>
+
+El tercer parámetro, $\sigma^2$, mide qué tan dispersos están los datos alrededor de la recta de la población. Se estima con los residuales:
+
+$$
+\hat{\sigma}^2 = \frac{SCE}{n - 2} = \frac{\sum e_i^2}{n - 2}
+$$
+
+Se divide por $n - 2$ y no por $n$ porque se estimaron dos parámetros ($\beta_0$ y $\beta_1$) antes de calcular los residuales. Con esa división, $\hat{\sigma}^2$ es insesgado. Es la misma idea de dividir por $n - 1$ en la varianza muestral de la Unidad 2, donde se estimaba un parámetro (la media).
+
+```{r}
+SCE <- sum(residuals(modelo)^2)
+n <- nrow(grasa)
+sigma2 <- SCE / (n - 2)
+c(SCE = SCE, sigma2 = sigma2, sigma = sqrt(sigma2))
+sigma(modelo)   # la misma estimación de sigma
+```
+
+$\hat{\sigma} = `r round(sigma(modelo), 2)`$ puntos porcentuales es la **desviación estándar residual**: la distancia típica entre la grasa de un hombre y la recta. Como la grasa va de 0 a 45 %, un error típico de 4.5 puntos indica que la recta da una idea útil, pero no exacta, de la grasa de una persona.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué da el método de máxima verosimilitud?**</span>
+
+Si se supone que los errores son normales, se puede usar el método de **máxima verosimilitud** visto en la Unidad 2 ([Métodos de estimación](../unidad2/recurso304.html)): se eligen los valores de los parámetros que hacen más probable (más verosímil) haber observado los datos.
+
+El resultado:
+
+- Los estimadores de $\beta_0$ y $\beta_1$ son **los mismos** de mínimos cuadrados. Con errores normales, maximizar la verosimilitud equivale a minimizar la suma de cuadrados.
+- El estimador de $\sigma^2$ divide por $n$ en lugar de $n - 2$: $\tilde{\sigma}^2 = SCE/n$. Es sesgado, aunque la diferencia es mínima con muestras grandes.
+
+```{r}
+c(MCO = SCE / (n - 2), MV = SCE / n)
+logLik(modelo)   # logaritmo de la verosimilitud máxima
+```
+
+`logLik()` da el valor máximo del logaritmo de la verosimilitud. Por sí solo no se interpreta; sirve para comparar modelos, por ejemplo con el criterio AIC.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué muestra `summary()`?**</span>
+
+`summary()` reúne todo lo que se usa en las páginas siguientes:
+
+```{r}
+summary(modelo)
+```
+
+| Parte de la salida | Qué es | Dónde se explica |
+|:-------------------|:-------|:-----------------|
+| `Residuals` | Resumen de los cinco números de los residuales | Esta página |
+| `Estimate` | $\hat{\beta}_0$ y $\hat{\beta}_1$ | Esta página |
+| `Std. Error` | Error estándar de cada estimador | [Propiedades de los estimadores](recurso202.html) |
+| `t value`, `Pr(>|t|)` | Prueba de que cada coeficiente es cero | [Pruebas, intervalos y R²](recurso300.html) |
+| `Residual standard error` | $\hat{\sigma}$ y sus grados de libertad, $n - 2$ | Esta página |
+| `Multiple R-squared`, `F-statistic` | Coeficiente de determinación y prueba F | [Pruebas, intervalos y R²](recurso300.html) |
+
+<br/>
+
+<div class="content-box-blue">
+### <span style="color:#034a94">**Para profundizar: las ecuaciones normales**</span>
+
+Para minimizar $SCE(b_0, b_1) = \sum (y_i - b_0 - b_1 x_i)^2$ se deriva con respecto a cada coeficiente y se iguala a cero:
+
+$$
+\frac{\partial SCE}{\partial b_0} = -2 \sum (y_i - b_0 - b_1 x_i) = 0, \qquad
+\frac{\partial SCE}{\partial b_1} = -2 \sum x_i (y_i - b_0 - b_1 x_i) = 0
+$$
+
+La primera ecuación dice que los residuales suman cero, y de ella sale $b_0 = \bar{y} - b_1 \bar{x}$. Al reemplazar en la segunda se obtiene $b_1 = S_{xy}/S_{xx}$.
+
+En forma de matrices, con $\mathbf{y}$ el vector de respuestas y $\mathbf{X}$ la matriz con una columna de unos y una columna con los $x_i$, las ecuaciones normales son $\mathbf{X}^\top \mathbf{X} \, \mathbf{b} = \mathbf{X}^\top \mathbf{y}$, y su solución es $\hat{\boldsymbol{\beta}} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$. Esta forma se usa en la regresión múltiple.
+
+```{r}
+X <- cbind(1, grasa$abdomen)
+solve(t(X) %*% X) %*% t(X) %*% grasa$grasa
+```
+
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Escribir `lm(abdomen ~ grasa)` | Se invierte el orden de la fórmula | La respuesta va a la izquierda de `~` |
+| Calcular $\hat{\sigma}$ dividiendo por $n$ o por otro número | Se olvidan los grados de libertad | Dividir por $n - 2$, o usar `sigma(modelo)` |
+| Pensar que los residuales son los errores | El residual depende de la recta estimada | El error es teórico; el residual es su estimación |
+| Creer que MCO exige normalidad | La normalidad se necesita para las pruebas, no para calcular la recta | MCO solo minimiza una suma de cuadrados |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. ¿Es mejor otra recta?**</span>
+
+Calcule la suma de los residuales al cuadrado para la recta $-30 + 0.55\,x$ y compárela con la de MCO.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+sum((grasa$grasa - (-30 + 0.55 * grasa$abdomen))^2)
+sum(residuals(modelo)^2)
+```
+
+La suma de la recta propuesta es mayor. Ninguna recta da una suma menor que la de MCO.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. La regresión al revés**</span>
+
+Ajuste `lm(abdomen ~ grasa)`. ¿Su pendiente es $1/0.585$? ¿Por qué?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+coef(lm(abdomen ~ grasa, data = grasa))
+1 / coef(modelo)[2]
+```
+
+No. La regresión de $y$ sobre $x$ minimiza distancias verticales; la de $x$ sobre $y$, distancias horizontales. Son rectas distintas, salvo que la correlación sea 1 o −1. Por eso hay que decidir cuál es la respuesta antes de ajustar.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Pecho y grasa**</span>
+
+Ajuste el modelo de la grasa según la circunferencia del pecho. Interprete la pendiente y compare $\hat{\sigma}$ con el del abdomen. ¿Cuál medida predice mejor la grasa?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+modelo_pecho <- lm(grasa ~ pecho, data = grasa)
+coef(modelo_pecho)
+c(pecho = sigma(modelo_pecho), abdomen = sigma(modelo))
+```
+
+En promedio, entre hombres cuyo pecho difiere en 1 cm, la grasa difiere en `r round(coef(modelo_pecho)[2], 2)` puntos. La desviación estándar residual es mayor con el pecho, así que el abdomen predice mejor.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Flórez, A. J. (2026). [*Notas de clase: Modelo lineal general I*](https://alvaroflorez.github.io/MLG1/). Notas en el sitio del autor. El capítulo 1 deduce los estimadores de mínimos cuadrados y de máxima verosimilitud.
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley. Capítulo 2.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Flórez, A. J. (2026). *Notas de clase: Modelo lineal general I*. https://alvaroflorez.github.io/MLG1/
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

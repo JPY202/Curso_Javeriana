@@ -1,0 +1,347 @@
+---
+title: <span style="color:#034a94"> **Caso integrador**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+Este caso reúne en un solo análisis lo visto en la unidad, siguiendo los ocho pasos para construir un modelo de regresión lineal simple ([Modelo de regresión lineal simple](recurso200.html)): recolectar, explorar y procesar los datos, elegir, entrenar y evaluar el modelo, interpretarlo y usarlo para predecir. Se trabaja con datos reales que no se han usado en las otras páginas.
+
+La pregunta es: **¿el peso que una persona reporta sirve para conocer su peso real?** En muchas encuestas de salud no se pesa a las personas: se les pregunta cuánto pesan. Si el peso reportado se relaciona bien con el medido, se puede usar el modelo para corregirlo.
+
+Los bloques de código se ejecutan en orden.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 1. ¿Cómo se recolectaron los datos?**</span>
+
+Davis (1990) estudió a 200 hombres y mujeres que hacían ejercicio con regularidad. A cada persona le preguntó su peso y su estatura, y luego la pesó y la midió. Los datos vienen en el paquete `carData` de **R** (Fox y Weisberg, 2019); aquí se usa una copia con los nombres en español.
+
+Los datos se descargan aquí: <a href="data/peso.csv" download>peso.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+| Variable | Qué mide |
+|:---------|:---------|
+| `id` | Número de la persona (1 a 200) |
+| `sexo` | Mujer u Hombre |
+| `peso`, `estatura` | Peso medido (kg) y estatura medida (cm) |
+| `peso_reportado`, `estatura_reportada` | Peso (kg) y estatura (cm) que dijo la persona |
+
+```{r}
+datos <- read.csv("data/peso.csv")
+dim(datos)
+head(datos)
+```
+
+Dos características del diseño importan para el modelo:
+
+- Cada persona se midió una vez y no hay un orden en el tiempo: no hay razones para dudar de la independencia de los errores.
+- Las personas hacen ejercicio con regularidad. Las conclusiones valen para esa población, no necesariamente para la población general.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 2. ¿Qué muestran los datos?**</span>
+
+```{r}
+summary(datos[, c("peso", "estatura", "peso_reportado", "estatura_reportada")])
+colSums(is.na(datos))
+```
+
+Faltan `r sum(is.na(datos$peso_reportado))` pesos reportados. El gráfico compara el peso medido con el reportado. La línea punteada es la **recta de igualdad**, $y = x$: si todos dijeran su peso exacto, los puntos estarían sobre ella.
+
+```{r, fig.width=6.5, fig.height=5, fig.cap="Peso medido y peso reportado. La línea punteada es la recta de igualdad.", fig.alt="Nube de puntos muy cerca de la recta de igualdad, entre 40 y 125 kg, y un punto aislado arriba, con peso medido de 166 kg y peso reportado de 56 kg", out.width="65%", fig.align="center"}
+plot(peso ~ peso_reportado, data = datos, pch = 19, col = "#034A9480", las = 1,
+     xlab = "Peso reportado (kg)", ylab = "Peso medido (kg)",
+     xlim = c(35, 170), ylim = c(35, 170))
+abline(0, 1, lty = 2)
+```
+
+Casi todos los puntos están cerca de la recta de igualdad, pero hay uno muy lejos: una persona que reportó 56 kg y pesó 166 kg.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 3. ¿Hay que procesar los datos?**</span>
+
+Antes de modelar se revisa el punto extraño:
+
+```{r}
+datos[datos$id == 12, ]
+```
+
+Es una mujer con un peso medido de 166 kg y una estatura medida de 57 cm, que dijo pesar 56 kg y medir 163 cm. Una persona adulta de 57 cm es imposible: los dos valores medidos se **digitaron al revés**. El peso real es 57 kg y la estatura 166 cm, que coinciden con lo que ella reportó. Es un error que **se puede corregir**, así que se corrige en lugar de eliminar la fila ([Puntos atípicos e influyentes](recurso600.html)):
+
+```{r}
+datos$peso[datos$id == 12] <- 57
+datos$estatura[datos$id == 12] <- 166
+```
+
+Las `r sum(is.na(datos$peso_reportado))` personas sin peso reportado no pueden entrar al modelo. Antes de quitarlas conviene ver si se parecen a las demás ([Datos faltantes](../unidad1/recurso402.html)):
+
+```{r}
+datos$falta <- is.na(datos$peso_reportado)
+aggregate(peso ~ falta, data = datos, FUN = function(x) round(c(media = mean(x), mediana = median(x)), 1))
+table(datos$sexo, datos$falta)
+completos <- datos[!datos$falta, ]
+nrow(completos)
+```
+
+Las personas sin el dato pesan, en promedio, unos `r round(mean(datos$peso[!datos$falta]) - mean(datos$peso[datos$falta]))` kg menos, y entre ellas hay más mujeres. La diferencia es pequeña y son pocas personas, así que se trabaja con los `r nrow(completos)` casos completos y se informa que faltaban esos datos.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 4. ¿Qué modelo se elige?**</span>
+
+La respuesta es el peso medido y la variable explicativa es el peso reportado, porque lo que se quiere es estimar el peso real a partir de lo que la persona dice:
+
+$$
+\text{peso}_i = \beta_0 + \beta_1 \, \text{reportado}_i + \varepsilon_i, \qquad \varepsilon_i \sim N(0, \sigma^2)
+$$
+
+El gráfico del paso 2 muestra una relación recta, así que no se necesita transformar. Si las personas reportaran su peso sin error sistemático, el modelo sería la recta de igualdad: $\beta_0 = 0$ y $\beta_1 = 1$. Esas son las hipótesis interesantes del caso.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 5. ¿Cómo se ajusta el modelo?**</span>
+
+```{r}
+modelo <- lm(peso ~ peso_reportado, data = completos)
+summary(modelo)
+```
+
+La recta estimada es
+
+$$
+\widehat{\text{peso}} = `r round(coef(modelo)[1], 2)` + `r round(coef(modelo)[2], 3)` \times \text{reportado}
+$$
+
+con $R^2 = `r round(summary(modelo)$r.squared, 3)`$ y $\hat{\sigma} = `r round(sigma(modelo), 2)`$ kg: el peso reportado da cuenta de casi toda la variación del peso medido, y la distancia típica entre el peso real y la recta es de unos 2 kg.
+
+¿Qué habría pasado sin corregir el error del paso 3?
+
+```{r}
+original <- read.csv("data/peso.csv")
+modelo_error <- lm(peso ~ peso_reportado, data = original)
+round(rbind(con_error = c(coef(modelo_error), r2 = summary(modelo_error)$r.squared,
+                          sigma = sigma(modelo_error)),
+            corregido = c(coef(modelo), r2 = summary(modelo)$r.squared,
+                          sigma = sigma(modelo))), 3)
+```
+
+Una sola fila mal digitada, de `r nrow(completos)`, bajaba $R^2$ de `r round(summary(modelo)$r.squared, 2)` a `r round(summary(modelo_error)$r.squared, 2)` y multiplicaba $\hat{\sigma}$ por más de `r floor(sigma(modelo_error) / sigma(modelo))`.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 6. ¿Cumple el modelo los supuestos?**</span>
+
+**Gráficos de residuales.**
+
+```{r, fig.width=10, fig.height=3.8, fig.cap="Gráficos de diagnóstico del modelo del peso.", fig.alt="Tres paneles de diagnóstico: residuales en una franja horizontal con líneas diagonales y la persona 17 abajo; gráfico Q-Q con colas algo más largas que la normal; raíz de los residuales con una línea que sube a la derecha", out.width="100%"}
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+plot(modelo, which = 1:3, las = 1)
+```
+
+Los residuales forman una franja horizontal, sin curva. Las líneas diagonales que se ven dentro de la franja aparecen porque los pesos se midieron y se reportaron en kilogramos enteros; no indican un problema. El gráfico Q-Q muestra colas algo más largas que las de la normal: hay algunas personas que se equivocaron por más de 5 kg. En el tercer gráfico la línea roja sube a la derecha: la dispersión es un poco mayor en las personas más pesadas.
+
+**Pruebas.** Se fija $\alpha = 0.05$ antes de verlas:
+
+```{r}
+library(lmtest)
+anova(modelo, lm(peso ~ factor(peso_reportado), data = completos))   # falta de ajuste
+bptest(modelo)                                                       # varianza constante
+shapiro.test(rstandard(modelo))                                      # normalidad
+```
+
+| Supuesto | Resultado | Conclusión |
+|:---------|:----------|:-----------|
+| Linealidad | Falta de ajuste: p = `r round(anova(modelo, lm(peso ~ factor(peso_reportado), data = completos))[2, 6], 2)` | No hay evidencia contra la recta |
+| Varianza constante | Breusch-Pagan: p = `r round(bptest(modelo)$p.value, 3)` | Hay evidencia de que la varianza cambia con el peso |
+| Normalidad | Shapiro-Wilk: p = `r round(shapiro.test(rstandard(modelo))$p.value, 3)` | Colas más largas que la normal |
+| Independencia | Por el diseño | No hay razones para dudar |
+
+Con `r nrow(completos)` datos, la falta de normalidad casi no afecta las pruebas sobre la pendiente ([Supuestos del modelo](recurso400.html)). La varianza no constante sí afecta los errores estándar, así que las pruebas del paso 7 se hacen con **errores estándar robustos** ([Varianza no constante](recurso501.html)). La falta de normalidad sí importa para el intervalo de predicción del paso 8.
+
+**Puntos influyentes.**
+
+```{r}
+cook <- cooks.distance(modelo)
+sort(cook, decreasing = TRUE)[1:3]
+completos[completos$id %in% c(17, 21), c("id", "sexo", "peso", "peso_reportado")]
+```
+
+La persona 17 dijo pesar `r completos$peso_reportado[completos$id == 17]` kg y pesó `r completos$peso[completos$id == 17]` kg. Su distancia de Cook (`r round(cook["17"], 2)`) es la mayor, pero está lejos de 1 y no hay nada imposible en sus datos: es un caso real que se conserva. Sin ella, la pendiente cambia poco:
+
+```{r}
+c(con_17 = coef(modelo)[2],
+  sin_17 = coef(lm(peso ~ peso_reportado, data = completos[completos$id != 17, ]))[2])
+```
+
+<br/>
+
+## <span style="color:#034a94">**Paso 7. ¿Qué dice el modelo?**</span>
+
+Se prueba si la pendiente es 1 y si el intercepto es 0, con errores estándar robustos (HC3). El paquete `sandwich` calcula la matriz de varianza robusta:
+
+```{r}
+library(sandwich)
+v_rob <- vcovHC(modelo, type = "HC3")
+ee_rob <- sqrt(diag(v_rob))
+t_pend <- (coef(modelo)[2] - 1) / ee_rob[2]
+t_inter <- (coef(modelo)[1] - 0) / ee_rob[1]
+gl <- df.residual(modelo)
+round(c(t_pendiente = unname(t_pend), p_pendiente = unname(2 * pt(-abs(t_pend), gl)),
+        t_intercepto = unname(t_inter), p_intercepto = unname(2 * pt(-abs(t_inter), gl))), 4)
+coefci(modelo, vcov = v_rob)
+```
+
+Se rechazan las dos hipótesis: la recta no es la de igualdad. Con 95 % de confianza, la pendiente está entre `r round(coefci(modelo, vcov = v_rob)[2, 1], 3)` y `r round(coefci(modelo, vcov = v_rob)[2, 2], 3)`, por debajo de 1.
+
+¿Qué significa en kilogramos? Las dos rectas se cruzan donde $\hat{\beta}_0 + \hat{\beta}_1 x = x$, es decir, en $x = \hat{\beta}_0 / (1 - \hat{\beta}_1)$:
+
+```{r}
+cruce <- coef(modelo)[1] / (1 - coef(modelo)[2])
+cruce
+predict(modelo, data.frame(peso_reportado = c(50, 90)))
+```
+
+- Quienes dicen pesar menos de `r round(cruce)` kg pesan, en promedio, un poco **más** de lo que dicen: con 50 kg reportados, el peso promedio es `r round(predict(modelo, data.frame(peso_reportado = 50)), 1)` kg.
+- Quienes dicen pesar más de `r round(cruce)` kg pesan, en promedio, un poco **menos**: con 90 kg reportados, el peso promedio es `r round(predict(modelo, data.frame(peso_reportado = 90)), 1)` kg.
+
+Las diferencias son de alrededor de 1 kg: estadísticamente claras, pero pequeñas en la práctica. Parte de este patrón puede deberse a la **regresión hacia la media**: el peso reportado tiene su propio error, y quienes reportan valores extremos tienden, en promedio, a estar más cerca del centro de lo que dicen.
+
+<br/>
+
+## <span style="color:#034a94">**Paso 8. ¿Cómo se usa el modelo?**</span>
+
+Si una persona de esta población dice pesar 70 kg, ¿cuánto pesa?
+
+```{r}
+predict(modelo, data.frame(peso_reportado = 70), interval = "prediction")
+```
+
+Con 95 % de confianza, pesa entre `r round(predict(modelo, data.frame(peso_reportado = 70), interval = "prediction")[2], 1)` y `r round(predict(modelo, data.frame(peso_reportado = 70), interval = "prediction")[3], 1)` kg. Antes de usar el modelo con casos nuevos hay que tener en cuenta:
+
+- **El rango:** los pesos reportados van de `r min(completos$peso_reportado)` a `r max(completos$peso_reportado)` kg. Fuera de ese rango sería extrapolar.
+- **La población:** son personas que hacen ejercicio. En otra población, por ejemplo en personas con obesidad, el error al reportar puede ser distinto.
+- **El intervalo de predicción** supone errores normales y varianza constante. Como los residuales tienen colas largas y la varianza cambia un poco, el intervalo es una aproximación: algunas personas se equivocan por más de lo que indica.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se reporta el resultado?**</span>
+
+> Se analizaron `r nrow(completos)` personas que hacen ejercicio con regularidad y que reportaron su peso; a una se le corrigió un error de digitación. El peso medido se relacionó casi de forma perfecta con el reportado ($R^2 = `r round(summary(modelo)$r.squared, 2)`$). La pendiente fue `r round(coef(modelo)[2], 3)` (IC 95 % con errores robustos: `r round(coefci(modelo, vcov = v_rob)[2, 1], 3)` a `r round(coefci(modelo, vcov = v_rob)[2, 2], 3)`), menor que 1: quienes reportan pesos bajos tienden a pesar un poco más de lo que dicen, y quienes reportan pesos altos, un poco menos, con diferencias de alrededor de 1 kg. La desviación estándar residual fue de `r round(sigma(modelo), 1)` kg, así que el peso reportado sirve para estimar el peso de un grupo, pero para una persona el error puede ser de varios kilogramos.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Modelar sin graficar | Se confía en `summary()` | El gráfico del paso 2 mostró el error de digitación |
+| Eliminar un error que se puede corregir | Se borra lo que molesta | Si se sabe el valor correcto, se corrige y se informa |
+| Probar solo $\beta_1 = 0$ | Es la prueba que muestra `summary()` | Plantear la hipótesis que responde la pregunta: aquí, $\beta_1 = 1$ |
+| Confundir significancia estadística con importancia práctica | Con muchos datos, diferencias pequeñas son significativas | Traducir los coeficientes a las unidades del problema |
+| Usar el modelo con otra población | Se olvida cómo se recogieron los datos | Limitar las conclusiones a la población estudiada |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Mujeres y hombres**</span>
+
+Ajuste el modelo por separado para mujeres y para hombres. ¿Se parecen las pendientes? ¿En qué grupo es mayor $\hat{\sigma}$?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+m_mujer <- lm(peso ~ peso_reportado, data = completos, subset = sexo == "Mujer")
+m_hombre <- lm(peso ~ peso_reportado, data = completos, subset = sexo == "Hombre")
+round(rbind(mujeres = c(coef(m_mujer), sigma = sigma(m_mujer)),
+            hombres = c(coef(m_hombre), sigma = sigma(m_hombre))), 3)
+```
+
+Compare las pendientes con sus intervalos (`confint()`) antes de concluir que son distintas. Para probar formalmente si difieren se necesita un modelo con las dos variables, que se estudia en la regresión múltiple.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. La estatura**</span>
+
+Repita los pasos 4 a 7 con la estatura medida como respuesta y la estatura reportada como variable explicativa. ¿Las personas reportan bien su estatura?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+completos_e <- datos[!is.na(datos$estatura_reportada), ]
+m_est <- lm(estatura ~ estatura_reportada, data = completos_e)
+coef(m_est)
+coefci(m_est, vcov = vcovHC(m_est, type = "HC3"))
+mean(completos_e$estatura - completos_e$estatura_reportada)
+```
+
+Revise si el intervalo de la pendiente incluye 1. En estos datos, la estatura medida es en promedio `r round(mean(completos_e$estatura - completos_e$estatura_reportada), 1)` cm mayor que la reportada: las personas tendieron a reportar una estatura un poco menor que la real.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Sin corregir el error**</span>
+
+Con la base original (sin corregir la fila 12), calcule el apalancamiento, el residual estudentizado y la distancia de Cook de esa persona. ¿Qué tipo de punto inusual es?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+completos_o <- original[!is.na(original$peso_reportado), ]
+m_o <- lm(peso ~ peso_reportado, data = completos_o)
+fila <- which(completos_o$id == 12)
+round(c(h = hatvalues(m_o)[fila], rstudent = rstudent(m_o)[fila], cook = cooks.distance(m_o)[fila]), 3)
+```
+
+Su peso reportado (56 kg) está cerca del centro de los datos, así que su apalancamiento es bajo. Pero su residual estudentizado es enorme. Es un **atípico**: infla mucho $\hat{\sigma}$ y baja $R^2$. Como su residual es tan extremo, también mueve la pendiente (de `r round(coef(modelo)[2], 3)` a `r round(coef(m_o)[2], 3)`) y tiene una distancia de Cook alta, aunque su apalancamiento sea bajo.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+- Diez, D., Çetinkaya-Rundel, M. y Barr, C. (2019). [*OpenIntro Statistics*](https://www.openintro.org/book/os/) (4.ª ed.). OpenIntro. El capítulo 8 trata la regresión lineal con ejemplos completos.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Fox, J. y Weisberg, S. (2019). *An R Companion to Applied Regression* (3.ª ed.). Sage. Usa los datos de Davis en varios ejemplos de diagnóstico.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Davis, C. (1990). Body image and weight preoccupation: A comparison between exercising and non-exercising women. *Appetite*, 15(1), 13-21.
+- Fox, J. y Weisberg, S. (2019). *An R Companion to Applied Regression* (3.ª ed.). Sage.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

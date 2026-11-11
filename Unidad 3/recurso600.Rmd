@@ -1,0 +1,406 @@
+---
+title: <span style="color:#034a94"> **Puntos atípicos e influyentes**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = NA, collapse = FALSE)
+options(scipen = 999)
+```
+
+<br/>
+
+En la página [Revisión de los supuestos](recurso401.html), un solo hombre de 252 hizo que tres pruebas encontraran problemas. Los datos reales casi siempre tienen algunas observaciones que no siguen el patrón de las demás. Algunas son errores; otras son casos reales poco comunes. Algunas cambian mucho la recta; otras casi nada.
+
+Esta página enseña a distinguir tres tipos de puntos inusuales, a medir cuánto influye cada observación y a decidir qué hacer con ella. Los bloques de código se ejecutan en orden.
+
+Los datos se descargan aquí: <a href="data/grasa.csv" download>grasa.csv</a>. Guarde el archivo en la carpeta `data` de su proyecto de **RStudio**.
+
+```{r}
+grasa <- read.csv("data/grasa.csv")
+modelo <- lm(grasa ~ abdomen, data = grasa)
+n <- nrow(grasa)
+p <- 2   # número de coeficientes: intercepto y pendiente
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué tipos de puntos inusuales hay?**</span>
+
+Un punto puede ser inusual en $y$ (lejos de la recta), en $x$ (lejos de los demás valores de $x$) o en los dos:
+
+| Tipo | Inusual en $y$ | Inusual en $x$ | Efecto en la recta | Efecto en $\hat{\sigma}$ |
+|:-----|:--------------:|:--------------:|:-------------------|:-------------------------|
+| **Atípico** | Sí | No | Poco | Lo aumenta |
+| **De alto apalancamiento** | No: sigue la recta | Sí | Poco; hace parecer más precisa la pendiente | Poco |
+| **Influyente** | Sí | Sí | Mucho: la recta gira hacia él | Lo aumenta |
+
+La figura muestra los tres casos con datos simulados. La recta azul es la de los 20 puntos grises; la roja incluye el punto rojo.
+
+```{r, fig.width=10, fig.height=3.5, fig.cap="Tres tipos de puntos inusuales. Recta azul: sin el punto rojo; recta roja: con él.", fig.alt="Tres paneles con la misma nube de puntos. En el primero, un punto rojo arriba en el centro y las dos rectas casi paralelas. En el segundo, un punto rojo a la derecha sobre la recta y las dos rectas iguales. En el tercero, un punto rojo abajo a la derecha y la recta roja inclinada hacia él", out.width="100%"}
+set.seed(2026)
+x0 <- runif(20, 2, 8)
+y0 <- 3 + 1.5 * x0 + rnorm(20, 0, 1)
+extras <- list(Atípico = c(5, 18), "Alto apalancamiento" = c(16, 3 + 1.5 * 16),
+               Influyente = c(16, 8))
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+for (nombre in names(extras)) {
+  xe <- c(x0, extras[[nombre]][1]); ye <- c(y0, extras[[nombre]][2])
+  plot(x0, y0, pch = 19, col = "gray60", las = 1, xlim = c(0, 17), ylim = c(0, 30),
+       xlab = "x", ylab = "y", main = nombre)
+  points(extras[[nombre]][1], extras[[nombre]][2], pch = 19, col = "#C0392B", cex = 1.6)
+  abline(lm(y0 ~ x0), col = "#034A94", lwd = 2)
+  abline(lm(ye ~ xe), col = "#C0392B", lwd = 2, lty = 2)
+}
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se mide si un punto es inusual en x?**</span>
+
+El **apalancamiento** (*leverage*) de la observación $i$ mide qué tan lejos está su $x$ del centro de los datos:
+
+$$
+h_{ii} = \frac{1}{n} + \frac{(x_i - \bar{x})^2}{S_{xx}}
+$$
+
+Va de $1/n$ (cuando $x_i = \bar{x}$) a 1, y su promedio es $p/n$, donde $p$ es el número de coeficientes. Un punto con apalancamiento alto es como una persona sentada lejos del centro de un balancín: con poco peso puede inclinar la recta. Un criterio usual marca los puntos con $h_{ii} > 2p/n$.
+
+```{r}
+h <- hatvalues(modelo)
+2 * p / n                              # umbral
+sort(h, decreasing = TRUE)[1:5]        # los cinco mayores
+```
+
+La observación 39 tiene un apalancamiento de `r round(h[39], 3)`: casi 14 veces el promedio ($p/n = `r round(p / n, 4)`$). Su abdomen de 148 cm está muy lejos de la media de `r round(mean(grasa$abdomen), 1)` cm.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se mide si un punto es atípico en y?**</span>
+
+Un punto es **atípico** si su residual es muy grande. Para comparar se usa el **residual estudentizado** (`rstudent()`), que se calcula con $\hat{\sigma}_{(i)}$, la estimación de $\sigma$ sin la observación $i$. Así el propio punto no infla la escala con la que se mide. Si el modelo es correcto, sigue una distribución $t$ con $n - p - 1$ grados de libertad.
+
+```{r}
+rs <- rstudent(modelo)
+sort(abs(rs), decreasing = TRUE)[1:5]
+```
+
+Con 252 observaciones, es normal que unas cuantas pasen de ±2 por azar: se espera que lo haga cerca del 5 %, unas 13. Para decidir si **el más extremo** es atípico, se usa la **corrección de Bonferroni**: se multiplica su valor p por $n$, porque se está buscando el mayor entre $n$ residuales.
+
+```{r}
+valor_p <- 2 * pt(-abs(rs[39]), df = n - p - 1)
+c(valor_p = valor_p, bonferroni = min(1, n * valor_p))
+```
+
+Aun con la corrección, el valor p de la observación 39 es `r round(min(1, n * valor_p), 4)`: es un atípico. La función `outlierTest()` del paquete `car` hace este mismo cálculo.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se mide la influencia?**</span>
+
+Un punto es **influyente** si quitarlo cambia de forma importante el modelo. Las medidas comparan el ajuste con y sin cada observación:
+
+| Medida | Qué mide | En R | Umbral orientativo |
+|:-------|:---------|:-----|:-------------------|
+| Distancia de Cook, $D_i$ | Cuánto cambian **todos** los coeficientes juntos | `cooks.distance()` | $4/n$; mayor que 1 es muy influyente |
+| DFBETAS | Cuánto cambia **cada** coeficiente, en errores estándar | `dfbetas()` | $2/\sqrt{n}$ en valor absoluto |
+| DFFITS | Cuánto cambia el valor ajustado del propio punto | `dffits()` | $2\sqrt{p/n}$ en valor absoluto |
+| COVRATIO | Cuánto cambia la precisión de los coeficientes | `covratio()` | Fuera de $1 \pm 3p/n$ |
+
+La distancia de Cook combina las dos ideas anteriores:
+
+$$
+D_i = \frac{r_i^2}{p} \cdot \frac{h_{ii}}{1 - h_{ii}}
+$$
+
+donde $r_i$ es el residual estandarizado. Es grande si el punto está lejos de la recta **y** tiene apalancamiento alto.
+
+Los umbrales son **orientativos**: cada libro propone uno distinto y ninguno es una prueba de hipótesis. Lo útil es ver qué observaciones se separan claramente de las demás.
+
+```{r}
+medidas <- data.frame(id = grasa$id, abdomen = grasa$abdomen, grasa = grasa$grasa,
+                      h = h, rstudent = rs, cook = cooks.distance(modelo),
+                      dfbetas_pend = dfbetas(modelo)[, 2])
+medidas <- medidas[order(medidas$cook, decreasing = TRUE), ]
+round(head(medidas, 5), 3)
+c(cook = 4 / n, dfbetas = 2 / sqrt(n))
+```
+
+La observación 39 tiene una distancia de Cook de `r round(cooks.distance(modelo)[39], 2)`, mayor que 1 y `r round(cooks.distance(modelo)[39] / sort(cooks.distance(modelo), decreasing = TRUE)[2])` veces la segunda más grande. Su DFBETAS para la pendiente, `r round(dfbetas(modelo)[39, 2], 2)`, dice que quitarla cambia la pendiente en casi una vez y media su error estándar. Con el umbral $4/n$, `r sum(cooks.distance(modelo) > 4 / n)` observaciones superan el criterio, pero solo la 39 se separa del resto.
+
+`influence.measures()` calcula todas las medidas a la vez y marca con un asterisco las que superan sus criterios (que no son exactamente los de la tabla):
+
+```{r}
+summary(influence.measures(modelo))
+```
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se ven en un gráfico?**</span>
+
+El gráfico de **apalancamiento contra residual estudentizado**, con el tamaño de cada punto proporcional a la distancia de Cook, reúne las tres ideas:
+
+```{r, fig.width=7, fig.height=4.8, fig.cap="Apalancamiento y residual estudentizado de cada hombre. El área de cada círculo es proporcional a su distancia de Cook.", fig.alt="Nube de círculos pequeños a la izquierda, entre menos 2 y 2; un círculo grande aislado abajo a la derecha, con apalancamiento 0.11 y residual menos 4.3, marcado con el número 39", out.width="75%", fig.align="center"}
+plot(h, rs, cex = 0.5 + 6 * sqrt(cooks.distance(modelo)), pch = 21,
+     bg = "#034A9440", col = "#034A94", las = 1, xlim = c(0, 0.12), ylim = c(-5, 4),
+     xlab = "Apalancamiento", ylab = "Residual estudentizado")
+abline(h = c(-2, 2), lty = 2, col = "gray50")
+abline(v = 2 * p / n, lty = 2, col = "gray50")
+destacar <- c(39, 182, 216)
+text(h[destacar], rs[destacar], labels = destacar, pos = 2, col = "#C0392B")
+```
+
+| Zona del gráfico | Tipo de punto |
+|:-----------------|:--------------|
+| Izquierda, entre −2 y 2 | Usual |
+| Izquierda, fuera de ±2 | Atípico, poco influyente |
+| Derecha, entre −2 y 2 | Alto apalancamiento, poco influyente |
+| Derecha, fuera de ±2 | Influyente |
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué hacer con un punto inusual?**</span>
+
+Detectar un punto no es razón para borrarlo. Primero hay que **averiguar por qué es inusual**:
+
+| Qué es | Qué hacer |
+|:-------|:----------|
+| Un error de digitación o de medición que se puede corregir | Corregirlo |
+| Un error que no se puede corregir (un valor imposible) | Eliminarlo e informarlo |
+| Un caso de otra población (por ejemplo, una mujer en un estudio de hombres) | Excluirlo, explicar por qué y limitar las conclusiones a la población estudiada |
+| Un caso real y válido | Conservarlo. Reportar el ajuste con y sin él, y pensar si falta una variable que lo explique |
+
+En los datos de grasa hay dos casos para decidir:
+
+- **Observación 182: 0 % de grasa.** Es imposible en una persona viva: es un error. Pero no es influyente: tiene el abdomen más pequeño de la muestra (69.4 cm), y aun así su apalancamiento es moderado ($h = `r round(h[182], 3)`$) y queda cerca de la recta (residual estudentizado `r round(rs[182], 2)`). **Un error no siempre es influyente.**
+- **Observación 39: abdomen de 148 cm y 165 kg.** No hay razones para pensar que sea un error: es un hombre con obesidad severa. Es muy influyente. **Un punto influyente no siempre es un error.**
+
+```{r}
+ajuste <- function(datos) {
+  m <- lm(grasa ~ abdomen, data = datos)
+  c(intercepto = coef(m)[[1]], pendiente = coef(m)[[2]], sigma = sigma(m),
+    r2 = summary(m)$r.squared)
+}
+round(rbind(todas = ajuste(grasa),
+            sin_182 = ajuste(grasa[grasa$id != 182, ]),
+            sin_39 = ajuste(grasa[grasa$id != 39, ]),
+            sin_39_ni_182 = ajuste(grasa[!grasa$id %in% c(39, 182), ])), 3)
+```
+
+Quitar la 182 casi no cambia nada. Quitar la 39 sube la pendiente de `r round(ajuste(grasa)["pendiente"], 3)` a `r round(ajuste(grasa[grasa$id != 39, ])["pendiente"], 3)`. Una decisión razonable para estos datos:
+
+- Eliminar la observación 182, por ser un valor imposible, e informarlo.
+- Conservar la 39 y reportar que, sin ella, la pendiente es de `r round(ajuste(grasa[!grasa$id %in% c(39, 182), ])["pendiente"], 2)` en lugar de `r round(ajuste(grasa[grasa$id != 182, ])["pendiente"], 2)`. La conclusión principal (la grasa aumenta con el abdomen) no cambia; la magnitud sí, un poco.
+- Aclarar que el modelo describe bien a los hombres con abdómenes entre 70 y 125 cm, donde están casi todos los datos, y que hay muy poca información por encima.
+
+Que $\hat{\sigma}$ y $R^2$ mejoren al quitar un punto **no** justifica quitarlo: por construcción, quitar el punto peor ajustado siempre mejora esas cifras.
+
+<br/>
+
+## <span style="color:#034a94">**Explore la influencia**</span>
+
+En el gráfico interactivo hay 20 hombres de la muestra (puntos grises) y un hombre más (punto rojo) que usted puede mover con los dos deslizadores. La recta azul se ajusta sin el punto rojo; la recta roja, con él. Compruebe que:
+
+- En el centro de los valores de abdomen, el punto rojo casi no cambia la pendiente, aunque esté lejos de la recta.
+- A la derecha, sobre la recta azul, el punto tiene apalancamiento alto pero distancia de Cook pequeña.
+- A la derecha y lejos de la recta, la recta roja gira hacia el punto y la distancia de Cook pasa de 1.
+
+```{r, echo=FALSE}
+set.seed(2026)
+base <- grasa[sample(setdiff(grasa$id, c(39, 182)), 20), c("abdomen", "grasa")]
+datos_js <- paste0("[", paste0("[", base$abdomen, ",", base$grasa, "]", collapse = ","), "]")
+knitr::asis_output(paste0("<script>var INF_DATOS = ", datos_js, ";</script>"))
+```
+
+```{=html}
+<div id="inf-app" style="border:1px solid #d0d7de;border-radius:6px;padding:14px;margin:10px 0 18px 0;background:#fafbfc;">
+<div style="display:flex;flex-wrap:wrap;gap:18px;">
+<div style="flex:1 1 250px;min-width:230px;font-size:0.95em;">
+<div>Abdomen del punto rojo: <b><span id="inf-x-v">135</span> cm</b></div>
+<input type="range" id="inf-x" min="65" max="150" step="1" value="135" style="width:100%;">
+<div style="margin-top:10px;">Grasa del punto rojo: <b><span id="inf-y-v">10</span> %</b></div>
+<input type="range" id="inf-y" min="0" max="50" step="1" value="10" style="width:100%;">
+<div id="inf-res" style="margin-top:12px;line-height:1.7;"></div>
+</div>
+<div style="flex:2 1 380px;min-width:300px;">
+<canvas id="inf-graf" width="560" height="340" style="width:100%;height:auto;border:1px solid #e1e4e8;background:#fff;"></canvas>
+<div style="font-size:0.85em;color:#555;">Puntos grises: 20 hombres de la muestra. Recta azul: ajuste sin el punto rojo. Recta roja punteada: ajuste con el punto rojo.</div>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function ajustar(xs, ys){
+    var n = xs.length, mx = 0, my = 0, sxx = 0, sxy = 0, sce = 0, i;
+    for (i = 0; i < n; i++) { mx += xs[i] / n; my += ys[i] / n; }
+    for (i = 0; i < n; i++) { sxx += (xs[i] - mx) * (xs[i] - mx); sxy += (xs[i] - mx) * (ys[i] - my); }
+    var b1 = sxy / sxx, b0 = my - b1 * mx;
+    for (i = 0; i < n; i++) { var e = ys[i] - b0 - b1 * xs[i]; sce += e * e; }
+    return { b0: b0, b1: b1, mx: mx, sxx: sxx, s2: sce / (n - 2), n: n };
+  }
+  function actualizar(){
+    var xr = +$("inf-x").value, yr = +$("inf-y").value;
+    $("inf-x-v").textContent = xr; $("inf-y-v").textContent = yr;
+    var xs = INF_DATOS.map(function(d){ return d[0]; }), ys = INF_DATOS.map(function(d){ return d[1]; });
+    var sin = ajustar(xs, ys);
+    var con = ajustar(xs.concat([xr]), ys.concat([yr]));
+    var n = con.n, p = 2;
+    var h = 1 / n + (xr - con.mx) * (xr - con.mx) / con.sxx;
+    var e = yr - con.b0 - con.b1 * xr;
+    var r = e / Math.sqrt(con.s2 * (1 - h));
+    var s2i = ((n - p) * con.s2 - e * e / (1 - h)) / (n - p - 1);
+    var t = e / Math.sqrt(Math.max(s2i, 1e-12) * (1 - h));
+    var cook = r * r / p * h / (1 - h);
+    var marca = function(v, u){ return v > u ? ' <span style="color:#C0392B;">(supera ' + u.toFixed(2) + ')</span>' : ''; };
+    $("inf-res").innerHTML =
+      "Pendiente sin el punto: <b>" + sin.b1.toFixed(3) + "</b><br>" +
+      "Pendiente con el punto: <b>" + con.b1.toFixed(3) + "</b><br>" +
+      "Apalancamiento: <b>" + h.toFixed(3) + "</b>" + marca(h, 2 * p / n) + "<br>" +
+      "Residual estudentizado: <b>" + t.toFixed(2) + "</b>" + marca(Math.abs(t), 2) + "<br>" +
+      "Distancia de Cook: <b>" + cook.toFixed(2) + "</b>" + marca(cook, 4 / n);
+    dibujar(xs, ys, xr, yr, sin, con);
+  }
+  function dibujar(xs, ys, xr, yr, sin, con){
+    var c = $("inf-graf"), g = c.getContext("2d"), W = c.width, H = c.height, izq = 46, der = 12, arr = 12, abj = 36;
+    var x0 = 60, x1 = 155, y0 = 0, y1 = 55;
+    function X(v){ return izq + (W - izq - der) * (v - x0) / (x1 - x0); }
+    function Y(v){ return arr + (H - arr - abj) * (1 - (v - y0) / (y1 - y0)); }
+    g.clearRect(0, 0, W, H); g.font = "11px sans-serif"; g.strokeStyle = "#e5e5e5"; g.fillStyle = "#333"; g.lineWidth = 1;
+    for (var v = 0; v <= 50; v += 10) { g.beginPath(); g.moveTo(izq, Y(v)); g.lineTo(W - der, Y(v)); g.stroke(); g.fillText(v, 18, Y(v) + 4); }
+    for (var u = 60; u <= 150; u += 15) { g.fillText(u, X(u) - 8, H - abj + 15); }
+    g.fillText("Abdomen (cm)", W / 2 - 30, H - 4);
+    g.save(); g.translate(10, H / 2 + 30); g.rotate(-Math.PI / 2); g.fillText("Grasa (%)", 0, 0); g.restore();
+    g.save(); g.beginPath(); g.rect(izq, arr, W - izq - der, H - arr - abj); g.clip();
+    g.strokeStyle = "#034A94"; g.lineWidth = 2; g.beginPath(); g.moveTo(X(x0), Y(sin.b0 + sin.b1 * x0)); g.lineTo(X(x1), Y(sin.b0 + sin.b1 * x1)); g.stroke();
+    g.strokeStyle = "#C0392B"; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(X(x0), Y(con.b0 + con.b1 * x0)); g.lineTo(X(x1), Y(con.b0 + con.b1 * x1)); g.stroke(); g.setLineDash([]);
+    g.restore();
+    g.fillStyle = "#9a9a9a";
+    for (var i = 0; i < xs.length; i++) { g.beginPath(); g.arc(X(xs[i]), Y(ys[i]), 4, 0, 2 * Math.PI); g.fill(); }
+    g.fillStyle = "#C0392B"; g.beginPath(); g.arc(X(xr), Y(yr), 7, 0, 2 * Math.PI); g.fill();
+  }
+  $("inf-x").addEventListener("input", actualizar);
+  $("inf-y").addEventListener("input", actualizar);
+  actualizar();
+})();
+</script>
+```
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Borrar los puntos que superan un umbral | Se toma el umbral como una prueba | Averiguar por qué el punto es inusual antes de decidir |
+| Quitar un punto porque mejora $R^2$ o $\hat{\sigma}$ | Quitar el peor ajustado siempre mejora esas cifras | Decidir por el origen del dato, no por el ajuste |
+| Llamar influyente a todo punto de alto apalancamiento | El apalancamiento es influencia potencial | Influyente es el que cambia la recta; mirar Cook y DFBETAS |
+| Llamar atípico a un punto lejano en $x$ que sigue la recta | Atípico se refiere al residual | Es un punto de alto apalancamiento |
+| Mezclar varios umbrales de Cook en el mismo análisis | Cada libro propone uno | Elegir un criterio, decirlo y mirar qué puntos se separan |
+| Eliminar puntos sin reportarlo | Se pierde transparencia | Reportar siempre el ajuste con y sin ellos |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Medidas a mano**</span>
+
+Calcule el apalancamiento y la distancia de Cook de la observación 39 con las fórmulas de la página y compárelos con `hatvalues()` y `cooks.distance()`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+x <- grasa$abdomen
+h39 <- 1 / n + (x[39] - mean(x))^2 / sum((x - mean(x))^2)
+r39 <- rstandard(modelo)[39]
+c(h = h39, cook = r39^2 / p * h39 / (1 - h39))
+c(h = hatvalues(modelo)[39], cook = cooks.distance(modelo)[39])
+```
+
+Coinciden.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. El modelo del pecho**</span>
+
+Calcule la distancia de Cook en el modelo de la grasa según el pecho. ¿Cuáles son las tres observaciones más influyentes? ¿Cuánto cambia la pendiente sin la más influyente?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+modelo_pecho <- lm(grasa ~ pecho, data = grasa)
+sort(cooks.distance(modelo_pecho), decreasing = TRUE)[1:3]
+c(con = coef(modelo_pecho)[2],
+  sin = coef(lm(grasa ~ pecho, data = grasa[grasa$id != 39, ]))[2])
+```
+
+La observación 39 vuelve a ser la más influyente, pero ahora casi empata con la 216 y su distancia de Cook es mucho menor que en el modelo del abdomen. Aunque tiene el pecho más grande de la muestra, su grasa queda más cerca de lo que predice este modelo. Un punto puede ser muy influyente en un modelo y poco en otro.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Un error de digitación**</span>
+
+Suponga que al digitar el abdomen del hombre 100 se escribió 190.0 en lugar de su valor real. Cambie ese dato en una copia de la base, ajuste el modelo y calcule su distancia de Cook. ¿Lo detectaría?
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+copia <- grasa
+copia$abdomen[copia$id == 100] <- 190
+m_copia <- lm(grasa ~ abdomen, data = copia)
+c(abdomen_real = grasa$abdomen[100], grasa = grasa$grasa[100])
+cooks.distance(m_copia)[100]
+coef(m_copia)[2]
+```
+
+Sí. Con 190 cm de abdomen y una grasa común, el punto tiene apalancamiento muy alto y queda lejos de la recta: su distancia de Cook es enorme y la pendiente cae mucho. Por eso conviene revisar las medidas de influencia antes de interpretar el modelo.
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer o descargar gratis**</span>
+
+- Flórez, A. J. (2026). [*Notas de clase: Modelo lineal general I*](https://alvaroflorez.github.io/MLG1/). Notas en el sitio del autor. El capítulo 5 trata los valores atípicos, el apalancamiento y las medidas de influencia con datos de las Naciones Unidas.
+- Hernández, F., Usuga, O. y Mazo, M. (2024). [*Modelos de regresión con R*](https://fhernanb.github.io/libro_regresion/). Versión gratuita en el sitio de los autores.
+
+### <span style="color:#034a94">**Otros libros**</span>
+
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley. Capítulo 6.
+- Fox, J. (2016). *Applied Regression Analysis and Generalized Linear Models* (3.ª ed.). Sage. Capítulo 11.
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Belsley, D. A., Kuh, E. y Welsch, R. E. (1980). *Regression Diagnostics: Identifying Influential Data and Sources of Collinearity*. Wiley.
+- Cook, R. D. (1977). Detection of influential observation in linear regression. *Technometrics*, 19(1), 15-18.
+- Flórez, A. J. (2026). *Notas de clase: Modelo lineal general I*. https://alvaroflorez.github.io/MLG1/
+- Fox, J. (2016). *Applied Regression Analysis and Generalized Linear Models* (3.ª ed.). Sage.
+- Montgomery, D. C., Peck, E. A. y Vining, G. G. (2012). *Introduction to Linear Regression Analysis* (5.ª ed.). Wiley.
+
+<br/>
+
+*Última revisión: 9 de noviembre de 2026.*
+
+<br/><br/>

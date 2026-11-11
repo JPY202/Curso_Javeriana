@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap');
+
+
+
+.section.sidebar { 
+  top: 61px;
+  border-bottom: 10px solid #063971;
+  border-left: 10px solid gray;
+  background-color: gray;
+}
+
+.navbar {
+background-color: #ffffff;
+border-color:#ffffff;
+}
+
+.sidebar{ 
+  background-color: #8acfe6;
+}
+
+body {
+    font-family: 'Barlow SemiCondensed', sans-serif;
+    font-size: 19px;
+}
+
+/* Content Boxes
+------------------------------------------------------------ */
+ 
+.content-box-blue,
+.content-box-gray,
+.content-box-green,
+.content-box-purple,
+.content-box-red,
+.content-box-yellow {
+    margin: 0 0 25px;
+    overflow: hidden;
+    padding: 20px;
+}
+ 
+.content-box-blue {
+    background-color: #d8ecf7;
+    border: 1px solid #afcde3;
+}
+ 
+.content-box-gray {
+    background-color: #e2e2e2;
+    border: 1px solid #bdbdbd;
+}
+ 
+.content-box-green {
+    background-color: #d9edc2;
+    border: 1px solid #b2ce96;
+}
+ 
+.content-box-purple {
+    background-color: #e2e2f9;
+    border: 1px solid #bebde9;
+}
+ 
+.content-box-red {
+    background-color: #f9dbdb;
+    border: 1px solid #e9b3b3;
+}
+ 
+.content-box-yellow {
+    background-color: #fef5c4;
+    border: 1px solid #fadf98;
+    margin: 1;
+}
+
+.my-pre{
+  line-height:1.2em;
+  background:linear-gradient(180deg,#ccc 0,#ccc 1.2em,#eee 0);
+  background-size:2.4em 2.4em;
+  background-origin:content-box;
+  
+  /* some extra styles*/
+  padding:0 20px;
+  text-align:justify;
+  font-family:calibri,arial,sans-serif;
+}
+
+
+:root{
+    --primer-color:#F7B733;
+    --segundo-color:#E4660E;
+    --tercer-color: #EFC3A5;
+}
+
+/* Índice lateral */
+#TOC { font-size: 16px; }
+#TOC strong { font-weight: 500; }
+#TOC .list-group-item.active,
+#TOC .list-group-item.active span,
+#TOC .list-group-item.active strong { color: #ffffff; }
+
+/* Lectura en pantallas pequeñas */
+@media (max-width: 767px) {
+  body { overflow-x: hidden; }
+  table { display: block; overflow-x: auto; }
+  pre { max-width: 100%; overflow-x: auto; }
+  a { overflow-wrap: anywhere; }
+}
+
+/* Tarjetas de definiciones */
+.definiciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 18px 0 22px; }
+.definicion { display: flex; flex-direction: column; justify-content: space-between; background: #f4f7fb; border-left: 5px solid #034a94; border-radius: 6px; padding: 16px 18px; }
+.definicion p { font-style: italic; margin: 0 0 12px; }
+.definicion-autor { color: #034a94; font-weight: bold; font-size: 0.9em; text-align: right; }
+@media (max-width: 767px) { .definiciones { grid-template-columns: 1fr; } }
+
+/* Tarjetas de contenido de la portada */
+.temas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 45%), 1fr)); gap: 14px; margin: 18px 0 22px; }
+.tema { display: block; background: #f4f7fb; border-left: 5px solid #034a94; border-radius: 6px; padding: 16px 18px; color: #333333; }
+a.tema:hover, a.tema:focus { background: #e4edf7; color: #333333; text-decoration: none; }
+.tema-numero { display: block; color: #034a94; font-size: 0.85em; font-weight: bold; }
+.tema-titulo { display: block; color: #034a94; font-size: 1.15em; font-weight: bold; margin-bottom: 6px; }
+.tema-texto { display: block; }
+.tema-pendiente { border-left-color: #a0a7ae; background: #f5f5f5; opacity: 0.75; }
+.tema-pendiente .tema-numero, .tema-pendiente .tema-titulo { color: #686868; }
+
+/* Pies de figura numerados en cada página */
+body { counter-reset: figura; }
+div.figure { text-align: center; margin: 16px 0; }
+div.figure img { display: inline-block; }
+p.caption { text-align: center; color: #333333; margin-top: 8px; }
+p.caption::before { counter-increment: figura; content: "Figura " counter(figura) ". "; color: #034a94; font-weight: bold; }
+@media (max-width: 480px) {
+  .temas { gap: 10px; }
+  .tema { padding: 10px 10px; font-size: 0.85em; }
+  .tema-titulo { font-size: 1em; }
+}
+
+/* El código dentro de texto y tablas se ajusta en pantallas pequeñas */
+p code, td code, li code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Caja usada en las páginas de Casos e informe */
+:root {
+  --color-nota: #0EB0C6;
+  --texto-cajas: #ffffff;
+  --borde-nota: #0A91A8;
+}
+
+.caja-nota {
+    background-color: var(--color-nota);
+    color: var(--texto-cajas); /* Texto blanco */
+    border: 5px solid var(--borde-nota); /* Azul claro */
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.caja-nota h3 {
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+/* Código y salidas de R en bloques separados y con aspecto distinto */
+pre.r {
+  background-color: #f5f7fa;
+  border: 1px solid #d0d7de;
+  border-left: 4px solid #034a94;
+  margin-bottom: 4px;
+}
+pre.r::before {
+  content: "Código R";
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: #034a94;
+  margin-bottom: 4px;
+}
+.main-container pre:not(.r) {
+  background-color: #ffffff;
+  border: 1px dashed #b0b7bf;
+  border-left: 4px solid #FF7F00;
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+.main-container pre:not(.r)::before {
+  content: "Salida";
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: #c45f00;
+  margin-bottom: 4px;
+}
