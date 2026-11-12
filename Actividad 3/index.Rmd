@@ -1,0 +1,227 @@
+---
+title: <span style="color:#034a94"> **Actividad 3. ¿Cuánto tiempo prometerle al cliente?**</span>
+author: "Métodos y Simulación Estadística"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: none
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = NA)
+```
+
+<br/>
+
+Un modelo de regresión no solo describe una relación: sirve para tomar decisiones, y cada decisión exige escoger el intervalo correcto. En esta actividad se usa el modelo de regresión lineal simple para fijar el tiempo de entrega que una aplicación le promete a sus clientes. Además, se revisan con simulación tres afirmaciones de una herramienta de inteligencia artificial.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cuál es el caso?**</span>
+
+La empresa de domicilios de Cali de la [Actividad 2](../actividad2/index.html) muestra al cliente un tiempo estimado de entrega cuando hace el pedido. Hoy lo calcula con una regla fija:
+
+$$
+\text{tiempo prometido} = 20 + 3 \times \text{distancia en km}
+$$
+
+En el último mes aumentaron las quejas de pedidos que llegan tarde, sobre todo de clientes que viven lejos de los restaurantes. La gerencia quiere una regla nueva que cumpla una meta: **que al menos el 90 % de los pedidos llegue antes del tiempo prometido, sin importar la distancia**. No quiere prometer tiempos innecesariamente largos, porque los clientes cancelan cuando ven una espera muy alta.
+
+El caso y los datos son ficticios.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué datos se usan?**</span>
+
+Los datos están en el archivo [datos_actividad3.xlsx](data/datos_actividad3.xlsx), hoja `pedidos`. Son los 1,500 pedidos entregados en moto en octubre de 2026. Cada fila es un pedido.
+
+| Variable | Descripción | Valores |
+|:---------|:------------|:--------|
+| `pedido` | Código del pedido | P0001 a P1500 |
+| `fecha` | Fecha del pedido | 2026-10-01 a 2026-10-31 |
+| `distancia_km` | Distancia del restaurante al cliente que registró el GPS, en kilómetros | Número mayor o igual a 0 |
+| `tiempo_prometido_min` | Tiempo que la aplicación le prometió al cliente con la regla actual, en minutos | Número entero |
+| `tiempo_min` | Tiempo real de entrega, desde el pago hasta que el cliente recibe el pedido, en minutos | Número positivo |
+
+Para leer los datos se usa `readxl::read_excel("data/datos_actividad3.xlsx", sheet = "pedidos")`.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se debe hacer?**</span>
+
+En todo el informe, cuando se pida comparar por distancia, use estos cinco rangos: menos de 2 km, de 2 a 4, de 4 a 6, de 6 a 8 y 8 km o más. Con `cut(distancia_km, c(0, 2, 4, 6, 8, Inf), right = FALSE)` se crean los rangos.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 1. ¿Cómo se relacionan la distancia y el tiempo?**</span>
+
+a. Describa la distancia y el tiempo de entrega con indicadores y gráficos, y presente un gráfico de dispersión del tiempo según la distancia.
+
+b. Calcule los coeficientes de correlación de Pearson y de Spearman. ¿Por qué no coinciden? Use el gráfico de (a) para explicarlo.
+
+c. Calcule el porcentaje de pedidos que llegaron a tiempo con la regla actual (`tiempo_min` menor o igual que `tiempo_prometido_min`), en total y por rango de distancia. ¿El porcentaje total refleja lo que viven los clientes que viven lejos?
+
+<br/>
+
+### <span style="color:#034a94">**Problema 2. ¿Hay registros imposibles o puntos influyentes?**</span>
+
+a. Calcule la velocidad promedio de cada entrega en km/h. Revise también las distancias. ¿Qué registros son imposibles para una moto en Cali? Explique qué error de registro pudo producir cada grupo.
+
+b. Ajuste el modelo de regresión lineal simple del tiempo según la distancia con todos los pedidos. Calcule el apalancamiento, los residuales estudentizados y la distancia de Cook, con los umbrales de la página [Puntos atípicos e influyentes](../unidad3/recurso600.html). Presente los pedidos más influyentes en una tabla.
+
+c. Decida qué hacer con cada grupo de puntos inusuales y justifique la decisión. Distinga los errores de registro de los pedidos reales con valores extremos. Compare en una tabla la pendiente, el intercepto, el $R^2$ y las dos correlaciones con todos los pedidos y con los pedidos que conserva. Desde aquí, trabaje con los pedidos que conserva.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 3. ¿Cuántos minutos suma cada kilómetro?**</span>
+
+a. Escriba el modelo ajustado. Interprete la pendiente y el intercepto en el contexto del caso. ¿Tiene sentido interpretar el intercepto?
+
+b. Presente las pruebas t y F y el intervalo de confianza del 95 % para la pendiente. Interprete el $R^2$: ¿qué factores, fuera de la distancia, podrían explicar la variación que queda?
+
+<br/>
+
+### <span style="color:#034a94">**Problema 4. ¿Se cumplen los supuestos?**</span>
+
+a. Revise los supuestos del modelo con los gráficos de residuales y con las pruebas de la página [Revisión de los supuestos](../unidad3/recurso401.html). Calcule la desviación estándar de los residuales en cada rango de distancia. ¿Qué supuesto no se cumple y qué consecuencias tiene?
+
+b. Calcule el intervalo de confianza del 95 % para la pendiente con errores estándar robustos (HC3) y compárelo con el usual.
+
+c. Ajuste el modelo por mínimos cuadrados ponderados con los cuatro pasos de la página [Varianza no constante](../unidad3/recurso501.html). Muestre los residuales ponderados y compare la pendiente y su intervalo con los de (b).
+
+d. *(Opcional)* Compare con un modelo en logaritmos ([Transformaciones](../unidad3/recurso500.html)). Si decide usarlo en el problema 5, explique cómo vuelve a la escala de minutos.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 5. ¿Qué tiempo prometer?**</span>
+
+Para que el 90 % de los pedidos llegue antes de la promesa, la promesa debe dejar por encima solo el 10 % de los tiempos. Por eso se usa el **límite superior** de un intervalo del 80 % (`level = 0.80`), que deja 10 % en cada cola.
+
+a. Para un pedido de 2 km y otro de 8 km, calcule el límite superior de: el intervalo de confianza para la media con el modelo de mínimos cuadrados ordinarios (MCO), el intervalo de predicción con MCO y el intervalo de predicción con el modelo ponderado (MCP). Preséntelos en una tabla junto con la regla actual.
+
+    En el modelo ponderado, `predict()` necesita el peso de cada pedido nuevo: `predict(mcp, nuevos, interval = "prediction", level = 0.80, weights = w_nuevos)`, donde `w_nuevos` es 1 entre el cuadrado de la desviación estándar estimada para esas distancias (paso 2 de la página [Varianza no constante](../unidad3/recurso501.html)).
+
+b. Explique con sus palabras la diferencia entre el intervalo de confianza para la media y el intervalo de predicción ([Estimación de la media y predicción](../unidad3/recurso301.html)). ¿Cuál de los dos sirve para prometer un tiempo a un cliente?
+
+c. Aplique cada una de las cuatro reglas (la actual y las tres de (a)) a los pedidos de octubre y calcule el porcentaje de pedidos que habrían llegado a tiempo, en total y por rango de distancia. Presente los resultados en una tabla y en un gráfico.
+
+d. Proponga a la gerencia una regla de la forma $a + b \times \text{distancia}$, con números redondos, y diga qué gana y qué pierde el cliente frente a la regla actual en los pedidos cercanos y en los lejanos.
+
+<br/>
+
+### <span style="color:#034a94">**Problema 6. ¿Tiene razón la inteligencia artificial?**</span>
+
+Un analista de la empresa consultó una herramienta de inteligencia artificial generativa y recibió estas tres afirmaciones:
+
+> **A.** *"Para cumplir la meta del 90 %, basta con prometer el límite superior del intervalo de confianza del 80 % para la media del tiempo según la distancia."*
+>
+> **B.** *"Como la varianza no es constante, la pendiente estimada por mínimos cuadrados ordinarios está sesgada. Por eso hay que usar mínimos cuadrados ponderados."*
+>
+> **C.** *"Los errores estándar robustos corrigen el intervalo de confianza para la pendiente, pero no corrigen el intervalo de predicción."*
+
+Algunas son correctas y otras no. Verifíquelas con un estudio de simulación:
+
+a. **Valores verdaderos.** Suponga que el modelo verdadero es el ponderado del problema 4: intercepto y pendiente de MCP, y errores normales con desviación estándar igual al valor ajustado de la regresión auxiliar del paso 2 multiplicado por $\sqrt{\pi/2} \approx 1.25$. *El factor se usa porque esa regresión estima el promedio del valor absoluto del error, que en una normal es la desviación estándar multiplicada por $\sqrt{2/\pi}$.* Use las distancias de los pedidos que conservó.
+
+b. **Simulación.** Repita 1,000 veces: genere tiempos con el modelo verdadero, ajuste MCO y MCP como en el problema 4, y calcule las tres promesas del problema 5 para 2 km y 8 km. En cada repetición, guarde:
+    - La probabilidad de que un pedido nuevo llegue a tiempo con cada promesa. Se calcula con `pnorm(promesa, media_verdadera, de_verdadera)`.
+    - La pendiente de MCO y la de MCP.
+    - Si el intervalo del 95 % para la pendiente, usual y con HC3, contiene la pendiente verdadera.
+
+c. **Resultados.** Presente en una tabla el promedio de cada resultado y su error Monte Carlo (desviación estándar entre las repeticiones dividida por $\sqrt{1000}$).
+
+d. **Veredicto.** Para cada afirmación, diga si es correcta, incorrecta o incompleta, con la cifra de la simulación que lo muestra. Si es incorrecta, escríbala de forma correcta. Use esta tabla:
+
+    | Afirmación | Veredicto | Evidencia de la simulación | Versión correcta |
+    |:-----------|:----------|:---------------------------|:-----------------|
+    | A | | | |
+    | B | | | |
+    | C | | | |
+
+e. *(Opcional)* Haga la misma pregunta a una herramienta de inteligencia artificial y agregue una fila a la tabla con su respuesta y su verificación.
+
+<br/>
+
+### <span style="color:#034a94">**Resumen para la gerencia**</span>
+
+Al inicio del informe, escriba un resumen de máximo una página para personas que no conocen estadística: qué pasa hoy con la regla actual, qué regla propone, qué porcentaje de pedidos llegaría a tiempo en cercanos y lejanos, y qué incertidumbre tiene la recomendación. Sin fórmulas ni código.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué páginas del curso sirven?**</span>
+
+| Problema | Páginas del curso |
+|:---------|:-----------------------|
+| 1 | [Correlación de Pearson](../unidad3/recurso100.html) y [Correlación de Spearman y Kendall](../unidad3/recurso101.html). De la Unidad 1: [Variable numérica](../unidad1/recurso303.html) |
+| 2 | [Puntos atípicos e influyentes](../unidad3/recurso600.html) |
+| 3 | [Modelo de regresión lineal simple](../unidad3/recurso200.html), [Estimación de los coeficientes](../unidad3/recurso201.html) y [Pruebas, intervalos y R²](../unidad3/recurso300.html) |
+| 4 | [Supuestos del modelo](../unidad3/recurso400.html), [Revisión de los supuestos](../unidad3/recurso401.html), [Varianza no constante](../unidad3/recurso501.html) y [Transformaciones](../unidad3/recurso500.html) |
+| 5 | [Estimación de la media y predicción](../unidad3/recurso301.html) y [Varianza no constante](../unidad3/recurso501.html) |
+| 6 | [Propiedades de los estimadores](../unidad3/recurso202.html) y [Varianza no constante](../unidad3/recurso501.html) (sección ¿Cuál método funciona mejor?). De la Unidad 1: [IA en RStudio](../unidad1/recurso105.html) |
+| Resumen | [Caso integrador](../unidad3/recurso700.html) |
+| Entrega | [Proyecto en RStudio](../unidad1/recurso103.html) y [RMarkdown](../unidad1/recurso102.html), de la Unidad 1 |
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se entrega?**</span>
+
+1. La actividad es **individual**.
+
+2. Se entrega por la plataforma **Bspace**, antes de la fecha límite.
+
+3. Se entrega un proyecto de **R** en un archivo comprimido **.zip**, que contenga:
+    - El archivo de datos `datos_actividad3.xlsx`.
+    - El archivo **.Rproj** del proyecto.
+    - El archivo **.Rmd** con el resumen para la gerencia, los seis problemas y la declaración de uso de IA, en ese orden.
+    - El archivo **HTML** generado a partir del **.Rmd**.
+
+4. Antes de entregar, compruebe que el proyecto cumple los requisitos de [Proyecto en RStudio](../unidad1/recurso103.html): abre con doble clic en el **.Rproj**, no usa rutas absolutas ni `setwd()`, y el **.Rmd** se genera con **Knit** después de reiniciar **R**.
+
+5. **Semilla:** en la simulación use `set.seed()` con su código de estudiante, por ejemplo `set.seed(8945123)`. Por eso algunos resultados del problema 6 cambian de un estudiante a otro; lo que se evalúa es la interpretación.
+
+6. **Código:** cada bloque tiene comentarios que explican qué hace. El código se muestra en el informe, separado de las salidas.
+
+7. **Tablas y gráficos:**
+    - Todos se numeran (Tabla 1, Figura 1...) en su título, con `caption` en `kable()` o con `fig.cap` en el bloque de código.
+    - Cada uno se cita en el texto con su número y se interpreta.
+    - Los ejes tienen títulos claros, con unidades, y las leyendas son legibles.
+
+8. **Declaración de uso de inteligencia artificial (obligatoria).** Al final del informe, en una sección con ese título, indique:
+    - Qué herramientas usó (por ejemplo, GitHub Copilot en RStudio), o que no usó ninguna.
+    - Para qué las usó: entender un tema, escribir o corregir código, redactar.
+    - Las peticiones principales que hizo.
+    - Qué aceptó, qué corrigió y cómo verificó cada resultado que usó.
+
+    Se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Cada cifra del informe debe salir de su propio código. Usar IA no baja la nota; no declararla sí.
+
+9. **Paquetes:** se necesitan `readxl`, `lmtest` y `sandwich`. Puede usar otros paquetes de CRAN, si explica para qué usa cada uno.
+
+<br/>
+
+## <span style="color:#034a94">**¿Cómo se evalúa?**</span>
+
+Se evalúa la aplicación correcta de los métodos, la precisión de las interpretaciones, la verificación de los resultados, la calidad de la recomendación, la claridad de la comunicación y la reproducibilidad del proyecto.
+
+Cada criterio recibe entre 0 y 30 puntos, para un máximo de 240. La nota es $5 \times \text{puntos} / 240$.
+
+| Criterio | Muy alto (30) | Alto (25) | Medio (20) | Bajo (15) | Muy bajo (10) | No se presenta (0) |
+|:---------|:--------------|:----------|:-----------|:----------|:--------------|:-------------------|
+| **1. Problema 1: relación** | Indicadores y gráficos adecuados, explica la diferencia entre Pearson y Spearman con el gráfico y muestra que el porcentaje total oculta el incumplimiento en los pedidos lejanos | Todo correcto, con alguna explicación poco desarrollada | Calcula las correlaciones y el cumplimiento, pero no explica la diferencia o no compara por rango | Errores en las correlaciones o en el cumplimiento | Cálculos incorrectos o sin interpretación | No se presenta |
+| **2. Problema 2: registros imposibles e influencia** | Encuentra los dos grupos de errores con la velocidad y las distancias, usa las medidas de influencia con sus umbrales, conserva los pedidos reales extremos y compara el modelo con y sin los errores | Decisiones correctas, con la comparación o la justificación incompleta | Encuentra solo un grupo de errores, o elimina pedidos reales sin justificar | Usa solo un umbral sin revisar los datos | Análisis incorrecto | No se presenta |
+| **3. Problema 3: modelo e inferencia** | Interpreta la pendiente en minutos por km y el intercepto con su límite, presenta las pruebas t y F, el intervalo y el $R^2$ bien interpretados | Todo correcto, con alguna interpretación poco precisa | Resultados correctos con interpretación incompleta | Errores en la interpretación de la pendiente, las pruebas o el $R^2$ | Resultados incorrectos | No se presenta |
+| **4. Problema 4: supuestos y varianza no constante** | Detecta la varianza no constante con gráficos, pruebas y desviación por rango, explica sus consecuencias y aplica bien HC3 y MCP con residuales ponderados | Todo correcto, con la explicación de las consecuencias incompleta | Detecta el problema, pero aplica solo un método o lo aplica con errores | Concluye que los supuestos se cumplen, o solo usa pruebas sin gráficos | Análisis incorrecto | No se presenta |
+| **5. Problema 5: la promesa** | Calcula bien las tres promesas, distingue la media de la predicción, evalúa las reglas por rango y propone una regla redonda justificada con el cumplimiento por rango | Todo correcto, con la propuesta poco justificada | Calcula las promesas, pero no evalúa por rango o usa el intervalo para la media | Confunde el intervalo para la media con el de predicción | Cálculos incorrectos | No se presenta |
+| **6. Problema 6: verificación de la IA** | Simulación correcta y reproducible, con error Monte Carlo; veredicto correcto de las tres afirmaciones, cada uno con su cifra, y versión correcta de las que fallan | Simulación correcta, con algún veredicto sin cifra o sin versión correcta | Simulación con errores menores o veredictos sin evidencia de la simulación | Veredictos sin simulación, o aceptados sin verificar | Simulación incorrecta | No se presenta |
+| **7. Resumen y comunicación** | Resumen claro para no estadísticos, con la regla, el cumplimiento por distancia y la incertidumbre; tablas y figuras numeradas, citadas e interpretadas | Resumen adecuado, con alguna cifra o figura sin citar | Resumen con lenguaje técnico o incompleto; varias figuras sin numerar o sin interpretar | Resumen que no responde a la gerencia | Sin resumen o informe muy desorganizado | No se presenta informe |
+| **8. Reproducibilidad, entrega y declaración de IA** | El proyecto se genera sin errores, con la semilla del estudiante, el código comentado, todos los archivos y la declaración de IA completa | Fallas menores, como algún bloque sin comentarios o una declaración poco detallada | Falta algún archivo, la semilla no es la del estudiante o la declaración no dice cómo verificó | Rutas absolutas o el proyecto requiere arreglos para generarse | El proyecto no se genera, o no hay declaración de IA | No se entrega el proyecto |
+
+<br/>
+
+*Última revisión: 12 de noviembre de 2026.*
+
+<br/><br/>

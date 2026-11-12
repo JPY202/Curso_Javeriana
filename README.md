@@ -8,6 +8,8 @@ La carpeta `docs` contiene el sitio que publica GitHub Pages:
 - `docs/unidad1/`: sitio de la Unidad 1, generado desde `Unidad 1`.
 - `docs/unidad2/`: sitio de la Unidad 2, generado desde `Unidad 2`.
 - `docs/actividad1/`: enunciado de la Actividad 1, generado desde `Actividad 1`.
+- `docs/unidad3/`: sitio de la Unidad 3, generado desde `Unidad 3`.
 - `docs/actividad2/`: enunciado de la Actividad 2, generado desde `Actividad 2`.
+- `docs/actividad3/`: enunciado de la Actividad 3, generado desde `Actividad 3`.
 
 Para agregar una unidad, cree su carpeta, ponga en su `_site.yml` la línea `output_dir: "../docs/unidad2"`, cree esa carpeta y agregue el enlace en `docs/index.html`.

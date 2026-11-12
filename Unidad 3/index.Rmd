@@ -173,6 +173,12 @@ Con 95 % de confianza, la media de la población está entre 45.9 y 54.1. Los in
 
 7.  **[Caso integrador](recurso700.html)**
 
+    <br/>
+
+8.  **Actividad evaluativa**
+
+    - [Actividad 3. ¿Cuánto tiempo prometerle al cliente?](../actividad3/index.html)
+
 <br/>
 
 ## <span style="color:#034a94">**Referencias**</span>
