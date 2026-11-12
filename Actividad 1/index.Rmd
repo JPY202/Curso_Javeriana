@@ -117,14 +117,31 @@ El informe debe incluir lo siguiente:
 
 11. **Discusión.** Analice los resultados frente a cada objetivo específico y frente al objetivo general.
 
-12. **Estructura del informe.** El informe debe tener estas secciones:
+12. **¿Tiene razón la inteligencia artificial?** Un analista de la empresa consultó una herramienta de inteligencia artificial generativa sobre el procesamiento de esta base y recibió tres afirmaciones:
+
+    > **A.** *"Imputar los datos faltantes con la media es seguro: no cambia la media, ni la desviación estándar, ni la relación con las demás variables."*
+    >
+    > **B.** *"Todo valor que la regla de 1.5 veces el rango intercuartílico marca como atípico es un error y se debe eliminar."*
+    >
+    > **C.** *"Si dos filas tienen los mismos valores en todas las variables, son el mismo cliente y una de ellas se debe eliminar."*
+
+    Verifique cada afirmación con los datos:
+    - **A.** Tome los clientes que tienen `ingreso` y `gasto_carne` observados. Borre al azar el 30 % de los ingresos, impútelos con la media y calcule la media y la desviación estándar del ingreso, y su correlación con `gasto_carne`. Repita 1,000 veces con `set.seed()` y su código de estudiante, y compare el promedio de cada resultado con el valor de la base completa.
+    - **B.** Cuente los clientes que la regla marca en alguna variable de gasto. Compare el porcentaje de aceptación de `acepto_piloto` con todos los clientes y sin los clientes marcados. ¿Cuáles de los valores marcados son errores de verdad?
+    - **C.** Use el `id_cliente` y sus resultados del punto 3.
+
+    Presente una tabla con cada afirmación, su veredicto (correcta, incorrecta o incompleta), la cifra que lo muestra y la versión correcta de la afirmación.
+
+13. **Estructura del informe.** El informe debe tener estas secciones:
     - Descripción
     - Objetivos: general y específicos
     - Datos
     - Procesamiento: duplicados, atípicos e inconsistencias, datos faltantes e imputación
     - Resultados y discusión
+    - Verificación de afirmaciones de la IA
     - Conclusiones
     - Referencias
+    - Declaración de uso de inteligencia artificial
     - Anexos
 
 <br/>
@@ -139,7 +156,8 @@ El informe debe incluir lo siguiente:
 | 6 a 8 | [¿Cómo tratar los datos faltantes?](../unidad1/recurso402.html) |
 | 9     | [Indicadores estadísticos](../unidad1/recurso202.html), [¿Cómo analizar dos variables?](../unidad1/recurso301.html#cómo-analizar-dos-variables), [Variables categóricas](../unidad1/recurso302.html), [Variable numérica](../unidad1/recurso303.html) y [Relaciones](../unidad1/recurso304.html) |
 | 9 y 10 | [¿Qué hace bueno a un gráfico?](../unidad1/recurso306.html) |
-| 12    | [Caso 1](../unidad1/recurso50a.html) e [Informe](../unidad1/recurso52a.html) |
+| 12    | [IA en RStudio](../unidad1/recurso105.html#cómo-verificar-una-respuesta), [¿Cómo tratar los datos faltantes?](../unidad1/recurso402.html), [¿Cómo organizar los datos?](../unidad1/recurso401.html) y [Funciones apply](../unidad1/recurso203.html) |
+| 13    | [Caso 1](../unidad1/recurso50a.html) e [Informe](../unidad1/recurso52a.html) |
 | Entrega | [Proyecto en RStudio](../unidad1/recurso103.html) y [RMarkdown](../unidad1/recurso102.html) |
 
 <br/>
@@ -165,7 +183,13 @@ El informe debe incluir lo siguiente:
 
 6. **Extensión:** el cuerpo del informe tiene como máximo 5,000 palabras. Los Anexos, con el código comentado de todo el procesamiento, y las Referencias no se cuentan.
 
-7. **Uso de inteligencia artificial:** se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Si la usó, indique en los Anexos qué herramienta usó y para qué. Cada cifra del informe debe salir de su propio código.
+7. **Declaración de uso de inteligencia artificial (obligatoria).** En la sección con ese título, indique:
+    - Qué herramientas usó (por ejemplo, GitHub Copilot en RStudio), o que no usó ninguna.
+    - Para qué las usó: entender un tema, escribir o corregir código, redactar.
+    - Las peticiones principales que hizo.
+    - Qué aceptó, qué corrigió y cómo verificó cada resultado que usó.
+
+    Se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Cada cifra del informe debe salir de su propio código. Usar IA no baja la nota; no declararla sí.
 
 8. **Paquetes:** puede usar los paquetes vistos en el curso y otros de CRAN, si explica en el informe para qué usa cada uno.
 
@@ -173,9 +197,9 @@ El informe debe incluir lo siguiente:
 
 ## <span style="color:#034a94">**¿Cómo se evalúa?**</span>
 
-Se evalúa el cumplimiento de los requisitos, la aplicación correcta de los métodos estadísticos, la claridad de las explicaciones, la precisión de las interpretaciones, la calidad de las tablas y gráficos, y el formato de entrega.
+Se evalúa el cumplimiento de los requisitos, la aplicación correcta de los métodos estadísticos, la claridad de las explicaciones, la precisión de las interpretaciones, la verificación de los resultados, la calidad de las tablas y gráficos, y el formato de entrega.
 
-Cada criterio recibe entre 0 y 30 puntos, para un máximo de 360. La nota es $5 \times \text{puntos} / 360$.
+Cada criterio recibe entre 0 y 30 puntos, para un máximo de 390. La nota es $5 \times \text{puntos} / 390$.
 
 | Criterio | Muy alto (30) | Alto (25) | Medio (20) | Bajo (15) | Muy bajo (10) | No se presenta (0) |
 |:---------|:--------------|:----------|:-----------|:----------|:--------------|:-------------------|
@@ -189,11 +213,12 @@ Cada criterio recibe entre 0 y 30 puntos, para un máximo de 360. La nota es $5 
 | **8. Imputación** | Método coherente con el supuesto del punto 7, bien justificado y con gráficos del resultado | Imputación correcta, con justificación o gráficos incompletos | Imputación con poca justificación | Método inadecuado para el supuesto | Imputación incorrecta | No hay imputación ni justificación para no hacerla |
 | **9. Análisis descriptivo** | Indicadores y gráficos pertinentes, y comparación clara frente a `acepto_piloto` | Análisis adecuado, con poca profundidad en lo bivariado | Análisis superficial o solo univariado | Gráficos o indicadores inadecuados | Análisis incorrecto | No se presenta |
 | **10. Discusión y conclusiones** | Responde cada objetivo con cifras e interpretaciones precisas, y las conclusiones se apoyan en los resultados | Discusión clara, con algún objetivo poco desarrollado | Discusión básica o con cifras sin interpretar | Afirmaciones sin respaldo en los resultados | Discusión confusa | No hay discusión |
-| **11. Formato y requisitos de entrega** | Proyecto completo que se genera sin errores, con la estructura, la numeración y la extensión pedidas | Fallas menores de formato | Falta algún archivo o sección | Varios requisitos sin cumplir | El proyecto no se genera | No se entrega el proyecto |
+| **11. Formato, requisitos de entrega y declaración de IA** | Proyecto completo que se genera sin errores, con la estructura, la numeración, la extensión pedidas y la declaración de IA completa | Fallas menores de formato o declaración poco detallada | Falta algún archivo o sección, o la declaración no dice cómo verificó | Varios requisitos sin cumplir | El proyecto no se genera, o no hay declaración de IA | No se entrega el proyecto |
 | **12. Claridad y presentación** | Informe bien organizado, en español, con redacción clara y tablas y gráficos legibles | Claro, pero mejorable en organización | Comprensible, con partes confusas | Difícil de seguir | Muy desorganizado | No se presenta informe |
+| **13. Verificación de la IA** | Verifica las tres afirmaciones con los datos y la simulación pedida, da el veredicto correcto de cada una con su cifra y escribe la versión correcta | Verificación correcta, con algún veredicto sin cifra o sin versión correcta | Verifica solo dos afirmaciones, o la simulación tiene errores menores | Veredictos sin cálculos, o aceptados sin verificar | Verificación incorrecta | No se presenta |
 
 <br/>
 
-*Última revisión: 6 de noviembre de 2026.*
+*Última revisión: 12 de noviembre de 2026.*
 
 <br/><br/>

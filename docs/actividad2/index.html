@@ -363,7 +363,9 @@ inferencia</strong></span></h1>
 simulación y la inferencia para tomar decisiones con información
 incompleta. Esta actividad presenta cuatro decisiones de una empresa de
 domicilios. Cada una se resuelve con los métodos de la Unidad 2 y
-termina en una recomendación para la empresa.</p>
+termina en una recomendación para la empresa. Al final, se revisan con
+simulación tres afirmaciones de una herramienta de inteligencia
+artificial.</p>
 <p><br/></p>
 <div id="cuál-es-el-caso" class="section level2">
 <h2><span style="color:#034a94"><strong>¿Cuál es el
@@ -643,6 +645,56 @@ negocio.</p></li>
 </ol>
 <p><br/></p>
 </div>
+<div id="problema-5.-tiene-razón-la-inteligencia-artificial"
+class="section level3">
+<h3><span style="color:#034a94"><strong>Problema 5. ¿Tiene razón la
+inteligencia artificial?</strong></span></h3>
+<p>Un analista de la empresa consultó una herramienta de inteligencia
+artificial generativa y recibió estas tres afirmaciones:</p>
+<blockquote>
+<p><strong>A.</strong> <em>“Para estimar el porcentaje de pedidos con
+tarjeta que son fraude, basta con revisar 100 pedidos: con más de 30
+datos, el intervalo de Wald del 95 % es confiable.”</em></p>
+<p><strong>B.</strong> <em>“Si una prueba A/B con 300 pedidos por
+versión no encuentra una diferencia significativa en las cancelaciones,
+queda demostrado que la pantalla B no las reduce.”</em></p>
+<p><strong>C.</strong> <em>“En el problema 2, con 1,000 horas simuladas,
+la probabilidad estimada tiene un error de simulación de alrededor de
+0.7 puntos porcentuales.”</em></p>
+</blockquote>
+<p>Algunas son correctas y otras no. Verifíquelas con simulación, usando
+<code>set.seed()</code> con su código de estudiante. En cada caso, tome
+como valores verdaderos los de los datos de la empresa.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p><strong>Afirmación A.</strong> Tome los pedidos con tarjeta como
+la población, con su porcentaje de fraude como valor verdadero. Extraiga
+5,000 muestras de 100 pedidos y, en cada una, calcule el intervalo de
+Wald y el de <code>prop.test()</code>. Calcule la cobertura de cada
+intervalo (porcentaje de muestras en las que contiene el valor
+verdadero) y el porcentaje de muestras sin ningún fraude. Repita con
+muestras de 1,000 pedidos.</p></li>
+<li><p><strong>Afirmación B.</strong> Tome como verdaderas las
+proporciones de cancelación de las versiones A y B del problema 4.
+Simule 2,000 pruebas A/B con 300 pedidos por versión
+(<code>rbinom()</code>) y calcule el porcentaje en que
+<code>prop.test()</code> rechaza <span
+class="math inline">\(H_0\)</span> con <span
+class="math inline">\(\alpha = 0.05\)</span>. Compárelo con
+<code>power.prop.test()</code>. ¿Cuántos pedidos por versión se
+necesitan para una potencia del 80 %?</p></li>
+<li><p><strong>Afirmación C.</strong> Con el <span
+class="math inline">\(\hat\lambda\)</span> de la zona Sur del problema 2
+y 8 repartidores, repita 2,000 veces la simulación de 1,000 horas.
+Calcule la desviación estándar de las 2,000 estimaciones y compárela con
+<span class="math inline">\(\sqrt{p(1-p)/1000}\)</span>, donde <span
+class="math inline">\(p\)</span> es el valor exacto.</p></li>
+<li><p><strong>Veredicto.</strong> Presente una tabla con cada
+afirmación, su veredicto (correcta, incorrecta o incompleta), la cifra
+de la simulación que lo muestra y la versión correcta de la
+afirmación.</p></li>
+</ol>
+<p><br/></p>
+</div>
 <div id="resumen-para-la-gerencia" class="section level3">
 <h3><span style="color:#034a94"><strong>Resumen para la
 gerencia</strong></span></h3>
@@ -705,11 +757,20 @@ las pruebas</a> y <a href="../unidad2/recurso501.html">Pruebas para
 medias y proporciones</a></td>
 </tr>
 <tr class="odd">
+<td align="left">5</td>
+<td align="left"><a href="../unidad2/recurso400.html">Intervalos para
+una población</a>, <a href="../unidad2/recurso500.html">Conceptos de las
+pruebas</a> (potencia), <a href="../unidad2/recurso303.html">Propiedades
+de los estimadores</a> (ley de los grandes números) y <a
+href="../unidad1/recurso105.html#cómo-verificar-una-respuesta">IA en
+RStudio</a>, de la Unidad 1</td>
+</tr>
+<tr class="even">
 <td align="left">Resumen</td>
 <td align="left"><a href="../unidad2/recurso600.html">Caso
 integrador</a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Entrega</td>
 <td align="left"><a href="../unidad1/recurso103.html">Proyecto en
 RStudio</a> y <a href="../unidad1/recurso102.html">RMarkdown</a>, de la
@@ -732,7 +793,7 @@ comprimido <strong>.zip</strong>, que contenga:</p>
 <li>El archivo de datos <code>datos_actividad2.xlsx</code>.</li>
 <li>El archivo <strong>.Rproj</strong> del proyecto.</li>
 <li>El archivo <strong>.Rmd</strong> con el resumen para la gerencia y
-los cuatro problemas, en ese orden.</li>
+los cinco problemas y la declaración de uso de IA, en ese orden.</li>
 <li>El archivo <strong>HTML</strong> generado a partir del
 <strong>.Rmd</strong>.</li>
 </ul></li>
@@ -758,12 +819,22 @@ en el bloque de código.</li>
 <li>Los ejes tienen títulos claros, con unidades, y las leyendas son
 legibles.</li>
 </ul></li>
-<li><p><strong>Uso de inteligencia artificial:</strong> se sigue lo
-indicado en <a
+<li><p><strong>Declaración de uso de inteligencia artificial
+(obligatoria).</strong> Al final del informe, en una sección con ese
+título, indique:</p>
+<ul>
+<li>Qué herramientas usó (por ejemplo, GitHub Copilot en RStudio), o que
+no usó ninguna.</li>
+<li>Para qué las usó: entender un tema, escribir o corregir código,
+redactar.</li>
+<li>Las peticiones principales que hizo.</li>
+<li>Qué aceptó, qué corrigió y cómo verificó cada resultado que
+usó.</li>
+</ul>
+<p>Se sigue lo indicado en <a
 href="../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso">IA en
-RStudio</a>. Si la usó, indique al final del informe qué herramienta usó
-y para qué. Cada cifra del informe debe salir de su propio
-código.</p></li>
+RStudio</a>. Cada cifra del informe debe salir de su propio código. Usar
+IA no baja la nota; no declararla sí.</p></li>
 <li><p><strong>Paquetes:</strong> todo se puede resolver con
 <strong>R</strong> base y <code>readxl</code>. Puede usar otros paquetes
 de CRAN, si explica para qué usa cada uno.</p></li>
@@ -774,11 +845,12 @@ de CRAN, si explica para qué usa cada uno.</p></li>
 <h2><span style="color:#034a94"><strong>¿Cómo se
 evalúa?</strong></span></h2>
 <p>Se evalúa la aplicación correcta de los métodos, la precisión de las
-interpretaciones, la calidad de las recomendaciones, la claridad de la
-comunicación y la reproducibilidad del proyecto.</p>
-<p>Cada criterio recibe entre 0 y 30 puntos, para un máximo de 180. La
+interpretaciones, la verificación de los resultados, la calidad de las
+recomendaciones, la claridad de la comunicación y la reproducibilidad
+del proyecto.</p>
+<p>Cada criterio recibe entre 0 y 30 puntos, para un máximo de 210. La
 nota es <span class="math inline">\(5 \times \text{puntos} /
-180\)</span>.</p>
+210\)</span>.</p>
 <table style="width:100%;">
 <colgroup>
 <col width="10%" />
@@ -866,7 +938,22 @@ valor p</td>
 <td align="left">No se presenta</td>
 </tr>
 <tr class="odd">
-<td align="left"><strong>5. Resumen y comunicación</strong></td>
+<td align="left"><strong>5. Problema 5: verificación de la
+IA</strong></td>
+<td align="left">Simulaciones correctas y reproducibles; veredicto
+correcto de las tres afirmaciones, cada uno con su cifra, y versión
+correcta de las que fallan</td>
+<td align="left">Simulaciones correctas, con algún veredicto sin cifra o
+sin versión correcta</td>
+<td align="left">Simulaciones con errores menores o veredictos sin
+evidencia de la simulación</td>
+<td align="left">Veredictos sin simulación, o aceptados sin
+verificar</td>
+<td align="left">Simulaciones incorrectas</td>
+<td align="left">No se presenta</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>6. Resumen y comunicación</strong></td>
 <td align="left">Resumen claro para no estadísticos, con cifras e
 incertidumbre; tablas y figuras numeradas, citadas e interpretadas</td>
 <td align="left">Resumen adecuado, con alguna recomendación sin cifras o
@@ -877,22 +964,26 @@ figuras sin numerar o sin interpretar</td>
 <td align="left">Sin resumen o informe muy desorganizado</td>
 <td align="left">No se presenta informe</td>
 </tr>
-<tr class="even">
-<td align="left"><strong>6. Reproducibilidad y entrega</strong></td>
+<tr class="odd">
+<td align="left"><strong>7. Reproducibilidad, entrega y declaración de
+IA</strong></td>
 <td align="left">El proyecto se genera sin errores, con la semilla del
-estudiante, el código comentado y todos los archivos pedidos</td>
-<td align="left">Fallas menores, como algún bloque sin comentarios</td>
-<td align="left">Falta algún archivo o la semilla no es la del
-estudiante</td>
+estudiante, el código comentado, todos los archivos pedidos y la
+declaración de IA completa</td>
+<td align="left">Fallas menores, como algún bloque sin comentarios o una
+declaración poco detallada</td>
+<td align="left">Falta algún archivo, la semilla no es la del estudiante
+o la declaración no dice cómo verificó</td>
 <td align="left">Rutas absolutas o el proyecto requiere arreglos para
 generarse</td>
-<td align="left">El proyecto no se genera</td>
+<td align="left">El proyecto no se genera, o no hay declaración de
+IA</td>
 <td align="left">No se entrega el proyecto</td>
 </tr>
 </tbody>
 </table>
 <p><br/></p>
-<p><em>Última revisión: 8 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 12 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

@@ -659,6 +659,40 @@ indicadores que mejor resumen los hallazgos. Son los que se usan en la
 discusión.</p></li>
 <li><p><strong>Discusión.</strong> Analice los resultados frente a cada
 objetivo específico y frente al objetivo general.</p></li>
+<li><p><strong>¿Tiene razón la inteligencia artificial?</strong> Un
+analista de la empresa consultó una herramienta de inteligencia
+artificial generativa sobre el procesamiento de esta base y recibió tres
+afirmaciones:</p>
+<blockquote>
+<p><strong>A.</strong> <em>“Imputar los datos faltantes con la media es
+seguro: no cambia la media, ni la desviación estándar, ni la relación
+con las demás variables.”</em></p>
+<p><strong>B.</strong> <em>“Todo valor que la regla de 1.5 veces el
+rango intercuartílico marca como atípico es un error y se debe
+eliminar.”</em></p>
+<p><strong>C.</strong> <em>“Si dos filas tienen los mismos valores en
+todas las variables, son el mismo cliente y una de ellas se debe
+eliminar.”</em></p>
+</blockquote>
+<p>Verifique cada afirmación con los datos:</p>
+<ul>
+<li><strong>A.</strong> Tome los clientes que tienen
+<code>ingreso</code> y <code>gasto_carne</code> observados. Borre al
+azar el 30 % de los ingresos, impútelos con la media y calcule la media
+y la desviación estándar del ingreso, y su correlación con
+<code>gasto_carne</code>. Repita 1,000 veces con <code>set.seed()</code>
+y su código de estudiante, y compare el promedio de cada resultado con
+el valor de la base completa.</li>
+<li><strong>B.</strong> Cuente los clientes que la regla marca en alguna
+variable de gasto. Compare el porcentaje de aceptación de
+<code>acepto_piloto</code> con todos los clientes y sin los clientes
+marcados. ¿Cuáles de los valores marcados son errores de verdad?</li>
+<li><strong>C.</strong> Use el <code>id_cliente</code> y sus resultados
+del punto 3.</li>
+</ul>
+<p>Presente una tabla con cada afirmación, su veredicto (correcta,
+incorrecta o incompleta), la cifra que lo muestra y la versión correcta
+de la afirmación.</p></li>
 <li><p><strong>Estructura del informe.</strong> El informe debe tener
 estas secciones:</p>
 <ul>
@@ -668,8 +702,10 @@ estas secciones:</p>
 <li>Procesamiento: duplicados, atípicos e inconsistencias, datos
 faltantes e imputación</li>
 <li>Resultados y discusión</li>
+<li>Verificación de afirmaciones de la IA</li>
 <li>Conclusiones</li>
 <li>Referencias</li>
+<li>Declaración de uso de inteligencia artificial</li>
 <li>Anexos</li>
 </ul></li>
 </ol>
@@ -732,10 +768,19 @@ un gráfico?</a></td>
 </tr>
 <tr class="odd">
 <td align="left">12</td>
+<td align="left"><a
+href="../unidad1/recurso105.html#cómo-verificar-una-respuesta">IA en
+RStudio</a>, <a href="../unidad1/recurso402.html">¿Cómo tratar los datos
+faltantes?</a>, <a href="../unidad1/recurso401.html">¿Cómo organizar los
+datos?</a> y <a href="../unidad1/recurso203.html">Funciones
+apply</a></td>
+</tr>
+<tr class="even">
+<td align="left">13</td>
 <td align="left"><a href="../unidad1/recurso50a.html">Caso 1</a> e <a
 href="../unidad1/recurso52a.html">Informe</a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Entrega</td>
 <td align="left"><a href="../unidad1/recurso103.html">Proyecto en
 RStudio</a> y <a href="../unidad1/recurso102.html">RMarkdown</a></td>
@@ -778,11 +823,21 @@ legibles.</li>
 <li><p><strong>Extensión:</strong> el cuerpo del informe tiene como
 máximo 5,000 palabras. Los Anexos, con el código comentado de todo el
 procesamiento, y las Referencias no se cuentan.</p></li>
-<li><p><strong>Uso de inteligencia artificial:</strong> se sigue lo
-indicado en <a
+<li><p><strong>Declaración de uso de inteligencia artificial
+(obligatoria).</strong> En la sección con ese título, indique:</p>
+<ul>
+<li>Qué herramientas usó (por ejemplo, GitHub Copilot en RStudio), o que
+no usó ninguna.</li>
+<li>Para qué las usó: entender un tema, escribir o corregir código,
+redactar.</li>
+<li>Las peticiones principales que hizo.</li>
+<li>Qué aceptó, qué corrigió y cómo verificó cada resultado que
+usó.</li>
+</ul>
+<p>Se sigue lo indicado en <a
 href="../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso">IA en
-RStudio</a>. Si la usó, indique en los Anexos qué herramienta usó y para
-qué. Cada cifra del informe debe salir de su propio código.</p></li>
+RStudio</a>. Cada cifra del informe debe salir de su propio código. Usar
+IA no baja la nota; no declararla sí.</p></li>
 <li><p><strong>Paquetes:</strong> puede usar los paquetes vistos en el
 curso y otros de CRAN, si explica en el informe para qué usa cada
 uno.</p></li>
@@ -794,11 +849,11 @@ uno.</p></li>
 evalúa?</strong></span></h2>
 <p>Se evalúa el cumplimiento de los requisitos, la aplicación correcta
 de los métodos estadísticos, la claridad de las explicaciones, la
-precisión de las interpretaciones, la calidad de las tablas y gráficos,
-y el formato de entrega.</p>
-<p>Cada criterio recibe entre 0 y 30 puntos, para un máximo de 360. La
+precisión de las interpretaciones, la verificación de los resultados, la
+calidad de las tablas y gráficos, y el formato de entrega.</p>
+<p>Cada criterio recibe entre 0 y 30 puntos, para un máximo de 390. La
 nota es <span class="math inline">\(5 \times \text{puntos} /
-360\)</span>.</p>
+390\)</span>.</p>
 <table style="width:100%;">
 <colgroup>
 <col width="10%" />
@@ -938,14 +993,18 @@ desarrollado</td>
 <td align="left">No hay discusión</td>
 </tr>
 <tr class="odd">
-<td align="left"><strong>11. Formato y requisitos de
-entrega</strong></td>
+<td align="left"><strong>11. Formato, requisitos de entrega y
+declaración de IA</strong></td>
 <td align="left">Proyecto completo que se genera sin errores, con la
-estructura, la numeración y la extensión pedidas</td>
-<td align="left">Fallas menores de formato</td>
-<td align="left">Falta algún archivo o sección</td>
+estructura, la numeración, la extensión pedidas y la declaración de IA
+completa</td>
+<td align="left">Fallas menores de formato o declaración poco
+detallada</td>
+<td align="left">Falta algún archivo o sección, o la declaración no dice
+cómo verificó</td>
 <td align="left">Varios requisitos sin cumplir</td>
-<td align="left">El proyecto no se genera</td>
+<td align="left">El proyecto no se genera, o no hay declaración de
+IA</td>
 <td align="left">No se entrega el proyecto</td>
 </tr>
 <tr class="even">
@@ -958,10 +1017,23 @@ clara y tablas y gráficos legibles</td>
 <td align="left">Muy desorganizado</td>
 <td align="left">No se presenta informe</td>
 </tr>
+<tr class="odd">
+<td align="left"><strong>13. Verificación de la IA</strong></td>
+<td align="left">Verifica las tres afirmaciones con los datos y la
+simulación pedida, da el veredicto correcto de cada una con su cifra y
+escribe la versión correcta</td>
+<td align="left">Verificación correcta, con algún veredicto sin cifra o
+sin versión correcta</td>
+<td align="left">Verifica solo dos afirmaciones, o la simulación tiene
+errores menores</td>
+<td align="left">Veredictos sin cálculos, o aceptados sin verificar</td>
+<td align="left">Verificación incorrecta</td>
+<td align="left">No se presenta</td>
+</tr>
 </tbody>
 </table>
 <p><br/></p>
-<p><em>Última revisión: 6 de noviembre de 2026.</em></p>
+<p><em>Última revisión: 12 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
 </div>
 

@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, comment = 
 
 <br/>
 
-Un científico de datos no solo calcula: usa la probabilidad, la simulación y la inferencia para tomar decisiones con información incompleta. Esta actividad presenta cuatro decisiones de una empresa de domicilios. Cada una se resuelve con los métodos de la Unidad 2 y termina en una recomendación para la empresa.
+Un científico de datos no solo calcula: usa la probabilidad, la simulación y la inferencia para tomar decisiones con información incompleta. Esta actividad presenta cuatro decisiones de una empresa de domicilios. Cada una se resuelve con los métodos de la Unidad 2 y termina en una recomendación para la empresa. Al final, se revisan con simulación tres afirmaciones de una herramienta de inteligencia artificial.
 
 <br/>
 
@@ -130,6 +130,28 @@ c. Cada cancelación hace perder 9,000 pesos de margen, la empresa recibe 5,000 
 
 <br/>
 
+### <span style="color:#034a94">**Problema 5. ¿Tiene razón la inteligencia artificial?**</span>
+
+Un analista de la empresa consultó una herramienta de inteligencia artificial generativa y recibió estas tres afirmaciones:
+
+> **A.** *"Para estimar el porcentaje de pedidos con tarjeta que son fraude, basta con revisar 100 pedidos: con más de 30 datos, el intervalo de Wald del 95 % es confiable."*
+>
+> **B.** *"Si una prueba A/B con 300 pedidos por versión no encuentra una diferencia significativa en las cancelaciones, queda demostrado que la pantalla B no las reduce."*
+>
+> **C.** *"En el problema 2, con 1,000 horas simuladas, la probabilidad estimada tiene un error de simulación de alrededor de 0.7 puntos porcentuales."*
+
+Algunas son correctas y otras no. Verifíquelas con simulación, usando `set.seed()` con su código de estudiante. En cada caso, tome como valores verdaderos los de los datos de la empresa.
+
+a. **Afirmación A.** Tome los pedidos con tarjeta como la población, con su porcentaje de fraude como valor verdadero. Extraiga 5,000 muestras de 100 pedidos y, en cada una, calcule el intervalo de Wald y el de `prop.test()`. Calcule la cobertura de cada intervalo (porcentaje de muestras en las que contiene el valor verdadero) y el porcentaje de muestras sin ningún fraude. Repita con muestras de 1,000 pedidos.
+
+b. **Afirmación B.** Tome como verdaderas las proporciones de cancelación de las versiones A y B del problema 4. Simule 2,000 pruebas A/B con 300 pedidos por versión (`rbinom()`) y calcule el porcentaje en que `prop.test()` rechaza $H_0$ con $\alpha = 0.05$. Compárelo con `power.prop.test()`. ¿Cuántos pedidos por versión se necesitan para una potencia del 80 %?
+
+c. **Afirmación C.** Con el $\hat\lambda$ de la zona Sur del problema 2 y 8 repartidores, repita 2,000 veces la simulación de 1,000 horas. Calcule la desviación estándar de las 2,000 estimaciones y compárela con $\sqrt{p(1-p)/1000}$, donde $p$ es el valor exacto.
+
+d. **Veredicto.** Presente una tabla con cada afirmación, su veredicto (correcta, incorrecta o incompleta), la cifra de la simulación que lo muestra y la versión correcta de la afirmación.
+
+<br/>
+
 ### <span style="color:#034a94">**Resumen para la gerencia**</span>
 
 Al inicio del informe, escriba un resumen de máximo una página con la respuesta a cada una de las cuatro preguntas de la gerencia. Escríbalo para personas que no conocen estadística: sin fórmulas ni código, con las cifras que sustentan cada recomendación y con la incertidumbre que tiene cada una.
@@ -144,6 +166,7 @@ Al inicio del informe, escriba un resumen de máximo una página con la respuest
 | 2 | [Modelos discretos](../unidad2/recurso203.html), [Métodos de estimación](../unidad2/recurso304.html), [Intervalos para una población](../unidad2/recurso400.html) y [Propiedades de los estimadores](../unidad2/recurso303.html) (ley de los grandes números). Para filtrar y resumir por zona: [Organizar los datos](../unidad1/recurso401.html), de la Unidad 1 |
 | 3 | [Distribución muestral](../unidad2/recurso301.html), [Teorema del límite central](../unidad2/recurso302.html), [Bootstrap](../unidad2/recurso305.html), [Intervalos para una población](../unidad2/recurso400.html), [Conceptos de las pruebas](../unidad2/recurso500.html) y [Pruebas para medias y proporciones](../unidad2/recurso501.html). De la Unidad 1: [Datos faltantes](../unidad1/recurso402.html) y [Variable numérica](../unidad1/recurso303.html) |
 | 4 | [Intervalos para dos poblaciones](../unidad2/recurso401.html), [Conceptos de las pruebas](../unidad2/recurso500.html) y [Pruebas para medias y proporciones](../unidad2/recurso501.html) |
+| 5 | [Intervalos para una población](../unidad2/recurso400.html), [Conceptos de las pruebas](../unidad2/recurso500.html) (potencia), [Propiedades de los estimadores](../unidad2/recurso303.html) (ley de los grandes números) y [IA en RStudio](../unidad1/recurso105.html#cómo-verificar-una-respuesta), de la Unidad 1 |
 | Resumen | [Caso integrador](../unidad2/recurso600.html) |
 | Entrega | [Proyecto en RStudio](../unidad1/recurso103.html) y [RMarkdown](../unidad1/recurso102.html), de la Unidad 1 |
 
@@ -158,7 +181,7 @@ Al inicio del informe, escriba un resumen de máximo una página con la respuest
 3. Se entrega un proyecto de **R** en un archivo comprimido **.zip**, que contenga:
     - El archivo de datos `datos_actividad2.xlsx`.
     - El archivo **.Rproj** del proyecto.
-    - El archivo **.Rmd** con el resumen para la gerencia y los cuatro problemas, en ese orden.
+    - El archivo **.Rmd** con el resumen para la gerencia y los cinco problemas y la declaración de uso de IA, en ese orden.
     - El archivo **HTML** generado a partir del **.Rmd**.
 
 4. Antes de entregar, compruebe que el proyecto cumple los requisitos de [Proyecto en RStudio](../unidad1/recurso103.html): abre con doble clic en el **.Rproj**, no usa rutas absolutas ni `setwd()`, y el **.Rmd** se genera con **Knit** después de reiniciar **R**.
@@ -172,7 +195,13 @@ Al inicio del informe, escriba un resumen de máximo una página con la respuest
     - Cada uno se cita en el texto con su número y se interpreta.
     - Los ejes tienen títulos claros, con unidades, y las leyendas son legibles.
 
-8. **Uso de inteligencia artificial:** se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Si la usó, indique al final del informe qué herramienta usó y para qué. Cada cifra del informe debe salir de su propio código.
+8. **Declaración de uso de inteligencia artificial (obligatoria).** Al final del informe, en una sección con ese título, indique:
+    - Qué herramientas usó (por ejemplo, GitHub Copilot en RStudio), o que no usó ninguna.
+    - Para qué las usó: entender un tema, escribir o corregir código, redactar.
+    - Las peticiones principales que hizo.
+    - Qué aceptó, qué corrigió y cómo verificó cada resultado que usó.
+
+    Se sigue lo indicado en [IA en RStudio](../unidad1/recurso105.html#cómo-usar-la-ia-en-el-curso). Cada cifra del informe debe salir de su propio código. Usar IA no baja la nota; no declararla sí.
 
 9. **Paquetes:** todo se puede resolver con **R** base y `readxl`. Puede usar otros paquetes de CRAN, si explica para qué usa cada uno.
 
@@ -180,9 +209,9 @@ Al inicio del informe, escriba un resumen de máximo una página con la respuest
 
 ## <span style="color:#034a94">**¿Cómo se evalúa?**</span>
 
-Se evalúa la aplicación correcta de los métodos, la precisión de las interpretaciones, la calidad de las recomendaciones, la claridad de la comunicación y la reproducibilidad del proyecto.
+Se evalúa la aplicación correcta de los métodos, la precisión de las interpretaciones, la verificación de los resultados, la calidad de las recomendaciones, la claridad de la comunicación y la reproducibilidad del proyecto.
 
-Cada criterio recibe entre 0 y 30 puntos, para un máximo de 180. La nota es $5 \times \text{puntos} / 180$.
+Cada criterio recibe entre 0 y 30 puntos, para un máximo de 210. La nota es $5 \times \text{puntos} / 210$.
 
 | Criterio | Muy alto (30) | Alto (25) | Medio (20) | Bajo (15) | Muy bajo (10) | No se presenta (0) |
 |:---------|:--------------|:----------|:-----------|:----------|:--------------|:-------------------|
@@ -190,11 +219,12 @@ Cada criterio recibe entre 0 y 30 puntos, para un máximo de 180. La nota es $5 
 | **2. Problema 2: repartidores** | Filtra bien los datos, estima $\lambda$ con su intervalo, revisa el supuesto de Poisson, calcula bien las probabilidades, explica la simulación con la ley de los grandes números y recomienda por zona considerando la incertidumbre de $\lambda$ | Todo correcto, con la discusión del supuesto, de la incertidumbre o de las zonas incompleta | Probabilidades correctas, pero sin intervalo para $\lambda$, sin explicar la simulación o sin las cuatro zonas | Errores en `ppois()` (por ejemplo, $P(X \geq c)$ en lugar de $P(X > c)$) o recomendación sin sustento | Cálculos incorrectos | No se presenta |
 | **3. Problema 3: tiempo de entrega** | Explica los faltantes, describe la forma de los datos, interpreta intervalos y prueba, distingue significancia de importancia, relaciona la simulación de muestras de 60 con la potencia y corrige los dos errores de la interpretación | Todo correcto, con algún inciso poco desarrollado | Intervalos y prueba correctos, pero concluye solo por el valor p o no relaciona la simulación con la potencia | Errores en las hipótesis o en la interpretación del valor p o del intervalo | Cálculos incorrectos o sin interpretación | No se presenta |
 | **4. Problema 4: prueba A/B** | Tabla y gráfico claros, prueba e intervalo correctos, ahorro calculado con la estimación y con los dos límites, y recomendación que distingue la significancia estadística de la importancia para el negocio | Todo correcto, con la recomendación poco desarrollada | Prueba correcta, pero el ahorro solo con la estimación puntual | Interpreta el valor p como la probabilidad de que $H_0$ sea cierta, o recomienda solo por el valor p | Cálculos incorrectos | No se presenta |
-| **5. Resumen y comunicación** | Resumen claro para no estadísticos, con cifras e incertidumbre; tablas y figuras numeradas, citadas e interpretadas | Resumen adecuado, con alguna recomendación sin cifras o alguna figura sin citar | Resumen con lenguaje técnico o incompleto; varias figuras sin numerar o sin interpretar | Resumen que no responde las cuatro preguntas | Sin resumen o informe muy desorganizado | No se presenta informe |
-| **6. Reproducibilidad y entrega** | El proyecto se genera sin errores, con la semilla del estudiante, el código comentado y todos los archivos pedidos | Fallas menores, como algún bloque sin comentarios | Falta algún archivo o la semilla no es la del estudiante | Rutas absolutas o el proyecto requiere arreglos para generarse | El proyecto no se genera | No se entrega el proyecto |
+| **5. Problema 5: verificación de la IA** | Simulaciones correctas y reproducibles; veredicto correcto de las tres afirmaciones, cada uno con su cifra, y versión correcta de las que fallan | Simulaciones correctas, con algún veredicto sin cifra o sin versión correcta | Simulaciones con errores menores o veredictos sin evidencia de la simulación | Veredictos sin simulación, o aceptados sin verificar | Simulaciones incorrectas | No se presenta |
+| **6. Resumen y comunicación** | Resumen claro para no estadísticos, con cifras e incertidumbre; tablas y figuras numeradas, citadas e interpretadas | Resumen adecuado, con alguna recomendación sin cifras o alguna figura sin citar | Resumen con lenguaje técnico o incompleto; varias figuras sin numerar o sin interpretar | Resumen que no responde las cuatro preguntas | Sin resumen o informe muy desorganizado | No se presenta informe |
+| **7. Reproducibilidad, entrega y declaración de IA** | El proyecto se genera sin errores, con la semilla del estudiante, el código comentado, todos los archivos pedidos y la declaración de IA completa | Fallas menores, como algún bloque sin comentarios o una declaración poco detallada | Falta algún archivo, la semilla no es la del estudiante o la declaración no dice cómo verificó | Rutas absolutas o el proyecto requiere arreglos para generarse | El proyecto no se genera, o no hay declaración de IA | No se entrega el proyecto |
 
 <br/>
 
-*Última revisión: 8 de noviembre de 2026.*
+*Última revisión: 12 de noviembre de 2026.*
 
 <br/><br/>
