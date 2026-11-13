@@ -193,3 +193,7 @@ pre.r::before {
   color: #c45f00;
   margin-bottom: 4px;
 }
+
+/* Encabezados de tablas alineados como sus columnas */
+th[align="right"] { text-align: right; }
+th[align="center"] { text-align: center; }

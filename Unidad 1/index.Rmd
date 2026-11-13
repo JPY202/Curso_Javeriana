@@ -275,7 +275,7 @@ c. Por lo general, en la carpeta Descargas. La ruta completa se ve en las propie
 
     - [Caso 1](recurso50a.html)
     - [Caso 2](recurso51a.html)
-    - [Informe](recurso52a.html)
+    - [¿Cómo escribir un informe?](recurso52a.html)
     - [Actividad 1. Informe estadístico de un caso de estudio](../actividad1/index.html)
 
     <br/>

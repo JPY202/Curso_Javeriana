@@ -12,7 +12,7 @@
 <meta name="author" content="Métodos y Simulación Estadística" />
 
 
-<title> Informe</title>
+<title> ¿Cómo se escribe un informe estadístico?</title>
 
 <script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
@@ -468,7 +468,7 @@ div.tocify {
       <a href="recurso51a.html">Caso 2</a>
     </li>
     <li>
-      <a href="recurso52a.html">Informe</a>
+      <a href="recurso52a.html">¿Cómo escribir un informe?</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -491,65 +491,426 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore"><span style="color:#034a94">
-<strong>Informe</strong></span></h1>
+<h1 class="title toc-ignore"><span style="color:#034a94"> <strong>¿Cómo
+se escribe un informe estadístico?</strong></span></h1>
 <h4 class="author">Métodos y Simulación Estadística</h4>
 
 </div>
 
 
 <p><br/></p>
-<p>A continuación se proporcionan dos enlaces relacionados con un caso
-de estudio completamente desarrollado. El primer enlace permite
-visualizar el informe final en formato HTML, mientras que el segundo
-dirige al repositorio que contiene los códigos en <strong>R</strong> y
-los datos utilizados, lo que permite su descarga y reproducción
-completa.</p>
-<ul>
-<li>
-<a href="https://centromagis.github.io/Informe/" target="_blank">Visualizar
-informe en HTML</a>
-</li>
-<li>
-<a href="https://github.com/Centromagis/Informe.git" target="_blank">Acceder
-al repositorio con códigos y datos en GitHub</a>
-</li>
-</ul>
-<div id="observación-1"
-class="section level3 toc-ignore content-box-gray">
-<h3 class="toc-ignore"><span style="color:#686868"><strong>Observación
-1:</strong></span></h3>
-<p>
-<blockquote>
-<p>En este ejemplo no se ha unificado el uso del idioma español en todas
-las categorías, gráficos y párrafos del informe. No obstante, para una
-entrega formal —como una actividad evaluativa, un trabajo de grado o
-cualquier documento académico— es indispensable que todo el contenido,
-incluidas las tablas y figuras, esté redactado en un único idioma. En
-este caso, se debe emplear exclusivamente el español.</p>
-</blockquote>
-</p>
+<p>Un <strong>informe estadístico</strong> cuenta qué se preguntó, con
+qué datos, cómo se trataron, qué se encontró y qué no se puede concluir.
+Debe permitir que otra persona entienda los resultados sin ver el
+código, y que pueda reproducirlos si tiene el proyecto. Esta página
+presenta las secciones de un informe, cómo se escribe cada una, cómo se
+numeran las tablas y figuras en <strong>R Markdown</strong> y qué
+revisar antes de entregar.</p>
+<p>Los <a href="recurso50a.html">Caso 1</a> y <a
+href="recurso51a.html">Caso 2</a> son ejemplos de las secciones de
+resultados. La <a href="data/plantilla_informe.zip">plantilla del
+informe</a> trae un proyecto listo con todas las secciones.</p>
+<p><br/></p>
+<div id="qué-secciones-tiene-un-informe" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué secciones tiene un
+informe?</strong></span></h2>
+<p><strong>Tabla 1.</strong> Secciones del informe de la Actividad
+1.</p>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="37%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Sección</th>
+<th align="left">Qué responde</th>
+<th align="left">Qué contiene</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Descripción</td>
+<td align="left">¿Qué se estudia y por qué importa?</td>
+<td align="left">Contexto, problema y fuente de los datos, en uno o dos
+párrafos</td>
+</tr>
+<tr class="even">
+<td align="left">Objetivos</td>
+<td align="left">¿Qué se quiere saber?</td>
+<td align="left">Un objetivo general y tres o cuatro específicos, cada
+uno con un verbo que se pueda cumplir con los datos</td>
+</tr>
+<tr class="odd">
+<td align="left">Datos</td>
+<td align="left">¿Con qué se trabaja?</td>
+<td align="left">Fuente, número de registros, qué es cada fila y tabla
+de variables con su descripción, unidad y clasificación</td>
+</tr>
+<tr class="even">
+<td align="left">Procesamiento</td>
+<td align="left">¿Qué se hizo con los datos antes de analizarlos?</td>
+<td align="left">Duplicados, atípicos, inconsistencias, faltantes e
+imputación, con cada decisión justificada y cuántos registros
+afectó</td>
+</tr>
+<tr class="odd">
+<td align="left">Resultados y discusión</td>
+<td align="left">¿Qué se encontró?</td>
+<td align="left">Una subsección por objetivo, con tablas y figuras
+numeradas, citadas e interpretadas</td>
+</tr>
+<tr class="even">
+<td align="left">Verificación de afirmaciones de la IA</td>
+<td align="left">¿Eran correctas las respuestas de la IA?</td>
+<td align="left">Tabla con el veredicto, la evidencia y la versión
+correcta de cada afirmación</td>
+</tr>
+<tr class="odd">
+<td align="left">Conclusiones</td>
+<td align="left">¿Qué responde a cada objetivo?</td>
+<td align="left">Una conclusión por objetivo con su cifra, y las
+limitaciones</td>
+</tr>
+<tr class="even">
+<td align="left">Referencias</td>
+<td align="left">¿De dónde salen los métodos y los datos?</td>
+<td align="left">Libros, artículos, paquetes y fuente de los datos</td>
+</tr>
+<tr class="odd">
+<td align="left">Declaración de uso de IA</td>
+<td align="left">¿Cómo se usó la IA?</td>
+<td align="left">Herramientas, peticiones, qué se aceptó, qué se
+corrigió y cómo se verificó</td>
+</tr>
+<tr class="even">
+<td align="left">Anexos</td>
+<td align="left">¿Qué apoya el informe sin ser central?</td>
+<td align="left">Tablas largas, código auxiliar y
+<code>sessionInfo()</code></td>
+</tr>
+</tbody>
+</table>
+<p>El orden sigue la lógica del estudio: de la pregunta a los datos, de
+los datos a los resultados y de los resultados a las conclusiones.</p>
+<p><br/></p>
 </div>
-<div id="observación-2"
-class="section level3 toc-ignore content-box-gray">
-<h3 class="toc-ignore"><span style="color:#686868"><strong>Observación
-2:</strong></span></h3>
-<p>
+<div id="cómo-se-escribe-cada-sección" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se escribe cada
+sección?</strong></span></h2>
+<div id="objetivos" class="section level3">
+<h3><span style="color:#034a94"><strong>Objetivos</strong></span></h3>
+<p>Un objetivo empieza con un verbo y se puede cumplir con los datos
+disponibles.</p>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="27%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Mejor</th>
+<th align="left">Peor</th>
+<th align="left">Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Comparar el tiempo de sueño según el nivel de
+satisfacción laboral</td>
+<td align="left">Demostrar que dormir más aumenta la satisfacción</td>
+<td align="left">Un estudio descriptivo no puede demostrar causas</td>
+</tr>
+<tr class="even">
+<td align="left">Estimar el porcentaje de clientes que aceptó la campaña
+piloto</td>
+<td align="left">Analizar la campaña</td>
+<td align="left">“Analizar” no dice qué resultado se espera</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="procesamiento" class="section level3">
+<h3><span
+style="color:#034a94"><strong>Procesamiento</strong></span></h3>
+<p>Cada decisión se reporta con su número y su razón, para que otra
+persona pueda repetirla o discutirla.</p>
 <blockquote>
-<p>En este informe se presenta una introducción al manejo de datos
-faltantes mediante el uso de regresión logística y la prueba exacta de
-Fisher. No obstante, estos métodos se abordan de manera introductoria,
-sin profundizar en los aspectos más avanzados ni condiciones de validez
-de estos. Se recomienda que, en semestres posteriores, cuando los
-estudiantes estudien con mayor detalle estos temas, profundicen
-especialmente en las estrategias de imputación cuando los datos
-faltantes no son del tipo MCAR (Missing Completely At Random).</p>
+<p>Se encontraron 4 personas con edades de 7 y 9 años en una encuesta de
+adultos. Son errores de registro y se excluyeron; el análisis usa 241
+personas.</p>
 </blockquote>
-</p>
+</div>
+<div id="resultados" class="section level3">
+<h3><span style="color:#034a94"><strong>Resultados</strong></span></h3>
+<p>Un resultado tiene tres partes: la cifra, su comparación y lo que
+significa para la pregunta.</p>
+<table>
+<colgroup>
+<col width="53%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Mejor</th>
+<th align="left">Peor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">El porcentaje que duerme 7 horas o más pasa de 34.8 %
+en el nivel 1 de satisfacción a 59.5 % en el nivel 5 (Tabla 3).</td>
+<td align="left">Se observa que los datos presentan diferencias.</td>
+</tr>
+<tr class="even">
+<td align="left">La mediana de sueño es 7 horas en los cuatro grupos de
+actividad física: no se observa relación.</td>
+<td align="left">La actividad física no influye significativamente en el
+sueño.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="discusión" class="section level3">
+<h3><span style="color:#034a94"><strong>Discusión</strong></span></h3>
+<p>La discusión pasa de los resultados al problema: qué explica lo que
+se encontró, qué otras explicaciones hay y qué haría falta para
+confirmarlo.</p>
+<blockquote>
+<p>Los empleados más satisfechos duermen algo más, pero la relación
+puede ir en ambos sentidos, o deberse a una tercera variable, como la
+carga de trabajo. Un estudio que siga a los mismos empleados en el
+tiempo permitiría distinguir esas explicaciones.</p>
+</blockquote>
+</div>
+<div id="conclusiones" class="section level3">
+<h3><span
+style="color:#034a94"><strong>Conclusiones</strong></span></h3>
+<p>Una conclusión por objetivo, en el mismo orden, con la cifra que la
+sustenta. Las conclusiones no traen resultados nuevos. Después van las
+<strong>limitaciones</strong>: lo que los datos no permiten afirmar.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="cómo-se-presentan-las-tablas-y-las-figuras"
+class="section level2">
+<h2><span style="color:#034a94"><strong>¿Cómo se presentan las tablas y
+las figuras?</strong></span></h2>
+<p>Toda tabla y toda figura del informe:</p>
+<ul>
+<li>Tiene un número y un título que se entiende sin leer el texto, con
+las unidades.</li>
+<li>Se cita en el texto por su número antes de aparecer (“como muestra
+la Figura 2”).</li>
+<li>Se interpreta: el texto dice qué se ve en ella. Una figura sin
+interpretación no aporta al informe.</li>
+</ul>
+<div id="cómo-se-numeran-en-r-markdown" class="section level3">
+<h3><span style="color:#034a94"><strong>¿Cómo se numeran en R
+Markdown?</strong></span></h3>
+<p>El formato <code>html_document</code> no numera las tablas ni las
+figuras. El formato <code>bookdown::html_document2</code>, del paquete
+<code>bookdown</code>, las numera solo y permite citarlas con
+<code>\@ref()</code>.</p>
+<p><strong>Paso 1.</strong> Cambiar el formato en el encabezado:</p>
+<pre class="yaml"><code>output:
+  bookdown::html_document2:
+    toc: yes
+    number_sections: no</code></pre>
+<p><strong>Paso 2.</strong> Ponerle un nombre al bloque de la figura y
+un título con <code>fig.cap</code>:</p>
+<pre class="markdown"><code>```{r sueno-satisfaccion, fig.cap=&quot;Horas de sueño según la satisfacción laboral&quot;}
+boxplot(sueno ~ satisfaccion, data = empleados)
+```</code></pre>
+<p><strong>Paso 3.</strong> Citarla en el texto con
+<code>\@ref(fig:nombre-del-bloque)</code>:</p>
+<pre class="markdown"><code>Como muestra la Figura \@ref(fig:sueno-satisfaccion), ...</code></pre>
+<p>Las tablas de <code>knitr::kable()</code> se citan igual, con el
+prefijo <code>tab:</code> y el nombre del bloque:
+<code>\@ref(tab:nombre-del-bloque)</code>.</p>
+<p><strong>Paso 4.</strong> Para que diga “Figura” y “Tabla” en lugar de
+“Figure” y “Table”, se crea en la carpeta del proyecto un archivo
+<code>_bookdown.yml</code> con este contenido:</p>
+<pre class="yaml"><code>language:
+  label:
+    fig: &quot;Figura &quot;
+    tab: &quot;Tabla &quot;</code></pre>
+<p>La <a href="data/plantilla_informe.zip">plantilla del informe</a> ya
+trae el formato y el archivo <code>_bookdown.yml</code>. Si se prefiere
+no usar <code>bookdown</code>, las tablas y figuras se pueden numerar a
+mano en <code>fig.cap</code> y en <code>caption</code>.</p>
+<p><br/></p>
+</div>
+</div>
+<div id="qué-se-revisa-antes-de-entregar" class="section level2">
+<h2><span style="color:#034a94"><strong>¿Qué se revisa antes de
+entregar?</strong></span></h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />El proyecto abre con doble clic en
+el <code>.Rproj</code> y el <code>.Rmd</code> se genera con
+<strong>Knit</strong> después de reiniciar <strong>R</strong> (<a
+href="recurso103.html">Proyecto en RStudio</a>).</label></li>
+<li><label><input type="checkbox" />Las rutas son relativas; no hay
+<code>setwd()</code> ni rutas como
+<code>C:/Users/...</code>.</label></li>
+<li><label><input type="checkbox" />Cada objetivo tiene su subsección en
+resultados y su conclusión.</label></li>
+<li><label><input type="checkbox" />Toda tabla y figura está numerada,
+citada en el texto e interpretada.</label></li>
+<li><label><input type="checkbox" />Todo el informe está en español:
+texto, títulos, ejes, leyendas y categorías.</label></li>
+<li><label><input type="checkbox" />Las cifras del texto coinciden con
+las salidas de <strong>R</strong>: se escriben con código en línea, como
+<code>`r round(mean(x), 1)`</code>, o se revisan una por
+una.</label></li>
+<li><label><input type="checkbox" />No dice “significativo” sin una
+prueba ni “causa” sin un diseño que lo permita.</label></li>
+<li><label><input type="checkbox" />La declaración de uso de IA está
+completa.</label></li>
+</ul>
+<p><br/></p>
+</div>
+<div id="errores-frecuentes" class="section level2">
+<h2><span style="color:#034a94"><strong>Errores
+frecuentes</strong></span></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="37%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Problema</th>
+<th align="left">Causa</th>
+<th align="left">Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">La figura aparece como “Figure 1”</td>
+<td align="left">Falta el archivo <code>_bookdown.yml</code></td>
+<td align="left">Crearlo con las etiquetas en español</td>
+</tr>
+<tr class="even">
+<td align="left">En el texto aparece “??” en lugar del número</td>
+<td align="left">El nombre en <code>\@ref()</code> no coincide con el
+del bloque, o el bloque no tiene <code>fig.cap</code></td>
+<td align="left">Revisar el nombre y agregar <code>fig.cap</code></td>
+</tr>
+<tr class="odd">
+<td align="left">El nombre del bloque no funciona en
+<code>\@ref()</code></td>
+<td align="left">Tiene espacios, tildes o guiones bajos</td>
+<td align="left">Usar letras sin tildes, números y guiones</td>
+</tr>
+<tr class="even">
+<td align="left">Los resultados son una lista de cifras</td>
+<td align="left">No se interpretan</td>
+<td align="left">Escribir qué significa cada cifra para el objetivo</td>
+</tr>
+<tr class="odd">
+<td align="left">Las conclusiones traen cifras nuevas</td>
+<td align="left">Se agregan análisis al final</td>
+<td align="left">Moverlas a resultados</td>
+</tr>
+<tr class="even">
+<td align="left">El informe mezcla inglés y español</td>
+<td align="left">Las variables y categorías quedaron en inglés</td>
+<td align="left">Renombrar variables y niveles antes de graficar</td>
+</tr>
+<tr class="odd">
+<td align="left">El texto dice 27.7 y la tabla 27.6</td>
+<td align="left">Se copió la cifra a mano antes de cambiar el
+código</td>
+<td align="left">Usar código en línea</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+</div>
+<div id="retos" class="section level2">
+<h2><span style="color:#034a94"><strong>Retos</strong></span></h2>
+<div id="reto-1.-mejore-el-resultado"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 1.
+Mejore el resultado</strong></span></h3>
+<p>Reescriba esta frase: “Según la gráfica, hay diferencias
+significativas en el estrés de los cargos, siendo mayor en los
+gerentes”.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>Por ejemplo: “El estrés alto o muy alto aumenta levemente con la
+jerarquía, de 6.4 % en los pasantes a 9.3 % en los gerentes (Figura 3).
+La diferencia es pequeña y no se probó”. La versión nueva da la cifra,
+cita la figura y no usa “significativas” sin una prueba.</p>
+</details>
+</div>
+<div id="reto-2.-numere-una-figura"
+class="section level3 toc-ignore content-box-yellow">
+<h3 class="toc-ignore"><span style="color:#686868"><strong>Reto 2.
+Numere una figura</strong></span></h3>
+<p>Descargue la <a href="data/plantilla_informe.zip">plantilla del
+informe</a>, cambie los datos por los de la Actividad 1 y haga que la
+Figura 1 sea un histograma de la edad, citado en el texto.</p>
+<details>
+<summary>
+Ver solución
+</summary>
+<p>En el bloque <code>grafico-objetivo-1</code>, cambie el código por
+<code>hist(datos$edad, main = "", xlab = "Edad (años)")</code> y el
+<code>fig.cap</code> por un título que describa la figura. El texto
+<code>Figura \@ref(fig:grafico-objetivo-1)</code> mostrará “Figura 1” al
+generar el documento.</p>
+</details>
 </div>
 <p><br/></p>
-<p><em>Última revisión: 5 de noviembre de 2026.</em></p>
+</div>
+<div id="libros-y-recursos" class="section level2">
+<h2><span style="color:#034a94"><strong>Libros y
+recursos</strong></span></h2>
+<div id="libros-para-leer-gratis" class="section level3 toc-ignore">
+<h3 class="toc-ignore"><span style="color:#034a94"><strong>Libros para
+leer gratis</strong></span></h3>
+<ul>
+<li>Xie, Y. <a href="https://bookdown.org/yihui/bookdown/"><em>bookdown:
+Authoring Books and Technical Documents with R Markdown</em></a>.
+Chapman &amp; Hall/CRC. La sección <a
+href="https://bookdown.org/yihui/bookdown/cross-references.html">Cross-references</a>
+explica la numeración y las citas.</li>
+<li>Xie, Y., Dervieux, C. y Riederer, E. (2020). <a
+href="https://bookdown.org/yihui/rmarkdown-cookbook/"><em>R Markdown
+Cookbook</em></a>. Chapman &amp; Hall/CRC.</li>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media. Tiene una parte sobre <a
+href="https://r4ds.hadley.nz/communicate.html">comunicar
+resultados</a>.</li>
+</ul>
+<p><br/></p>
+</div>
+</div>
+<div id="referencias" class="section level2">
+<h2><span style="color:#034a94"><strong>Referencias</strong></span></h2>
+<ul>
+<li>Wickham, H., Çetinkaya-Rundel, M. y Grolemund, G. (2023). <a
+href="https://r4ds.hadley.nz/"><em>R for Data Science</em></a> (2.ª
+ed.). O’Reilly Media.</li>
+<li>Xie, Y. <a href="https://bookdown.org/yihui/bookdown/"><em>bookdown:
+Authoring Books and Technical Documents with R Markdown</em></a>.
+Chapman &amp; Hall/CRC.</li>
+<li>Xie, Y., Dervieux, C. y Riederer, E. (2020). <a
+href="https://bookdown.org/yihui/rmarkdown-cookbook/"><em>R Markdown
+Cookbook</em></a>. Chapman &amp; Hall/CRC.</li>
+</ul>
+<p><br/></p>
+<p><em>Última revisión: 13 de noviembre de 2026.</em></p>
 <p><br/><br/></p>
+</div>
 
 
 

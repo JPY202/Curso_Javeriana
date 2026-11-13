@@ -1,5 +1,5 @@
 ---
-title: <span style="color:#034a94"> **Caso 2**</span>
+title: <span style="color:#034a94"> **Caso 2. ¿Qué hacer con los datos faltantes de una encuesta de salud?**</span>
 author: "Métodos y Simulación Estadística"
 output:
   html_document:
@@ -18,112 +18,345 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment = N
 
 <br/>
 
-<br/>
+Este caso aplica la página [¿Cómo tratar los datos faltantes?](recurso402.html) a una encuesta real: cuenta los faltantes, separa los que no son faltantes de verdad, explora su mecanismo, imputa y compara los resultados. Sirve como modelo para los puntos 6 a 8 de la Actividad 1.
 
-## <span style="color:#034a94">**Introducción**</span>
+Esta página usa los datos `riskfactors`, incluidos en el paquete `naniar`, y los paquetes `naniar`, `mice` y `ggplot2`. Los bloques de código se ejecutan en orden.
 
-El objetivo principal de este caso de estudio es predecir y explicar la variable 'tasa de graduación', identificando los factores que mejor la describen. Para ello, es necesario seleccionar métodos de imputación adecuados para los datos faltantes y determinar cuáles variables, como el promedio de la prueba SAT, el número de nuevos estudiantes matriculados o la categoría de la universidad, están más fuertemente asociadas con la tasa de graduación.
-
-Una vez realizada la limpieza de los datos, se debe explorar el mecanismo de los datos faltantes. Posteriormente, se procede con la imputación de los mismos. Luego, se plantean dos modelos para explicar la variable de respuesta. El manejo adecuado de los datos faltantes es crucial para garantizar predicciones confiables sobre la tasa de graduación.  [Acceder a los datos de universidades](https://lib.stat.cmu.edu/datasets/colleges/)
-
-
-<br/>
-
-## <span style="color:#034a94">**Objetivos**</span>
-
-En esta sección se presenta una discusión sobre el enfoque de análisis, centrado en el manejo de los datos faltantes, el cual debe realizarse antes de la modelación. Por lo tanto, solo se abordarán los resultados relacionados con los siguientes objetivos. La implementación de estas actividades queda como tarea para que se apliquen los conocimientos adquiridos en este módulo:
-
-- Calcular el porcentaje de valores faltantes en cada una de las variables de interés para el caso en cuestión.
-
-- Explorar el mecanismo de los datos faltantes y justificar un supuesto (MCAR, MAR o MNAR), siguiendo los pasos de [¿Cómo se explora el mecanismo?](recurso402.html#cómo-se-explora-el-mecanismo).
-
-- Proponer una estrategia para la imputación de los valores faltantes.
-
-
- 
-
-<br/>
-
-## <span style="color:#034a94">**Respecto al objetivo 1**</span>
-
-El conjunto de datos incluye información de 1,302 universidades de EE.UU. y abarca 35 variables. Para este trabajo, se seleccionaron las siguientes variables clave:
-
-- Graduate rate (GR): Proporción de estudiantes que se gradúan en relación con los matriculados cuatro años antes.
-
-- Average combined SAT score (SAT): Promedio combinado de los puntajes verbales y matemáticos del examen SAT.
-
-- Number of new students enrolled (ENROLL): Número de nuevos estudiantes matriculados.
-
-- Public/private indicator (DUMMYP): Indicador del tipo de universidad (1= pública, 2= privada).
-
-- Room and board costs (COST): Costo total anual de alojamiento y comida (en miles de dólares estadounidenses).
-
-- Average ACT score (ACT): Promedio de puntajes en la prueba ACT.
-
-La **Tabla 1.20** presenta un análisis descriptivo de las variables. La falta de datos varía desde un 0.38% hasta un 45.16%, como ocurre con la variable ACT. Se observa que el 40.17% y el 45.16% de las universidades no reportan el promedio combinado de los resultados en la prueba SAT (verbal y matemática) y el promedio de puntajes en la prueba ACT, respectivamente. Estos son los porcentajes más altos de omisión. En contraste, solo el 0.38%, 5.84% y 7.53% de las universidades no reportan el número de nuevos estudiantes matriculados, los costos de alojamiento y comida, y la proporción de graduados entre los alumnos matriculados cuatro años antes, respectivamente.
-
-
- 
-
-<center>
-**Tabla 1.20** Algunas estadístisticas de las variables seleccionadas.
-</center>
-| Variable  | N    | Promedio | Desv. Estándar | Faltantes | % Faltantes | Mínimo | Máximo |
-|:----------|:----:|:--------:|:--------------:|:---------:|:-----------:|:------:|:------:|
-| **DUMMYP** | 1302 | 1.64  | 0.48  | 0  | 0.00  | 1  | 2  |
-| **SAT**    | 779  | 967.87  | 123.58  | 523  | 40.17  | 600  | 1410  |
-| **ACT**    | 714  | 22.12  | 2.58  | 588  | 45.16  | 11  | 31  |
-| **ENROLL** | 1297 | 778.88  | 884.58  | 5  | 0.38  | 18  | 7425  |
-| **COST**   | 1226 | 4162.11  | 1179.28  | 76  | 5.84  | 1260  | 8700  |
-| **GR**     | 1204 | 60.41  | 18.89  | 98  | 7.53  | 8  | 118  |
-
-
-Asimismo, en la **Tabla 1.20**  se observa que la variable 'proporción de graduados' presenta valores superiores a 100, es decir, valores fuera del rango permitido, que debería estar entre 0% y 100%. Como resultado, se clasificó esta observación como un dato faltante y se aplicaron diversas técnicas de imputación para reemplazar el valor por uno dentro del rango establecido.
-
-
- 
-
-<center>
-```{r, echo=FALSE, out.width="100%", fig.align = "center"}
-knitr::include_graphics("img/fig1_caso2.png")
+```{r}
+library(naniar)
+library(mice)
+library(ggplot2)
 ```
-**Figura 1.55** Proporción y patrón de datos faltantes.
-</center>
- 
-
-La gráfica de la derecha de la **Figura 1.55** muestra el porcentaje de datos faltantes en cada variable. También, se presenta en la misma figura los 21 patrones de datos faltantes presentes en la base de datos. El color azul indica los datos observados, mientras que el rojo señala los datos faltantes.
-
-En la **Figura 1.55**, en el primer gráfico, se observa que el porcentaje de universidades con observaciones faltantes es significativamente mayor en las variables ACT y SAT en comparación con las demás. En el segundo gráfico, se muestran las combinaciones de observaciones faltantes y no faltantes. Se puede notar que el patrón de datos faltantes es aleatorio y multivariado, no siendo monótono ni univariado.
-
-Antes de proceder al análisis, es necesario explorar por qué faltan los datos: MCAR, MAR o MNAR. Porter S. (1999) analiza datos reportados por \U.S. News and World Report 2 menciona
-que "la falta de datos probablemente se deba a que las universidades no pudieron recoger los datos", sin embargo,
-también dice que "las razones son un misterio".
-
- 
 
 <br/>
 
-## <span style="color:#034a94">**Respecto al objetivo 2**</span>
+## <span style="color:#034a94">**¿Cuál es el caso?**</span>
 
-Al aplicar la prueba de Little en **R**, con `naniar::mcar_test()`, se obtuvo un valor *p* menor a 0.05. Hay evidencia contra MCAR, pero la prueba no indica si los datos son MAR o MNAR. Por lo tanto, la estimación utilizando solo la submuestra completa no parece ser la opción más adecuada en esta situación. Se puede trabajar bajo el supuesto de MAR, aunque rechazar MCAR no lo demuestra, y no se puede descartar MNAR, ya que las universidades con bajas tasas de graduación podrían estar inclinadas a omitir estas tasas para evitar publicidad adversa o un posible desprestigio institucional.
+El **Behavioral Risk Factor Surveillance System** (BRFSS) es la encuesta telefónica de salud de los Centros para el Control y la Prevención de Enfermedades (CDC) de Estados Unidos. Pregunta a adultos por sus hábitos y su salud ([CDC](https://www.cdc.gov/brfss/)). La tabla `riskfactors` es una muestra de 245 personas de la encuesta de 2009, con 34 variables.
 
-
- 
-
-<br/>
-
-## <span style="color:#034a94">**Respecto al objetivo 3**</span>
-
-Consideraciones para los análisis posteriores:
-
-- Se puede asumir MAR como supuesto de trabajo: la prueba rechaza MCAR y la base tiene variables relacionadas con la falta. Es un supuesto, no un resultado: rechazar MCAR no demuestra MAR, y conviene comparar los resultados bajo otros supuestos.
-
-- Bajo el supuesto de MAR y el patrón observado en los datos faltantes, se sugiere utilizar la imputación múltiple como método de imputación. Consulta alternativas para imputar condicionalmente.
-
-- Una vez realizada la imputación de los datos faltantes, se podrá proceder con la selección del modelo adecuado para explicar la tasa de graduación. Para ello, se pueden evaluar dos técnicas iniciales de modelización para construir modelos predictivos e inferenciales, tales como regresión beta y random forest.
+Una secretaría de salud quiere estimar el **índice de masa corporal (IMC)** promedio y el porcentaje de personas con obesidad (IMC de 30 o más). El IMC se calcula con el peso y la estatura que reporta cada persona, y no todas los reportan.
 
 <br/>
 
-*Última revisión: 6 de noviembre de 2026.*
+## <span style="color:#034a94">**¿Qué objetivos tiene el estudio?**</span>
+
+1. Cuantificar los datos faltantes de cada variable.
+2. Distinguir los faltantes que significan "no aplica" de los que son información perdida.
+3. Explorar el mecanismo de los faltantes del IMC y declarar un supuesto.
+4. Estimar el IMC promedio y el porcentaje de obesidad con casos completos y con imputación múltiple, y comparar los resultados.
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué variables se usan?**</span>
+
+```{r}
+data("riskfactors")
+dim(riskfactors)
+```
+
+Se seleccionan las variables que piden los objetivos. El peso viene en libras y la estatura en pulgadas; se pasan a kilogramos y centímetros.
+
+```{r}
+salud <- data.frame(
+  sexo       = factor(riskfactors$sex, levels = c("Male", "Female"),
+                      labels = c("Hombre", "Mujer")),
+  edad       = riskfactors$age,
+  peso       = round(riskfactors$weight_lbs * 0.4536, 1),
+  estatura   = round(riskfactors$height_inch * 2.54, 1),
+  imc        = riskfactors$bmi,
+  ingreso    = riskfactors$income,
+  embarazada = factor(riskfactors$pregnant, levels = c("Yes", "No"), labels = c("Sí", "No")),
+  fumo_100   = factor(riskfactors$smoke_100, levels = c("Yes", "No"), labels = c("Sí", "No")),
+  fuma_ahora = factor(riskfactors$smoke_days, levels = c("Everyday", "Somedays", "Not@All"),
+                      labels = c("Todos los días", "Algunos días", "Nada"))
+)
+head(salud)
+```
+
+**Tabla 1.** Variables seleccionadas.
+
+| Variable | Descripción | Valores |
+|:---------|:------------|:--------|
+| `sexo` | Sexo | Hombre, Mujer |
+| `edad` | Edad en años | Número entero |
+| `peso`, `estatura` | Peso (kg) y estatura (cm) reportados por la persona | Números positivos |
+| `imc` | Índice de masa corporal: peso en kg dividido entre la estatura en metros al cuadrado | Número positivo |
+| `ingreso` | Ingreso anual del hogar, en rangos de dólares | De menos de 10 mil a más de 75 mil; no sabe; no responde |
+| `embarazada` | ¿Está embarazada? | Sí, No |
+| `fumo_100` | ¿Ha fumado al menos 100 cigarrillos en su vida? | Sí, No |
+| `fuma_ahora` | ¿Con qué frecuencia fuma ahora? | Todos los días, Algunos días, Nada |
+
+<br/>
+
+## <span style="color:#034a94">**¿Los datos tienen problemas?**</span>
+
+El BRFSS solo encuesta a personas de 18 años o más. Por eso se revisan las edades.
+
+```{r}
+sort(salud$edad)[1:6]
+```
+
+Hay cuatro personas con 7 y 9 años: son errores de registro, y no se puede saber la edad correcta. Se excluyen y se reporta la decisión.
+
+```{r}
+salud <- salud[salud$edad >= 18, ]
+nrow(salud)
+```
+
+Además, el ingreso tiene dos categorías que son faltantes disfrazados: "Dontknow" (no sabe) y "Refused" (no responde). No aparecen como `NA`, así que un conteo con `is.na()` no las encuentra ([No todos los faltantes se ven como NA](recurso402.html#cómo-se-representan-en-r)).
+
+```{r}
+table(salud$ingreso)
+```
+
+Se crea una variable que indica si la persona respondió el ingreso, para usarla después.
+
+```{r}
+salud$responde_ingreso <- factor(
+  ifelse(salud$ingreso %in% c("Dontknow", "Refused"), "No", "Sí"), levels = c("Sí", "No"))
+table(salud$responde_ingreso)
+```
+
+<br/>
+
+## <span style="color:#034a94">**Objetivo 1. ¿Cuántos datos faltan?**</span>
+
+```{r}
+faltantes <- data.frame(n = colSums(is.na(salud)),
+                        porcentaje = round(100 * colMeans(is.na(salud)), 1))
+faltantes[order(-faltantes$n), ]
+```
+
+```{r, fig.width=8, fig.height=4, fig.cap="Porcentaje de datos faltantes por variable"}
+gg_miss_var(salud, show_pct = TRUE) +
+  labs(x = NULL, y = "Porcentaje de datos faltantes") +
+  theme_minimal()
+```
+
+A primera vista, la variable más afectada es `embarazada`, con el 88.4 % de faltantes, seguida de `fuma_ahora`, con el 51.9 %. El peso, la estatura y el IMC tienen menos del 5 %.
+
+<br/>
+
+## <span style="color:#034a94">**Objetivo 2. ¿Todos los faltantes son información perdida?**</span>
+
+No. En una encuesta, muchas preguntas solo se hacen a una parte de las personas. Un `NA` en esas preguntas significa "no aplica", no "no respondió".
+
+```{r}
+table(salud$sexo, is.na(salud$embarazada), dnn = c("Sexo", "Falta embarazada"))
+```
+
+```{r}
+mujeres <- salud[salud$sexo == "Mujer", ]
+table(mujeres$edad >= 45, is.na(mujeres$embarazada), dnn = c("45 años o más", "Falta embarazada"))
+```
+
+```{r}
+table(salud$fumo_100, is.na(salud$fuma_ahora), dnn = c("Fumó 100 cigarrillos", "Falta fuma_ahora"))
+```
+
+- La pregunta del embarazo solo se hizo a mujeres menores de 45 años: falta en todos los hombres y en todas las mujeres de 45 o más. Ninguna mujer a quien se le preguntó dejó de responder.
+- La frecuencia con que fuma solo se preguntó a quien había fumado al menos 100 cigarrillos. Los 123 faltantes de quienes respondieron "No" son "no aplica". Solo hay dos faltantes de verdad: las dos personas que no respondieron la pregunta anterior.
+
+Estos faltantes **no se imputan**: imputar el embarazo de un hombre no tiene sentido. Se recodifican como una categoría propia.
+
+```{r}
+salud$embarazada <- as.character(salud$embarazada)
+salud$embarazada[is.na(salud$embarazada)] <- "No aplica"
+salud$fuma_ahora <- as.character(salud$fuma_ahora)
+salud$fuma_ahora[is.na(salud$fuma_ahora) & salud$fumo_100 == "No"] <- "No aplica"
+colSums(is.na(salud))
+```
+
+Después de recodificar, los faltantes de verdad son pocos: 11 en el IMC, 10 en el peso, 2 en la estatura y 2 en el hábito de fumar.
+
+<br/>
+
+## <span style="color:#034a94">**Objetivo 3. ¿Por qué falta el IMC?**</span>
+
+Se siguen los pasos de [¿Cómo se explora el mecanismo?](recurso402.html#cómo-se-explora-el-mecanismo).
+
+**Paso 1. Pensar en cómo se recogieron los datos.** El IMC se calcula con el peso y la estatura que reporta la persona. Falta cuando la persona no quiso o no supo decir su peso (10 casos) o su estatura (2 casos; una persona no dio ninguno de los dos).
+
+**Paso 2. Comparar a quienes tienen el dato con quienes no.**
+
+```{r}
+falta_imc <- is.na(salud$imc)
+round(100 * tapply(falta_imc, salud$sexo, mean), 1)
+round(100 * tapply(falta_imc, salud$responde_ingreso, mean), 1)
+```
+
+```{r}
+tapply(salud$edad, falta_imc, median)
+```
+
+- Falta el IMC del 6.6 % de las mujeres y del 1.1 % de los hombres: 10 de los 11 faltantes son de mujeres.
+- Falta el IMC del 17.1 % de quienes no respondieron el ingreso, frente al 2.4 % de quienes sí lo respondieron. Las personas que no responden una pregunta sensible tienden a no responder otras.
+- La mediana de edad es mayor en quienes no tienen el dato.
+
+Hay evidencia contra MCAR: la falta se relaciona con el sexo y con la respuesta del ingreso.
+
+**Paso 3. Prueba de Little, como complemento.**
+
+```{r}
+mcar_test(data.frame(edad = salud$edad, peso = salud$peso,
+                     estatura = salud$estatura, imc = salud$imc))
+```
+
+La prueba no rechaza MCAR (valor *p* de 0.43), pero eso no lo demuestra: con solo 11 faltantes tiene poca potencia, y solo usa variables numéricas, así que no ve el sexo ni la respuesta del ingreso. La comparación del paso 2 pesa más.
+
+**Paso 4. Declarar el supuesto.**
+
+> La falta del IMC se relaciona con el sexo y con no responder el ingreso, variables que están en la base. Se asume MAR y se incluyen esas variables en la imputación. No se puede descartar MNAR: si las personas con más peso tienden a no reportarlo, el IMC promedio estaría subestimado incluso después de imputar.
+
+<br/>
+
+## <span style="color:#034a94">**Objetivo 4. ¿Cambia la estimación al imputar?**</span>
+
+**Con casos completos.** Se usan solo las personas con IMC.
+
+```{r}
+completos <- c(media_imc = mean(salud$imc, na.rm = TRUE),
+               obesidad_pct = 100 * mean(salud$imc >= 30, na.rm = TRUE))
+round(completos, 2)
+```
+
+**Con imputación múltiple.** Se imputan el peso y la estatura con `mice()`, usando el sexo, la edad y la respuesta del ingreso, y luego se calcula el IMC en cada base imputada. Así el IMC imputado es coherente con el peso y la estatura.
+
+```{r}
+datos_imp <- salud[, c("sexo", "edad", "responde_ingreso", "peso", "estatura")]
+imputacion <- mice(datos_imp, m = 20, method = "pmm", seed = 2026, printFlag = FALSE)
+```
+
+```{r}
+media_imc <- with(imputacion, lm(I(peso / (estatura / 100)^2) ~ 1))
+summary(pool(media_imc))[, c("estimate", "std.error")]
+```
+
+```{r}
+obesidad <- with(imputacion, lm(I(100 * (peso / (estatura / 100)^2 >= 30)) ~ 1))
+summary(pool(obesidad))[, c("estimate", "std.error")]
+```
+
+```{r, fig.width=8, fig.height=4, fig.cap="Peso observado (azul) e imputado (rojo) en las 20 bases"}
+stripplot(imputacion, peso ~ .imp, pch = 20, cex = 1.2,
+          xlab = "Base (1 = datos observados; 2 a 21 = bases imputadas)", ylab = "Peso (kg)")
+```
+
+**Tabla 2.** IMC promedio y porcentaje de obesidad según el tratamiento de los faltantes.
+
+| Método | IMC promedio | Obesidad (%) |
+|:-------|:------------:|:------------:|
+| Casos completos (230 personas) | `r round(completos[1], 1)` | `r round(completos[2], 1)` |
+| Imputación múltiple (241 personas, 20 bases) | `r round(summary(pool(media_imc))$estimate, 1)` | `r round(summary(pool(obesidad))$estimate, 1)` |
+
+- Los valores imputados del peso caen dentro del rango de los observados (Figura 2), como se espera con `pmm`.
+- Las estimaciones cambian poco: el IMC promedio pasa de 27.7 a 27.6 y el porcentaje de obesidad de 30.9 % a 29.5 %. La diferencia en obesidad es menor que su error estándar (3 puntos porcentuales). Con menos del 5 % de faltantes, era lo esperado.
+- La imputación sí cambia lo que se puede afirmar: usa a las 241 personas, y su error estándar incluye la incertidumbre por los datos que faltan.
+
+<div class="content-box-gray">
+**Que la imputación no cambie el resultado no prueba que el resultado sea correcto.** Si los datos fueran MNAR, por ejemplo si quienes pesan más no reportan su peso, las dos estimaciones estarían sesgadas en la misma dirección. Eso se discute como una limitación del estudio.
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**¿Qué se concluye?**</span>
+
+1. **Faltantes.** De los 241 adultos, el 4.6 % no tiene IMC. Los faltantes de embarazo y de frecuencia de fumar son casi todos "no aplica", y se recodificaron.
+2. **Mecanismo.** La falta del IMC se relaciona con ser mujer y con no responder el ingreso. Se asumió MAR; la prueba de Little no rechazó MCAR, pero tiene poca potencia con 11 faltantes.
+3. **Estimación.** Con imputación múltiple, el IMC promedio es de 27.6 y el 29.5 % de las personas tiene obesidad (error estándar de 3 puntos porcentuales). Con casos completos se obtiene casi lo mismo: 27.7 y 30.9 %.
+4. **Limitación.** Si quienes pesan más tienden a no reportar su peso, el IMC promedio estaría subestimado.
+
+<br/>
+
+## <span style="color:#034a94">**Errores frecuentes**</span>
+
+| Problema | Causa | Solución |
+|:---------|:------|:---------|
+| Se imputa el embarazo de los hombres | Se trata un "no aplica" como faltante | Recodificar como "No aplica" |
+| La variable con más faltantes parece la más problemática | Los faltantes son estructurales | Revisar a quién se le hizo cada pregunta |
+| El conteo con `is.na()` no muestra los faltantes del ingreso | Están como "Dontknow" y "Refused" | Revisar las categorías con `table()` |
+| Se concluye MCAR porque Little no rechazó | La prueba tiene poca potencia y solo usa variables numéricas | Comparar grupos, como en el paso 2 |
+| El IMC imputado no coincide con el peso y la estatura | Se imputó el IMC por separado | Imputar el peso y la estatura y calcular el IMC |
+| Se elimina a las personas de 7 y 9 años sin decirlo | Se depura en silencio | Reportar cuántos registros se excluyen y por qué |
+
+<br/>
+
+## <span style="color:#034a94">**Retos**</span>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 1. Otro faltante estructural**</span> {.toc-ignore}
+
+En `riskfactors`, la variable `drink_days` (días al mes que toma alcohol) tiene muchos faltantes. ¿Son "no aplica"? Use la variable `drink_any`.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+table(riskfactors$drink_any, is.na(riskfactors$drink_days), useNA = "ifany",
+      dnn = c("Toma alcohol", "Falta drink_days"))
+```
+
+Falta en todas las personas que respondieron que no toman alcohol: es "no aplica". Las dos personas que no respondieron `drink_any` tampoco tienen `drink_days`; esos sí son faltantes de verdad.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 2. El efecto de la media**</span> {.toc-ignore}
+
+Impute el IMC con la media y compare su desviación estándar con la de los casos completos.
+
+<details>
+<summary>Ver solución</summary>
+
+```{r}
+imc_media <- salud$imc
+imc_media[is.na(imc_media)] <- mean(salud$imc, na.rm = TRUE)
+round(c(casos_completos = sd(salud$imc, na.rm = TRUE), imputado_media = sd(imc_media)), 2)
+```
+
+La desviación estándar baja, porque los 11 valores imputados son iguales a la media. Con pocos faltantes el efecto es pequeño, pero crece con el porcentaje de faltantes.
+
+</details>
+</div>
+
+<div class="content-box-yellow">
+### <span style="color:#686868">**Reto 3. Redacte el supuesto**</span> {.toc-ignore}
+
+Suponga que la falta del IMC no se relacionara con ninguna variable de la base y que la prueba de Little no rechazara. Redacte el supuesto que adoptaría.
+
+<details>
+<summary>Ver solución</summary>
+
+Por ejemplo: "No se encontró relación entre la falta del IMC y las variables de la base, y la prueba de Little no rechazó MCAR. Se asume MCAR y se analizan los casos completos. El supuesto no se puede demostrar: si la falta dependiera del propio peso, los resultados estarían sesgados".
+
+</details>
+</div>
+
+<br/>
+
+## <span style="color:#034a94">**Libros y recursos**</span>
+
+### <span style="color:#034a94">**Libros para leer gratis**</span> {.toc-ignore}
+
+- van Buuren, S. (2018). [*Flexible Imputation of Missing Data*](https://stefvanbuuren.name/fimd/) (2.ª ed.). CRC Press. El autor publica el libro en línea.
+
+### <span style="color:#034a94">**Artículos y recursos**</span> {.toc-ignore}
+
+- Centros para el Control y la Prevención de Enfermedades (CDC). [Behavioral Risk Factor Surveillance System](https://www.cdc.gov/brfss/).
+- Tierney, N. y Cook, D. (2023). [Expanding tidy data principles to facilitate missing data exploration, visualization and assessment of imputations](https://doi.org/10.18637/jss.v105.i07). *Journal of Statistical Software*, 105(7).
+
+<br/>
+
+## <span style="color:#034a94">**Referencias**</span>
+
+- Little, R. J. A. (1988). A test of missing completely at random for multivariate data with missing values. *Journal of the American Statistical Association*, 83(404), 1198-1202.
+- Rubin, D. B. (1976). Inference and missing data. *Biometrika*, 63(3), 581-592.
+- Tierney, N. y Cook, D. (2023). [Expanding tidy data principles to facilitate missing data exploration, visualization and assessment of imputations](https://doi.org/10.18637/jss.v105.i07). *Journal of Statistical Software*, 105(7).
+- van Buuren, S. (2018). [*Flexible Imputation of Missing Data*](https://stefvanbuuren.name/fimd/) (2.ª ed.). CRC Press.
+
+<br/>
+
+*Última revisión: 13 de noviembre de 2026.*
 
 <br/><br/>

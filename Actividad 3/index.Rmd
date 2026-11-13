@@ -207,7 +207,7 @@ Al inicio del informe, escriba un resumen de máximo una página para personas q
 
 Se evalúa la aplicación correcta de los métodos, la precisión de las interpretaciones, la verificación de los resultados, la calidad de la recomendación, la claridad de la comunicación y la reproducibilidad del proyecto.
 
-Cada criterio recibe entre 0 y 30 puntos, para un máximo de 240. La nota es $5 \times \text{puntos} / 240$.
+Cada criterio recibe entre 0 y 30 puntos, para un máximo de 240. La nota es $5 \times \text{puntos} / 240$. La actividad vale un tercio (33.3 %) de la nota del curso: las tres actividades pesan lo mismo.
 
 | Criterio | Muy alto (30) | Alto (25) | Medio (20) | Bajo (15) | Muy bajo (10) | No se presenta (0) |
 |:---------|:--------------|:----------|:-----------|:----------|:--------------|:-------------------|
@@ -222,6 +222,6 @@ Cada criterio recibe entre 0 y 30 puntos, para un máximo de 240. La nota es $5 
 
 <br/>
 
-*Última revisión: 12 de noviembre de 2026.*
+*Última revisión: 13 de noviembre de 2026.*
 
 <br/><br/>

@@ -199,7 +199,7 @@ El informe debe incluir lo siguiente:
 
 Se evalúa el cumplimiento de los requisitos, la aplicación correcta de los métodos estadísticos, la claridad de las explicaciones, la precisión de las interpretaciones, la verificación de los resultados, la calidad de las tablas y gráficos, y el formato de entrega.
 
-Cada criterio recibe entre 0 y 30 puntos, para un máximo de 390. La nota es $5 \times \text{puntos} / 390$.
+Cada criterio recibe entre 0 y 30 puntos, para un máximo de 390. La nota es $5 \times \text{puntos} / 390$. La actividad vale un tercio (33.3 %) de la nota del curso: las tres actividades pesan lo mismo.
 
 | Criterio | Muy alto (30) | Alto (25) | Medio (20) | Bajo (15) | Muy bajo (10) | No se presenta (0) |
 |:---------|:--------------|:----------|:-----------|:----------|:--------------|:-------------------|
@@ -219,6 +219,6 @@ Cada criterio recibe entre 0 y 30 puntos, para un máximo de 390. La nota es $5 
 
 <br/>
 
-*Última revisión: 12 de noviembre de 2026.*
+*Última revisión: 13 de noviembre de 2026.*
 
 <br/><br/>
